@@ -6,8 +6,8 @@ import { ReactComponent as EmptySVG2 } from "../assets/images/empty2.svg";
 
 const useStyles = makeStyles((theme) => ({
   empty: {
-    height: "100%",
     width: "100%",
+    height: "100%",
     display: "grid",
     placeItems: "center",
   },
@@ -16,9 +16,9 @@ const useStyles = makeStyles((theme) => ({
     placeItems: "center",
   },
   p: {
-    fontSize: 14,
     fontWeight: 500,
     color: theme.palette.custom.icon,
+    fontSize: theme.typography.fontSize,
   },
 }));
 

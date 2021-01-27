@@ -58,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
   content: {
     width: "100vw",
     paddingLeft: 0,
+    paddingTop: 50,
+    backgroundColor: "#fff",
     transition: theme.transitions.create("padding", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -75,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     position: "absolute",
     margin: "10px 14px",
+    top: 0,
   },
 }));
 
@@ -177,7 +180,7 @@ export default function Header(props) {
         })}
       >
         <Fab
-          color="primary"
+          color="inherit"
           aria-label="handle-drawer"
           onClick={handleDrawer}
           className={classes.menuButton}

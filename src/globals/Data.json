@@ -1,0 +1,170 @@
+{
+  "dashboard": [
+    {
+      "title": "CLIENTS",
+      "tabs": false,
+      "total": "35",
+      "items": [{ "delivery": 35 }, { "lockers": 0 }]
+    },
+    {
+      "title": "INVOICE",
+      "total": "35,780",
+      "tabs": false,
+      "items": [
+        { "Marché couvert ULYS": "11,392" },
+        { "Démolition usine VUC": "1,391" },
+        { "Extension bâtiment c…": "101" },
+        { "Réalisation châtelet": "101" },
+        { "Démolition usine VIC": "0" },
+        { "Extension bâtiment carc…": "0" },
+        { "Réalisation Bâtiment C": "0" },
+        { "Extension usine Réglais": "0" }
+      ]
+    },
+    {
+      "title": "DELIVERIES",
+      "total": "235",
+      "tabs": true,
+      "site": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ],
+      "client": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ]
+    },
+    {
+      "title": "INCIDENTS",
+      "total": 203,
+      "tabs": true,
+      "site": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ],
+      "client": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ]
+    },
+    {
+      "title": "MEANS",
+      "total": 104,
+      "tabs": true,
+      "site": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ],
+      "client": [
+        { "Marché couvert ULYSSES": 90 },
+        { "Démolition usine VUC": 49 },
+        { "Extension bâtiment carc…": 20 },
+        { "Réalisation châtelet ": 10 },
+        { "Démolition usine VIC": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 },
+        { "Marché couvert REGAL": 0 },
+        { "Démolition usine VIX": 0 },
+        { "Extension bâtiment carc…": 0 },
+        { "Réalisation Bâtiment C": 0 },
+        { "Extension usine Réglais": 0 }
+      ]
+    },
+    {
+      "title": "END OF SUBSCRIPTION",
+      "total": null,
+      "tabs": true,
+      "site": [
+        { "Marché couvert ULYSSES": 2 },
+        { "Démolition usine VUC": 4 },
+        { "Extension bâtiment carc…": 8 },
+        { "Réalisation châtelet ": 20 },
+        { "Démolition usine VIC": 32 },
+        { "Marché couvert REGAL": 60 }
+      ],
+      "client": [
+        { "Marché couvert ULYSSES": 2 },
+        { "Démolition usine VUC": 4 },
+        { "Extension bâtiment carc…": 8 },
+        { "Réalisation châtelet ": 20 },
+        { "Démolition usine VIC": 32 },
+        { "Marché couvert REGAL": 60 }
+      ]
+    },
+    {
+      "title": "TARIFICATION CLIENTS",
+      "total": null,
+      "tabs": true,
+      "site": [{ "VINCI": 24 }, { "BOUYGUES": 34 }, { "EIFFAGE": 20 }],
+      "client": [{ "VINCI": 24 }, { "BOUYGUES": 34 }, { "EIFFAGE": 20 }]
+    }
+  ]
+}

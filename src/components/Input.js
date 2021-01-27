@@ -21,7 +21,6 @@ export default function Input(props) {
       color: color,
       width: "100%",
       borderWidth: 1,
-      borderRadius: 4,
       display: "flex",
       overflow: "hidden",
       borderStyle: "solid",
@@ -29,6 +28,7 @@ export default function Input(props) {
       alignItems: "center",
       borderColor: borderColor,
       backgroundColor: backgroundColor,
+      borderRadius: theme.shape.borderRadius,
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       boxShadow:
         "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
@@ -60,10 +60,10 @@ export default function Input(props) {
       },
     },
     error: {
-      fontSize: 12,
+      color: error,
       fontWeight: 400,
       position: "absolute",
-      color: error,
+      fontSize: theme.typography.pxToRem(12),
     },
   }));
   const classes = useStyles();

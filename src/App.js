@@ -25,10 +25,15 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#DBB20A",
+      contrastText: "#7E7878",
     },
     secondary: {
       main: "#F8F8F8",
+      contrastText: "#000",
     },
+  },
+  shape: {
+    borderRadius: 10,
   },
 });
 

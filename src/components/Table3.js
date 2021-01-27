@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 const useStyles = makeStyles((theme) => ({
   table: {
     overflow: "hidden",
-    borderRadius: 10,
+    borderRadius: theme.shape.borderRadius,
     "& .MuiTableRow-root": {
       display: "flex",
       alignItems: "center",

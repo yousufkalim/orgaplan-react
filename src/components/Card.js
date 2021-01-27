@@ -3,11 +3,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    padding: 20,
+    padding: 15,
     height: "100%",
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    border: "1px solid #ccc",
+    boxShadow: theme.shadows[1],
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.common.white,
   },
 }));
 

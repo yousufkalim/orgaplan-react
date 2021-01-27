@@ -61,11 +61,11 @@ const useStyles = makeStyles((theme) => ({
   profileImage: {
     width: 20,
     height: 20,
-    borderRadius: 20,
+    borderRadius: theme.shape.borderRadius,
     marginRight: 10,
   },
   profileName: {
-    fontSize: 10,
+    fontSize: theme.typography.pxToRem(10),
     color: "#000",
     fontWeight: "bold",
     textDecoration: "none",
