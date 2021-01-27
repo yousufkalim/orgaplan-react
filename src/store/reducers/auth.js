@@ -10,12 +10,11 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN:
-      localStorage.setItem("test", action.token);
+      localStorage.setItem("orgaplan", action.token);
       return {
         ...state,
         auth: true,
         // user: action.user,
-        // token: action.token,
         user: {
           _id: "Tladlf234kladfklTlkadlfk",
           firstName: "Test",
@@ -26,7 +25,7 @@ const reducer = (state = initialState, action) => {
         token: action.token,
       };
     case actionTypes.LOGOUT:
-      localStorage.removeItem("test");
+      localStorage.removeItem("orgaplan");
       return {
         ...state,
         auth: false,

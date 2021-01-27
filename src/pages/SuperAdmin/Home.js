@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
 }));
 
@@ -18,10 +18,8 @@ export default function Profile(props) {
   const classes = useStyles();
 
   return (
-    // <Header>
     <div className={classes.root}>
-      <Heading primary="SuperAdmin" />
+      <Heading primary="Home" />
     </div>
-    // </Header>
   );
 }

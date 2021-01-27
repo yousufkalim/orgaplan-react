@@ -19,7 +19,7 @@ export default function Main() {
 
   const checkLogin = async () => {
     try {
-      const token = localStorage.getItem("test");
+      const token = localStorage.getItem("orgaplan");
       if (!token) {
         setLoading(false);
         return;

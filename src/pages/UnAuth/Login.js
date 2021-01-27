@@ -61,7 +61,7 @@ export default function Login(props) {
           user: "data.user",
           token: "data.token",
         });
-      }, 2000);
+      }, 1000);
     } catch (err) {
       setSubmitting(false);
     }
