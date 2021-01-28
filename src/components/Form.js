@@ -34,13 +34,21 @@ const useStyles = makeStyles((theme) => ({
 const Root = (props) => {
   const classes = useStyles();
 
-  return <div className={classes.form}>{props.children}</div>;
+  return (
+    <div className={classes.form} style={props.style}>
+      {props.children}
+    </div>
+  );
 };
 const Form = (props) => {
   const classes = useStyles();
 
   return (
-    <form className={classes.form} onSubmit={props.onSubmit}>
+    <form
+      className={classes.form}
+      onSubmit={props.onSubmit}
+      style={props.style}
+    >
       {props.children}
     </form>
   );
@@ -49,22 +57,38 @@ const Form = (props) => {
 const Item = (props) => {
   const classes = useStyles();
 
-  return <div className={classes.formItem}>{props.children}</div>;
+  return (
+    <div className={classes.formItem} style={props.style}>
+      {props.children}
+    </div>
+  );
 };
 const Row = (props) => {
   const classes = useStyles();
 
-  return <div className={classes.formRow}>{props.children}</div>;
+  return (
+    <div className={classes.formRow} style={props.style}>
+      {props.children}
+    </div>
+  );
 };
 const RowItem = (props) => {
   const classes = useStyles();
 
-  return <div className={classes.formRowItem}>{props.children}</div>;
+  return (
+    <div className={classes.formRowItem} style={props.style}>
+      {props.children}
+    </div>
+  );
 };
 const ButtonContainer = (props) => {
   const classes = useStyles();
 
-  return <div className={classes.formButtonContainer}>{props.children}</div>;
+  return (
+    <div className={classes.formButtonContainer} style={props.style}>
+      {props.children}
+    </div>
+  );
 };
 
 const items = {

@@ -6,11 +6,11 @@ import Typography from "@material-ui/core/Typography";
 export default function SmallText(props) {
   const useStyles = makeStyles((theme) => ({
     text: {
-      marginBottom: props.disableMargin ? 0 : 10,
       textDecoration: "none",
-      fontSize: theme.typography.pxToRem(13),
+      fontSize: theme.typography.pxToRem(15),
       color: theme.palette.primary.contrastText,
       fontWeight: props.bold ? "bold" : "normal",
+      marginBottom: props.disableMargin ? 0 : 10,
     },
   }));
   const classes = useStyles();

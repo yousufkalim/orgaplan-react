@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     padding: 15,
     height: "100%",
-    boxShadow: theme.shadows[1],
+    boxShadow: theme.shadows[25],
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.common.white,
   },

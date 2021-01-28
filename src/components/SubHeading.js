@@ -9,9 +9,9 @@ export default function SubHeading(props) {
       textAlign: "center",
     },
     primary: {
-      fontWeight: "bold",
       fontSize: theme.typography.pxToRem(18),
       color: theme.palette.primary.contrastText,
+      fontWeight: props.bold ? "bold" : "normal",
     },
     secondary: {
       fontWeight: "normal",
