@@ -24,7 +24,7 @@ import GLOBALS from "../../globals";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: { maxWidth: "100vw", overflow: "hidden" },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -114,7 +114,7 @@ export default function Header(props) {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const [open, setOpen] = useState(!props.disableSidebar ? true : false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawer = () => {
     setOpen((st) => !st);

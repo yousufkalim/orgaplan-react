@@ -36,6 +36,7 @@ const theme = createMuiTheme({
     borderRadius: 10,
   },
 });
+theme.shadows[25] = "0px 3px 6px rgba(0, 0, 0, 0.16)";
 
 const App = () => {
   return (
@@ -45,7 +46,7 @@ const App = () => {
           dense={false}
           hideIconVariant={false}
           preventDuplicate={false}
-          autoHideDuration={3000}
+          autoHideDuration={2000}
           // persist={true}
           anchorOrigin={{
             vertical: "bottom",
