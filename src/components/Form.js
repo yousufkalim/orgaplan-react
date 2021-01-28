@@ -25,6 +25,14 @@ const useStyles = makeStyles((theme) => ({
   formRowItem: {
     width: "48%",
   },
+  formColumn: {
+    width: "100%",
+    margin: "6px 0",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
   formButtonContainer: {
     width: "100%",
     marginTop: "20px",
@@ -40,6 +48,7 @@ const Root = (props) => {
     </div>
   );
 };
+
 const Form = (props) => {
   const classes = useStyles();
 
@@ -63,6 +72,7 @@ const Item = (props) => {
     </div>
   );
 };
+
 const Row = (props) => {
   const classes = useStyles();
 
@@ -72,6 +82,7 @@ const Row = (props) => {
     </div>
   );
 };
+
 const RowItem = (props) => {
   const classes = useStyles();
 
@@ -81,6 +92,17 @@ const RowItem = (props) => {
     </div>
   );
 };
+
+const Column = (props) => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.formColumn} style={props.style}>
+      {props.children}
+    </div>
+  );
+};
+
 const ButtonContainer = (props) => {
   const classes = useStyles();
 
@@ -97,6 +119,7 @@ const items = {
   Item,
   Row,
   RowItem,
+  Column,
   ButtonContainer,
 };
 

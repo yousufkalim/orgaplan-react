@@ -6,7 +6,12 @@ export default function ButtonComponent(props) {
   const useStyles = makeStyles((theme) => ({
     button: {
       height: 42,
+      minWidth: props.minWidth,
+      color: theme.palette.common.white,
       backgroundColor: props.color || theme.palette.primary.main,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.main,
+      },
     },
   }));
 
@@ -14,13 +19,14 @@ export default function ButtonComponent(props) {
 
   return (
     <Button
+      to={props.to}
       onClick={props.onClick}
       endIcon={props.endIcon}
       disabled={props.disabled}
       startIcon={props.startIcon}
+      fullWidth={props.fullWidth === false ? false : true}
       size={props.size || "large"}
       type={props.type || "button"}
-      fullWidth={props.fullWidth || true}
       variant={props.variant || "contained"}
       component={props.component || "button"}
       className={classes.button + " " + props.className}
