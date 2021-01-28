@@ -7,12 +7,16 @@
           "title": "CLIENTS",
           "tabs": false,
           "total": "35",
+          "path": "/clients",
+          "text": "Clients list",
           "items": [{ "Delivery Module": 35 }, { "Lockers module": 0 }]
         },
         {
           "title": "INVOICE",
           "total": "35,780",
           "tabs": false,
+          "path": "/clients",
+          "text": "Invoices list",
           "items": [
             { "Marché couvert ULYS": "11,392" },
             { "Démolition usine VUC": "1,391" },

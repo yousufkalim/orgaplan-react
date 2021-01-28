@@ -2,11 +2,13 @@ import React from "react";
 import Tab from "@material-ui/core/Tab";
 import Grid from "@material-ui/core/Grid";
 import Tabs from "@material-ui/core/Tabs";
+import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
 import GLOBALS from "../../globals";
 import Card from "../../components/Card";
 import Form from "../../components/Form";
+import Button from "../../components/Button";
 import Heading from "../../components/Heading";
 import SmallText from "../../components/SmallText";
 import SubHeading from "../../components/SubHeading";
@@ -60,23 +62,35 @@ const TabsComponent = ({ items }) => {
 
 const CardComponent = ({ card }) => {
   const classes = useStyles();
-  // console.log("card", card);
   return (
     <Card className={classes.cardTemplate}>
-      <Form.Row>
-        <SubHeading primary={card.title} bold />
-        {card.total && <SmallText primary={"Total : " + card.total} bold />}
-      </Form.Row>
-      {card.tabs ? (
-        <TabsComponent items={card.items} />
-      ) : (
-        card.items.map((item, index) => (
-          <Form.Row key={index} style={{ marginTop: 20 }}>
-            <SubHeading primary={Object.keys(item)[0]} />
-            <SubHeading primary={Object.values(item)[0]} />
-          </Form.Row>
-        ))
-      )}
+      <div>
+        <Form.Row>
+          <SubHeading primary={card.title} bold />
+          {card.total && <SmallText primary={"Total : " + card.total} bold />}
+        </Form.Row>
+        {card.tabs ? (
+          <TabsComponent items={card.items} />
+        ) : (
+          card.items.map((item, index) => (
+            <Form.Row key={index} style={{ marginTop: 20 }}>
+              <SubHeading primary={Object.keys(item)[0]} />
+              <SubHeading primary={Object.values(item)[0]} />
+            </Form.Row>
+          ))
+        )}
+      </div>
+      <div style={{ display: "grid", placeItems: "center" }}>
+        {card.path && (
+          <Button
+            to={card.path}
+            text={card.text}
+            fullWidth={false}
+            minWidth="200px"
+            component={NavLink}
+          />
+        )}
+      </div>
     </Card>
   );
 };
