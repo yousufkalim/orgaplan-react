@@ -114,7 +114,7 @@ export default function Header(props) {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleDrawer = () => {
     setOpen((st) => !st);

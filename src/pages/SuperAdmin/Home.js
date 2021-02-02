@@ -24,14 +24,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.secondary.main,
   },
-  cardTemplate: {},
-  gridList: {
-    width: "100%",
-    height: "100%",
+  tab: {
+    minWidth: 80,
+    fontSize: 12,
   },
 }));
 
 const TabsComponent = ({ items }) => {
+  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -47,13 +47,13 @@ const TabsComponent = ({ items }) => {
         onChange={handleChange}
         indicatorColor="primary"
       >
-        <Tab label={"Per " + items[0].title} />
-        <Tab label={"Per " + items[1].title} />
+        <Tab label={"Per " + items[0].title} className={classes.tab} />
+        <Tab label={"Per " + items[1].title} className={classes.tab} />
       </Tabs>
       {items[value].items.map((item, index) => (
         <Form.Row key={index} style={{ marginTop: 20 }}>
-          <SubHeading primary={Object.keys(item)[0]} />
-          <SubHeading primary={Object.values(item)[0]} />
+          <SmallText primary={Object.keys(item)[0]} />
+          <SmallText primary={Object.values(item)[0]} />
         </Form.Row>
       ))}
     </>
@@ -61,9 +61,8 @@ const TabsComponent = ({ items }) => {
 };
 
 const CardComponent = ({ card }) => {
-  const classes = useStyles();
   return (
-    <Card className={classes.cardTemplate}>
+    <Card>
       <div>
         <Form.Row>
           <SubHeading primary={card.title} bold />
@@ -74,8 +73,8 @@ const CardComponent = ({ card }) => {
         ) : (
           card.items.map((item, index) => (
             <Form.Row key={index} style={{ marginTop: 20 }}>
-              <SubHeading primary={Object.keys(item)[0]} />
-              <SubHeading primary={Object.values(item)[0]} />
+              <SmallText primary={Object.keys(item)[0]} />
+              <SmallText primary={Object.values(item)[0]} />
             </Form.Row>
           ))
         )}
@@ -86,7 +85,6 @@ const CardComponent = ({ card }) => {
             to={card.path}
             text={card.text}
             fullWidth={false}
-            minWidth="200px"
             component={NavLink}
           />
         )}
@@ -100,12 +98,12 @@ export default function Profile(props) {
 
   return (
     <div className={classes.root}>
-      <Heading primary="Dashboard" />
+      <Heading primary="DASHBOARD" />
       <div className={classes.content}>
         <Grid container spacing={2}>
           {GLOBALS.Data.dashboard.map((card, index) =>
             card.multiple ? (
-              <Grid item container xs={12} sm={6} md={3} key={index}>
+              <Grid item container xs={12} lg={6} xl={3} key={index}>
                 {card.items.map((item, indexItem) => (
                   <Grid
                     item
