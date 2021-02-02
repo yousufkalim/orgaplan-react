@@ -1,116 +1,114 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
+import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+import TableContainer from "@material-ui/core/TableContainer";
 
-import Texts from "../globals/Texts";
-
-const useStyles = makeStyles((theme) => ({
-  tableContainer: {
-    minWidth: 700,
-    [theme.breakpoints.down("md")]: {
-      minWidth: 0,
-    },
+const StyledTableContainer = withStyles((theme) => ({
+  root: {
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.secondary.main,
   },
-  table: {
-    "& .MuiTableHead-root": {
-      overflow: "hidden",
-      borderRadius: theme.shape.borderRadius,
-      "& .MuiTableRow-root": {
-        backgroundColor: "#4DA1FF",
-        "& .MuiTableCell-head": {
-          fontWeight: "bold",
-          whiteSpace: "nowrap",
-          color: theme.palette.common.white,
-          [theme.breakpoints.down("md")]: {
-            fontSize: 12,
-          },
-        },
-      },
-    },
-    "& .MuiTableBody-root": {
-      overflow: "hidden",
-      borderRadius: theme.shape.borderRadius,
-      "& .MuiTableRow-root": {
-        backgroundColor: "#FFF",
-        "& .MuiTableCell-body": {
-          fontSize: 16,
-          fontWeight: 500,
-          whiteSpace: "nowrap",
-          [theme.breakpoints.down("md")]: {
-            fontSize: 12,
-          },
-        },
-      },
-    },
-  },
-  error: {
-    fontSize: 12,
-    color: "#c21d12",
-  },
-}));
+}))(TableContainer);
 
-const Search = (props) => {
-  const classes = useStyles();
+const StyledTable = withStyles((theme) => ({
+  root: {
+    // borderSpacing: "5px",
+    backgroundColor: theme.palette.secondary.main,
+    // borderCollapse: "separate",
+  },
+  // table: {
+  //   overflow: "hidden",
+  //   borderRadius: theme.shape.borderRadius,
+  //   "& .MuiTableRow-root": {
+  //     display: "flex",
+  //     alignItems: "center",
+  //     justifyContent: "center",
+  //   },
+  //   "& .MuiTableCell-root": {
+  //     padding: 20,
+  //     minWidth: 190,
+  //     display: "flex",
+  //     flexDirection: "column",
+  //     alignItems: "center",
+  //     borderBottom: "none",
+  //     whiteSpace: "nowrap",
+  //     justifyContent: "center",
+  //     color: "#000",
+  //   },
+  //   "& .MuiTableHead-root": {
+  //     backgroundColor: "#4DA1FF",
+  //     "& .MuiTableCell-root": {
+  //       color: "#fff",
+  //       fontWeight: "bold",
+  //     },
+  //   },
+  //   "& .MuiTableBody-root": {
+  //     backgroundColor: "#FFF",
+  //   },
+  // },
+}))(Table);
 
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    height: 20,
+    borderRadius: 20,
+    backgroundColor: theme.palette.common.white,
+  },
+}))(TableRow);
+
+const StyledTableCell = withStyles((theme) => ({
+  root: {
+    border: "none",
+    padding: 6,
+  },
+  head: {
+    fontSize: 20,
+    fontWeight: "bold",
+    backgroundColor: "transparent",
+    color: theme.palette.primary.contrastText,
+  },
+  body: {
+    fontSize: 20,
+    fontWeight: "normal",
+    backgroundColor: "transparent",
+    color: theme.palette.primary.contrastText,
+  },
+}))(TableCell);
+
+export default function DataTable(props) {
   return (
-    <TableContainer className={classes.tableContainer}>
-      <Table className={classes.table}>
+    <StyledTableContainer>
+      <StyledTable>
         <TableHead>
-          <TableRow>
-            {props.headers.map((i) => (
-              <TableCell key={i} align="center">
-                {i}
-              </TableCell>
+          <StyledTableRow>
+            {props.headers.map((header, index) => (
+              <StyledTableCell align="center" key={index}>
+                {header}
+              </StyledTableCell>
             ))}
-          </TableRow>
+          </StyledTableRow>
         </TableHead>
         <TableBody>
-          {props.values.length === 0 ? (
-            <TableRow>
-              <TableCell align="center" colSpan={props.headers.length}>
-                {props.emptyText || Texts.emptyTable}
-              </TableCell>
-            </TableRow>
-          ) : (
-            props.values.map((row, index) => {
-              return (
-                <TableRow key={row + index}>
-                  {row.map((i, index) => {
-                    let show = false;
-                    if (parseInt(index) === parseInt(props.dateItem - 1)) {
-                      let startHour = i.split(" -")[0].split("h")[0];
-                      let endHour = i.split("- ")[1].split("h")[0];
-                      if (parseInt(startHour) >= 0 && parseInt(startHour) < 8) {
-                        show = true;
-                      }
-                      if (parseInt(endHour) >= 20 && parseInt(endHour) < 24) {
-                        show = true;
-                      }
-                    }
-                    return (
-                      <TableCell key={i + index} align="center">
-                        {i}
-                        {show && (
-                          <div className={classes.error}>
-                            ({Texts.nightHour})
-                          </div>
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })
-          )}
+          {props.rows.map((row, i) => (
+            <StyledTableRow key={i}>
+              {row.map((cell, index) => (
+                <StyledTableCell
+                  component="th"
+                  scope="row"
+                  key={index}
+                  align="center"
+                >
+                  {cell}
+                </StyledTableCell>
+              ))}
+            </StyledTableRow>
+          ))}
         </TableBody>
-      </Table>
-    </TableContainer>
+      </StyledTable>
+    </StyledTableContainer>
   );
-};
-
-export default Search;
+}

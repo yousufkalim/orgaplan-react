@@ -221,5 +221,91 @@
       ],
       "cols": 4
     }
-  ]
+  ],
+  "clients": {
+    "headings": [
+      "Client",
+      "Responsible",
+      "Phone",
+      "Sites",
+      "Start date",
+      "End date",
+      "Subscription",
+      "Action"
+    ],
+    "items": [
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Per site"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        "-",
+        "-",
+        "-",
+        "Requested"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Master"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Master"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Per site"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Per site"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Master"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "0666446644",
+        2,
+        "12/03/21",
+        "12/12/22",
+        "Master"
+      ]
+    ]
+  }
 }

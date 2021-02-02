@@ -69,7 +69,7 @@ export default function Input(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${props.className}`}>
       <div className={classes.container}>
         {props.startAdornment && (
           <div className={classes.startAdornment}>{props.startAdornment}</div>
