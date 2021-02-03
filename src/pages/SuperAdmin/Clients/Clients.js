@@ -68,7 +68,7 @@ export default function Profile(props) {
                     <IconButton>
                       <Pencil style={{ width: 18, height: 18 }} />
                     </IconButton>
-                    <IconButton>
+                    <IconButton component={NavLink} to="/clients/invoices">
                       <Report style={{ width: 18, height: 18 }} />
                     </IconButton>
                   </>,

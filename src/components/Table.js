@@ -20,36 +20,6 @@ const StyledTable = withStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
     // borderCollapse: "separate",
   },
-  // table: {
-  //   overflow: "hidden",
-  //   borderRadius: theme.shape.borderRadius,
-  //   "& .MuiTableRow-root": {
-  //     display: "flex",
-  //     alignItems: "center",
-  //     justifyContent: "center",
-  //   },
-  //   "& .MuiTableCell-root": {
-  //     padding: 20,
-  //     minWidth: 190,
-  //     display: "flex",
-  //     flexDirection: "column",
-  //     alignItems: "center",
-  //     borderBottom: "none",
-  //     whiteSpace: "nowrap",
-  //     justifyContent: "center",
-  //     color: "#000",
-  //   },
-  //   "& .MuiTableHead-root": {
-  //     backgroundColor: "#4DA1FF",
-  //     "& .MuiTableCell-root": {
-  //       color: "#fff",
-  //       fontWeight: "bold",
-  //     },
-  //   },
-  //   "& .MuiTableBody-root": {
-  //     backgroundColor: "#FFF",
-  //   },
-  // },
 }))(Table);
 
 const StyledTableRow = withStyles((theme) => ({
@@ -66,13 +36,13 @@ const StyledTableCell = withStyles((theme) => ({
     padding: 6,
   },
   head: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     backgroundColor: "transparent",
     color: theme.palette.primary.contrastText,
   },
   body: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "normal",
     backgroundColor: "transparent",
     color: theme.palette.primary.contrastText,

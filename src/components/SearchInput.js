@@ -41,7 +41,7 @@ export default function Input(props) {
     input: {
       border: 0,
       outline: 0,
-      fontSize: 18,
+      fontSize: 16,
       color: color,
       width: "100%",
       height: "100%",

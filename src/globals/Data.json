@@ -307,5 +307,40 @@
         "Master"
       ]
     ]
+  },
+  "invoices": {
+    "headings": [
+      "Client",
+      "Start date",
+      "End date",
+      "Sites",
+      "Amount",
+      "Description",
+      "Action"
+    ],
+    "items": [
+      [
+        "ContructBTP",
+        "12/03/21",
+        "12/12/22",
+        "Chantier 1",
+        123,
+        "Description 1"
+      ],
+      ["ContructBTP", "-", "-", "Chantier 1", 113, "Description 1"],
+      [
+        "ContructBTP",
+        "12/03/21",
+        "12/12/22",
+        "Chantier 1",
+        22.43,
+        "Description 1"
+      ],
+      ["ContructBTP", "12/03/21", "12/12/22", "Chantier 1", 3, "Description 1"],
+      ["ContructBTP", "12/03/21", "12/12/22", "Chantier 1", 3, "Description 1"],
+      ["ContructBTP", "12/03/21", "12/12/22", "Chantier 1", 3, "Description 1"],
+      ["ContructBTP", "12/03/21", "12/12/22", "Chantier 1", 3, "Description 1"],
+      ["ContructBTP", "12/03/21", "12/12/22", "Chantier 1", 3, "Description 1"]
+    ]
   }
 }

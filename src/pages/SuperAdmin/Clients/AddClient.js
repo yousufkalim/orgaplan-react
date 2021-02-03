@@ -52,7 +52,7 @@ export default function Profile(props) {
 
   return (
     <div className={classes.root}>
-      <IconButton>
+      <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
       <Heading primary="ADD A CLIENT" />
