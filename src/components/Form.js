@@ -35,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
   },
   formButtonContainer: {
     width: "100%",
-    marginTop: "20px",
+    marginTop: 30,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 }));
 
@@ -43,7 +47,7 @@ const Root = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.form} style={props.style}>
+    <div className={`${classes.form} ${props.className}`} style={props.style}>
       {props.children}
     </div>
   );
@@ -54,7 +58,7 @@ const Form = (props) => {
 
   return (
     <form
-      className={classes.form}
+      className={`${classes.form} ${props.className}`}
       onSubmit={props.onSubmit}
       style={props.style}
     >
@@ -67,7 +71,10 @@ const Item = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.formItem} style={props.style}>
+    <div
+      className={`${classes.formItem} ${props.className}`}
+      style={props.style}
+    >
       {props.children}
     </div>
   );
@@ -77,7 +84,10 @@ const Row = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.formRow} style={props.style}>
+    <div
+      className={`${classes.formRow} ${props.className}`}
+      style={props.style}
+    >
       {props.children}
     </div>
   );
@@ -87,7 +97,10 @@ const RowItem = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.formRowItem} style={props.style}>
+    <div
+      className={`${classes.formRowItem} ${props.className}`}
+      style={props.style}
+    >
       {props.children}
     </div>
   );
@@ -97,7 +110,10 @@ const Column = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.formColumn} style={props.style}>
+    <div
+      className={`${classes.formColumn} ${props.className}`}
+      style={props.style}
+    >
       {props.children}
     </div>
   );
@@ -107,7 +123,10 @@ const ButtonContainer = (props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.formButtonContainer} style={props.style}>
+    <div
+      className={`${classes.formButtonContainer} ${props.className}`}
+      style={props.style}
+    >
       {props.children}
     </div>
   );
