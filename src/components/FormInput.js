@@ -25,6 +25,27 @@ export default function Input(props) {
       borderWidth: 1,
       display: "flex",
       overflow: "hidden",
+      textAlign: "center",
+      padding: "14px 12px",
+      borderStyle: "solid",
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: white,
+      borderColor: borderColor,
+      transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
+      "&::placeholder": {
+        color: color,
+      },
+    },
+    textArea: {
+      border: 0,
+      outline: 0,
+      color: color,
+      width: "100%",
+      resize: "none",
+      borderWidth: 1,
+      display: "flex",
+      overflow: "hidden",
       padding: "14px 12px",
       borderStyle: "solid",
       flexDirection: "row",
@@ -47,17 +68,50 @@ export default function Input(props) {
 
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
-      <input
-        name={props.name}
-        type={props.type}
-        value={props.value}
-        onBlur={props.onBlur}
-        onFocus={props.onFocus}
-        className={classes.input}
-        onChange={props.onChange}
-        disabled={props.disabled}
-        placeholder={props.placeholder}
-      />
+      {props.textArea ? (
+        <textarea
+          name={props.name}
+          rows={props.rows}
+          value={props.value}
+          onBlur={props.onBlur}
+          onFocus={props.onFocus}
+          onChange={props.onChange}
+          disabled={props.disabled}
+          readOnly={props.readOnly}
+          maxLength={props.maxLength}
+          minLength={props.minLength}
+          className={classes.textArea}
+          placeholder={props.placeholder}
+        />
+      ) : props.type === "date" ? (
+        <input
+          type="text"
+          name={props.name}
+          value={props.value}
+          className={classes.input}
+          onChange={props.onChange}
+          disabled={props.disabled}
+          placeholder={props.placeholder}
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => {
+            if (e.target.value === "") {
+              e.target.type = "text";
+            }
+          }}
+        />
+      ) : (
+        <input
+          name={props.name}
+          type={props.type}
+          value={props.value}
+          onBlur={props.onBlur}
+          onFocus={props.onFocus}
+          className={classes.input}
+          onChange={props.onChange}
+          disabled={props.disabled}
+          placeholder={props.placeholder}
+        />
+      )}
       {props.error !== "" && (
         <span className={classes.error}>{props.error}</span>
       )}

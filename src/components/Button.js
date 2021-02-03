@@ -24,11 +24,11 @@ export default function ButtonComponent(props) {
       endIcon={props.endIcon}
       disabled={props.disabled}
       startIcon={props.startIcon}
-      fullWidth={props.fullWidth === false ? false : true}
       size={props.size || "large"}
       type={props.type || "button"}
       variant={props.variant || "contained"}
       component={props.component || "button"}
+      fullWidth={props.fullWidth === false ? false : true}
       className={classes.button + " " + props.className}
       style={props.style}
     >
