@@ -14,13 +14,13 @@ import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "40px 15px",
+    padding: GLOBALS.Styles.pagePadding,
   },
   content: {
-    padding: 15,
-    marginTop: 10,
     overflow: "hidden",
     borderRadius: theme.shape.borderRadius,
+    padding: GLOBALS.Styles.pageContentPadding,
+    marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
   image: {

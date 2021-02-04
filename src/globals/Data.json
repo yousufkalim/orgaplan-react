@@ -384,6 +384,17 @@
       ]
     ]
   },
+  "zacs": {
+    "headings": ["ZAC name", "Sites", "Action"],
+    "items": [
+      ["ZAC 1", 3],
+      ["ZAC 1", 3],
+      ["ZAC 1", 3],
+      ["ZAC 1", 3],
+      ["ZAC 1", 3],
+      ["ZAC 1", 3]
+    ]
+  },
   "archivedSites": {
     "headings": [
       "Image",

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 
+import GLOBALS from "../../../../globals";
 import AddSiteStep1 from "./AddSiteStep1";
 import AddSiteStep2 from "./AddSiteStep2";
 import AddSiteStep3 from "./AddSiteStep3";
@@ -11,11 +12,11 @@ import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "40px 15px",
+    padding: GLOBALS.Styles.pagePadding,
   },
   content: {
-    padding: 15,
-    marginTop: 10,
+    padding: GLOBALS.Styles.pageContentPadding,
+    marginTop: GLOBALS.Styles.pageContentMargin,
   },
 }));
 

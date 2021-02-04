@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
+import GLOBALS from "../globals";
+
 const Root = (props) => {
   const useStyles = makeStyles((theme) => ({
     form: {
@@ -49,7 +51,8 @@ const Item = (props) => {
   const useStyles = makeStyles((theme) => ({
     formItem: {
       width: props.width || "100%",
-      margin: props.margin || props.noMargin ? 0 : "10px 0",
+      margin:
+        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -71,8 +74,9 @@ const Row = (props) => {
       width: props.width || "100%",
       flexDirection: props.flexDirection || "row",
       alignItems: props.alignItems || "flex-start",
-      margin: props.margin || props.noMargin ? 0 : "10px 0",
       justifyContent: props.justifyContent || "space-between",
+      margin:
+        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -112,8 +116,9 @@ const Column = (props) => {
       width: props.width || "100%",
       alignItems: props.alignItems || "flex-start",
       flexDirection: props.flexDirection || "column",
-      margin: props.margin || props.noMargin ? 0 : "10px 0",
       justifyContent: props.justifyContent || "space-between",
+      margin:
+        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -136,7 +141,10 @@ const ButtonContainer = (props) => {
       alignItems: props.alignItems || "center",
       flexDirection: props.flexDirection || "row",
       justifyContent: props.justifyContent || "center",
-      margin: props.margin || props.noMargin ? 0 : "30px 0",
+      margin:
+        props.margin || props.noMargin
+          ? 0
+          : `${GLOBALS.Styles.marginButtonContainer}px 0`,
     },
   }));
   const classes = useStyles();

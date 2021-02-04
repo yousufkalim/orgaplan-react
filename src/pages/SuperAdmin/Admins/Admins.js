@@ -16,13 +16,13 @@ import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "40px 15px",
+    padding: GLOBALS.Styles.pagePadding,
   },
   content: {
-    padding: 15,
-    marginTop: 10,
     overflow: "hidden",
     borderRadius: theme.shape.borderRadius,
+    padding: GLOBALS.Styles.pageContentPadding,
+    marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
 }));
@@ -35,7 +35,7 @@ export default function Profile(props) {
       <Form.Row alignItems="center">
         <Heading primary="ADMINS LIST" noWrap />
         <div>
-          <Form.Row alignItems="center">
+          <Form.Row alignItems="center" noMargin>
             <SubHeading disableMargin primary="Total : 234 Admins" bold />
             <Button
               fullWidth={false}
@@ -47,7 +47,7 @@ export default function Profile(props) {
           </Form.Row>
         </div>
       </Form.Row>
-      <Form.Row>
+      <Form.Row noMargin>
         <SearchInput placeholder="Name" />
       </Form.Row>
       <div className={classes.content}>
