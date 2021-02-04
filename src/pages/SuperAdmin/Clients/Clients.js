@@ -17,13 +17,13 @@ import { ReactComponent as Report } from "../../../assets/icons/Report.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "40px 15px",
+    padding: GLOBALS.Styles.pagePadding,
   },
   content: {
-    padding: 15,
-    marginTop: 10,
     overflow: "hidden",
     borderRadius: theme.shape.borderRadius,
+    padding: GLOBALS.Styles.pageContentPadding,
+    marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
 }));
@@ -36,7 +36,7 @@ export default function Profile(props) {
       <Form.Row alignItems="center">
         <Heading primary="CLIENTS LIST" noWrap />
         <div>
-          <Form.Row alignItems="center">
+          <Form.Row alignItems="center" noMargin>
             <SubHeading disableMargin primary="Total : 234 Clients" bold />
             <Button
               fullWidth={false}
@@ -48,7 +48,7 @@ export default function Profile(props) {
           </Form.Row>
         </div>
       </Form.Row>
-      <Form.Row>
+      <Form.Row noMargin>
         <SearchInput placeholder="Name of Client" />
       </Form.Row>
       <div className={classes.content}>

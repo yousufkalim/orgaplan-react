@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import ZACs from "./ZACs";
 import Sites from "./Sites";
+import AddZAC from "./AddZAC";
 import AddSite from "./AddSite";
 import ArchivedSites from "./ArchivedSites";
 
@@ -11,6 +12,7 @@ export default function Index(props) {
     <Switch>
       <Route exact path={props.match.path + "/"} component={Sites} />
       <Route exact path={props.match.path + "/zacs"} component={ZACs} />
+      <Route exact path={props.match.path + "/add-zac"} component={AddZAC} />
       <Route exact path={props.match.path + "/add-site"} component={AddSite} />
       <Route
         exact
