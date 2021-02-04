@@ -11,6 +11,7 @@ import Heading from "../../../components/Heading";
 import FormSelect from "../../../components/FormSelect";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
+import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,8 +31,11 @@ export default function Profile(props) {
 
   return (
     <div className={classes.root}>
-      <Form.Row>
-        <Heading primary="INVOICE" />
+      <IconButton onClick={() => props.history.goBack()}>
+        <BackArrow style={{ width: 30, height: 30 }} />
+      </IconButton>
+      <Form.Row alignItems="center">
+        <Heading primary="INVOICES" noWrap />
         <Button
           fullWidth={false}
           component={NavLink}

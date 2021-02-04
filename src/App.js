@@ -17,7 +17,7 @@ const theme = createMuiTheme({
     values: {
       xs: 0,
       sm: 480,
-      md: 600,
+      md: 768,
       lg: 1024,
       xl: 1650,
     },
@@ -31,6 +31,7 @@ const theme = createMuiTheme({
       main: "#F8F8F8",
       contrastText: "#000",
     },
+    blue: "#140772",
     grey: {
       100: "#707070",
     },

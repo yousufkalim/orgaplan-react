@@ -33,16 +33,16 @@ export default function Profile(props) {
 
   return (
     <div className={classes.root}>
-      <Form.Row>
-        <Heading primary="CLIENTS LIST" />
+      <Form.Row alignItems="center">
+        <Heading primary="CLIENTS LIST" noWrap />
         <div>
-          <Form.Row>
-            <SubHeading disableMargin primary="Total : 234 Clients" />
+          <Form.Row alignItems="center">
+            <SubHeading disableMargin primary="Total : 234 Clients" bold />
             <Button
               fullWidth={false}
               component={NavLink}
               text="CREATE A CLIENT"
-              style={{ margin: "0 20px" }}
+              style={{ marginLeft: "20px" }}
               to={"/clients/add-client"}
             />
           </Form.Row>

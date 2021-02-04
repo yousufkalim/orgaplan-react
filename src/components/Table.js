@@ -71,6 +71,7 @@ export default function DataTable(props) {
                   scope="row"
                   key={index}
                   align="center"
+                  noWrap
                 >
                   {cell}
                 </StyledTableCell>

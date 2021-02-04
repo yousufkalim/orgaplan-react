@@ -145,14 +145,14 @@ export default function Header(props) {
                 className={clsx({
                   [classes.listItemSelected]: Array.isArray(item.path)
                     ? item.path.some((it) => it === location.pathname)
-                    : item.path === location.pathname,
+                    : location.pathname.startsWith(item.path),
                 })}
               >
                 <ListItemIcon
                   className={clsx(classes.listItemIcon, {
                     [classes.listItemSelected]: Array.isArray(item.path)
                       ? item.path.some((it) => it === location.pathname)
-                      : item.path === location.pathname,
+                      : location.pathname.startsWith(item.path),
                   })}
                 >
                   {item.icon}

@@ -20,7 +20,6 @@ export default function Input(props) {
       width: "100%",
       maxWidth: 300,
       borderWidth: 1,
-      marginLeft: 20,
       display: "flex",
       overflow: "hidden",
       position: "relative",
@@ -56,7 +55,10 @@ export default function Input(props) {
   const classes = useStyles();
 
   return (
-    <div className={`${classes.container} ${props.className}`}>
+    <div
+      className={`${classes.container} ${props.className}`}
+      style={props.style}
+    >
       <input
         name={props.name}
         type={props.type}

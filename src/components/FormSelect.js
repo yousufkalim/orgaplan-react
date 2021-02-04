@@ -5,7 +5,7 @@ export default function Input(props) {
   const theme = useTheme();
 
   const error = theme.palette.error.main;
-  const primaryText = theme.palette.secondary.contrastText;
+  const primaryText = theme.palette.primary.contrastText;
 
   const white = theme.palette.common.white;
   const color = props.error ? error : primaryText;

@@ -46,14 +46,28 @@ const TabsComponent = ({ items }) => {
         variant="fullWidth"
         onChange={handleChange}
         indicatorColor="primary"
+        scrollButtons="auto"
       >
         <Tab label={"Per " + items[0].title} className={classes.tab} />
         <Tab label={"Per " + items[1].title} className={classes.tab} />
       </Tabs>
       {items[value].items.map((item, index) => (
-        <Form.Row key={index} style={{ marginTop: 20 }}>
-          <SmallText primary={Object.keys(item)[0]} />
-          <SmallText primary={Object.values(item)[0]} />
+        <Form.Row key={index}>
+          <SmallText
+            noWrap
+            primary={Object.keys(item)[0]}
+            style={{
+              width: "80%",
+            }}
+          />
+          <SmallText
+            noWrap
+            style={{
+              width: "20%",
+              textAlign: "right",
+            }}
+            primary={Object.values(item)[0]}
+          />
         </Form.Row>
       ))}
     </>
@@ -65,16 +79,31 @@ const CardComponent = ({ card }) => {
     <Card>
       <div>
         <Form.Row>
-          <SubHeading primary={card.title} bold />
-          {card.total && <SmallText primary={"Total : " + card.total} bold />}
+          <SubHeading primary={card.title} bold noWrap />
+          {card.total && (
+            <SmallText primary={"Total : " + card.total} bold noWrap />
+          )}
         </Form.Row>
         {card.tabs ? (
           <TabsComponent items={card.items} />
         ) : (
           card.items.map((item, index) => (
-            <Form.Row key={index} style={{ marginTop: 20 }}>
-              <SmallText primary={Object.keys(item)[0]} />
-              <SmallText primary={Object.values(item)[0]} />
+            <Form.Row key={index}>
+              <SmallText
+                noWrap
+                primary={Object.keys(item)[0]}
+                style={{
+                  width: "80%",
+                }}
+              />
+              <SmallText
+                noWrap
+                style={{
+                  width: "20%",
+                  textAlign: "right",
+                }}
+                primary={Object.values(item)[0]}
+              />
             </Form.Row>
           ))
         )}
@@ -103,7 +132,7 @@ export default function Profile(props) {
         <Grid container spacing={2}>
           {GLOBALS.Data.dashboard.map((card, index) =>
             card.multiple ? (
-              <Grid item container xs={12} lg={6} xl={3} key={index}>
+              <Grid item container xs={12} sm={6} md={3} key={index}>
                 {card.items.map((item, indexItem) => (
                   <Grid
                     item
