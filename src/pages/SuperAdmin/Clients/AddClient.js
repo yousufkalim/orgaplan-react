@@ -6,12 +6,12 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-// import { ReactComponent as Plus } from "../../../assets/icons/Plus.svg";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -98,7 +98,7 @@ export default function Profile(props) {
         <Form.Row>
           <FormLabel bold primary="RESPONSIBLE CONTACT : " />
           <Form.Row style={formInputStyle}>
-            <FormInput placeholder="Email Address" style={formInputStyle} />
+            <FormInput placeholder="E-mail Address" style={formInputStyle} />
             <FormInput placeholder="Phone Number" style={formInputStyle} />
           </Form.Row>
         </Form.Row>
@@ -144,16 +144,21 @@ export default function Profile(props) {
             textArea
             rows={3}
             style={formInputStyle}
-            placeholder="Company name"
+            placeholder="Additional information"
           />
         </Form.Row>
         <Form.Row style={{ alignItems: "flex-start" }}>
           <FormLabel bold primary="NOTIFICATION : " />
-          <FormInput
-            type="number"
-            style={formInputStyle}
-            placeholder="Days before end of the contract"
-          />
+          <Form.Row style={{ ...formInputStyle, justifyContent: "flex-start" }}>
+            <FormInput
+              type="number"
+              style={{ ...formInputStyle, maxWidth: 100 }}
+            />
+            <SmallText
+              style={{ marginLeft: 10 }}
+              primary="Days before end of the contract"
+            />
+          </Form.Row>
         </Form.Row>
         <Form.Row style={{ alignItems: "flex-start" }}>
           <FormLabel bold primary="NOTIFY THE ADDRESSES : " />

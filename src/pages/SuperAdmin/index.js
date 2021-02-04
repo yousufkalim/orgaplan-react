@@ -14,9 +14,9 @@ export default function UnAuth() {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/clients" component={Clients} />
-        <Route exact path="/logs" component={Logs} />
-        <Route exact path="/sites" component={Sites} />
-        <Route exact path="/admins" component={Admins} />
+        <Route path="/logs" component={Logs} />
+        <Route path="/sites" component={Sites} />
+        <Route path="/admins" component={Admins} />
         <Redirect from="*" to="/" />
       </Switch>
     </Header>

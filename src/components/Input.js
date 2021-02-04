@@ -5,11 +5,10 @@ export default function Input(props) {
   const theme = useTheme();
 
   const primary = theme.palette.secondary.main;
-  const primaryText = theme.palette.secondary.contrastText;
   const error = theme.palette.error.main;
 
   const backgroundColor = props.color || primary;
-  const color = props.error ? error : primaryText;
+  const color = props.error ? error : theme.palette.primary.contrastText;
   const borderColor = props.error ? error : primary;
 
   const useStyles = makeStyles((theme) => ({

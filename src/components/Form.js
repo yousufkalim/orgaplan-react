@@ -1,49 +1,17 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: "100%",
-    maxWidth: "350px",
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  formItem: {
-    width: "100%",
-    margin: "10px 0",
-  },
-  formRow: {
-    width: "100%",
-    margin: "6px 0",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  formRowItem: {
-    width: "48%",
-  },
-  formColumn: {
-    width: "100%",
-    margin: "6px 0",
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  formButtonContainer: {
-    width: "100%",
-    marginTop: 30,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-}));
-
 const Root = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    form: {
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "column",
+      maxWidth: props.maxWidth,
+      justifyContent: "center",
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -54,6 +22,16 @@ const Root = (props) => {
 };
 
 const Form = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    form: {
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "column",
+      justifyContent: "center",
+      maxWidth: props.maxWidth,
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -68,6 +46,12 @@ const Form = (props) => {
 };
 
 const Item = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    formItem: {
+      width: props.width || "100%",
+      margin: props.margin || props.noMargin ? 0 : "10px 0",
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -81,6 +65,16 @@ const Item = (props) => {
 };
 
 const Row = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    formRow: {
+      display: "flex",
+      width: props.width || "100%",
+      flexDirection: props.flexDirection || "row",
+      alignItems: props.alignItems || "flex-start",
+      margin: props.margin || props.noMargin ? 0 : "10px 0",
+      justifyContent: props.justifyContent || "space-between",
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -94,6 +88,11 @@ const Row = (props) => {
 };
 
 const RowItem = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    formRowItem: {
+      width: props.width || "48%",
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -107,6 +106,16 @@ const RowItem = (props) => {
 };
 
 const Column = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    formColumn: {
+      display: "flex",
+      width: props.width || "100%",
+      alignItems: props.alignItems || "flex-start",
+      flexDirection: props.flexDirection || "column",
+      margin: props.margin || props.noMargin ? 0 : "10px 0",
+      justifyContent: props.justifyContent || "space-between",
+    },
+  }));
   const classes = useStyles();
 
   return (
@@ -120,6 +129,16 @@ const Column = (props) => {
 };
 
 const ButtonContainer = (props) => {
+  const useStyles = makeStyles((theme) => ({
+    formButtonContainer: {
+      display: "flex",
+      width: props.width || "100%",
+      alignItems: props.alignItems || "center",
+      flexDirection: props.flexDirection || "row",
+      justifyContent: props.justifyContent || "center",
+      margin: props.margin || props.noMargin ? 0 : "30px 0",
+    },
+  }));
   const classes = useStyles();
 
   return (

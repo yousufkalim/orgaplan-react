@@ -84,7 +84,7 @@ export default function Login(props) {
             handleSubmit,
             isSubmitting,
           }) => (
-            <Form.Form onSubmit={handleSubmit}>
+            <Form.Form onSubmit={handleSubmit} maxWidth="350px">
               <Form.Item>
                 <Input
                   type="email"

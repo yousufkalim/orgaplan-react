@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-export default function SmallText(props) {
+export default function SmallText({ className, ...props }) {
   const useStyles = makeStyles((theme) => ({
     text: {
       textDecoration: "none",
@@ -15,24 +15,21 @@ export default function SmallText(props) {
   }));
   const classes = useStyles();
 
-  return (
-    <div>
-      {props.to ? (
-        <Link
-          to={props.to}
-          className={classes.text + " " + props.className}
-          style={props.style}
-        >
-          {props.primary}
-        </Link>
-      ) : (
-        <Typography
-          className={classes.text + " " + props.className}
-          style={props.style}
-        >
-          {props.primary}
-        </Typography>
-      )}
-    </div>
+  return props.to ? (
+    <Link
+      to={props.to}
+      className={classes.text + " " + className}
+      style={props.style}
+    >
+      {props.primary}
+    </Link>
+  ) : (
+    <Typography
+      className={classes.text + " " + className}
+      style={props.style}
+      {...props}
+    >
+      {props.primary}
+    </Typography>
   );
 }

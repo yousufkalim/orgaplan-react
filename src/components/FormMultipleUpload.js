@@ -33,16 +33,18 @@ export default function FormMultipleUpload(props) {
     },
     imageWrapper: {
       position: "relative",
-    },
-    image: {
       width: 45,
       height: 45,
+    },
+    image: {
+      width: "100%",
+      height: "100%",
       color: theme.palette.primary.main,
       backgroundColor: theme.palette.primary.main,
     },
     imageCross: {
       top: 4,
-      right: 15,
+      right: 4,
       width: 10,
       height: 10,
       fontSize: 8,

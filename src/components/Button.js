@@ -1,17 +1,24 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 export default function ButtonComponent(props) {
   const useStyles = makeStyles((theme) => ({
     button: {
       height: 42,
+      width: props.width,
       minWidth: props.minWidth,
-      color: theme.palette.common.white,
+      maxWidth: props.maxWidth,
+      color: props.textColor || theme.palette.common.white,
       backgroundColor: props.color || theme.palette.primary.main,
       "&:hover": {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: props.color || theme.palette.primary.main,
       },
+    },
+    label: {
+      width: "100%",
+      color: props.textColor || theme.palette.common.white,
     },
   }));
 
@@ -19,6 +26,7 @@ export default function ButtonComponent(props) {
 
   return (
     <Button
+      noWrap
       to={props.to}
       onClick={props.onClick}
       endIcon={props.endIcon}
@@ -31,9 +39,12 @@ export default function ButtonComponent(props) {
       fullWidth={props.fullWidth === false ? false : true}
       className={classes.button + " " + props.className}
       style={props.style}
+      classes={{ label: classes.label }}
     >
       {props.children}
-      {props.text}
+      <Typography noWrap variant="button" className={classes.label}>
+        {props.text}
+      </Typography>
     </Button>
   );
 }

@@ -11,7 +11,7 @@ export default function MultiAdderInput(props) {
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const borderColor = theme.palette.grey[100];
-  const primaryText = theme.palette.secondary.contrastText;
+  const primaryText = theme.palette.primary.contrastText;
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,6 +65,7 @@ export default function MultiAdderInput(props) {
       justifyContent: "center",
     },
     chip: {
+      color: primaryText,
       margin: theme.spacing(0.5),
     },
     error: {
