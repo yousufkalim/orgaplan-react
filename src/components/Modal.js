@@ -1,35 +1,35 @@
-import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import CloseIcon from '@material-ui/icons/Close';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import Dialog from "@material-ui/core/Dialog";
+import CloseIcon from "@material-ui/icons/Close";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '20px',
+    padding: "20px",
   },
   headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: '20px',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: "20px",
+    justifyContent: "space-between",
   },
   header: {
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: "rgba(0, 0, 0, 0.54)",
     margin: 0,
   },
   icon: {
-    cursor: 'pointer',
-    color: 'rgba(0, 0, 0, 0.54)',
+    cursor: "pointer",
+    color: "rgba(0, 0, 0, 0.54)",
   },
   body: {
-    width: '100%',
+    width: "100%",
   },
   actions: {
-    display: 'flex',
-    padding: '20px 0px',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    padding: "20px 0px",
+    flexDirection: "column",
+    alignItems: "center",
   },
 }));
 
@@ -38,7 +38,7 @@ const Modal = (props) => {
 
   return (
     <Dialog
-      maxWidth={props.maxWidth || 'md'}
+      maxWidth={props.maxWidth || "md"}
       fullWidth={true}
       open={props.open}
       onClose={props.onClose}
