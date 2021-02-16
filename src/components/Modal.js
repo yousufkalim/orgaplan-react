@@ -6,20 +6,34 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "20px",
+    overflow: "hidden",
+    overflowY: "scroll",
   },
   headerContainer: {
     display: "flex",
+    flexWrap: "wrap",
     flexDirection: "row",
     alignItems: "center",
     paddingBottom: "20px",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
   },
-  header: {
-    color: "rgba(0, 0, 0, 0.54)",
-    margin: 0,
-  },
-  icon: {
+  headerLeft: {
+    flex: 1,
     cursor: "pointer",
+    textAlign: "left",
+    color: "rgba(0, 0, 0, 0.54)",
+  },
+  headerTitle: {
+    flex: 1,
+    margin: 0,
+    textAlign: "center",
+    color: "rgba(0, 0, 0, 0.54)",
+  },
+  headerRight: {
+    flex: 1,
+    display: "grid",
+    cursor: "pointer",
+    placeItems: "end",
     color: "rgba(0, 0, 0, 0.54)",
   },
   body: {
@@ -45,8 +59,11 @@ const Modal = (props) => {
     >
       <div className={classes.root}>
         <div className={classes.headerContainer}>
-          <h2 className={classes.header}>{props.title}</h2>
-          <CloseIcon onClick={props.onClose} className={classes.icon} />
+          <div className={classes.headerLeft}> </div>
+          <h2 className={classes.headerTitle}>{props.title}</h2>
+          <div className={classes.headerRight}>
+            <CloseIcon onClick={props.onClose} />
+          </div>
         </div>
         <div className={classes.body}>{props.body}</div>
         {props.actions && (

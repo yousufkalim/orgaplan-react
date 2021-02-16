@@ -1,16 +1,13 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { createStore } from "redux";
 import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 
-import authReducer from "./store/reducers/auth";
+import store from "./redux/store";
 import Main from "./container/Main";
-
-const store = createStore(authReducer);
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -30,6 +27,9 @@ const theme = createMuiTheme({
     secondary: {
       main: "#F8F8F8",
       contrastText: "#000",
+    },
+    error: {
+      main: "#FD000A",
     },
     blue: "#140772",
     grey: {

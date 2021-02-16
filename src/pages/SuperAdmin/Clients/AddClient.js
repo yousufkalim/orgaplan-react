@@ -31,23 +31,40 @@ const formInputStyle = {
 
 export default function Profile(props) {
   const classes = useStyles();
+  const [name, setName] = useState("");
+  const [logo, setLogo] = useState([]);
+  const [color, setColor] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [typeOfContract, setTypeOfContract] = useState("perSite");
-  const [functionalitySubscribed, setFunctionalitySubscribed] = useState(
-    "deliveryModule",
-  );
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [functionality, setFunctionality] = useState("deliveryModule");
+  const [information, setInformation] = useState("");
+  const [notifyDays, setNotifyDays] = useState("");
   const [emailAddress, setEmailAddress] = useState([
     { key: 0, label: "test@gmail.com" },
     { key: 1, label: "tes2@gmail.com" },
   ]);
-  const [color, setColor] = useState("");
-  const [logoArray, setLogoArray] = useState([]);
 
   const onSubmit = () => {
     console.log("onSubmit", {
-      typeOfContract,
-      functionalitySubscribed,
-      emailAddress,
+      name,
+      logo,
       color,
+      firstName,
+      lastName,
+      email,
+      phone,
+      typeOfContract,
+      startDate,
+      endDate,
+      functionality,
+      information,
+      notifyDays,
+      emailAddress,
     });
   };
 
@@ -61,16 +78,21 @@ export default function Profile(props) {
         <Form.Form>
           <Form.Row>
             <FormLabel bold primary="COMPANY NAME* :" />
-            <FormInput placeholder="Company name" style={formInputStyle} />
+            <FormInput
+              value={name}
+              style={formInputStyle}
+              placeholder="Company name"
+              onChance={({ target: { value } }) => setName(value)}
+            />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY LOGO* :" />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 style={formInputStyle}
-                values={logoArray}
+                values={logo}
                 onChange={(values) => {
-                  setLogoArray(values);
+                  setLogo(values);
                 }}
               />
               <FormSelect
@@ -93,27 +115,47 @@ export default function Profile(props) {
           <Form.Row>
             <FormLabel bold primary="RESPONSIBLE COMPANY : " />
             <Form.Row noMargin width="48%">
-              <FormInput placeholder="First Name" style={formInputStyle} />
-              <FormInput placeholder="Last Name" style={formInputStyle} />
+              <FormInput
+                value={firstName}
+                style={formInputStyle}
+                placeholder="First Name"
+                onChance={({ target: { value } }) => setFirstName(value)}
+              />
+              <FormInput
+                value={lastName}
+                style={formInputStyle}
+                placeholder="Last Name"
+                onChance={({ target: { value } }) => setLastName(value)}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="RESPONSIBLE CONTACT : " />
             <Form.Row noMargin width="48%">
-              <FormInput placeholder="E-mail Address" style={formInputStyle} />
-              <FormInput placeholder="Phone Number" style={formInputStyle} />
+              <FormInput
+                value={email}
+                style={formInputStyle}
+                placeholder="E-mail Address"
+                onChance={({ target: { value } }) => setEmail(value)}
+              />
+              <FormInput
+                value={phone}
+                style={formInputStyle}
+                placeholder="Phone Number"
+                onChance={({ target: { value } }) => setPhone(value)}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF CONTRACT* : " />
             <RadioButton
+              style={formInputStyle}
+              value={typeOfContract}
+              onChange={({ target: { value } }) => setTypeOfContract(value)}
               items={[
                 { value: "perSite", label: "Per Site" },
                 { value: "master", label: "Master Contract" },
               ]}
-              style={formInputStyle}
-              value={typeOfContract}
-              onChange={(event) => setTypeOfContract(event.target.value)}
             />
           </Form.Row>
           <Form.Row>
@@ -121,25 +163,27 @@ export default function Profile(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
+                value={startDate}
                 style={formInputStyle}
                 placeholder="Start date"
+                onChance={({ target: { value } }) => setStartDate(value)}
               />
               <FormInput
                 type="date"
+                value={endDate}
                 placeholder="End date"
                 style={formInputStyle}
+                onChance={({ target: { value } }) => setEndDate(value)}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
-              items={[{ value: "deliveryModule", label: "Delivery module" }]}
+              value={functionality}
               style={formInputStyle}
-              value={functionalitySubscribed}
-              onChange={(event) =>
-                setFunctionalitySubscribed(event.target.value)
-              }
+              onChange={({ target: { value } }) => setFunctionality(value)}
+              items={[{ value: "deliveryModule", label: "Delivery module" }]}
             />
           </Form.Row>
           <Form.Row style={{ alignItems: "flex-start" }}>
@@ -147,8 +191,10 @@ export default function Profile(props) {
             <FormInput
               textArea
               rows={3}
+              value={information}
               style={formInputStyle}
               placeholder="Additional information"
+              onChange={({ target: { value } }) => setInformation(value)}
             />
           </Form.Row>
           <Form.Row style={{ alignItems: "flex-start" }}>
@@ -156,10 +202,12 @@ export default function Profile(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 type="number"
+                value={notifyDays}
                 style={{ ...formInputStyle, maxWidth: 100 }}
+                onChange={({ target: { value } }) => setNotifyDays(value)}
               />
               <SmallText
-                style={{ marginLeft: 10 }}
+                // style={{ marginLeft: 10 }}
                 primary="Days before end of the contract"
               />
             </Form.Row>

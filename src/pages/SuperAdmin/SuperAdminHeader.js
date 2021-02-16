@@ -163,7 +163,7 @@ export default function Header(props) {
             <ListItem
               button
               key={"logout"}
-              onClick={() => dispatch({ type: GLOBALS.ActionTypes.LOGOUT })}
+              onClick={() => dispatch({ type: GLOBALS.ActionTypes.ON_LOGOUT })}
             >
               <ListItemIcon className={classes.listItemIcon}>
                 {<ExitToAppIcon />}

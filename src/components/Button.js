@@ -26,7 +26,6 @@ export default function ButtonComponent(props) {
 
   return (
     <Button
-      noWrap
       to={props.to}
       onClick={props.onClick}
       endIcon={props.endIcon}
