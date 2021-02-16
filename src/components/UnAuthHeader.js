@@ -18,7 +18,6 @@ import GLOBALS from "../globals";
 import SmallText from "./SmallText";
 import Logo from "../assets/images/Logo.svg";
 import ProfileImage from "../assets/images/Profile.jpg";
-import * as actionTypes from "../store/actions/actionTypes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -177,7 +176,7 @@ export default function Login(props) {
                       enqueueSnackbar(GLOBALS.I18n.t("logoutSuccess"), {
                         variant: "success",
                       });
-                      dispatch({ type: actionTypes.LOGOUT });
+                      dispatch({ type: GLOBALS.ActionTypes.ON_LOGOUT });
                     }}
                   >
                     Logout

@@ -8,6 +8,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    width: "100%",
+  },
   root: {
     "&:hover": {
       backgroundColor: "transparent",
@@ -49,15 +52,19 @@ export default function CustomizedRadios(props) {
       style={props.style}
       aria-label={props.name}
       onChange={props.onChange}
+      className={classes.container}
       defaultValue={props.defaultValue}
     >
-      <Form.Row>
+      <Form.Row noMargin>
         {props.items.map((item) => (
           <FormControlLabel
             key={item.value}
             value={item.value}
             label={item.label}
             disabled={item.disabled}
+            style={{
+              width: String(100 / props.items.length - 3) + "%",
+            }}
             control={
               <Radio
                 disableRipple
