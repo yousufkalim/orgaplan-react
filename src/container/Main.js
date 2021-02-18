@@ -1,45 +1,25 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import GLOBALS from "../globals";
+import Actions from "../redux/actions";
 import Loader from "../components/Loader";
 
 import UnAuth from "../pages/UnAuth";
 import SuperAdmin from "../pages/SuperAdmin";
 
 export default function Main() {
-  const store = useSelector((state) => state);
+  const store = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    checkLogin();
+    dispatch(Actions.auth.checkLogin()).then(() => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    });
     // eslint-disable-next-line
   }, []);
-
-  const checkLogin = async () => {
-    try {
-      const token = localStorage.getItem("orgaplan");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      // const data = await GLOBALS.API({
-      //   uri: GLOBALS.Constants.GET_PROFILE,
-      //   token: token,
-      // });
-      dispatch({
-        type: GLOBALS.ActionTypes.LOGIN,
-        user: "data.user",
-        token: "token",
-      });
-      setLoading(false);
-    } catch (err) {
-      localStorage.removeItem("token");
-      console.log(err);
-    }
-  };
 
   return (
     <>

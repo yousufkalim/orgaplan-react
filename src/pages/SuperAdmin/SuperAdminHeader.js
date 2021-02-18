@@ -12,14 +12,13 @@ import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
 
+import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 import { ReactComponent as Logs } from "../../assets/icons/Logs.svg";
 import { ReactComponent as Sites } from "../../assets/icons/Sites.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/Home.svg";
 import { ReactComponent as Admins } from "../../assets/icons/Admins.svg";
 import { ReactComponent as Clients } from "../../assets/icons/Clients.svg";
-
-import GLOBALS from "../../globals";
 
 const drawerWidth = 240;
 
@@ -163,7 +162,7 @@ export default function Header(props) {
             <ListItem
               button
               key={"logout"}
-              onClick={() => dispatch({ type: GLOBALS.ActionTypes.ON_LOGOUT })}
+              onClick={() => dispatch(Actions.auth.do_logout())}
             >
               <ListItemIcon className={classes.listItemIcon}>
                 {<ExitToAppIcon />}

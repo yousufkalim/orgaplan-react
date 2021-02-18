@@ -1,9 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
+import Header from "./UnAuthHeader";
 import Footer from "../../components/Footer";
 import Heading from "../../components/Heading";
-import Header from "../../components/UnAuthHeader";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -18,9 +18,9 @@ const useStyles = makeStyles((theme) => ({
     placeItems: "center",
   },
   absoluteLinear: {
-    position: "absolute",
     top: 0,
     width: "100vw",
+    position: "absolute",
   },
 }));
 
@@ -55,7 +55,7 @@ const AbsoluteLinear = (props) => {
 
   return (
     <div className={classes.absoluteLinear}>
-      <LinearProgress color={props.color || "secondary"} />
+      <LinearProgress color={props.color || "primary"} />
     </div>
   );
 };

@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
@@ -11,8 +15,8 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
-import RadioButton from "../../../components/RadioButton";
 import SubHeading from "../../../components/SubHeading";
+import RadioButton from "../../../components/RadioButton";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
 
@@ -33,19 +37,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
-  const classes = useStyles();
+export default function Clients(props) {
   const theme = useTheme();
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
+
+  const [loading, setLoading] = useState(true);
+  const [clients, setClients] = useState([]);
+  const [page, setPage] = useState(1);
 
   const [modal, setModal] = useState(false);
-  const [avatar, setAvatar] = useState("");
 
-  const [startDate, setStartDate] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [typeOfContract, setTypeOfContract] = useState("perSite");
-  const [functionality, setFunctionality] = useState("deliveryModule");
-  const [information, setInformation] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [notifyDays, setNotifyDays] = useState("");
+  const [information, setInformation] = useState("");
+  const [functionality, setFunctionality] = useState("DELIVERY");
+  const [typeOfContract, setTypeOfContract] = useState("CLIENTPERSITE");
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  async function fetchData() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_CLIENTS}?page=${page}`,
+      });
+      let resultArray = result.data.items.map((item) => [
+        item.companyId.name,
+        item.companyId.incharge.firstName +
+          " " +
+          item.companyId.incharge.lastName,
+        item.companyId.incharge.phone,
+        2,
+        moment(item.contractStartDate).format("DD/MM/YY"),
+        moment(item.contractEndDate).format("DD/MM/YY"),
+        item.isPendingResponse ? "Requested" : item.companyId.type,
+      ]);
+      setClients(resultArray);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
 
   return (
     <>
@@ -71,7 +113,7 @@ export default function Profile(props) {
         <div className={classes.content}>
           <Table
             headers={GLOBALS.Data.clients.headings}
-            rows={GLOBALS.Data.clients.items.map((item) =>
+            rows={clients.map((item) =>
               item[6] === "Requested"
                 ? [
                     ...item,
@@ -156,8 +198,8 @@ export default function Profile(props) {
                 value={typeOfContract}
                 onChange={({ target: { value } }) => setTypeOfContract(value)}
                 items={[
-                  { value: "perSite", label: "Per Site" },
-                  { value: "master", label: "Master Contract" },
+                  { value: "CLIENTPERSITE", label: "Per Site" },
+                  { value: "MASTERCLIENT", label: "Master Contract" },
                 ]}
               />
             </Form.Row>
@@ -165,7 +207,7 @@ export default function Profile(props) {
               <RadioButton
                 value={functionality}
                 onChange={({ target: { value } }) => setFunctionality(value)}
-                items={[{ value: "deliveryModule", label: "Delivery module" }]}
+                items={[{ value: "DELIVERY", label: "Delivery module" }]}
               />
             </Form.Row>
             <Form.Row justifyContent="center">

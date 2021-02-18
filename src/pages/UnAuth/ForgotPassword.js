@@ -6,10 +6,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import * as Yup from "yup";
 
 import GLOBALS from "../../globals";
+import Header from "./UnAuthHeader";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import Header from "../../components/UnAuthHeader";
 import Loader from "../../components/Loader";
 import Heading from "../../components/Heading";
 import SmallText from "../../components/SmallText";
