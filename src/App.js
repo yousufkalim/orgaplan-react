@@ -8,6 +8,8 @@ import { createMuiTheme } from "@material-ui/core/styles";
 
 import store from "./redux/store";
 import Main from "./container/Main";
+import Notifier from "./redux/Notifier";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -44,26 +46,29 @@ theme.shadows[25] = "0px 3px 6px rgba(0, 0, 0, 0.16)";
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          dense={false}
-          hideIconVariant={false}
-          preventDuplicate={false}
-          autoHideDuration={2000}
-          // persist={true}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-        >
-          <CssBaseline />
-          <BrowserRouter>
-            <Main />
-          </BrowserRouter>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider
+            dense={false}
+            hideIconVariant={false}
+            preventDuplicate={false}
+            autoHideDuration={2000}
+            // persist={true}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <CssBaseline />
+            <Notifier />
+            <BrowserRouter>
+              <Main />
+            </BrowserRouter>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </Provider>
+    </ErrorBoundary>
   );
 };
 

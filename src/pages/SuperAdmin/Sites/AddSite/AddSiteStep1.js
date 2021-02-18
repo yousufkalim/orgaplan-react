@@ -17,9 +17,9 @@ const formInputStyle = {
 
 export default function Profile(props) {
   const theme = useTheme();
-  const [typeOfContract] = useState("perSite");
+  const [typeOfContract] = useState("CLIENTPERSITE");
   const [functionalitySubscribed, setFunctionalitySubscribed] = useState(
-    "deliveryModule",
+    "DELIVERY",
   );
   const [emailAddress, setEmailAddress] = useState([
     { key: 0, label: "site 1" },
@@ -101,7 +101,7 @@ export default function Profile(props) {
       <Form.Row>
         <FormLabel bold primary="AVAILABLE FUNCTIONALITY : " />
         <RadioButton
-          items={[{ value: "deliveryModule", label: "Delivery module" }]}
+          items={[{ value: "DELIVERY", label: "Delivery module" }]}
           style={formInputStyle}
           value={functionalitySubscribed}
           onChange={(event) => setFunctionalitySubscribed(event.target.value)}

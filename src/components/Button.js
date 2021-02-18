@@ -3,6 +3,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
+import Loader from "./Loader";
+
 export default function ButtonComponent(props) {
   const useStyles = makeStyles((theme) => ({
     button: {
@@ -42,7 +44,7 @@ export default function ButtonComponent(props) {
     >
       {props.children}
       <Typography noWrap variant="button" className={classes.label}>
-        {props.text}
+        {props.loading ? <Loader.Progress /> : props.text}
       </Typography>
     </Button>
   );

@@ -15,8 +15,8 @@ const formInputStyle = {
 
 export default function Profile(props) {
   const theme = useTheme();
-  const [typeOfContract] = useState("perSite");
-  const [functionalitySubscribed] = useState("deliveryModule");
+  const [typeOfContract] = useState("CLIENTPERSITE");
+  const [functionalitySubscribed] = useState("DELIVERY");
   const [emailAddress, setEmailAddress] = useState([
     { key: 0, label: "test@gmail.com" },
   ]);

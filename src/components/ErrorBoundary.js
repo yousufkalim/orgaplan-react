@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
-import LoginBG from "../assets/images/login.png";
-
 const styles = (theme) => ({
   ErrorBoundary: {
     height: "100vh",
     width: "100vw",
-    backgroundImage: `url(${LoginBG})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     backgroundPosition: "center",

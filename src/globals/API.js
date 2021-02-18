@@ -10,23 +10,13 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
         headers: headers || myHeaders,
         body,
       });
-      if (!response.ok) {
-        throw response;
-      }
+      if (!response.ok) throw await response.json();
       let data = await response.json();
-      console.log(`[API Data at ${new Date().toLocaleString()}]:`, data);
+      console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
       resolve(data);
     } catch (err) {
-      if (err.status) {
-        const error = await err.json();
-        alert("Whoops: " + error.message);
-        console.log(`[API Error at ${new Date().toLocaleString()}]:`, error);
-        reject(error);
-      } else {
-        alert("Network Connection Problem!");
-        console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
-        reject(err);
-      }
+      console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
+      reject(err);
     }
   });
 

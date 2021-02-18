@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-export default function Heading({ className, ...props }) {
+export default function Heading({ className, bold, ...props }) {
   const useStyles = makeStyles((theme) => ({
     heading: {
       fontWeight: "bold",
