@@ -10,8 +10,9 @@ export default function MultiAdderInput(props) {
 
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
-  const borderColor = theme.palette.grey[100];
-  const primaryText = theme.palette.primary.contrastText;
+  const primaryColor = theme.palette.primary.contrastText;
+  const borderColor = props.error ? error : theme.palette.grey[100];
+  const color = props.error ? error : theme.palette.primary.contrastText;
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,7 +22,7 @@ export default function MultiAdderInput(props) {
       border: 0,
       outline: 0,
       height: 45,
-      color: primaryText,
+      color: color,
       width: "100%",
       borderWidth: 1,
       display: "flex",
@@ -34,7 +35,7 @@ export default function MultiAdderInput(props) {
       borderColor: borderColor,
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       "&::placeholder": {
-        color: primaryText,
+        color: color,
       },
     },
     input: {
@@ -43,10 +44,10 @@ export default function MultiAdderInput(props) {
       width: "100%",
       height: "100%",
       padding: "14px 5px",
-      color: primaryText,
+      color: color,
       backgroundColor: "transparent",
       "&::placeholder": {
-        color: primaryText,
+        color: color,
       },
     },
     endAdornment: {
@@ -65,7 +66,7 @@ export default function MultiAdderInput(props) {
       justifyContent: "center",
     },
     chip: {
-      color: primaryText,
+      color: primaryColor,
       margin: theme.spacing(0.5),
     },
     error: {
@@ -138,7 +139,8 @@ export default function MultiAdderInput(props) {
           </li>
         ))}
       </ul>
-      {!isValid && <span className={classes.error}>{props.error}</span>}
+      {!isValid && <span className={classes.error}>{props.validateError}</span>}
+      {props.error && <span className={classes.error}>{props.error}</span>}
     </div>
   );
 }

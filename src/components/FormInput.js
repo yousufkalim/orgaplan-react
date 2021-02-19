@@ -91,11 +91,15 @@ export default function Input(props) {
           onChange={props.onChange}
           disabled={props.disabled}
           placeholder={props.placeholder}
-          onFocus={(e) => (e.target.type = "date")}
+          onFocus={(e) => {
+            e.target.type = "date";
+            props.focus && props.onFocus(e);
+          }}
           onBlur={(e) => {
             if (e.target.value === "") {
               e.target.type = "text";
             }
+            props.onBlur && props.onBlur(e);
           }}
         />
       ) : (
