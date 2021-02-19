@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
@@ -32,22 +33,20 @@ const formInputStyle = {
 };
 
 const addClientYup = Yup.object().shape({
-  companyLogo: Yup.array()
-    .of(
-      Yup.object().shape({
-        name: Yup.string(),
-      }),
+  companyLogo: Yup.array().min(1, "Required").required("Required"),
+  companyName: Yup.string().required("Required"),
+  companyColor: Yup.string().required("Required"),
+  companyResponsibleFirstName: Yup.string().required("Required"),
+  companyResponsibleLastName: Yup.string().required("Required"),
+  companyResponsibleEmail: Yup.string().required("Required"),
+  companyResponsiblePhone: Yup.number()
+    .test(
+      "len",
+      "Must be exactly 10 characters",
+      (val) => val && val.toString().length === 10,
     )
-    .required(GLOBALS.I18n.t("required")),
-  companyName: Yup.string().required(GLOBALS.I18n.t("required")),
-  companyColor: Yup.string().required(GLOBALS.I18n.t("required")),
-  companyResponsibleFirstName: Yup.string().required(
-    GLOBALS.I18n.t("required"),
-  ),
-  companyResponsibleLastName: Yup.string().required(GLOBALS.I18n.t("required")),
-  companyResponsibleEmail: Yup.string().required(GLOBALS.I18n.t("required")),
-  companyResponsiblePhone: Yup.number().required(GLOBALS.I18n.t("required")),
-  typeOfContract: Yup.string().required(GLOBALS.I18n.t("required")),
+    .required("Required"),
+  typeOfContract: Yup.string().required("Required"),
   contractStartDate: Yup.string().when("typeOfContract", {
     is: "MASTERCLIENT",
     then: Yup.string().required("Required"),
@@ -56,75 +55,69 @@ const addClientYup = Yup.object().shape({
     is: "MASTERCLIENT",
     then: Yup.string().required("Required"),
   }),
-  functionalitySubscribed: Yup.string().required(GLOBALS.I18n.t("required")),
-  additionalInformation: Yup.string().required(GLOBALS.I18n.t("required")),
-  notificationPriorToDays: Yup.number().required(GLOBALS.I18n.t("required")),
-  notificationTo: Yup.array().of(
-    Yup.string().required(GLOBALS.I18n.t("required")),
-  ),
+  functionalitySubscribed: Yup.string().required("Required"),
+  additionalInformation: Yup.string(),
+  notificationPriorToDays: Yup.number(),
+  notificationTo: Yup.array(),
 });
 
 export default function Profile(props) {
   const classes = useStyles();
-  const [companyLogo, setLogo] = useState([]);
-  const [companyName, setName] = useState("");
-  const [companyColor, setColor] = useState("");
-  const [companyResponsibleFirstName, setFirstName] = useState("");
-  const [companyResponsibleLastName, setLastName] = useState("");
-  const [companyResponsibleEmail, setEmail] = useState("");
-  const [companyResponsiblePhone, setPhone] = useState("");
-  const [typeOfContract, setTypeOfContract] = useState("CLIENTPERSITE");
-  const [contractStartDate, setStartDate] = useState("");
-  const [contractEndDate, setEndDate] = useState("");
-  const [functionalitySubscribed, setFunctionality] = useState("DELIVERY");
-  const [additionalInformation, setInformation] = useState("");
-  const [notificationPriorToDays, setNotifyDays] = useState("2");
-  const [notificationTo, setEmailAddress] = useState([]);
+  const store = useSelector((state) => state.auth);
 
-  const [errors, setErrors] = useState({
-    companyLogo: false,
-    companyName: false,
-    companyColor: false,
-    companyResponsibleFirstName: false,
-    companyResponsibleLastName: false,
-    companyResponsibleEmail: false,
-    companyResponsiblePhone: false,
-    typeOfContract: false,
-    contractStartDate: false,
-    contractEndDate: false,
-    functionalitySubscribed: false,
-    additionalInformation: false,
-    notificationPriorToDays: false,
-    notificationTo: false,
-  });
+  const onSubmit = async (values) => {
+    console.log("values", values);
 
-  const onSubmit = async () => {
-    const data = {
-      companyLogo,
-      companyName,
-      companyColor,
-      companyResponsibleFirstName,
-      companyResponsibleLastName,
-      companyResponsibleEmail,
-      companyResponsiblePhone,
-      typeOfContract,
-      contractStartDate,
-      contractEndDate,
-      functionalitySubscribed,
-      additionalInformation,
-      notificationPriorToDays,
-      notificationTo,
-    };
-    addClientYup
-      .validate(data)
-      .then((validData) => console.log("validData", validData))
-      .catch((err) => console.log(err));
+    const notificationTo = values.notificationTo.map((item) => item.label);
+
+    var formdata = new FormData();
+    formdata.append("logo", values.companyLogo[0].file);
+    formdata.append("name", values.companyName);
+    formdata.append("color", values.companyColor);
+    formdata.append("firstName", values.companyResponsibleFirstName);
+    formdata.append("lastName", values.companyResponsibleLastName);
+    formdata.append("email", values.companyResponsibleEmail);
+    formdata.append("phone", values.companyResponsiblePhone);
+    formdata.append("contractType", values.typeOfContract);
+    formdata.append("contractStartDate", values.contractStartDate);
+    formdata.append("contractEndDate", values.contractEndDate);
+    formdata.append("functionality", values.functionalitySubscribed);
+    formdata.append("additionalInfo", values.additionalInformation);
+    formdata.append("notificationPriorToDays", values.notificationPriorToDays);
+    formdata.append("notificationTo", JSON.stringify(notificationTo));
+
+    await GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.CLIENTS,
+      headers: {
+        Authorization: store.token,
+      },
+      body: formdata,
+    });
+    formik.setSubmitting(false);
+    props.history.push("/clients");
   };
 
-  function handleChange({ target: { name, value } }) {
-    console.log("name", name, value);
-    eval("set" + name);
-  }
+  const formik = useFormik({
+    initialValues: {
+      companyLogo: [],
+      companyName: "",
+      companyColor: "",
+      companyResponsibleFirstName: "",
+      companyResponsibleLastName: "",
+      companyResponsibleEmail: "",
+      companyResponsiblePhone: "",
+      typeOfContract: "CLIENTPERSITE",
+      contractStartDate: "",
+      contractEndDate: "",
+      functionalitySubscribed: "DELIVERY",
+      additionalInformation: "",
+      notificationPriorToDays: "",
+      notificationTo: [],
+    },
+    validationSchema: addClientYup,
+    onSubmit,
+  });
 
   return (
     <div className={classes.root}>
@@ -133,37 +126,43 @@ export default function Profile(props) {
       </IconButton>
       <Heading primary="ADD A CLIENT" />
       <div className={classes.content}>
-        <Form.Form>
+        <Form.Form onSubmit={formik.handleSubmit}>
           <Form.Row>
             <FormLabel bold primary="COMPANY NAME* :" />
             <FormInput
-              error={"Required"}
-              value={companyName}
-              name={"companyName"}
+              name="companyName"
               style={formInputStyle}
-              onChange={handleChange}
               placeholder="Company name"
+              onChange={formik.handleChange}
+              value={formik.values.companyName}
+              error={formik.errors.companyName}
             />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY LOGO* :" />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
-                error={"Required"}
-                values={companyLogo}
-                name={"companyLogo"}
+                name="companyLogo"
                 style={formInputStyle}
-                onChange={(values) => {
-                  setLogo(values);
-                }}
+                error={formik.errors.companyLogo}
+                values={formik.values.companyLogo}
+                onChange={(values) =>
+                  formik.handleChange({
+                    target: {
+                      type: "text",
+                      name: "companyLogo",
+                      value: values,
+                    },
+                  })
+                }
               />
               <FormSelect
-                error={"Required"}
                 placeholder="Color"
-                value={companyColor}
-                name={"companyColor"}
+                name="companyColor"
                 style={formInputStyle}
-                onChange={handleChange}
+                onChange={formik.handleChange}
+                value={formik.values.companyColor}
+                error={formik.errors.companyColor}
                 values={[
                   "Green",
                   "Yellow",
@@ -180,20 +179,20 @@ export default function Profile(props) {
             <FormLabel bold primary="RESPONSIBLE COMPANY : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                error={"Required"}
                 style={formInputStyle}
-                onChange={handleChange}
                 placeholder="First Name"
-                value={companyResponsibleFirstName}
-                name={"companyResponsibleFirstName"}
+                onChange={formik.handleChange}
+                name="companyResponsibleFirstName"
+                value={formik.values.companyResponsibleFirstName}
+                error={formik.errors.companyResponsibleFirstName}
               />
               <FormInput
-                error={"Required"}
                 style={formInputStyle}
-                onChange={handleChange}
                 placeholder="Last Name"
-                value={companyResponsibleLastName}
-                name={"companyResponsibleLastName"}
+                onChange={formik.handleChange}
+                name="companyResponsibleLastName"
+                value={formik.values.companyResponsibleLastName}
+                error={formik.errors.companyResponsibleLastName}
               />
             </Form.Row>
           </Form.Row>
@@ -201,66 +200,70 @@ export default function Profile(props) {
             <FormLabel bold primary="RESPONSIBLE CONTACT : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                error={"Required"}
                 style={formInputStyle}
-                onChange={handleChange}
                 placeholder="E-mail Address"
-                value={companyResponsibleEmail}
-                name={"companyResponsibleEmail"}
+                onChange={formik.handleChange}
+                name="companyResponsibleEmail"
+                value={formik.values.companyResponsibleEmail}
+                error={formik.errors.companyResponsibleEmail}
               />
               <FormInput
-                error={"Required"}
                 style={formInputStyle}
-                onChange={handleChange}
                 placeholder="Phone Number"
-                value={companyResponsiblePhone}
-                name={"companyResponsiblePhone"}
+                onChange={formik.handleChange}
+                name="companyResponsiblePhone"
+                value={formik.values.companyResponsiblePhone}
+                error={formik.errors.companyResponsiblePhone}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF CONTRACT* : " />
             <RadioButton
+              name="typeOfContract"
               style={formInputStyle}
-              value={typeOfContract}
-              onChange={handleChange}
-              name={"typeOfContract"}
+              value={formik.values.typeOfContract}
+              error={formik.errors.typeOfContract}
+              onChange={formik.handleChange}
               items={[
                 { value: "CLIENTPERSITE", label: "Per Site" },
                 { value: "MASTERCLIENT", label: "Master Contract" },
               ]}
             />
           </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="CONTRACT DATE* : " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                type="date"
-                error={"Required"}
-                style={formInputStyle}
-                onChange={handleChange}
-                placeholder="Start date"
-                value={contractStartDate}
-                name={"contractStartDate"}
-              />
-              <FormInput
-                type="date"
-                error={"Required"}
-                placeholder="End date"
-                style={formInputStyle}
-                onChange={handleChange}
-                value={contractEndDate}
-                name={"contractEndDate"}
-              />
+          {formik.values.typeOfContract === "MASTERCLIENT" && (
+            <Form.Row>
+              <FormLabel bold primary="CONTRACT DATE* : " />
+              <Form.Row noMargin width="48%">
+                <FormInput
+                  type="date"
+                  style={formInputStyle}
+                  placeholder="Start date"
+                  name="contractStartDate"
+                  onChange={formik.handleChange}
+                  value={formik.values.contractStartDate}
+                  error={formik.errors.contractStartDate}
+                />
+                <FormInput
+                  type="date"
+                  placeholder="End date"
+                  style={formInputStyle}
+                  name="contractEndDate"
+                  onChange={formik.handleChange}
+                  value={formik.values.contractEndDate}
+                  error={formik.errors.contractEndDate}
+                />
+              </Form.Row>
             </Form.Row>
-          </Form.Row>
+          )}
           <Form.Row>
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
               style={formInputStyle}
-              onChange={handleChange}
-              value={functionalitySubscribed}
-              name={"functionalitySubscribed"}
+              name="functionalitySubscribed"
+              onChange={formik.handleChange}
+              value={formik.values.functionalitySubscribed}
+              error={formik.errors.functionalitySubscribed}
               items={[{ value: "DELIVERY", label: "Delivery module" }]}
             />
           </Form.Row>
@@ -269,12 +272,12 @@ export default function Profile(props) {
             <FormInput
               textArea
               rows={3}
-              error={"Required"}
               style={formInputStyle}
-              onChange={handleChange}
-              value={additionalInformation}
-              name={"additionalInformation"}
+              onChange={formik.handleChange}
               placeholder="Additional information"
+              name="additionalInformation"
+              value={formik.values.additionalInformation}
+              error={formik.errors.additionalInformation}
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -287,10 +290,10 @@ export default function Profile(props) {
             >
               <FormInput
                 type="number"
-                error={"Required"}
-                onChange={handleChange}
-                value={notificationPriorToDays}
-                name={"notificationPriorToDays"}
+                name="notificationPriorToDays"
+                onChange={formik.handleChange}
+                value={formik.values.notificationPriorToDays}
+                error={formik.errors.notificationPriorToDays}
                 style={{ ...formInputStyle, maxWidth: 100 }}
               />
               <SmallText
@@ -302,13 +305,20 @@ export default function Profile(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
             <MultiAdderInput
-              error={"Required"}
               style={formInputStyle}
-              values={notificationTo}
-              name={"notificationTo"}
+              name="notificationTo"
               validateError="Invalid Email"
               placeholder="Enter email address"
-              onChange={(values) => setEmailAddress(values)}
+              values={formik.values.notificationTo}
+              onChange={(values) =>
+                formik.handleChange({
+                  target: {
+                    type: "text",
+                    name: "notificationTo",
+                    value: values,
+                  },
+                })
+              }
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
                 return !re.test(String(text).toLowerCase());
@@ -317,10 +327,12 @@ export default function Profile(props) {
           </Form.Row>
           <Form.ButtonContainer>
             <Button
+              type="submit"
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              onClick={onSubmit}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             />
           </Form.ButtonContainer>
         </Form.Form>

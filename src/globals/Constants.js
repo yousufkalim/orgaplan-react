@@ -10,7 +10,7 @@ const endpoints = {
   GET_PROFILE: BASE_URL + "auth/get-profile-by-jwt",
 
   // SUPERADMIN
-  GET_CLIENTS: BASE_URL + "superadmin/clients",
+  CLIENTS: BASE_URL + "superadmin/clients",
 };
 
 export default endpoints;

@@ -65,7 +65,7 @@ export default function Clients(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_CLIENTS}?page=${page}`,
+        uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
       });
       let resultArray = result.data.items.map((item) => [
         item.companyId.name,
