@@ -10,7 +10,8 @@ export default function FormMultipleUpload(props) {
   const theme = useTheme();
 
   const white = theme.palette.common.white;
-  const borderColor = theme.palette.grey[100];
+  const error = theme.palette.error.main;
+  const borderColor = props.error ? error : theme.palette.grey[100];
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,6 +57,12 @@ export default function FormMultipleUpload(props) {
       color: theme.palette.common.white,
       backgroundColor: theme.palette.common.black,
     },
+    error: {
+      color: error,
+      fontWeight: 400,
+      position: "absolute",
+      fontSize: theme.typography.pxToRem(12),
+    },
   }));
 
   const classes = useStyles();
@@ -93,6 +100,9 @@ export default function FormMultipleUpload(props) {
             </div>
             <input hidden type="file" id={`fileinput`} onChange={onAdd} />
           </div>
+          {props.error !== "" && (
+            <span className={classes.error}>{props.error}</span>
+          )}
         </Grid>
         {update && ""}
         {props.values.map((value, index) => (

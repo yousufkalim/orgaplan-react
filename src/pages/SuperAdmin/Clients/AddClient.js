@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Formik } from "formik";
+import { useForm } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
-import * as Yup from "yup";
 import IconButton from "@material-ui/core/IconButton";
+import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -32,10 +32,14 @@ const formInputStyle = {
 };
 
 const addClientYup = Yup.object().shape({
+  companyLogo: Yup.array()
+    .of(
+      Yup.object().shape({
+        name: Yup.string(),
+      }),
+    )
+    .required(GLOBALS.I18n.t("required")),
   companyName: Yup.string().required(GLOBALS.I18n.t("required")),
-  companyLogo: Yup.object().shape({
-    name: Yup.string().required(GLOBALS.I18n.t("required")),
-  }),
   companyColor: Yup.string().required(GLOBALS.I18n.t("required")),
   companyResponsibleFirstName: Yup.string().required(
     GLOBALS.I18n.t("required"),
@@ -44,11 +48,11 @@ const addClientYup = Yup.object().shape({
   companyResponsibleEmail: Yup.string().required(GLOBALS.I18n.t("required")),
   companyResponsiblePhone: Yup.number().required(GLOBALS.I18n.t("required")),
   typeOfContract: Yup.string().required(GLOBALS.I18n.t("required")),
-  contractStartDate: Yup.date().when("typeOfContract", {
+  contractStartDate: Yup.string().when("typeOfContract", {
     is: "MASTERCLIENT",
     then: Yup.string().required("Required"),
   }),
-  contractEndDate: Yup.date().when("typeOfContract", {
+  contractEndDate: Yup.string().when("typeOfContract", {
     is: "MASTERCLIENT",
     then: Yup.string().required("Required"),
   }),
@@ -62,24 +66,65 @@ const addClientYup = Yup.object().shape({
 
 export default function Profile(props) {
   const classes = useStyles();
-  const [logo, setLogo] = useState([]);
-  const [name, setName] = useState("");
-  const [color, setColor] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [companyLogo, setLogo] = useState([]);
+  const [companyName, setName] = useState("");
+  const [companyColor, setColor] = useState("");
+  const [companyResponsibleFirstName, setFirstName] = useState("");
+  const [companyResponsibleLastName, setLastName] = useState("");
+  const [companyResponsibleEmail, setEmail] = useState("");
+  const [companyResponsiblePhone, setPhone] = useState("");
   const [typeOfContract, setTypeOfContract] = useState("CLIENTPERSITE");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [functionality, setFunctionality] = useState("DELIVERY");
-  const [information, setInformation] = useState("");
-  const [notifyDays, setNotifyDays] = useState("2");
-  const [emailAddress, setEmailAddress] = useState([]);
+  const [contractStartDate, setStartDate] = useState("");
+  const [contractEndDate, setEndDate] = useState("");
+  const [functionalitySubscribed, setFunctionality] = useState("DELIVERY");
+  const [additionalInformation, setInformation] = useState("");
+  const [notificationPriorToDays, setNotifyDays] = useState("2");
+  const [notificationTo, setEmailAddress] = useState([]);
 
-  const onSubmit = () => {
-    console.log("Google");
+  const [errors, setErrors] = useState({
+    companyLogo: false,
+    companyName: false,
+    companyColor: false,
+    companyResponsibleFirstName: false,
+    companyResponsibleLastName: false,
+    companyResponsibleEmail: false,
+    companyResponsiblePhone: false,
+    typeOfContract: false,
+    contractStartDate: false,
+    contractEndDate: false,
+    functionalitySubscribed: false,
+    additionalInformation: false,
+    notificationPriorToDays: false,
+    notificationTo: false,
+  });
+
+  const onSubmit = async () => {
+    const data = {
+      companyLogo,
+      companyName,
+      companyColor,
+      companyResponsibleFirstName,
+      companyResponsibleLastName,
+      companyResponsibleEmail,
+      companyResponsiblePhone,
+      typeOfContract,
+      contractStartDate,
+      contractEndDate,
+      functionalitySubscribed,
+      additionalInformation,
+      notificationPriorToDays,
+      notificationTo,
+    };
+    addClientYup
+      .validate(data)
+      .then((validData) => console.log("validData", validData))
+      .catch((err) => console.log(err));
   };
+
+  function handleChange({ target: { name, value } }) {
+    console.log("name", name, value);
+    eval("set" + name);
+  }
 
   return (
     <div className={classes.root}>
@@ -88,199 +133,197 @@ export default function Profile(props) {
       </IconButton>
       <Heading primary="ADD A CLIENT" />
       <div className={classes.content}>
-        <Formik
-          initialValues={{}}
-          validationSchema={addClientYup}
-          onSubmit={onSubmit}
-        >
-          {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
-            <Form.Form onSubmit={handleSubmit}>
-              <Form.Row>
-                <FormLabel bold primary="COMPANY NAME* :" />
-                <FormInput
-                  name="companyName"
-                  onBlur={handleBlur}
-                  style={formInputStyle}
-                  onChange={handleChange}
-                  value={values.companyName}
-                  error={errors.companyName}
-                  placeholder={GLOBALS.I18n.t("Company name")}
-                />
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="COMPANY LOGO* :" />
-                <Form.Row noMargin width="48%">
-                  <FormMultipleUpload
-                    style={formInputStyle}
-                    values={logo}
-                    onChange={(values) => {
-                      setLogo(values);
-                    }}
-                  />
-                  <FormSelect
-                    name="companyColor"
-                    onBlur={handleBlur}
-                    style={formInputStyle}
-                    error={errors.companyName}
-                    value={values.companyColor}
-                    placeholder={GLOBALS.I18n.t("Color")}
-                    onChange={({ target: { name, value } }) => setColor(value)}
-                    values={[
-                      "Green",
-                      "Yellow",
-                      "Red",
-                      "Blue",
-                      "Orange",
-                      "Purple",
-                      "Magenta",
-                    ]}
-                  />
-                </Form.Row>
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="RESPONSIBLE COMPANY : " />
-                <Form.Row noMargin width="48%">
-                  <FormInput
-                    name="companyResponsibleFirstName"
-                    onBlur={handleBlur}
-                    style={formInputStyle}
-                    onChange={handleChange}
-                    value={values.companyResponsibleFirstName}
-                    error={errors.companyResponsibleFirstName}
-                    placeholder={GLOBALS.I18n.t("First Name")}
-                  />
-                  <FormInput
-                    name="companyResponsibleLastName"
-                    onBlur={handleBlur}
-                    style={formInputStyle}
-                    onChange={handleChange}
-                    value={values.companyResponsibleLastName}
-                    error={errors.companyResponsibleLastName}
-                    placeholder={GLOBALS.I18n.t("Last Name")}
-                  />
-                </Form.Row>
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="RESPONSIBLE CONTACT : " />
-                <Form.Row noMargin width="48%">
-                  <FormInput
-                    type="email"
-                    name="companyResponsibleEmail"
-                    onBlur={handleBlur}
-                    style={formInputStyle}
-                    onChange={handleChange}
-                    value={values.companyResponsibleEmail}
-                    error={errors.companyResponsibleEmail}
-                    placeholder={GLOBALS.I18n.t("E-mail Address")}
-                  />
-                  <FormInput
-                    type="number"
-                    name="companyResponsiblePhone"
-                    onBlur={handleBlur}
-                    style={formInputStyle}
-                    onChange={handleChange}
-                    value={values.companyResponsiblePhone}
-                    error={errors.companyResponsiblePhone}
-                    placeholder={GLOBALS.I18n.t("Phone Number")}
-                  />
-                </Form.Row>
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="TYPE OF CONTRACT* : " />
-                <RadioButton
-                  style={formInputStyle}
-                  value={typeOfContract}
-                  onChange={({ target: { value } }) => setTypeOfContract(value)}
-                  items={[
-                    { value: "CLIENTPERSITE", label: "Per Site" },
-                    { value: "MASTERCLIENT", label: "Master Contract" },
-                  ]}
-                />
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="CONTRACT DATE* : " />
-                <Form.Row noMargin width="48%">
-                  <FormInput
-                    type="date"
-                    value={startDate}
-                    style={formInputStyle}
-                    placeholder="Start date"
-                    onChance={({ target: { value } }) => setStartDate(value)}
-                  />
-                  <FormInput
-                    type="date"
-                    value={endDate}
-                    placeholder="End date"
-                    style={formInputStyle}
-                    onChance={({ target: { value } }) => setEndDate(value)}
-                  />
-                </Form.Row>
-              </Form.Row>
-              <Form.Row>
-                <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
-                <RadioButton
-                  value={functionality}
-                  style={formInputStyle}
-                  onChange={({ target: { value } }) => setFunctionality(value)}
-                  items={[{ value: "DELIVERY", label: "Delivery module" }]}
-                />
-              </Form.Row>
-              <Form.Row alignItems="flex-start">
-                <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
-                <FormInput
-                  textArea
-                  rows={3}
-                  value={information}
-                  style={formInputStyle}
-                  placeholder="Additional information"
-                  onChange={({ target: { value } }) => setInformation(value)}
-                />
-              </Form.Row>
-              <Form.Row alignItems="flex-start">
-                <FormLabel bold primary="NOTIFICATION : " />
-                <Form.Row
-                  noMargin
-                  width="48%"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <FormInput
-                    type="number"
-                    value={notifyDays}
-                    style={{ ...formInputStyle, maxWidth: 100 }}
-                    onChange={({ target: { value } }) => setNotifyDays(value)}
-                  />
-                  <SmallText
-                    primary="Days before end of the contract"
-                    style={{ marginLeft: "10px" }}
-                  />
-                </Form.Row>
-              </Form.Row>
-              <Form.Row alignItems="flex-start">
-                <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
-                <MultiAdderInput
-                  values={emailAddress}
-                  style={formInputStyle}
-                  validate={(text) => {
-                    const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
-                    return !re.test(String(text).toLowerCase());
-                  }}
-                  error="Invalid Email"
-                  placeholder="Enter email address"
-                  onChange={(values) => setEmailAddress(values)}
-                />
-              </Form.Row>
-              <Form.ButtonContainer>
-                <Button
-                  minWidth={200}
-                  text="VALIDATE"
-                  fullWidth={false}
-                  onClick={onSubmit}
-                />
-              </Form.ButtonContainer>
-            </Form.Form>
-          )}
-        </Formik>
+        <Form.Form>
+          <Form.Row>
+            <FormLabel bold primary="COMPANY NAME* :" />
+            <FormInput
+              error={"Required"}
+              value={companyName}
+              name={"companyName"}
+              style={formInputStyle}
+              onChange={handleChange}
+              placeholder="Company name"
+            />
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="COMPANY LOGO* :" />
+            <Form.Row noMargin width="48%">
+              <FormMultipleUpload
+                error={"Required"}
+                values={companyLogo}
+                name={"companyLogo"}
+                style={formInputStyle}
+                onChange={(values) => {
+                  setLogo(values);
+                }}
+              />
+              <FormSelect
+                error={"Required"}
+                placeholder="Color"
+                value={companyColor}
+                name={"companyColor"}
+                style={formInputStyle}
+                onChange={handleChange}
+                values={[
+                  "Green",
+                  "Yellow",
+                  "Red",
+                  "Blue",
+                  "Orange",
+                  "Purple",
+                  "Magenta",
+                ]}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="RESPONSIBLE COMPANY : " />
+            <Form.Row noMargin width="48%">
+              <FormInput
+                error={"Required"}
+                style={formInputStyle}
+                onChange={handleChange}
+                placeholder="First Name"
+                value={companyResponsibleFirstName}
+                name={"companyResponsibleFirstName"}
+              />
+              <FormInput
+                error={"Required"}
+                style={formInputStyle}
+                onChange={handleChange}
+                placeholder="Last Name"
+                value={companyResponsibleLastName}
+                name={"companyResponsibleLastName"}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="RESPONSIBLE CONTACT : " />
+            <Form.Row noMargin width="48%">
+              <FormInput
+                error={"Required"}
+                style={formInputStyle}
+                onChange={handleChange}
+                placeholder="E-mail Address"
+                value={companyResponsibleEmail}
+                name={"companyResponsibleEmail"}
+              />
+              <FormInput
+                error={"Required"}
+                style={formInputStyle}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                value={companyResponsiblePhone}
+                name={"companyResponsiblePhone"}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="TYPE OF CONTRACT* : " />
+            <RadioButton
+              style={formInputStyle}
+              value={typeOfContract}
+              onChange={handleChange}
+              name={"typeOfContract"}
+              items={[
+                { value: "CLIENTPERSITE", label: "Per Site" },
+                { value: "MASTERCLIENT", label: "Master Contract" },
+              ]}
+            />
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="CONTRACT DATE* : " />
+            <Form.Row noMargin width="48%">
+              <FormInput
+                type="date"
+                error={"Required"}
+                style={formInputStyle}
+                onChange={handleChange}
+                placeholder="Start date"
+                value={contractStartDate}
+                name={"contractStartDate"}
+              />
+              <FormInput
+                type="date"
+                error={"Required"}
+                placeholder="End date"
+                style={formInputStyle}
+                onChange={handleChange}
+                value={contractEndDate}
+                name={"contractEndDate"}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
+            <RadioButton
+              style={formInputStyle}
+              onChange={handleChange}
+              value={functionalitySubscribed}
+              name={"functionalitySubscribed"}
+              items={[{ value: "DELIVERY", label: "Delivery module" }]}
+            />
+          </Form.Row>
+          <Form.Row alignItems="flex-start">
+            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormInput
+              textArea
+              rows={3}
+              error={"Required"}
+              style={formInputStyle}
+              onChange={handleChange}
+              value={additionalInformation}
+              name={"additionalInformation"}
+              placeholder="Additional information"
+            />
+          </Form.Row>
+          <Form.Row alignItems="flex-start">
+            <FormLabel bold primary="NOTIFICATION : " />
+            <Form.Row
+              noMargin
+              width="48%"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <FormInput
+                type="number"
+                error={"Required"}
+                onChange={handleChange}
+                value={notificationPriorToDays}
+                name={"notificationPriorToDays"}
+                style={{ ...formInputStyle, maxWidth: 100 }}
+              />
+              <SmallText
+                primary="Days before end of the contract"
+                style={{ marginLeft: "10px" }}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row alignItems="flex-start">
+            <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+            <MultiAdderInput
+              error={"Required"}
+              style={formInputStyle}
+              values={notificationTo}
+              name={"notificationTo"}
+              validateError="Invalid Email"
+              placeholder="Enter email address"
+              onChange={(values) => setEmailAddress(values)}
+              validate={(text) => {
+                const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
+                return !re.test(String(text).toLowerCase());
+              }}
+            />
+          </Form.Row>
+          <Form.ButtonContainer>
+            <Button
+              minWidth={200}
+              text="VALIDATE"
+              fullWidth={false}
+              onClick={onSubmit}
+            />
+          </Form.ButtonContainer>
+        </Form.Form>
       </div>
     </div>
   );
