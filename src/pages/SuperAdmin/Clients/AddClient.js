@@ -28,10 +28,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const formInputStyle = {
-  width: "48%",
-};
-
 const addClientYup = Yup.object().shape({
   companyLogo: Yup.array().min(1, "Required").required("Required"),
   companyName: Yup.string().required("Required"),
@@ -47,14 +43,8 @@ const addClientYup = Yup.object().shape({
     )
     .required("Required"),
   typeOfContract: Yup.string().required("Required"),
-  contractStartDate: Yup.string().when("typeOfContract", {
-    is: "MASTERCLIENT",
-    then: Yup.string().required("Required"),
-  }),
-  contractEndDate: Yup.string().when("typeOfContract", {
-    is: "MASTERCLIENT",
-    then: Yup.string().required("Required"),
-  }),
+  contractStartDate: Yup.string().required("Required"),
+  contractEndDate: Yup.string().required("Required"),
   functionalitySubscribed: Yup.string().required("Required"),
   additionalInformation: Yup.string(),
   notificationPriorToDays: Yup.number(),
@@ -131,7 +121,7 @@ export default function Profile(props) {
             <FormLabel bold primary="COMPANY NAME* :" />
             <FormInput
               name="companyName"
-              style={formInputStyle}
+              style={GLOBALS.Styles.inputWidth}
               placeholder="Company name"
               onChange={formik.handleChange}
               value={formik.values.companyName}
@@ -143,7 +133,7 @@ export default function Profile(props) {
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="companyLogo"
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 error={formik.errors.companyLogo}
                 values={formik.values.companyLogo}
                 onChange={(values) =>
@@ -159,7 +149,7 @@ export default function Profile(props) {
               <FormSelect
                 placeholder="Color"
                 name="companyColor"
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 onChange={formik.handleChange}
                 value={formik.values.companyColor}
                 error={formik.errors.companyColor}
@@ -179,7 +169,7 @@ export default function Profile(props) {
             <FormLabel bold primary="RESPONSIBLE COMPANY : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 placeholder="First Name"
                 onChange={formik.handleChange}
                 name="companyResponsibleFirstName"
@@ -187,7 +177,7 @@ export default function Profile(props) {
                 error={formik.errors.companyResponsibleFirstName}
               />
               <FormInput
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 placeholder="Last Name"
                 onChange={formik.handleChange}
                 name="companyResponsibleLastName"
@@ -200,7 +190,7 @@ export default function Profile(props) {
             <FormLabel bold primary="RESPONSIBLE CONTACT : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 placeholder="E-mail Address"
                 onChange={formik.handleChange}
                 name="companyResponsibleEmail"
@@ -208,7 +198,7 @@ export default function Profile(props) {
                 error={formik.errors.companyResponsibleEmail}
               />
               <FormInput
-                style={formInputStyle}
+                style={GLOBALS.Styles.inputWidth}
                 placeholder="Phone Number"
                 onChange={formik.handleChange}
                 name="companyResponsiblePhone"
@@ -221,7 +211,7 @@ export default function Profile(props) {
             <FormLabel bold primary="TYPE OF CONTRACT* : " />
             <RadioButton
               name="typeOfContract"
-              style={formInputStyle}
+              style={GLOBALS.Styles.inputWidth}
               value={formik.values.typeOfContract}
               error={formik.errors.typeOfContract}
               onChange={formik.handleChange}
@@ -231,35 +221,33 @@ export default function Profile(props) {
               ]}
             />
           </Form.Row>
-          {formik.values.typeOfContract === "MASTERCLIENT" && (
-            <Form.Row>
-              <FormLabel bold primary="CONTRACT DATE* : " />
-              <Form.Row noMargin width="48%">
-                <FormInput
-                  type="date"
-                  style={formInputStyle}
-                  placeholder="Start date"
-                  name="contractStartDate"
-                  onChange={formik.handleChange}
-                  value={formik.values.contractStartDate}
-                  error={formik.errors.contractStartDate}
-                />
-                <FormInput
-                  type="date"
-                  placeholder="End date"
-                  style={formInputStyle}
-                  name="contractEndDate"
-                  onChange={formik.handleChange}
-                  value={formik.values.contractEndDate}
-                  error={formik.errors.contractEndDate}
-                />
-              </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="CONTRACT DATE* : " />
+            <Form.Row noMargin width="48%">
+              <FormInput
+                type="date"
+                style={GLOBALS.Styles.inputWidth}
+                placeholder="Start date"
+                name="contractStartDate"
+                onChange={formik.handleChange}
+                value={formik.values.contractStartDate}
+                error={formik.errors.contractStartDate}
+              />
+              <FormInput
+                type="date"
+                placeholder="End date"
+                style={GLOBALS.Styles.inputWidth}
+                name="contractEndDate"
+                onChange={formik.handleChange}
+                value={formik.values.contractEndDate}
+                error={formik.errors.contractEndDate}
+              />
             </Form.Row>
-          )}
+          </Form.Row>
           <Form.Row>
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
-              style={formInputStyle}
+              style={GLOBALS.Styles.inputWidth}
               name="functionalitySubscribed"
               onChange={formik.handleChange}
               value={formik.values.functionalitySubscribed}
@@ -272,7 +260,7 @@ export default function Profile(props) {
             <FormInput
               textArea
               rows={3}
-              style={formInputStyle}
+              style={GLOBALS.Styles.inputWidth}
               onChange={formik.handleChange}
               placeholder="Additional information"
               name="additionalInformation"
@@ -294,7 +282,7 @@ export default function Profile(props) {
                 onChange={formik.handleChange}
                 value={formik.values.notificationPriorToDays}
                 error={formik.errors.notificationPriorToDays}
-                style={{ ...formInputStyle, maxWidth: 100 }}
+                style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
               />
               <SmallText
                 primary="Days before end of the contract"
@@ -305,7 +293,7 @@ export default function Profile(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
             <MultiAdderInput
-              style={formInputStyle}
+              style={GLOBALS.Styles.inputWidth}
               name="notificationTo"
               validateError="Invalid Email"
               placeholder="Enter email address"
