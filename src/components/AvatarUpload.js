@@ -48,7 +48,7 @@ export default function FormMultipleUpload(props) {
       <Plus className={classes.plus} />
       <Avatar
         alt="avatar"
-        variant="circle"
+        variant="circular"
         src={props.value.uri}
         className={classes.image}
       />

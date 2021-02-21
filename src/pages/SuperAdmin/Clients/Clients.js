@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import moment from "moment";
+import * as Yup from "yup";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -16,6 +18,7 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import SubHeading from "../../../components/SubHeading";
+import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
@@ -37,6 +40,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const updateClientYup = Yup.object().shape({
+  companyLogo: Yup.mixed(),
+  companyColor: Yup.string().required("Required"),
+  companyResponsibleFirstName: Yup.string().required("Required"),
+  companyResponsibleLastName: Yup.string().required("Required"),
+  companyResponsibleEmail: Yup.string().required("Required"),
+  companyResponsiblePhone: Yup.number()
+    .test(
+      "len",
+      "Must be exactly 10 characters",
+      (val) => val && val.toString().length === 10,
+    )
+    .required("Required"),
+  typeOfContract: Yup.string().required("Required"),
+  contractStartDate: Yup.string().required("Required"),
+  contractEndDate: Yup.string().required("Required"),
+  functionalitySubscribed: Yup.string().required("Required"),
+  additionalInformation: Yup.string(),
+  notificationPriorToDays: Yup.number(),
+  monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
+});
+
 export default function Clients(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -48,14 +73,7 @@ export default function Clients(props) {
   const [page, setPage] = useState(1);
 
   const [modal, setModal] = useState(false);
-
-  const [avatar, setAvatar] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [notifyDays, setNotifyDays] = useState("");
-  const [information, setInformation] = useState("");
-  const [functionality, setFunctionality] = useState("DELIVERY");
-  const [typeOfContract, setTypeOfContract] = useState("CLIENTPERSITE");
+  const [selectedClient, setSelectedClient] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -67,18 +85,7 @@ export default function Clients(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
       });
-      let resultArray = result.data.items.map((item) => [
-        item.companyId.name,
-        item.companyId.incharge.firstName +
-          " " +
-          item.companyId.incharge.lastName,
-        item.companyId.incharge.phone,
-        2,
-        moment(item.contractStartDate).format("DD/MM/YY"),
-        moment(item.contractEndDate).format("DD/MM/YY"),
-        item.isPendingResponse ? "Requested" : item.companyId.type,
-      ]);
-      setClients(resultArray);
+      setClients(result.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -88,6 +95,84 @@ export default function Clients(props) {
       );
     }
   }
+
+  async function verifyClient(clientId, contractId) {
+    try {
+      if (window.confirm("Are you sure about this?")) {
+        setLoading(true);
+        const result = await GLOBALS.API({
+          method: "PUT",
+          uri: `${GLOBALS.Constants.CLIENTS_VERIFY}/${clientId}/${contractId}`,
+        });
+        const clientsArray = clients.map((item) =>
+          item._id === clientId ? result.data : item,
+        );
+        setClients(clientsArray);
+        setLoading(false);
+      }
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
+
+  const onUpdate = async (values) => {
+    var formdata = new FormData();
+    formdata.append("logo", values.companyLogo.file);
+    formdata.append("color", values.companyColor);
+    formdata.append("clientId", selectedClient._id);
+    formdata.append("userId", selectedClient.userId._id);
+    formdata.append("contractId", selectedClient.contract._id);
+    formdata.append("companyId", selectedClient.companyId._id);
+    formdata.append("firstName", values.companyResponsibleFirstName);
+    formdata.append("lastName", values.companyResponsibleLastName);
+    formdata.append("email", values.companyResponsibleEmail);
+    formdata.append("phone", values.companyResponsiblePhone);
+    formdata.append("contractType", values.typeOfContract);
+    formdata.append("contractStartDate", values.contractStartDate);
+    formdata.append("contractEndDate", values.contractEndDate);
+    formdata.append("functionality", values.functionalitySubscribed);
+    formdata.append("additionalInfo", values.additionalInformation);
+    formdata.append("monthlyCost", values.monthlyCost);
+
+    const result = await GLOBALS.API({
+      method: "PUT",
+      uri: GLOBALS.Constants.CLIENTS,
+      headers: {
+        Authorization: store.token,
+      },
+      body: formdata,
+    });
+    const clientsArray = clients.map((item) =>
+      item._id === selectedClient._id ? result.data : item,
+    );
+    setClients(clientsArray);
+    setModal(false);
+    formik.setSubmitting(false);
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      companyLogo: "",
+      companyColor: "",
+      companyResponsibleFirstName: "",
+      companyResponsibleLastName: "",
+      companyResponsibleEmail: "",
+      companyResponsiblePhone: "",
+      typeOfContract: "",
+      contractStartDate: "",
+      contractEndDate: "",
+      functionalitySubscribed: "",
+      additionalInformation: "",
+      notificationPriorToDays: "",
+      monthlyCost: "",
+    },
+    validationSchema: updateClientYup,
+    onSubmit: onUpdate,
+  });
 
   return (
     <>
@@ -113,90 +198,190 @@ export default function Clients(props) {
         <div className={classes.content}>
           <Table
             headers={GLOBALS.Data.clients.headings}
-            rows={clients.map((item) =>
-              item[6] === "Requested"
+            rows={clients.map((item) => {
+              const sendTo = [
+                item.companyId.name,
+                item.companyId.incharge.firstName +
+                  " " +
+                  item.companyId.incharge.lastName,
+                item.companyId.incharge.phone,
+                0,
+                item.contract.isPendingResponse
+                  ? "-"
+                  : moment(item.contract.contractStartDate).format("DD/MM/YY"),
+                item.contract.isPendingResponse
+                  ? "-"
+                  : moment(item.contract.contractEndDate).format("DD/MM/YY"),
+                item.contract.isPendingResponse
+                  ? "Requested"
+                  : item.contract.contractType,
+              ];
+              return sendTo[6] === "Requested"
                 ? [
-                    ...item,
-                    <IconButton>
+                    ...sendTo,
+                    <IconButton
+                      disabled={loading}
+                      onClick={() => {
+                        setSelectedClient(item);
+                        verifyClient(item._id, item.contract._id);
+                      }}
+                    >
                       <Plus style={{ width: 18, height: 18 }} />
                     </IconButton>,
                   ]
                 : [
-                    ...item,
+                    ...sendTo,
                     <>
-                      <IconButton onClick={() => setModal(true)}>
+                      <IconButton
+                        disabled={loading}
+                        onClick={() => {
+                          setSelectedClient(item);
+                          formik.setValues({
+                            // the type of `values` inferred to be Blog
+                            companyLogo: {
+                              uri:
+                                GLOBALS.Constants.BASE_URL +
+                                item.companyId.logo,
+                            },
+                            companyColor: item.companyId.color,
+                            companyResponsibleFirstName:
+                              item.companyId.incharge.firstName,
+                            companyResponsibleLastName:
+                              item.companyId.incharge.lastName,
+                            companyResponsibleEmail:
+                              item.companyId.incharge.email,
+                            companyResponsiblePhone:
+                              item.companyId.incharge.phone,
+                            typeOfContract: item.contract.contractType,
+                            contractStartDate: moment(
+                              item.contract.contractStartDate,
+                            ).format("YYYY-MM-DD"),
+                            contractEndDate: moment(
+                              item.contract.contractEndDate,
+                            ).format("YYYY-MM-DD"),
+                            functionalitySubscribed:
+                              item.contract.functionality,
+                            additionalInformation: item.contract.additionalInfo,
+                            notificationPriorToDays:
+                              item.contract.notificationPriorToDays,
+                            monthlyCost: item.contract.monthlyCost || 0,
+                          });
+                          setModal(true);
+                        }}
+                      >
                         <Pencil style={{ width: 18, height: 18 }} />
                       </IconButton>
-                      <IconButton component={NavLink} to="/clients/invoices">
+                      <IconButton
+                        disabled={loading}
+                        component={NavLink}
+                        to={`/clients/invoices/${item._id}`}
+                      >
                         <Report style={{ width: 18, height: 18 }} />
                       </IconButton>
                     </>,
-                  ],
-            )}
+                  ];
+            })}
           />
         </div>
       </div>
       <Modal
-        open={modal}
         title={"EDIT CLIENT"}
+        open={selectedClient ? modal : false}
         onClose={() => setModal((st) => !st)}
         body={
-          <Form.Form>
+          <Form.Form onSubmit={formik.handleSubmit}>
             <Form.Row justifyContent="center">
               <AvatarUpload
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
-                  setAvatar({ file, uri });
+                  formik.setFieldValue("companyLogo", { file, uri });
                 }}
-                value={avatar}
+                value={formik.values.companyLogo}
+                error={formik.errors.companyLogo}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
-              <FormInput
+              <FormSelect
                 placeholder="Color"
+                name="companyColor"
+                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
+                value={formik.values.companyColor}
+                error={formik.errors.companyColor}
+                values={[
+                  "Green",
+                  "Yellow",
+                  "Red",
+                  "Blue",
+                  "Orange",
+                  "Purple",
+                  "Magenta",
+                ]}
               />
             </Form.Row>
             <Form.Row>
               <FormInput
                 placeholder="First Name"
+                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
+                name="companyResponsibleFirstName"
+                value={formik.values.companyResponsibleFirstName}
+                error={formik.errors.companyResponsibleFirstName}
               />
               <FormInput
                 placeholder="Last Name"
+                onChange={formik.handleChange}
+                name="companyResponsibleLastName"
                 style={GLOBALS.Styles.inputWidth}
+                value={formik.values.companyResponsibleLastName}
+                error={formik.errors.companyResponsibleLastName}
               />
             </Form.Row>
             <Form.Row>
               <FormInput
-                placeholder="E-mail"
                 style={GLOBALS.Styles.inputWidth}
+                placeholder="E-mail Address"
+                onChange={formik.handleChange}
+                name="companyResponsibleEmail"
+                value={formik.values.companyResponsibleEmail}
+                error={formik.errors.companyResponsibleEmail}
               />
               <FormInput
-                placeholder="Phone"
                 style={GLOBALS.Styles.inputWidth}
+                placeholder="Phone Number"
+                onChange={formik.handleChange}
+                name="companyResponsiblePhone"
+                value={formik.values.companyResponsiblePhone}
+                error={formik.errors.companyResponsiblePhone}
               />
             </Form.Row>
             <Form.Row>
               <FormInput
                 type="date"
-                value={startDate}
                 placeholder="Start date"
+                name="contractStartDate"
+                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
-                onChance={({ target: { value } }) => setStartDate(value)}
+                value={formik.values.contractStartDate}
+                error={formik.errors.contractStartDate}
               />
               <FormInput
                 type="date"
-                value={endDate}
                 placeholder="End date"
+                name="contractEndDate"
+                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
-                onChance={({ target: { value } }) => setEndDate(value)}
+                value={formik.values.contractEndDate}
+                error={formik.errors.contractEndDate}
               />
             </Form.Row>
             <Form.Row>
               <RadioButton
-                value={typeOfContract}
-                onChange={({ target: { value } }) => setTypeOfContract(value)}
+                name="typeOfContract"
+                style={GLOBALS.Styles.inputWidth}
+                value={formik.values.typeOfContract}
+                error={formik.errors.typeOfContract}
+                onChange={formik.handleChange}
                 items={[
                   { value: "CLIENTPERSITE", label: "Per Site" },
                   { value: "MASTERCLIENT", label: "Master Contract" },
@@ -205,8 +390,11 @@ export default function Clients(props) {
             </Form.Row>
             <Form.Row>
               <RadioButton
-                value={functionality}
-                onChange={({ target: { value } }) => setFunctionality(value)}
+                style={GLOBALS.Styles.inputWidth}
+                name="functionalitySubscribed"
+                onChange={formik.handleChange}
+                value={formik.values.functionalitySubscribed}
+                error={formik.errors.functionalitySubscribed}
                 items={[{ value: "DELIVERY", label: "Delivery module" }]}
               />
             </Form.Row>
@@ -214,10 +402,11 @@ export default function Clients(props) {
               <Form.Row noMargin alignItems="center" width="150px">
                 <FormInput
                   type="number"
-                  value={notifyDays}
-                  placeholder="Price"
+                  name="monthlyCost"
+                  onChange={formik.handleChange}
+                  value={formik.values.monthlyCost}
+                  error={formik.errors.monthlyCost}
                   style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
-                  onChange={({ target: { value } }) => setNotifyDays(value)}
                 />
                 <SmallText primary="€/month" />
               </Form.Row>
@@ -226,28 +415,35 @@ export default function Clients(props) {
               <FormInput
                 textArea
                 rows={3}
-                value={information}
-                // style={GLOBALS.Styles.inputWidth}
+                onChange={formik.handleChange}
                 placeholder="Additional information"
-                onChange={({ target: { value } }) => setInformation(value)}
+                name="additionalInformation"
+                value={formik.values.additionalInformation}
+                error={formik.errors.additionalInformation}
               />
             </Form.Row>
+            <Form.Column alignItems="center">
+              <Form.Row justifyContent="center">
+                <Button
+                  type="submit"
+                  minWidth="30%"
+                  text="VALIDATE"
+                  fullWidth={false}
+                  loading={formik.isSubmitting}
+                  disabled={formik.isSubmitting}
+                />
+              </Form.Row>
+              <Form.Row justifyContent="center">
+                <Button
+                  text="DELETE"
+                  minWidth="30%"
+                  fullWidth={false}
+                  color={theme.palette.error.main}
+                  disabled={formik.isSubmitting}
+                />
+              </Form.Row>
+            </Form.Column>
           </Form.Form>
-        }
-        actions={
-          <Form.Column alignItems="center">
-            <Form.Row justifyContent="center">
-              <Button text="VALIDATE" fullWidth={false} minWidth="30%" />
-            </Form.Row>
-            <Form.Row justifyContent="center">
-              <Button
-                text="DELETE"
-                fullWidth={false}
-                minWidth="30%"
-                color={theme.palette.error.main}
-              />
-            </Form.Row>
-          </Form.Column>
         }
       />
     </>
