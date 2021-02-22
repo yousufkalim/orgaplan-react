@@ -14,6 +14,7 @@ const endpoints = {
   // SUPERADMIN
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
   CLIENTS_VERIFY: BASE_URL_V1 + "superadmin/clients/verify",
+  ADMINS: BASE_URL_V1 + "superadmin/admins",
 };
 
 export default endpoints;

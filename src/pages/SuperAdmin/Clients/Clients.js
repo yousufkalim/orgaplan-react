@@ -69,11 +69,11 @@ export default function Clients(props) {
   const store = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(true);
-  const [clients, setClients] = useState([]);
+  const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
 
   const [modal, setModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -85,7 +85,7 @@ export default function Clients(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
       });
-      setClients(result.data.items);
+      setItems(result.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -104,10 +104,10 @@ export default function Clients(props) {
           method: "PUT",
           uri: `${GLOBALS.Constants.CLIENTS_VERIFY}/${clientId}/${contractId}`,
         });
-        const clientsArray = clients.map((item) =>
+        const itemsArray = items.map((item) =>
           item._id === clientId ? result.data : item,
         );
-        setClients(clientsArray);
+        setItems(itemsArray);
         setLoading(false);
       }
     } catch (err) {
@@ -123,10 +123,10 @@ export default function Clients(props) {
     var formdata = new FormData();
     formdata.append("logo", values.companyLogo.file);
     formdata.append("color", values.companyColor);
-    formdata.append("clientId", selectedClient._id);
-    formdata.append("userId", selectedClient.userId._id);
-    formdata.append("contractId", selectedClient.contract._id);
-    formdata.append("companyId", selectedClient.companyId._id);
+    formdata.append("clientId", selectedItem._id);
+    formdata.append("userId", selectedItem.userId._id);
+    formdata.append("contractId", selectedItem.contract._id);
+    formdata.append("companyId", selectedItem.companyId._id);
     formdata.append("firstName", values.companyResponsibleFirstName);
     formdata.append("lastName", values.companyResponsibleLastName);
     formdata.append("email", values.companyResponsibleEmail);
@@ -146,10 +146,10 @@ export default function Clients(props) {
       },
       body: formdata,
     });
-    const clientsArray = clients.map((item) =>
-      item._id === selectedClient._id ? result.data : item,
+    const itemsArray = items.map((item) =>
+      item._id === selectedItem._id ? result.data : item,
     );
-    setClients(clientsArray);
+    setItems(itemsArray);
     setModal(false);
     formik.setSubmitting(false);
   };
@@ -198,7 +198,7 @@ export default function Clients(props) {
         <div className={classes.content}>
           <Table
             headers={GLOBALS.Data.clients.headings}
-            rows={clients.map((item) => {
+            rows={items.map((item) => {
               const sendTo = [
                 item.companyId.name,
                 item.companyId.incharge.firstName +
@@ -222,7 +222,7 @@ export default function Clients(props) {
                     <IconButton
                       disabled={loading}
                       onClick={() => {
-                        setSelectedClient(item);
+                        setSelectedItem(item);
                         verifyClient(item._id, item.contract._id);
                       }}
                     >
@@ -235,7 +235,7 @@ export default function Clients(props) {
                       <IconButton
                         disabled={loading}
                         onClick={() => {
-                          setSelectedClient(item);
+                          setSelectedItem(item);
                           formik.setValues({
                             // the type of `values` inferred to be Blog
                             companyLogo: {
@@ -285,8 +285,8 @@ export default function Clients(props) {
         </div>
       </div>
       <Modal
-        title={"EDIT CLIENT"}
-        open={selectedClient ? modal : false}
+        title="EDIT CLIENT"
+        open={selectedItem ? modal : false}
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form onSubmit={formik.handleSubmit}>
@@ -339,18 +339,18 @@ export default function Clients(props) {
             </Form.Row>
             <Form.Row>
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
                 placeholder="E-mail Address"
                 onChange={formik.handleChange}
                 name="companyResponsibleEmail"
+                style={GLOBALS.Styles.inputWidth}
                 value={formik.values.companyResponsibleEmail}
                 error={formik.errors.companyResponsibleEmail}
               />
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
                 placeholder="Phone Number"
                 onChange={formik.handleChange}
                 name="companyResponsiblePhone"
+                style={GLOBALS.Styles.inputWidth}
                 value={formik.values.companyResponsiblePhone}
                 error={formik.errors.companyResponsiblePhone}
               />
@@ -438,8 +438,8 @@ export default function Clients(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  color={theme.palette.error.main}
                   disabled={formik.isSubmitting}
+                  color={theme.palette.error.main}
                 />
               </Form.Row>
             </Form.Column>

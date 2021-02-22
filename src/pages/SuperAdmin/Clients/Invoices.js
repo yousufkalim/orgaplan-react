@@ -26,11 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
+export default function Invoices(props) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      {console.log(props)}
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>

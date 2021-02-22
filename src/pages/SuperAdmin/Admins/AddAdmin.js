@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -22,18 +25,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const formInputStyle = {
-  width: "48%",
-};
+const addAdminYup = Yup.object().shape({
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
+  email: Yup.string().required("Required"),
+  phone: Yup.number()
+    .test(
+      "len",
+      "Must be exactly 10 characters",
+      (val) => val && val.toString().length === 10,
+    )
+    .required("Required"),
+  profile: Yup.array().min(1, "Required").required("Required"),
+  color: Yup.string().required("Required"),
+});
 
-export default function Profile(props) {
+export default function AddAdmin(props) {
   const classes = useStyles();
-  const [color, setColor] = useState("");
-  const [logoArray, setLogoArray] = useState([]);
+  const store = useSelector((state) => state.auth);
 
-  const onSubmit = () => {
-    console.log("onSubmit", {});
+  const onSubmit = async (values) => {
+    console.log("values", values);
+
+    var formdata = new FormData();
+    formdata.append("email", values.email);
+    formdata.append("phone", values.phone);
+    formdata.append("firstName", values.firstName);
+    formdata.append("lastName", values.lastName);
+    formdata.append("image", values.profile[0].file);
+    formdata.append("color", values.color);
+
+    await GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.ADMINS,
+      headers: {
+        Authorization: store.token,
+      },
+      body: formdata,
+    });
+    formik.setSubmitting(false);
+    props.history.push("/admins");
   };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      phone: "",
+      firstName: "",
+      lastName: "",
+      profile: [],
+      color: "",
+    },
+    validationSchema: addAdminYup,
+    onSubmit,
+  });
 
   return (
     <div className={classes.root}>
@@ -42,38 +87,68 @@ export default function Profile(props) {
       </IconButton>
       <Heading primary="ADD AN ADMIN" />
       <div className={classes.content}>
-        <Form.Form>
+        <Form.Form onSubmit={formik.handleSubmit}>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO: " />
             <Form.Row noMargin width="48%">
-              <FormInput placeholder="E-mail Address" style={formInputStyle} />
-              <FormInput placeholder="Phone" style={formInputStyle} />
+              <FormInput
+                name="email"
+                placeholder="E-mail Address"
+                value={formik.values.email}
+                error={formik.errors.email}
+                onChange={formik.handleChange}
+                style={GLOBALS.Styles.inputWidth}
+              />
+              <FormInput
+                name="phone"
+                placeholder="Phone Number"
+                value={formik.values.phone}
+                error={formik.errors.phone}
+                onChange={formik.handleChange}
+                style={GLOBALS.Styles.inputWidth}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IDENTITY: " />
             <Form.Row noMargin width="48%">
-              <FormInput placeholder="First Name" style={formInputStyle} />
-              <FormInput placeholder="Last Name" style={formInputStyle} />
+              <FormInput
+                name="firstName"
+                placeholder="First Name"
+                onChange={formik.handleChange}
+                value={formik.values.firstName}
+                error={formik.errors.firstName}
+                style={GLOBALS.Styles.inputWidth}
+              />
+              <FormInput
+                name="lastName"
+                placeholder="Last Name"
+                onChange={formik.handleChange}
+                value={formik.values.lastName}
+                error={formik.errors.lastName}
+                style={GLOBALS.Styles.inputWidth}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="PROFILE*: " />
             <FormMultipleUpload
-              style={formInputStyle}
-              values={logoArray}
-              onChange={(values) => {
-                setLogoArray(values);
-              }}
+              name="profile"
+              error={formik.errors.profile}
+              values={formik.values.profile}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={(values) => formik.setFieldValue("profile", values)}
             />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY*: " />
             <FormSelect
-              value={color}
+              name="color"
               placeholder="Color"
-              style={formInputStyle}
-              onChange={({ target: { name, value } }) => setColor(value)}
+              value={formik.values.color}
+              error={formik.errors.color}
+              onChange={formik.handleChange}
+              style={GLOBALS.Styles.inputWidth}
               values={[
                 "Green",
                 "Yellow",
@@ -87,10 +162,12 @@ export default function Profile(props) {
           </Form.Row>
           <Form.ButtonContainer>
             <Button
+              type="submit"
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              onClick={onSubmit}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             />
           </Form.ButtonContainer>
         </Form.Form>

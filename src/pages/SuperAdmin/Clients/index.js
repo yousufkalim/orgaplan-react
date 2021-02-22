@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import Clients from "./Clients";
 import Invoices from "./Invoices";
 import AddClient from "./AddClient";
+import AddInvoice from "./AddInvoice";
 
 export default function Index(props) {
   return (
@@ -11,10 +12,19 @@ export default function Index(props) {
       <Route exact path={props.match.path + "/"} component={Clients} />
       <Route
         exact
-        path={props.match.path + "/add-client"}
         component={AddClient}
+        path={props.match.path + "/add-client"}
       />
-      <Route exact path={props.match.path + "/invoices"} component={Invoices} />
+      <Route
+        exact
+        component={Invoices}
+        path={props.match.path + "/invoices/:id"}
+      />
+      <Route
+        exact
+        component={AddInvoice}
+        path={props.match.path + "/add-invoice"}
+      />
       <Redirect from="*" to={props.match.path + "/"} />
     </Switch>
   );
