@@ -30,10 +30,7 @@ const useStyles = makeStyles((theme) => ({
     "input:hover ~ &": {
       backgroundColor: "#ebf1f5",
     },
-    "input:disabled ~ &": {
-      boxShadow: "none",
-      background: "rgba(206,217,224,.5)",
-    },
+    "input:disabled ~ &": {},
   },
   checkedIcon: {
     backgroundColor: theme.palette.grey[100],
@@ -61,7 +58,7 @@ export default function CustomizedRadios(props) {
             key={item.value}
             value={item.value}
             label={item.label}
-            disabled={item.disabled}
+            disabled={props.disabled || item.disabled}
             style={{
               width: String(100 / props.items.length - 3) + "%",
             }}

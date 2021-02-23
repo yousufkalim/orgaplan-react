@@ -5,6 +5,7 @@ import Clients from "./Clients";
 import Invoices from "./Invoices";
 import AddClient from "./AddClient";
 import AddInvoice from "./AddInvoice";
+import VerifyClient from "./VerifyClient";
 
 export default function Index(props) {
   return (
@@ -17,8 +18,13 @@ export default function Index(props) {
       />
       <Route
         exact
+        component={VerifyClient}
+        path={props.match.path + "/verify-client"}
+      />
+      <Route
+        exact
         component={Invoices}
-        path={props.match.path + "/invoices/:id"}
+        path={props.match.path + "/invoices/:clientId/:contractId"}
       />
       <Route
         exact

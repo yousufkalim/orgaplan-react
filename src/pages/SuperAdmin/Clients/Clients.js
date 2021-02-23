@@ -3,8 +3,8 @@ import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import moment from "moment";
 import * as Yup from "yup";
+import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -41,24 +41,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const updateClientYup = Yup.object().shape({
-  companyLogo: Yup.mixed(),
-  companyColor: Yup.string().required("Required"),
-  companyResponsibleFirstName: Yup.string().required("Required"),
-  companyResponsibleLastName: Yup.string().required("Required"),
-  companyResponsibleEmail: Yup.string().required("Required"),
-  companyResponsiblePhone: Yup.number()
+  logo: Yup.mixed(),
+  color: Yup.string().required("Required"),
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
+  email: Yup.string().required("Required"),
+  phone: Yup.number()
     .test(
       "len",
       "Must be exactly 10 characters",
       (val) => val && val.toString().length === 10,
     )
     .required("Required"),
-  typeOfContract: Yup.string().required("Required"),
+  contractType: Yup.string().required("Required"),
   contractStartDate: Yup.string().required("Required"),
   contractEndDate: Yup.string().required("Required"),
-  functionalitySubscribed: Yup.string().required("Required"),
-  additionalInformation: Yup.string(),
-  notificationPriorToDays: Yup.number(),
+  functionality: Yup.string().required("Required"),
+  additionalInfo: Yup.string(),
   monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
 });
 
@@ -74,6 +73,7 @@ export default function Clients(props) {
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
+  const [selectedNestedItem, setSelectedNestedItem] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -96,46 +96,23 @@ export default function Clients(props) {
     }
   }
 
-  async function verifyClient(clientId, contractId) {
-    try {
-      if (window.confirm("Are you sure about this?")) {
-        setLoading(true);
-        const result = await GLOBALS.API({
-          method: "PUT",
-          uri: `${GLOBALS.Constants.CLIENTS_VERIFY}/${clientId}/${contractId}`,
-        });
-        const itemsArray = items.map((item) =>
-          item._id === clientId ? result.data : item,
-        );
-        setItems(itemsArray);
-        setLoading(false);
-      }
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
-        ),
-      );
-    }
-  }
-
-  const onUpdate = async (values) => {
+  async function onUpdate(values) {
     var formdata = new FormData();
-    formdata.append("logo", values.companyLogo.file);
-    formdata.append("color", values.companyColor);
+    formdata.append("logo", values.logo.file);
+    formdata.append("color", values.color);
     formdata.append("clientId", selectedItem._id);
     formdata.append("userId", selectedItem.userId._id);
-    formdata.append("contractId", selectedItem.contract._id);
+    formdata.append("contractId", selectedNestedItem._id);
     formdata.append("companyId", selectedItem.companyId._id);
-    formdata.append("firstName", values.companyResponsibleFirstName);
-    formdata.append("lastName", values.companyResponsibleLastName);
-    formdata.append("email", values.companyResponsibleEmail);
-    formdata.append("phone", values.companyResponsiblePhone);
-    formdata.append("contractType", values.typeOfContract);
+    formdata.append("firstName", values.firstName);
+    formdata.append("lastName", values.lastName);
+    formdata.append("email", values.email);
+    formdata.append("phone", values.phone);
+    formdata.append("contractType", values.contractType);
     formdata.append("contractStartDate", values.contractStartDate);
     formdata.append("contractEndDate", values.contractEndDate);
-    formdata.append("functionality", values.functionalitySubscribed);
-    formdata.append("additionalInfo", values.additionalInformation);
+    formdata.append("functionality", values.functionality);
+    formdata.append("additionalInfo", values.additionalInfo);
     formdata.append("monthlyCost", values.monthlyCost);
 
     const result = await GLOBALS.API({
@@ -152,26 +129,113 @@ export default function Clients(props) {
     setItems(itemsArray);
     setModal(false);
     formik.setSubmitting(false);
-  };
+  }
 
   const formik = useFormik({
     initialValues: {
-      companyLogo: "",
-      companyColor: "",
-      companyResponsibleFirstName: "",
-      companyResponsibleLastName: "",
-      companyResponsibleEmail: "",
-      companyResponsiblePhone: "",
-      typeOfContract: "",
+      logo: "",
+      color: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      contractType: "",
       contractStartDate: "",
       contractEndDate: "",
-      functionalitySubscribed: "",
-      additionalInformation: "",
-      notificationPriorToDays: "",
+      functionality: "",
+      additionalInfo: "",
       monthlyCost: "",
     },
     validationSchema: updateClientYup,
     onSubmit: onUpdate,
+  });
+
+  function modifyClick(item, contract) {
+    setSelectedItem(item);
+    setSelectedNestedItem(contract);
+    formik.setValues({
+      logo: {
+        uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
+      },
+      color: item.companyId.color,
+      firstName: item.companyId.incharge.firstName,
+      lastName: item.companyId.incharge.lastName,
+      email: item.companyId.incharge.email,
+      phone: item.companyId.incharge.phone,
+      contractType: contract.contractType,
+      contractStartDate: moment(contract.contractStartDate).format(
+        "YYYY-MM-DD",
+      ),
+      contractEndDate: moment(contract.contractEndDate).format("YYYY-MM-DD"),
+      functionality: contract.functionality,
+      additionalInfo: contract.additionalInfo,
+      monthlyCost: contract.monthlyCost || 0,
+    });
+    setModal(true);
+  }
+
+  const rows = [];
+  items.map((item) => {
+    if (item.contract.length > 0) {
+      item.contract.map((contract) => {
+        rows.push([
+          item.companyId.name,
+          item.companyId.incharge.firstName +
+            " " +
+            item.companyId.incharge.lastName,
+          item.companyId.incharge.phone,
+          0,
+          contract.isPendingResponse
+            ? "-"
+            : moment(contract.contractStartDate).format("DD/MM/YY"),
+          contract.isPendingResponse
+            ? "-"
+            : moment(contract.contractEndDate).format("DD/MM/YY"),
+          contract.isPendingResponse ? "Requested" : contract.contractType,
+          <>
+            <IconButton
+              disabled={loading}
+              onClick={() => modifyClick(item, contract)}
+            >
+              <Pencil style={{ width: 18, height: 18 }} />
+            </IconButton>
+            <IconButton
+              disabled={loading}
+              component={NavLink}
+              to={`/clients/invoices/${item._id}/${contract._id}`}
+            >
+              <Report style={{ width: 18, height: 18 }} />
+            </IconButton>
+          </>,
+        ]);
+        return true;
+      });
+    } else {
+      rows.push([
+        item.companyId.name,
+        item.companyId.incharge.firstName +
+          " " +
+          item.companyId.incharge.lastName,
+        item.companyId.incharge.phone,
+        0,
+        "-",
+        "-",
+        "Requested",
+        <IconButton
+          disabled={loading}
+          onClick={() =>
+            props.history.push({
+              pathname: "/clients/verify-client",
+              item,
+            })
+          }
+        >
+          <Plus style={{ width: 18, height: 18 }} />
+        </IconButton>,
+      ]);
+      return true;
+    }
+    return true;
   });
 
   return (
@@ -196,92 +260,7 @@ export default function Clients(props) {
           <SearchInput placeholder="Name of Client" />
         </Form.Row>
         <div className={classes.content}>
-          <Table
-            headers={GLOBALS.Data.clients.headings}
-            rows={items.map((item) => {
-              const sendTo = [
-                item.companyId.name,
-                item.companyId.incharge.firstName +
-                  " " +
-                  item.companyId.incharge.lastName,
-                item.companyId.incharge.phone,
-                0,
-                item.contract.isPendingResponse
-                  ? "-"
-                  : moment(item.contract.contractStartDate).format("DD/MM/YY"),
-                item.contract.isPendingResponse
-                  ? "-"
-                  : moment(item.contract.contractEndDate).format("DD/MM/YY"),
-                item.contract.isPendingResponse
-                  ? "Requested"
-                  : item.contract.contractType,
-              ];
-              return sendTo[6] === "Requested"
-                ? [
-                    ...sendTo,
-                    <IconButton
-                      disabled={loading}
-                      onClick={() => {
-                        setSelectedItem(item);
-                        verifyClient(item._id, item.contract._id);
-                      }}
-                    >
-                      <Plus style={{ width: 18, height: 18 }} />
-                    </IconButton>,
-                  ]
-                : [
-                    ...sendTo,
-                    <>
-                      <IconButton
-                        disabled={loading}
-                        onClick={() => {
-                          setSelectedItem(item);
-                          formik.setValues({
-                            // the type of `values` inferred to be Blog
-                            companyLogo: {
-                              uri:
-                                GLOBALS.Constants.BASE_URL +
-                                item.companyId.logo,
-                            },
-                            companyColor: item.companyId.color,
-                            companyResponsibleFirstName:
-                              item.companyId.incharge.firstName,
-                            companyResponsibleLastName:
-                              item.companyId.incharge.lastName,
-                            companyResponsibleEmail:
-                              item.companyId.incharge.email,
-                            companyResponsiblePhone:
-                              item.companyId.incharge.phone,
-                            typeOfContract: item.contract.contractType,
-                            contractStartDate: moment(
-                              item.contract.contractStartDate,
-                            ).format("YYYY-MM-DD"),
-                            contractEndDate: moment(
-                              item.contract.contractEndDate,
-                            ).format("YYYY-MM-DD"),
-                            functionalitySubscribed:
-                              item.contract.functionality,
-                            additionalInformation: item.contract.additionalInfo,
-                            notificationPriorToDays:
-                              item.contract.notificationPriorToDays,
-                            monthlyCost: item.contract.monthlyCost || 0,
-                          });
-                          setModal(true);
-                        }}
-                      >
-                        <Pencil style={{ width: 18, height: 18 }} />
-                      </IconButton>
-                      <IconButton
-                        disabled={loading}
-                        component={NavLink}
-                        to={`/clients/invoices/${item._id}`}
-                      >
-                        <Report style={{ width: 18, height: 18 }} />
-                      </IconButton>
-                    </>,
-                  ];
-            })}
-          />
+          <Table headers={GLOBALS.Data.clients.headings} rows={rows} />
         </div>
       </div>
       <Modal
@@ -294,20 +273,20 @@ export default function Clients(props) {
               <AvatarUpload
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
-                  formik.setFieldValue("companyLogo", { file, uri });
+                  formik.setFieldValue("logo", { file, uri });
                 }}
-                value={formik.values.companyLogo}
-                error={formik.errors.companyLogo}
+                value={formik.values.logo}
+                error={formik.errors.logo}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormSelect
                 placeholder="Color"
-                name="companyColor"
+                name="color"
                 onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.companyColor}
-                error={formik.errors.companyColor}
+                value={formik.values.color}
+                error={formik.errors.color}
                 values={[
                   "Green",
                   "Yellow",
@@ -324,35 +303,35 @@ export default function Clients(props) {
                 placeholder="First Name"
                 onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
-                name="companyResponsibleFirstName"
-                value={formik.values.companyResponsibleFirstName}
-                error={formik.errors.companyResponsibleFirstName}
+                name="firstName"
+                value={formik.values.firstName}
+                error={formik.errors.firstName}
               />
               <FormInput
                 placeholder="Last Name"
                 onChange={formik.handleChange}
-                name="companyResponsibleLastName"
+                name="lastName"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.companyResponsibleLastName}
-                error={formik.errors.companyResponsibleLastName}
+                value={formik.values.lastName}
+                error={formik.errors.lastName}
               />
             </Form.Row>
             <Form.Row>
               <FormInput
                 placeholder="E-mail Address"
                 onChange={formik.handleChange}
-                name="companyResponsibleEmail"
+                name="email"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.companyResponsibleEmail}
-                error={formik.errors.companyResponsibleEmail}
+                value={formik.values.email}
+                error={formik.errors.email}
               />
               <FormInput
                 placeholder="Phone Number"
                 onChange={formik.handleChange}
-                name="companyResponsiblePhone"
+                name="phone"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.companyResponsiblePhone}
-                error={formik.errors.companyResponsiblePhone}
+                value={formik.values.phone}
+                error={formik.errors.phone}
               />
             </Form.Row>
             <Form.Row>
@@ -377,10 +356,10 @@ export default function Clients(props) {
             </Form.Row>
             <Form.Row>
               <RadioButton
-                name="typeOfContract"
+                name="contractType"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.typeOfContract}
-                error={formik.errors.typeOfContract}
+                value={formik.values.contractType}
+                error={formik.errors.contractType}
                 onChange={formik.handleChange}
                 items={[
                   { value: "CLIENTPERSITE", label: "Per Site" },
@@ -391,10 +370,10 @@ export default function Clients(props) {
             <Form.Row>
               <RadioButton
                 style={GLOBALS.Styles.inputWidth}
-                name="functionalitySubscribed"
+                name="functionality"
                 onChange={formik.handleChange}
-                value={formik.values.functionalitySubscribed}
-                error={formik.errors.functionalitySubscribed}
+                value={formik.values.functionality}
+                error={formik.errors.functionality}
                 items={[{ value: "DELIVERY", label: "Delivery module" }]}
               />
             </Form.Row>
@@ -417,9 +396,9 @@ export default function Clients(props) {
                 rows={3}
                 onChange={formik.handleChange}
                 placeholder="Additional information"
-                name="additionalInformation"
-                value={formik.values.additionalInformation}
-                error={formik.errors.additionalInformation}
+                name="additionalInfo"
+                value={formik.values.additionalInfo}
+                error={formik.errors.additionalInfo}
               />
             </Form.Row>
             <Form.Column alignItems="center">
