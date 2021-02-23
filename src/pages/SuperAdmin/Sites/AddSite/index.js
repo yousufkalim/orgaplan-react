@@ -26,13 +26,13 @@ export default function AddSite(props) {
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
-  const [step3Data, setStep3Data] = useState("");
+  const [siteCreated, setSiteCreated] = useState("");
 
   const onSubmit = () => {
     console.log("onSubmit", {
       step1Data,
       step2Data,
-      step3Data,
+      siteCreated,
     });
   };
 
@@ -43,6 +43,7 @@ export default function AddSite(props) {
       </IconButton>
       <Heading primary="CREATE A SITE" />
       <Stepper
+        disabled
         step={step}
         setStep={setStep}
         steps={["Step 1: General Information", "Step 2: Dates", "Text 1: PIC"]}
@@ -66,9 +67,8 @@ export default function AddSite(props) {
           <AddSiteStep3
             step={step}
             setStep={setStep}
-            step3Data={step3Data}
-            setStep3Data={setStep3Data}
             onSubmit={onSubmit}
+            siteCreated={siteCreated}
           />
         )}
       </div>
