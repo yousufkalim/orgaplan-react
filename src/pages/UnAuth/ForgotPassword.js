@@ -47,7 +47,6 @@ export default function ForgotPassword(props) {
       // });
 
       setTimeout(() => {
-        console.log(values);
         setSubmitting(false);
         enqueueSnackbar(GLOBALS.I18n.t("emailSentSuccess"), {
           variant: "success",

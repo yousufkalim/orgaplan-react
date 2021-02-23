@@ -45,8 +45,6 @@ export default function AddAdmin(props) {
   const store = useSelector((state) => state.auth);
 
   const onSubmit = async (values) => {
-    console.log("values", values);
-
     var formdata = new FormData();
     formdata.append("email", values.email);
     formdata.append("phone", values.phone);
@@ -150,13 +148,13 @@ export default function AddAdmin(props) {
               onChange={formik.handleChange}
               style={GLOBALS.Styles.inputWidth}
               values={[
-                "Green",
-                "Yellow",
-                "Red",
-                "Blue",
-                "Orange",
-                "Purple",
-                "Magenta",
+                { value: "green", label: "Green" },
+                { value: "Yellow", label: "Yellow" },
+                { value: "Red", label: "Red" },
+                { value: "Blue", label: "Blue" },
+                { value: "Orange", label: "Orange" },
+                { value: "Purple", label: "Purple" },
+                { value: "Magenta", label: "Magenta" },
               ]}
             />
           </Form.Row>

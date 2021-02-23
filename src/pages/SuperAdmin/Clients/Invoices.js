@@ -41,20 +41,20 @@ export default function Invoices(props) {
           fullWidth={false}
           component={NavLink}
           text="CREATE AN INVOICE"
-          to={"/clients/add-invoice"}
+          to="/clients/add-invoice"
         />
       </Form.Row>
       <Form.Row noMargin>
         <FormSelect
           placeholder="Client"
           values={[
-            "Green",
-            "Yellow",
-            "Red",
-            "Blue",
-            "Orange",
-            "Purple",
-            "Magenta",
+            { value: "green", label: "Green" },
+            { value: "Yellow", label: "Yellow" },
+            { value: "Red", label: "Red" },
+            { value: "Blue", label: "Blue" },
+            { value: "Orange", label: "Orange" },
+            { value: "Purple", label: "Purple" },
+            { value: "Magenta", label: "Magenta" },
           ]}
           style={{ maxWidth: 250 }}
         />

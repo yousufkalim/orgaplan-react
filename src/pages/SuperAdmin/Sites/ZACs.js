@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -23,8 +26,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
+export default function ZACS(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
+
+  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  async function fetchData() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ZACS}?page=${page}`,
+      });
+      setItems(result.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
+
+  async function onDelete(itemId) {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        await GLOBALS.API({
+          method: "DELETE",
+          token: store.token,
+          uri: GLOBALS.Constants.ZACS + "/" + itemId,
+        });
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
+        setLoading(false);
+      }
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
+
+  const rows = [];
+  items.map((item) => {
+    rows.push([
+      item.name,
+      item.sites.length,
+      <IconButton disabled={loading} onClick={() => onDelete(item._id)}>
+        <Cross style={{ width: 18, height: 18, color: "red" }} />
+      </IconButton>,
+    ]);
+    return true;
+  });
 
   return (
     <div className={classes.root}>
@@ -34,21 +98,11 @@ export default function Profile(props) {
           fullWidth={false}
           component={NavLink}
           text="CREATE A ZAC"
-          to={"/sites/add-zac"}
+          to="/sites/add-zac"
         />
       </Form.Row>
       <div className={classes.content}>
-        <Table
-          headers={GLOBALS.Data.zacs.headings}
-          rows={GLOBALS.Data.zacs.items.map((item) => [
-            ...item,
-            <>
-              <IconButton>
-                <Cross style={{ width: 18, height: 18, color: "red" }} />
-              </IconButton>
-            </>,
-          ])}
-        />
+        <Table headers={GLOBALS.Data.zacs.headings} rows={rows} />
       </div>
     </div>
   );

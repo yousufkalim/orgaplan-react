@@ -60,8 +60,6 @@ export default function Profile(props) {
 
   const onSubmit = async (values) => {
     try {
-      console.log("values", values);
-
       let item = props.location.item;
 
       const notificationTo = values.notificationTo.map((item) => item.label);
@@ -186,13 +184,13 @@ export default function Profile(props) {
                 onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
                 values={[
-                  "Green",
-                  "Yellow",
-                  "Red",
-                  "Blue",
-                  "Orange",
-                  "Purple",
-                  "Magenta",
+                  { value: "green", label: "Green" },
+                  { value: "Yellow", label: "Yellow" },
+                  { value: "Red", label: "Red" },
+                  { value: "Blue", label: "Blue" },
+                  { value: "Orange", label: "Orange" },
+                  { value: "Purple", label: "Purple" },
+                  { value: "Magenta", label: "Magenta" },
                 ]}
               />
             </Form.Row>

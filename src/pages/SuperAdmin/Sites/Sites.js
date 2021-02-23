@@ -74,26 +74,26 @@ export default function Profile(props) {
           <FormSelect
             placeholder="Client"
             values={[
-              "Green",
-              "Yellow",
-              "Red",
-              "Blue",
-              "Orange",
-              "Purple",
-              "Magenta",
+              { value: "green", label: "Green" },
+              { value: "Yellow", label: "Yellow" },
+              { value: "Red", label: "Red" },
+              { value: "Blue", label: "Blue" },
+              { value: "Orange", label: "Orange" },
+              { value: "Purple", label: "Purple" },
+              { value: "Magenta", label: "Magenta" },
             ]}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Status"
             values={[
-              "Green",
-              "Yellow",
-              "Red",
-              "Blue",
-              "Orange",
-              "Purple",
-              "Magenta",
+              { value: "green", label: "Green" },
+              { value: "Yellow", label: "Yellow" },
+              { value: "Red", label: "Red" },
+              { value: "Blue", label: "Blue" },
+              { value: "Orange", label: "Orange" },
+              { value: "Purple", label: "Purple" },
+              { value: "Magenta", label: "Magenta" },
             ]}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />

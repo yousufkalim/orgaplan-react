@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
+export default function AddSite(props) {
   const classes = useStyles();
 
   const [step, setStep] = useState(1);
@@ -31,6 +31,8 @@ export default function Profile(props) {
   const onSubmit = () => {
     console.log("onSubmit", {
       step1Data,
+      step2Data,
+      step3Data,
     });
   };
 
