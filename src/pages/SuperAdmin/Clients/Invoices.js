@@ -31,7 +31,7 @@ export default function Invoices(props) {
 
   return (
     <div className={classes.root}>
-      {console.log(props)}
+      {console.log(props.match.params.clientId, props.match.params.contractId)}
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
