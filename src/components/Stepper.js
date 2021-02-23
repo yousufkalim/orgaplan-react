@@ -10,6 +10,7 @@ const StepsComponent = ({ className, ...props }) => {
       backgroundColor: theme.palette.common.white,
       borderWidth: 1,
     },
+    button: {},
   }));
 
   const theme = useTheme();
@@ -21,7 +22,10 @@ const StepsComponent = ({ className, ...props }) => {
         <Button
           key={index}
           text={step}
-          onClick={() => props.setStep(index + 1)}
+          className={classes.button}
+          disableRipple={props.disabled}
+          disableFocusRipple={props.disabled}
+          onClick={() => !props.disabled && props.setStep(index + 1)}
           maxWidth={String(100 / props.steps.length - 1.5) + "%"}
           color={props.step !== index + 1 && theme.palette.common.white}
           textColor={props.step !== index + 1 && theme.palette.common.black}
