@@ -56,8 +56,6 @@ export default function Profile(props) {
   const store = useSelector((state) => state.auth);
 
   const onSubmit = async (values) => {
-    console.log("values", values);
-
     const notificationTo = values.notificationTo.map((item) => item.label);
 
     var formdata = new FormData();
@@ -154,13 +152,13 @@ export default function Profile(props) {
                 value={formik.values.color}
                 error={formik.errors.color}
                 values={[
-                  "Green",
-                  "Yellow",
-                  "Red",
-                  "Blue",
-                  "Orange",
-                  "Purple",
-                  "Magenta",
+                  { value: "green", label: "Green" },
+                  { value: "Yellow", label: "Yellow" },
+                  { value: "Red", label: "Red" },
+                  { value: "Blue", label: "Blue" },
+                  { value: "Orange", label: "Orange" },
+                  { value: "Purple", label: "Purple" },
+                  { value: "Magenta", label: "Magenta" },
                 ]}
               />
             </Form.Row>

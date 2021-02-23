@@ -224,13 +224,13 @@ export default function Admins(props) {
                 onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
                 values={[
-                  "Green",
-                  "Yellow",
-                  "Red",
-                  "Blue",
-                  "Orange",
-                  "Purple",
-                  "Magenta",
+                  { value: "green", label: "Green" },
+                  { value: "Yellow", label: "Yellow" },
+                  { value: "Red", label: "Red" },
+                  { value: "Blue", label: "Blue" },
+                  { value: "Orange", label: "Orange" },
+                  { value: "Purple", label: "Purple" },
+                  { value: "Magenta", label: "Magenta" },
                 ]}
               />
             </Form.Row>

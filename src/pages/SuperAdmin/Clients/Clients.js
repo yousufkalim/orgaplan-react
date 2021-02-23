@@ -288,13 +288,13 @@ export default function Clients(props) {
                 value={formik.values.color}
                 error={formik.errors.color}
                 values={[
-                  "Green",
-                  "Yellow",
-                  "Red",
-                  "Blue",
-                  "Orange",
-                  "Purple",
-                  "Magenta",
+                  { value: "green", label: "Green" },
+                  { value: "Yellow", label: "Yellow" },
+                  { value: "Red", label: "Red" },
+                  { value: "Blue", label: "Blue" },
+                  { value: "Orange", label: "Orange" },
+                  { value: "Purple", label: "Purple" },
+                  { value: "Magenta", label: "Magenta" },
                 ]}
               />
             </Form.Row>

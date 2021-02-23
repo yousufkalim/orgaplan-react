@@ -22,7 +22,6 @@ const Notifier = () => {
   };
 
   React.useEffect(() => {
-    console.log("notifications", notifications);
     notifications.forEach(
       ({ key, message, options = {}, dismissed = false }) => {
         if (dismissed) {

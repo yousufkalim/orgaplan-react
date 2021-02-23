@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -20,18 +23,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const formInputStyle = {
-  width: "48%",
-};
+const addZACYup = Yup.object().shape({
+  name: Yup.string().required("Required"),
+});
 
 export default function Profile(props) {
   const classes = useStyles();
+  const store = useSelector((state) => state.auth);
 
-  const [name, setName] = useState("");
+  const onSubmit = async (values) => {
+    const formdata = JSON.stringify({
+      name: values.name,
+    });
 
-  const onSubmit = () => {
-    console.log("onSubmit", {});
+    await GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.ZACS,
+      token: store.token,
+      body: formdata,
+    });
+    formik.setSubmitting(false);
+    props.history.push("/sites/zacs");
   };
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+    },
+    validationSchema: addZACYup,
+    onSubmit,
+  });
 
   return (
     <div className={classes.root}>
@@ -40,22 +61,26 @@ export default function Profile(props) {
       </IconButton>
       <Heading primary="ADD A ZAC" />
       <div className={classes.content}>
-        <Form.Form>
+        <Form.Form onSubmit={formik.handleSubmit}>
           <Form.Row>
             <FormLabel bold primary="NAME OF ZAC: " />
             <FormInput
-              value={name}
-              style={formInputStyle}
+              name="name"
               placeholder="Name of ZAC"
-              onChange={(e) => setName(e.target.value)}
+              value={formik.values.name}
+              error={formik.errors.name}
+              onChange={formik.handleChange}
+              style={GLOBALS.Styles.inputWidth}
             />
           </Form.Row>
           <Form.ButtonContainer>
             <Button
+              type="submit"
               minWidth={200}
-              text="COMPLETE"
+              text="VALIDATE"
               fullWidth={false}
-              onClick={onSubmit}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             />
           </Form.ButtonContainer>
         </Form.Form>
