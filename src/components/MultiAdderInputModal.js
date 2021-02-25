@@ -100,11 +100,11 @@ export default function MultiAdderInputModal(props) {
 
   return (
     <>
-      <div className={`${classes.root} ${props.className}`} style={props.style}>
+      <div className={`${classes.root} ${props.className}`} style={props.style} >
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <div className={classes.container}>
-              <div onClick={() => setModal(true)}>
+              <div onClick={() => {setModal(true); props.onBlur()}}>
                 <Plus style={{ width: 20, height: 20 }} />
               </div>
             </div>

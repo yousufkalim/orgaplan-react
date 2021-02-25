@@ -58,7 +58,7 @@ export default function Input(props) {
         onChange={props.onChange}
         className={classes.select}
       >
-        {props.placeholder && <option>{props.placeholder}</option>}
+        {props.placeholder && <option value="">{props.placeholder}</option>}
         {props.values.map((item) => (
           <option key={item.value} value={item.value}>
             {item.label}

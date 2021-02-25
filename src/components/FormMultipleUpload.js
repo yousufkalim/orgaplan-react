@@ -98,7 +98,7 @@ export default function FormMultipleUpload(props) {
             >
               <Plus style={{ width: 20, height: 20 }} />
             </div>
-            <input hidden type="file" id={`fileinput`} onChange={onAdd} />
+            <input hidden type="file" id={`fileinput`} onChange={onAdd} onBlur={props.onBlur}/>
           </div>
           {props.error !== "" && (
             <span className={classes.error}>{props.error}</span>

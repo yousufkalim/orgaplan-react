@@ -17,6 +17,8 @@ const endpoints = {
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ZACS: BASE_URL_V1 + "superadmin/zacs",
+  SITE: BASE_URL_V1 + "superadmin/sites",
+  COMPANY: BASE_URL_V1 + "superadmin/companies",
 };
 
 export default endpoints;

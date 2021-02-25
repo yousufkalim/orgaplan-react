@@ -123,6 +123,36 @@ export default function Admins(props) {
     onSubmit: onUpdate,
   });
 
+  const rows = items.map((item) => {
+    const sendTo = [
+      item.company.name,
+      item.firstName + " " + item.lastName,
+      item.phone,
+      0,
+    ];
+    return [
+      ...sendTo,
+      <IconButton
+        onClick={() => {
+          setSelectedItem(item);
+          formik.setValues({
+            image: {
+              uri: GLOBALS.Constants.BASE_URL + item.image,
+            },
+            color: item.color,
+            phone: item.phone,
+            firstName: item.firstName,
+            lastName: item.lastName,
+            email: item.email,
+          });
+          setModal(true);
+        }}
+      >
+        <Pencil style={{ width: 18, height: 18 }} />
+      </IconButton>,
+    ];
+  });
+
   return (
     <>
       <div className={classes.root}>
@@ -145,38 +175,7 @@ export default function Admins(props) {
           <SearchInput placeholder="Name" />
         </Form.Row>
         <div className={classes.content}>
-          <Table
-            headers={GLOBALS.Data.admins.headings}
-            rows={items.map((item) => {
-              const sendTo = [
-                "-",
-                item.firstName + " " + item.lastName,
-                item.phone,
-                0,
-              ];
-              return [
-                ...sendTo,
-                <IconButton
-                  onClick={() => {
-                    setSelectedItem(item);
-                    formik.setValues({
-                      image: {
-                        uri: GLOBALS.Constants.BASE_URL + item.image,
-                      },
-                      color: item.color,
-                      phone: item.phone,
-                      firstName: item.firstName,
-                      lastName: item.lastName,
-                      email: item.email,
-                    });
-                    setModal(true);
-                  }}
-                >
-                  <Pencil style={{ width: 18, height: 18 }} />
-                </IconButton>,
-              ];
-            })}
-          />
+          <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
         </div>
       </div>
       <Modal
