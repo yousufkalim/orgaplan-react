@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -36,8 +35,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const updateAdminYup = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
   email: Yup.string().required("Required"),
   phone: Yup.number()
     .test(
@@ -46,8 +43,8 @@ const updateAdminYup = Yup.object().shape({
       (val) => val && val.toString().length === 10,
     )
     .required("Required"),
-  image: Yup.array().min(1, "Required").required("Required"),
-  color: Yup.string().required("Required"),
+  image: Yup.object().optional(""),
+  companyId: Yup.string().required("Required"),
 });
 
 export default function Admins(props) {
@@ -56,12 +53,20 @@ export default function Admins(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [companies, setCompanies] = useState([]);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [image, setImage] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -70,10 +75,26 @@ export default function Admins(props) {
 
   async function fetchData() {
     try {
-      const result = await GLOBALS.API({
+      const admins = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
       });
-      setItems(result.data.items);
+      const companies = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.COMPANY}`,
+      });
+
+      const companiesArray = [];
+      companies.data.items.map((item) => {
+        if (!item.adminId) {
+          companiesArray.push({
+            value: item._id,
+            label: item.name,
+          });
+        }
+        return true;
+      });
+
+      setItems(admins.data.items);
+      setCompanies(companiesArray);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -84,44 +105,49 @@ export default function Admins(props) {
     }
   }
 
-  const onUpdate = async (values) => {
-    var formdata = new FormData();
-    formdata.append("image", values.image.file);
-    formdata.append("color", values.color);
-    formdata.append("userId", selectedItem.userId._id);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-
-    const result = await GLOBALS.API({
-      method: "PUT",
-      uri: GLOBALS.Constants.ADMINS,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    const itemsArray = items.map((item) =>
-      item._id === selectedItem._id ? result.data : item,
-    );
-    setItems(itemsArray);
-    setModal(false);
-    formik.setSubmitting(false);
+  const handleChange = (name, value) => {
+    if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "image") setImage(value);
+    else if (name === "companyId") setCompanyId(value);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      phone: "",
-      firstName: "",
-      lastName: "",
-      image: "",
-      color: "",
-    },
-    validationSchema: updateAdminYup,
-    onSubmit: onUpdate,
-  });
+  const onUpdate = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      var formdata = new FormData();
+      formdata.append("firstName", firstName);
+      formdata.append("lastName", lastName);
+      formdata.append("phone", phone);
+      formdata.append("companyId", companyId);
+      formdata.append("userId", selectedItem._id);
+      image.file && formdata.append("image", image.file);
+
+      const result = await GLOBALS.API({
+        method: "PUT",
+        uri: GLOBALS.Constants.ADMINS,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      const itemsArray = items.map((item) =>
+        item._id === selectedItem._id ? result.data : item,
+      );
+      setItems(itemsArray);
+      setLoading(false);
+      setModal(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  };
 
   const rows = items.map((item) => {
     const sendTo = [
@@ -135,16 +161,14 @@ export default function Admins(props) {
       <IconButton
         onClick={() => {
           setSelectedItem(item);
-          formik.setValues({
-            image: {
-              uri: GLOBALS.Constants.BASE_URL + item.image,
-            },
-            color: item.color,
-            phone: item.phone,
-            firstName: item.firstName,
-            lastName: item.lastName,
-            email: item.email,
+          setImage({
+            uri: GLOBALS.Constants.BASE_URL + item.image,
           });
+          setFirstName(item.firstName);
+          setLastName(item.lastName);
+          setPhone(item.phone);
+          setCompanyId(item.company._id);
+          setCompanyName(item.company.name);
           setModal(true);
         }}
       >
@@ -183,65 +207,82 @@ export default function Admins(props) {
         open={selectedItem ? modal : false}
         onClose={() => setModal((st) => !st)}
         body={
-          <Form.Form onSubmit={formik.handleSubmit}>
+          <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
               <AvatarUpload
+                value={image}
+                // error={image}
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
-                  formik.setFieldValue("image", { file, uri });
+                  handleChange("image", { file, uri });
                 }}
-                value={formik.values.image}
-                error={formik.errors.image}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormInput
-                name="email"
-                value={formik.values.email}
-                error={formik.errors.email}
-                placeholder="E-mail Address"
-                onChange={formik.handleChange}
+                name="firstName"
+                value={firstName}
+                // error={firstName}
+                placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <FormInput
+                name="lastName"
+                value={lastName}
+                // error={lastName}
+                placeholder="Last Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormInput
                 name="phone"
                 placeholder="Phone Number"
-                value={formik.values.phone}
-                error={formik.errors.phone}
-                onChange={formik.handleChange}
+                value={phone}
+                // error={phone}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormSelect
-                name="color"
-                placeholder="Color"
-                value={formik.values.color}
-                error={formik.errors.color}
-                onChange={formik.handleChange}
+                name="companyId"
+                value={companyId}
+                // error={companyId}
+                values={companies}
+                placeholder={companyName}
                 style={GLOBALS.Styles.inputWidth}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Column alignItems="center">
               <Form.Row justifyContent="center">
                 <Button
                   type="submit"
-                  minWidth="30%"
+                  minWidth={200}
                   text="VALIDATE"
                   fullWidth={false}
-                  loading={formik.isSubmitting}
-                  disabled={formik.isSubmitting}
+                  loading={loading}
+                  disabled={
+                    loading ||
+                    !firstName ||
+                    !lastName ||
+                    !phone ||
+                    image === "" ||
+                    !companyId
+                  }
                 />
               </Form.Row>
               <Form.Row justifyContent="center">
@@ -249,7 +290,7 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={formik.isSubmitting}
+                  disabled={loading || true}
                   color={theme.palette.error.main}
                 />
               </Form.Row>
