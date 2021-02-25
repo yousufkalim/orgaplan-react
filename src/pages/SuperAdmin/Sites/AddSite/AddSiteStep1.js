@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 
 import GLOBALS from "../../../../globals";
+import Actions from "../../../../redux/actions";
+
 import Form from "../../../../components/Form";
 import Button from "../../../../components/Button";
 import SmallText from "../../../../components/SmallText";
@@ -23,6 +26,7 @@ const addSiteYup = Yup.object().shape({
   addresses: Yup.array()
     .of(
       Yup.object().shape({
+        key: Yup.number().required("Required"),
         street: Yup.string().required("Required"),
         city: Yup.string().required("Required"),
         postal: Yup.string().required("Required"),
@@ -31,10 +35,7 @@ const addSiteYup = Yup.object().shape({
     .min(1, "At least one address is required")
     // .max(3)
     .required("Required"),
-  trades: Yup.array()
-    .of(Yup.string().required())
-    .min(1, "At least one address is required")
-    .required("Required"),
+  trades: Yup.array().of(Yup.string()).optional(),
   penaltyforLateDelivery: Yup.number()
     .min(1, "Value should be greater than 0")
     .max(9999)
@@ -46,11 +47,61 @@ const addSiteYup = Yup.object().shape({
 });
 
 export default function AddSiteStep1(props) {
+  const store = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+  const [zacs, setZacs] = useState([]);
+  const [clients, setClients] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  async function fetchData() {
+    try {
+      const zacsResult = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ZACS}`,
+      });
+      const clientsResult = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.CLIENTS}`,
+      });
+
+      const zacsArray = zacsResult.data.items.map((zac) => ({
+        value: zac._id,
+        label: zac.name,
+      }));
+      const clientsArray = [];
+      clientsResult.data.items.map((client) => {
+        if (client.contract.length > 0) {
+          if (client.companyId.type !== "MASTERCLIENT") {
+            clientsArray.push({
+              value: client._id,
+              label: `${client.userId.firstName} ${client.userId.lastName}`,
+            });
+          }
+        }
+        return true;
+      });
+
+      setZacs(zacsArray);
+      setClients(clientsArray);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
+
   const onSubmit = async (values) => {
     console.log("values", values);
+    props.setStep1Data(values);
     formik.setSubmitting(false);
-    // props.setStep1Data(values);
-    // props.setStep(2);
+    props.setStep(2);
   };
 
   const formik = useFormik({
@@ -67,13 +118,14 @@ export default function AddSiteStep1(props) {
     },
     validationSchema: addSiteYup,
     onSubmit,
+    // validateOnBlur: false,
+    // validateOnChange: false,
+    // validateOnMount: false,
   });
 
   return (
     <>
       <Form.Form onSubmit={formik.handleSubmit}>
-        {console.log(formik.errors)}
-        {console.log(formik.values)}
         <Form.Row>
           <FormLabel bold primary="SITE NAME* :" />
           <FormInput
@@ -81,6 +133,7 @@ export default function AddSiteStep1(props) {
             placeholder="Site name"
             value={formik.values.name}
             error={formik.errors.name}
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             style={GLOBALS.Styles.inputWidth}
           />
@@ -92,6 +145,7 @@ export default function AddSiteStep1(props) {
             error={formik.errors.logo}
             values={formik.values.logo}
             style={GLOBALS.Styles.inputWidth}
+            onBlur={() => formik.setFieldTouched("logo", true, true)}
             onChange={(values) => formik.setFieldValue("logo", values)}
           />
         </Form.Row>
@@ -99,9 +153,10 @@ export default function AddSiteStep1(props) {
           <FormLabel bold primary="ZAC OF THE SITE : " />
           <Form.Row width="48%" noMargin>
             <FormSelect
-              values={[]}
               name="zacId"
+              values={zacs}
               placeholder="ZAC"
+              onBlur={formik.handleBlur}
               value={formik.values.zacId}
               error={formik.errors.zacId}
               onChange={formik.handleChange}
@@ -114,12 +169,13 @@ export default function AddSiteStep1(props) {
           <Form.Row width="48%" noMargin>
             <FormSelect
               name="adminId"
-              placeholder="Admin"
+              values={clients}
+              // placeholder="Admin"
+              onBlur={formik.handleBlur}
               value={formik.values.adminId}
               error={formik.errors.adminId}
               onChange={formik.handleChange}
               style={GLOBALS.Styles.inputWidth}
-              values={[]}
             />
           </Form.Row>
         </Form.Row>
@@ -127,6 +183,7 @@ export default function AddSiteStep1(props) {
           <FormLabel bold primary="AVAILABLE FUNCTIONALITY : " />
           <RadioButton
             name="functionality"
+            onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             style={GLOBALS.Styles.inputWidth}
             value={formik.values.functionality}
@@ -134,13 +191,16 @@ export default function AddSiteStep1(props) {
             items={[{ value: "DELIVERY", label: "Delivery module" }]}
           />
         </Form.Row>
+
         <Form.Row>
           <FormLabel bold primary="SITE ADDRESS(ES)* : " />
           <MultiAdderInputModal
             name="addresses"
             values={formik.values.addresses}
             style={GLOBALS.Styles.inputWidth}
+            error={formik.errors.addresses}
             placeholder="Enter site addresses"
+            onBlur={() => formik.setFieldTouched("addresses", true, true)}
             onChange={(values) => formik.setFieldValue("addresses", values)}
           />
         </Form.Row>
@@ -151,6 +211,7 @@ export default function AddSiteStep1(props) {
             placeholder="Entert trades"
             values={formik.values.trades}
             style={GLOBALS.Styles.inputWidth}
+            onBlur={() => formik.setFieldTouched("trades", true, true)}
             onChange={(values) => formik.setFieldValue("trades", values)}
           />
         </Form.Row>
@@ -161,6 +222,7 @@ export default function AddSiteStep1(props) {
               <FormInput
                 type="number"
                 placeholder="Delay"
+                onBlur={formik.handleBlur}
                 name="penaltyforLateDelivery"
                 onChange={formik.handleChange}
                 value={formik.values.penaltyforLateDelivery}
@@ -171,6 +233,7 @@ export default function AddSiteStep1(props) {
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
+                onBlur={formik.handleBlur}
                 placeholder="Unexp delivery"
                 name="penaltyforUnexpDelivery"
                 onChange={formik.handleChange}
@@ -188,7 +251,7 @@ export default function AddSiteStep1(props) {
             text="VALIDATE"
             fullWidth={false}
             loading={formik.isSubmitting}
-            disabled={formik.isSubmitting}
+            disabled={formik.isSubmitting || loading}
           />
         </Form.ButtonContainer>
       </Form.Form>

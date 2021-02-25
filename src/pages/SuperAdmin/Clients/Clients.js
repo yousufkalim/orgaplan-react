@@ -85,7 +85,7 @@ export default function Clients(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
       });
-      setItems(result.data.items);
+      // setItems(result.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(

@@ -105,6 +105,9 @@ export default function Profile(props) {
     },
     validationSchema: addClientYup,
     onSubmit,
+    validateOnBlur:false,
+    validateOnChange:false,
+    validateOnMount:false,
   });
 
   return (

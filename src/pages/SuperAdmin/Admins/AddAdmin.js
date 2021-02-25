@@ -1,11 +1,12 @@
-import React from "react";
-import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -26,8 +27,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const addAdminYup = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
   email: Yup.string().required("Required"),
   phone: Yup.number()
     .test(
@@ -36,47 +35,95 @@ const addAdminYup = Yup.object().shape({
       (val) => val && val.toString().length === 10,
     )
     .required("Required"),
-  profile: Yup.array().min(1, "Required").required("Required"),
-  color: Yup.string().required("Required"),
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
+  image: Yup.array().min(1, "Required").required("Required"),
+  companyId: Yup.string().required("Required"),
 });
 
 export default function AddAdmin(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const onSubmit = async (values) => {
-    var formdata = new FormData();
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("image", values.profile[0].file);
-    formdata.append("color", values.color);
+  const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState([]);
 
-    await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.ADMINS,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    formik.setSubmitting(false);
-    props.history.push("/admins");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [image, setImage] = useState([]);
+  const [companyId, setCompanyId] = useState("");
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  async function fetchData() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.COMPANY}`,
+      });
+
+      const itemsArray = [];
+      result.data.items.map((item) => {
+        if (!item.adminId) {
+          itemsArray.push({
+            value: item._id,
+            label: item.name,
+          });
+        }
+        return true;
+      });
+
+      setCompanies(itemsArray);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err, "error"),
+        ),
+      );
+    }
+  }
+
+  const handleChange = (name, value) => {
+    if (name === "email") setEmail(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "image") setImage(value);
+    else if (name === "companyId") setCompanyId(value);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      phone: "",
-      firstName: "",
-      lastName: "",
-      profile: [],
-      color: "",
-    },
-    validationSchema: addAdminYup,
-    onSubmit,
-  });
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      var formdata = new FormData();
+      formdata.append("email", email);
+      formdata.append("phone", phone);
+      formdata.append("firstName", firstName);
+      formdata.append("lastName", lastName);
+      formdata.append("image", image[0].file);
+      formdata.append("companyId", companyId);
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADMINS,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      setLoading(false);
+      props.history.push("/admins");
+    } catch (err) {
+      console.log("err");
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -85,25 +132,29 @@ export default function AddAdmin(props) {
       </IconButton>
       <Heading primary="ADD AN ADMIN" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO: " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
                 placeholder="E-mail Address"
-                value={formik.values.email}
-                error={formik.errors.email}
-                onChange={formik.handleChange}
+                value={email}
+                // error={email}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
                 name="phone"
+                value={phone}
+                // error={phone}
                 placeholder="Phone Number"
-                value={formik.values.phone}
-                error={formik.errors.phone}
-                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -112,19 +163,23 @@ export default function AddAdmin(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
+                value={firstName}
+                // error={firstName}
                 placeholder="First Name"
-                onChange={formik.handleChange}
-                value={formik.values.firstName}
-                error={formik.errors.firstName}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
                 name="lastName"
+                value={lastName}
+                // error={lastName}
                 placeholder="Last Name"
-                onChange={formik.handleChange}
-                value={formik.values.lastName}
-                error={formik.errors.lastName}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -132,30 +187,24 @@ export default function AddAdmin(props) {
             <FormLabel bold primary="PROFILE*: " />
             <FormMultipleUpload
               name="profile"
-              error={formik.errors.profile}
-              values={formik.values.profile}
+              // error={image}
+              values={image}
               style={GLOBALS.Styles.inputWidth}
-              onChange={(values) => formik.setFieldValue("profile", values)}
+              onChange={(values) => handleChange("profile", values)}
             />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY*: " />
             <FormSelect
-              name="color"
-              placeholder="Color"
-              value={formik.values.color}
-              error={formik.errors.color}
-              onChange={formik.handleChange}
+              name="companyId"
+              value={companyId}
+              // error={companyId}
+              values={companies}
+              placeholder="Select Company"
               style={GLOBALS.Styles.inputWidth}
-              values={[
-                { value: "green", label: "Green" },
-                { value: "Yellow", label: "Yellow" },
-                { value: "Red", label: "Red" },
-                { value: "Blue", label: "Blue" },
-                { value: "Orange", label: "Orange" },
-                { value: "Purple", label: "Purple" },
-                { value: "Magenta", label: "Magenta" },
-              ]}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -164,8 +213,16 @@ export default function AddAdmin(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              loading={loading}
+              disabled={
+                loading ||
+                !email ||
+                !phone ||
+                !firstName ||
+                !lastName ||
+                image.length === 0 ||
+                !companyId
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>
