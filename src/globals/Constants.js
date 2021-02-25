@@ -12,8 +12,8 @@ const endpoints = {
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
 
   // SUPERADMIN
+  QUOTE_VERIFY: BASE_URL_V1 + "superadmin/quotes/verify",
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
-  CLIENTS_VERIFY: BASE_URL_V1 + "superadmin/clients/verify",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ZACS: BASE_URL_V1 + "superadmin/zacs",

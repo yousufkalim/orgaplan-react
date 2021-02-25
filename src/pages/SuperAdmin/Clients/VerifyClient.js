@@ -69,11 +69,6 @@ export default function Profile(props) {
       formdata.append("color", values.color);
       formdata.append("clientId", item._id);
       formdata.append("companyId", item.companyId._id);
-      formdata.append("name", values.name);
-      formdata.append("firstName", values.firstName);
-      formdata.append("lastName", values.lastName);
-      formdata.append("email", values.email);
-      formdata.append("phone", values.phone);
       formdata.append("contractType", values.contractType);
       formdata.append("contractEndDate", values.contractEndDate);
       formdata.append("contractStartDate", values.contractStartDate);
@@ -87,7 +82,7 @@ export default function Profile(props) {
 
       await GLOBALS.API({
         method: "PUT",
-        uri: `${GLOBALS.Constants.CLIENTS_VERIFY}`,
+        uri: `${GLOBALS.Constants.QUOTE_VERIFY}`,
         headers: {
           Authorization: store.token,
         },

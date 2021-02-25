@@ -85,7 +85,7 @@ export default function Clients(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
       });
-      // setItems(result.data.items);
+      setItems(result.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -98,10 +98,9 @@ export default function Clients(props) {
 
   async function onUpdate(values) {
     var formdata = new FormData();
-    formdata.append("logo", values.logo.file);
+    values.logo.file && formdata.append("logo", values.logo.file);
     formdata.append("color", values.color);
     formdata.append("clientId", selectedItem._id);
-    formdata.append("userId", selectedItem.userId._id);
     formdata.append("contractId", selectedNestedItem._id);
     formdata.append("companyId", selectedItem.companyId._id);
     formdata.append("firstName", values.firstName);
@@ -176,22 +175,16 @@ export default function Clients(props) {
 
   const rows = [];
   items.map((item) => {
-    if (item.contract.length > 0) {
-      item.contract.map((contract) => {
+    if (item.companyId.quoteVerified) {
+      item.contractsIds.map((contract) => {
         rows.push([
           item.companyId.name,
-          item.companyId.incharge.firstName +
-            " " +
-            item.companyId.incharge.lastName,
+          `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`,
           item.companyId.incharge.phone,
           0,
-          contract.isPendingResponse
-            ? "-"
-            : moment(contract.contractStartDate).format("DD/MM/YY"),
-          contract.isPendingResponse
-            ? "-"
-            : moment(contract.contractEndDate).format("DD/MM/YY"),
-          contract.isPendingResponse ? "Requested" : contract.contractType,
+          moment(contract.contractStartDate).format("DD/MM/YY"),
+          moment(contract.contractEndDate).format("DD/MM/YY"),
+          contract.contractType,
           <>
             <IconButton
               disabled={loading}
@@ -202,7 +195,7 @@ export default function Clients(props) {
             <IconButton
               disabled={loading}
               component={NavLink}
-              to={`/clients/invoices/${item._id}/${contract._id}`}
+              to={`/clients/invoices/${item._id}`}
             >
               <Report style={{ width: 18, height: 18 }} />
             </IconButton>
