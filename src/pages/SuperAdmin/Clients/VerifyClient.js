@@ -53,7 +53,7 @@ const addClientYup = Yup.object().shape({
   notificationTo: Yup.array(),
 });
 
-export default function Profile(props) {
+export default function VerifyClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -93,7 +93,7 @@ export default function Profile(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }

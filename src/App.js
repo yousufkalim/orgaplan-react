@@ -46,9 +46,9 @@ theme.shadows[25] = "0px 3px 6px rgba(0, 0, 0, 0.16)";
 
 const App = () => {
   return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
+        <Provider store={store}>
           <SnackbarProvider
             dense={false}
             hideIconVariant={false}
@@ -66,9 +66,9 @@ const App = () => {
               <Main />
             </BrowserRouter>
           </SnackbarProvider>
-        </ThemeProvider>
-      </Provider>
-    </ErrorBoundary>
+        </Provider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 };
 

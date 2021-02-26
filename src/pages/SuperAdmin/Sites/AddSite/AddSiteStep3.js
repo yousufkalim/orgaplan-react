@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import GLOBALS from "../../../../globals";
@@ -18,12 +18,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
+export default function AddSiteStep3(props) {
   const theme = useTheme();
   const classes = useStyles();
 
+  useEffect(() => {
+    console.log("props", props);
+  }, [props]);
+
   const onSubmit = () => {
-    console.log("onSubmit", {});
+    props.history.replace("/sites");
   };
 
   return (

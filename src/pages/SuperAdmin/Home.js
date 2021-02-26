@@ -122,7 +122,7 @@ const CardComponent = ({ card }) => {
   );
 };
 
-export default function Profile(props) {
+export default function Home(props) {
   const classes = useStyles();
 
   return (

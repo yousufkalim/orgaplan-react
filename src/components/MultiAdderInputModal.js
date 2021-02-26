@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 
@@ -12,11 +11,11 @@ import FormInput from "./FormInput";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
-const addAddressesYup = Yup.object().shape({
-  street: Yup.string().required("Required"),
-  city: Yup.string().required("Required"),
-  postal: Yup.string().required("Required"),
-});
+// const addAddressesYup = Yup.object().shape({
+//   street: Yup.string().required("Required"),
+//   city: Yup.string().required("Required"),
+//   postal: Yup.string().required("Required"),
+// });
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
@@ -66,20 +65,34 @@ export default function MultiAdderInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
 
-  async function onUpdate(values) {
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [postal, setPostal] = useState("");
+
+  const handleChange = (name, value) => {
+    if (name === "street") setStreet(value);
+    else if (name === "city") setCity(value);
+    else if (name === "postal") setPostal(value);
+  };
+
+  async function onSubmit() {
     let newValues = props.values;
-    newValues.push({
+
+    const values = {
       key: newValues.length,
-      street: values.street,
-      city: values.city,
-      postal: values.postal,
-      label: `${values.street} ${values.city} ${values.postal}`,
-    });
+      street: street,
+      city: city,
+      postal: postal,
+      label: `${street} ${city} ${postal}`,
+    };
+    newValues.push(values);
     props.onChange(newValues);
+
     setUpdate((st) => !st);
     setModal(false);
-    formik.setSubmitting(false);
-    formik.handleReset();
+    setStreet("");
+    setCity("");
+    setPostal("");
   }
 
   const handleDelete = (value) => () => {
@@ -88,23 +101,18 @@ export default function MultiAdderInputModal(props) {
     setUpdate((st) => !st);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      street: "",
-      city: "",
-      postal: "",
-    },
-    validationSchema: addAddressesYup,
-    onSubmit: onUpdate,
-  });
-
   return (
     <>
-      <div className={`${classes.root} ${props.className}`} style={props.style} >
+      <div className={`${classes.root} ${props.className}`} style={props.style}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <div className={classes.container}>
-              <div onClick={() => {setModal(true); props.onBlur()}}>
+              <div
+                onClick={() => {
+                  setModal(true);
+                  props.onBlur && props.onBlur();
+                }}
+              >
                 <Plus style={{ width: 20, height: 20 }} />
               </div>
             </div>
@@ -131,42 +139,47 @@ export default function MultiAdderInputModal(props) {
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
-          <Form.Form onSubmit={formik.handleSubmit}>
+          <Form.Form>
             <Form.Row>
               <FormInput
                 name="street"
                 placeholder="Street"
-                value={formik.values.street}
-                error={formik.errors.street}
-                onChange={formik.handleChange}
+                value={street}
+                // error={street}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
               <FormInput
                 name="city"
                 placeholder="City"
-                value={formik.values.city}
-                error={formik.errors.city}
-                onChange={formik.handleChange}
+                value={city}
+                // error={city}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
               <FormInput
                 name="postal"
                 placeholder="Postal"
-                value={formik.values.postal}
-                error={formik.errors.postal}
-                onChange={formik.handleChange}
+                value={postal}
+                // error={postal}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <Button
-                type="submit"
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
-                loading={formik.isSubmitting}
-                disabled={formik.isSubmitting}
+                onClick={onSubmit}
+                disabled={!street || !city || !postal}
               />
             </Form.Row>
           </Form.Form>

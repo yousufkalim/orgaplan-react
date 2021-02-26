@@ -87,7 +87,6 @@ export default function MultiAdderInputModal(props) {
         // onClick={() => setModal(true)}
       />
       {update && ""}
-      {console.log("props.", props.values)}
       <Modal
         open={modal}
         title="UNAVAILABILITIES"

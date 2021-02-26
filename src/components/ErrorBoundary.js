@@ -2,33 +2,39 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
-const styles = (theme) => ({
-  ErrorBoundary: {
-    height: "100vh",
-    width: "100vw",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  Text404: {
-    margin: "0",
-    color: "#fff",
-    letterSpacing: ".2px",
-    fontSize: theme.typography.fontSize,
-    fontFamily: "Roboto Mono, monospace",
-  },
-  button: {
-    minWidth: 150,
-    color: "#fff",
-    marginTop: "2em",
-    borderColor: "#fff",
-    backgroundColor: "transparent",
-  },
-});
+const styles = (theme) => {
+  const borderColor = "#f5f5f5";
+  const black = theme.palette.common.black;
+
+  return {
+    ErrorBoundary: {
+      width: "100vw",
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      backgroundSize: "cover",
+      flexDirection: "column",
+      justifyContent: "center",
+      backgroundColor: borderColor,
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    },
+    Text404: {
+      margin: "0",
+      color: black,
+      fontSize: "4em",
+      textAlign: "center",
+      letterSpacing: ".2px",
+      fontFamily: "Roboto Mono, monospace",
+    },
+    button: {
+      width: 300,
+      marginTop: "15em",
+      borderColor: "#fff",
+      color: theme.palette.common.white,
+    },
+  };
+};
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -57,7 +63,8 @@ class ErrorBoundary extends Component {
         <div className={classes.ErrorBoundary}>
           <p className={classes.Text404}>404, page not found.</p>
           <Button
-            variant="outlined"
+            color="primary"
+            variant="contained"
             className={classes.button}
             onClick={() => (window.location = "/")}
           >

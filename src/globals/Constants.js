@@ -18,6 +18,9 @@ const endpoints = {
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ZACS: BASE_URL_V1 + "superadmin/zacs",
   SITE: BASE_URL_V1 + "superadmin/sites",
+  SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
+  SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
+  SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
   COMPANY: BASE_URL_V1 + "superadmin/companies",
 };
 

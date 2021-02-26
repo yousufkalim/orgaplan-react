@@ -1,11 +1,11 @@
-import React from "react";
-import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -23,36 +23,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addZACYup = Yup.object().shape({
-  name: Yup.string().required("Required"),
-});
-
-export default function Profile(props) {
+export default function AddZac(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const onSubmit = async (values) => {
-    const formdata = JSON.stringify({
-      name: values.name,
-    });
+  const [loading, setLoading] = useState(false);
 
-    await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.ZACS,
-      token: store.token,
-      body: formdata,
-    });
-    formik.setSubmitting(false);
-    props.history.push("/sites/zacs");
+  const [name, setName] = useState("");
+
+  const handleChange = (name, value) => {
+    if (name === "name") setName(value);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-    },
-    validationSchema: addZACYup,
-    onSubmit,
-  });
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+
+      const formdata = JSON.stringify({
+        name: name,
+      });
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ZACS,
+        token: store.token,
+        body: formdata,
+      });
+      setLoading(false);
+      props.history.push("/sites/zacs");
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -61,16 +69,18 @@ export default function Profile(props) {
       </IconButton>
       <Heading primary="ADD A ZAC" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="NAME OF ZAC: " />
             <FormInput
               name="name"
+              value={name}
+              // error={name}
               placeholder="Name of ZAC"
-              value={formik.values.name}
-              error={formik.errors.name}
-              onChange={formik.handleChange}
               style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -79,8 +89,8 @@ export default function Profile(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              loading={loading}
+              disabled={loading || !name}
             />
           </Form.ButtonContainer>
         </Form.Form>
