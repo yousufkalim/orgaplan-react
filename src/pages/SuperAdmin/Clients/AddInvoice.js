@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -26,37 +25,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addInvoiceYup = Yup.object().shape({
-  clientId: Yup.string().required("Required"),
-  startData: Yup.string().required("Required"),
-  endData: Yup.string().required("Required"),
-  siteId: Yup.string().required("Required"),
-  amount: Yup.number().min(1, "Must have a value").required("Required"),
-  description: Yup.string().optional(),
-});
+// const addInvoiceYup = Yup.object().shape({
+//   clientId: Yup.string().required("Required"),
+//   startDate: Yup.string().required("Required"),
+//   endDate: Yup.string().required("Required"),
+//   siteId: Yup.string().required("Required"),
+//   amount: Yup.number().min(1, "Must have a value").required("Required"),
+//   description: Yup.string().optional(),
+// });
 
 export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [sites, setSites] = useState([]);
+
+  const [clientId, setClientId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [siteId, setSiteId] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    clientId && fetchSitesByClient();
+    // eslint-disable-next-line
+  }, [clientId]);
+
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
+        token: store.token,
       });
       let itemsArray = result.data.items.map((item) => ({
         value: item._id,
         label: item.companyId.name,
       }));
-      setItems(itemsArray);
+      setClients(itemsArray);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -66,39 +80,65 @@ export default function AddInvoice(props) {
     }
   }
 
-  const onSubmit = async (values) => {
-    console.log(store);
-    // const formdata = JSON.stringify({
-    //   clientId: values.clientId,
-    //   startData: values.startData,
-    //   endData: values.endData,
-    //   siteId: values.siteId,
-    //   amount: values.amount,
-    //   description: values.description,
-    // });
+  async function fetchSitesByClient() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITE_BY_CLIENT}/${clientId}`,
+        token: store.token,
+      });
+      let itemsArray = result.data.items.map((item) => ({
+        value: item._id,
+        label: item.name,
+      }));
+      setSites(itemsArray);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
 
-    // await GLOBALS.API({
-    //   method: "POST",
-    //   uri: GLOBALS.Constants.INVOICES,
-    // token: store.token
-    //   body: formdata,
-    // });
-    formik.setSubmitting(false);
-    // props.history.goBack();
+  const handleChange = (name, value) => {
+    if (name === "clientId") setClientId(value);
+    else if (name === "startDate") setStartDate(value);
+    else if (name === "endDate") setEndDate(value);
+    else if (name === "siteId") setSiteId(value);
+    else if (name === "amount") setAmount(value);
+    else if (name === "description") setDescription(value);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      clientId: "",
-      startData: "",
-      endData: "",
-      siteId: "",
-      amount: 0,
-      description: "",
-    },
-    validationSchema: addInvoiceYup,
-    onSubmit,
-  });
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const formdata = JSON.stringify({
+        clientId: clientId,
+        startDate: startDate,
+        endDate: endDate,
+        siteId: siteId,
+        amount: amount,
+        description: description,
+      });
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.INVOICES,
+        token: store.token,
+        body: formdata,
+      });
+      setLoading(false);
+      props.history.goBack();
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -107,17 +147,19 @@ export default function AddInvoice(props) {
       </IconButton>
       <Heading primary="ADD AN INVOICE" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="CLIENT NAME* :" />
             <FormSelect
-              values={items}
               name="clientId"
-              placeholder="Client Name"
-              onChange={formik.handleChange}
-              value={formik.values.clientId}
-              error={formik.errors.clientId}
+              values={clients}
+              value={clientId}
+              // error={clientId}
+              placeholder="Select Client"
               style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row>
@@ -125,21 +167,25 @@ export default function AddInvoice(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
-                name="startData"
+                name="startDate"
+                value={startDate}
+                // error={startDate}
                 placeholder="Start date"
-                onChange={formik.handleChange}
-                value={formik.values.startData}
-                error={formik.errors.startData}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
                 type="date"
-                name="endData"
+                name="endDate"
+                value={endDate}
+                // error={endDate}
                 placeholder="End date"
-                value={formik.values.endData}
-                error={formik.errors.endData}
-                onChange={formik.handleChange}
                 style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -147,12 +193,14 @@ export default function AddInvoice(props) {
             <FormLabel bold primary="CONSTRUCTION SITE*:" />
             <FormSelect
               name="siteId"
-              values={items}
-              value={formik.values.siteId}
-              error={formik.errors.siteId}
-              onChange={formik.handleChange}
-              placeholder="Construction Site"
+              value={siteId}
+              values={sites}
+              // error={siteId}
+              placeholder="Select Site"
               style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -160,10 +208,12 @@ export default function AddInvoice(props) {
             <FormInput
               type="number"
               name="amount"
-              value={formik.values.amount}
-              error={formik.errors.amount}
-              onChange={formik.handleChange}
+              value={amount}
+              // error={amount}
               style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -172,11 +222,13 @@ export default function AddInvoice(props) {
               textArea
               rows={3}
               name="description"
+              value={description}
+              // error={description}
               placeholder="Description"
-              onChange={formik.handleChange}
               style={GLOBALS.Styles.inputWidth}
-              value={formik.values.description}
-              error={formik.errors.description}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -185,8 +237,15 @@ export default function AddInvoice(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              loading={loading}
+              disabled={
+                loading ||
+                !clientId ||
+                !startDate ||
+                !endDate ||
+                !siteId ||
+                Number(amount) <= 0
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>
