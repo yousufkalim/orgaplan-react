@@ -24,7 +24,7 @@ export default function Index(props) {
       <Route
         exact
         component={Invoices}
-        path={props.match.path + "/invoices/:clientId/:contractId"}
+        path={props.match.path + "/invoices/:clientId"}
       />
       <Route
         exact

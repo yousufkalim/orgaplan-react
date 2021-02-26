@@ -15,12 +15,14 @@ const endpoints = {
   QUOTE_VERIFY: BASE_URL_V1 + "superadmin/quotes/verify",
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
+  INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ZACS: BASE_URL_V1 + "superadmin/zacs",
   SITE: BASE_URL_V1 + "superadmin/sites",
   SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
-  SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
+  SITE_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
+  SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
   COMPANY: BASE_URL_V1 + "superadmin/companies",
 };
 
