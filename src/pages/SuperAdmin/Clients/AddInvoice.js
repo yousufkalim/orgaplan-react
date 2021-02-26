@@ -60,21 +60,22 @@ export default function AddInvoice(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
   }
 
   const onSubmit = async (values) => {
-    const formdata = JSON.stringify({
-      clientId: values.clientId,
-      startData: values.startData,
-      endData: values.endData,
-      siteId: values.siteId,
-      amount: values.amount,
-      description: values.description,
-    });
+    console.log(store);
+    // const formdata = JSON.stringify({
+    //   clientId: values.clientId,
+    //   startData: values.startData,
+    //   endData: values.endData,
+    //   siteId: values.siteId,
+    //   amount: values.amount,
+    //   description: values.description,
+    // });
 
     // await GLOBALS.API({
     //   method: "POST",

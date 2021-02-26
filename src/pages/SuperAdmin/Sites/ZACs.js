@@ -33,7 +33,7 @@ export default function ZACS(props) {
 
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   useEffect(() => {
     fetchData();
@@ -50,7 +50,7 @@ export default function ZACS(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.messagerr, "error"),
         ),
       );
     }
@@ -72,7 +72,7 @@ export default function ZACS(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }

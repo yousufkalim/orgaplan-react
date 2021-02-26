@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -34,18 +34,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const updateAdminYup = Yup.object().shape({
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  image: Yup.object().optional(""),
-  companyId: Yup.string().required("Required"),
-});
+// const updateAdminYup = Yup.object().shape({
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   image: Yup.object().optional(""),
+//   companyId: Yup.string().required("Required"),
+// });
 
 export default function Admins(props) {
   const theme = useTheme();
@@ -53,7 +53,7 @@ export default function Admins(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
@@ -99,7 +99,7 @@ export default function Admins(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
@@ -143,7 +143,7 @@ export default function Admins(props) {
       setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }

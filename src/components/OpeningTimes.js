@@ -77,44 +77,6 @@ export default function MultiAdderInputModal(props) {
   const [update, setUpdate] = useState(false);
 
   async function onSubmit(values) {
-    // let newValues = [
-    //   {
-    //     day: 1,
-    //     startHour: values.day1Start,
-    //     endHour: values.day1End,
-    //   },
-    //   {
-    //     day: 2,
-    //     startHour: values.day2Start,
-    //     endHour: values.day2End,
-    //   },
-    //   {
-    //     day: 3,
-    //     startHour: values.day3Start,
-    //     endHour: values.day3End,
-    //   },
-    //   {
-    //     day: 4,
-    //     startHour: values.day4Start,
-    //     endHour: values.day4End,
-    //   },
-    //   {
-    //     day: 5,
-    //     startHour: values.day5Start,
-    //     endHour: values.day5End,
-    //   },
-    //   {
-    //     day: 6,
-    //     startHour: values.day6Start,
-    //     endHour: values.day6End,
-    //   },
-    //   {
-    //     day: 7,
-    //     startHour: values.day7Start,
-    //     endHour: values.day7End,
-    //   },
-    // ];
-    console.log("values", "oopeintg times", values);
     props.onChange(values);
     setUpdate((st) => !st);
     setModal(false);

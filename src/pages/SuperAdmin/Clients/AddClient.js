@@ -51,7 +51,7 @@ const addClientYup = Yup.object().shape({
   notificationTo: Yup.array(),
 });
 
-export default function Profile(props) {
+export default function AddClient(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
 
@@ -105,9 +105,9 @@ export default function Profile(props) {
     },
     validationSchema: addClientYup,
     onSubmit,
-    validateOnBlur:false,
-    validateOnChange:false,
-    validateOnMount:false,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnMount: false,
   });
 
   return (

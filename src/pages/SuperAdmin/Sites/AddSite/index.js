@@ -34,6 +34,7 @@ export default function AddSite(props) {
       step2Data,
       siteCreated,
     });
+    setSiteCreated("");
   };
 
   return (
@@ -51,6 +52,7 @@ export default function AddSite(props) {
       <div className={classes.content}>
         {step === 1 ? (
           <AddSiteStep1
+            {...props}
             step={step}
             setStep={setStep}
             step1Data={step1Data}
@@ -58,16 +60,19 @@ export default function AddSite(props) {
           />
         ) : step === 2 ? (
           <AddSiteStep2
+            {...props}
             step={step}
             setStep={setStep}
-            step2Data={step2Data}
+            step1Data={step1Data}
             setStep2Data={setStep2Data}
           />
         ) : (
           <AddSiteStep3
+            {...props}
             step={step}
             setStep={setStep}
             onSubmit={onSubmit}
+            step2Data={step2Data}
             siteCreated={siteCreated}
           />
         )}

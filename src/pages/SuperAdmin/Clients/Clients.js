@@ -69,7 +69,7 @@ export default function Clients(props) {
 
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
@@ -90,7 +90,7 @@ export default function Clients(props) {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err, "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
