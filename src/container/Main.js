@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 
 import UnAuth from "../pages/UnAuth";
 import SuperAdmin from "../pages/SuperAdmin";
+import Admin from "../pages/Admin";
 
 export default function Main() {
   const store = useSelector((state) => state.auth);
@@ -23,14 +24,15 @@ export default function Main() {
 
   return (
     <>
-      {store.loading && <Loader.AbsoluteLinear />}
+     <Admin />
+      {/* {store.loading && <Loader.AbsoluteLinear />}
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (
         <SuperAdmin />
       ) : (
         <UnAuth />
-      )}
+      )} */}
     </>
   );
 }
