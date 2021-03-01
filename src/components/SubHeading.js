@@ -6,11 +6,13 @@ export default function SubHeading({
   className,
   disableMargin,
   bold,
+  topPadding,
   ...props
 }) {
   const useStyles = makeStyles((theme) => ({
     subHeading: {
       marginBottom: disableMargin ? 0 : 10,
+      paddingTop: topPadding && 20,
       fontSize: theme.typography.pxToRem(18),
       color: theme.palette.primary.contrastText,
       fontWeight: bold ? "bold" : "normal",
