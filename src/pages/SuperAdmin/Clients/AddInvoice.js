@@ -71,6 +71,7 @@ export default function AddInvoice(props) {
         label: item.companyId.name,
       }));
       setClients(itemsArray);
+      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -91,6 +92,7 @@ export default function AddInvoice(props) {
         label: item.name,
       }));
       setSites(itemsArray);
+      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(

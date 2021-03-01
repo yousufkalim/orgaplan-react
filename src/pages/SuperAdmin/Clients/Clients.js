@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
+// import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -40,26 +40,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const updateClientYup = Yup.object().shape({
-  logo: Yup.mixed(),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
-});
+// const updateClientYup = Yup.object().shape({
+//   logo: Yup.mixed(),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string().required("Required"),
+//   lastName: Yup.string().required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
+// });
 
 export default function Clients(props) {
   const theme = useTheme();
@@ -68,12 +68,26 @@ export default function Clients(props) {
   const store = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(true);
+  const [update, setUpdate] = useState(false);
   const [items, setItems] = useState([]);
   const [page] = useState(1);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedNestedItem, setSelectedNestedItem] = useState("");
+
+  const [logo, setLogo] = useState([]);
+  const [color, setColor] = useState("green");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [contractType, setContractType] = useState("CLIENTPERSITE");
+  const [contractStartDate, setContractStartDate] = useState("");
+  const [contractEndDate, setContractEndDate] = useState("");
+  const [functionality, setFunctionality] = useState("DELIVERY");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [monthlyCost, setMonthlyCost] = useState("0");
 
   useEffect(() => {
     fetchData();
@@ -96,81 +110,117 @@ export default function Clients(props) {
     }
   }
 
-  async function onUpdate(values) {
-    var formdata = new FormData();
-    values.logo.file && formdata.append("logo", values.logo.file);
-    formdata.append("color", values.color);
-    formdata.append("clientId", selectedItem._id);
-    formdata.append("contractId", selectedNestedItem._id);
-    formdata.append("companyId", selectedItem.companyId._id);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-    formdata.append("contractType", values.contractType);
-    formdata.append("contractStartDate", values.contractStartDate);
-    formdata.append("contractEndDate", values.contractEndDate);
-    formdata.append("functionality", values.functionality);
-    formdata.append("additionalInfo", values.additionalInfo);
-    formdata.append("monthlyCost", values.monthlyCost);
-
-    const result = await GLOBALS.API({
-      method: "PUT",
-      uri: GLOBALS.Constants.CLIENTS,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    const itemsArray = items.map((item) =>
-      item._id === selectedItem._id ? result.data : item,
-    );
-    setItems(itemsArray);
-    setModal(false);
-    formik.setSubmitting(false);
-  }
-
-  const formik = useFormik({
-    initialValues: {
-      logo: "",
-      color: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contractType: "",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "",
-      additionalInfo: "",
-      monthlyCost: "",
-    },
-    validationSchema: updateClientYup,
-    onSubmit: onUpdate,
-  });
+  const handleChange = (name, value) => {
+    if (name === "logo") {
+      setUpdate((st) => !st);
+      setLogo(value);
+    } else if (name === "color") setColor(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "email") setEmail(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "contractType") setContractType(value);
+    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractEndDate") setContractEndDate(value);
+    else if (name === "functionality") setFunctionality(value);
+    else if (name === "additionalInfo") setAdditionalInfo(value);
+    else if (name === "monthlyCost") setMonthlyCost(value);
+  };
 
   function modifyClick(item, contract) {
     setSelectedItem(item);
     setSelectedNestedItem(contract);
-    formik.setValues({
-      logo: {
-        uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
-      },
-      color: item.companyId.color,
-      firstName: item.companyId.incharge.firstName,
-      lastName: item.companyId.incharge.lastName,
-      email: item.companyId.incharge.email,
-      phone: item.companyId.incharge.phone,
-      contractType: contract.contractType,
-      contractStartDate: moment(contract.contractStartDate).format(
-        "YYYY-MM-DD",
-      ),
-      contractEndDate: moment(contract.contractEndDate).format("YYYY-MM-DD"),
-      functionality: contract.functionality,
-      additionalInfo: contract.additionalInfo,
-      monthlyCost: contract.monthlyCost || 0,
+    setLogo({
+      uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
     });
+    setColor(item.companyId.color);
+    console.log(item.companyId.incharge);
+    if (item.companyId.incharge) {
+      setFirstName(item.companyId.incharge.firstName || "");
+      setLastName(item.companyId.incharge.lastName || "");
+      setEmail(item.companyId.incharge.email || "");
+      setPhone(item.companyId.incharge.phone || "");
+    }
+    setContractType(contract.contractType);
+    if (contract.contractType === "MASTERCLIENT") {
+      setContractStartDate(
+        moment(contract.contractStartDate).format("YYYY-MM-DD"),
+      );
+      setContractEndDate(moment(contract.contractEndDate).format("YYYY-MM-DD"));
+    }
+    setFunctionality(contract.functionality);
+    setAdditionalInfo(contract.additionalInfo);
+    setMonthlyCost(contract.monthlyCost || 0);
     setModal(true);
+  }
+
+  async function onUpdate(e) {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      var formdata = new FormData();
+      logo.file && formdata.append("logo", logo.file);
+      formdata.append("color", color);
+      formdata.append("clientId", selectedItem._id);
+      formdata.append("contractId", selectedNestedItem._id);
+      formdata.append("companyId", selectedItem.companyId._id);
+      formdata.append("firstName", firstName);
+      formdata.append("lastName", lastName);
+      formdata.append("email", email);
+      formdata.append("phone", phone);
+      formdata.append("contractType", contractType);
+      formdata.append("contractStartDate", contractStartDate);
+      formdata.append("contractEndDate", contractEndDate);
+      formdata.append("functionality", functionality);
+      formdata.append("additionalInfo", additionalInfo);
+      formdata.append("monthlyCost", monthlyCost);
+
+      const result = await GLOBALS.API({
+        method: "PUT",
+        uri: GLOBALS.Constants.CLIENTS,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      const itemsArray = items.map((item) =>
+        item._id === selectedItem._id ? result.data : item,
+      );
+      setItems(itemsArray);
+      setModal(false);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function onDelete(itemId) {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        await GLOBALS.API({
+          method: "DELETE",
+          token: store.token,
+          uri: GLOBALS.Constants.CLIENT_DELETE + "/" + itemId,
+        });
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
+        setModal(false);
+        setLoading(false);
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
   }
 
   const rows = [];
@@ -179,11 +229,17 @@ export default function Clients(props) {
       item.contractsIds.map((contract) => {
         rows.push([
           item.companyId.name,
-          `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`,
-          item.companyId.incharge.phone,
+          item.companyId.incharge
+            ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
+            : "",
+          item.companyId.incharge ? item.companyId.incharge.phone : "",
           0,
-          moment(contract.contractStartDate).format("DD/MM/YY"),
-          moment(contract.contractEndDate).format("DD/MM/YY"),
+          contract.contractType === "MASTERCLIENT"
+            ? moment(contract.contractStartDate).format("DD/MM/YY")
+            : "-",
+          contract.contractType === "MASTERCLIENT"
+            ? moment(contract.contractEndDate).format("DD/MM/YY")
+            : "-",
           contract.contractType,
           <>
             <IconButton
@@ -238,7 +294,11 @@ export default function Clients(props) {
           <Heading primary="CLIENTS LIST" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 Clients" bold />
+              <SubHeading
+                disableMargin
+                primary={`Total : ${rows.length} Clients`}
+                bold
+              />
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -261,25 +321,27 @@ export default function Clients(props) {
         open={selectedItem ? modal : false}
         onClose={() => setModal((st) => !st)}
         body={
-          <Form.Form onSubmit={formik.handleSubmit}>
+          <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
               <AvatarUpload
+                value={logo}
+                // error={logo}
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
-                  formik.setFieldValue("logo", { file, uri });
+                  handleChange("logo", { file, uri });
                 }}
-                value={formik.values.logo}
-                error={formik.errors.logo}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormSelect
-                placeholder="Color"
                 name="color"
-                onChange={formik.handleChange}
+                value={color}
+                // error={color}
+                placeholder="Color"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.color}
-                error={formik.errors.color}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 values={[
                   { value: "green", label: "Green" },
                   { value: "Yellow", label: "Yellow" },
@@ -293,38 +355,46 @@ export default function Clients(props) {
             </Form.Row>
             <Form.Row>
               <FormInput
-                placeholder="First Name"
-                onChange={formik.handleChange}
-                style={GLOBALS.Styles.inputWidth}
                 name="firstName"
-                value={formik.values.firstName}
-                error={formik.errors.firstName}
+                value={firstName}
+                // error={firstName}
+                placeholder="First Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
-                placeholder="Last Name"
-                onChange={formik.handleChange}
                 name="lastName"
+                value={lastName}
+                // error={lastName}
+                placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.lastName}
-                error={formik.errors.lastName}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
               <FormInput
-                placeholder="E-mail Address"
-                onChange={formik.handleChange}
                 name="email"
+                value={email}
+                // error={email}
+                placeholder="E-mail Address"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.email}
-                error={formik.errors.email}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
-                placeholder="Phone Number"
-                onChange={formik.handleChange}
                 name="phone"
+                value={phone}
+                // error={phone}
+                placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.phone}
-                error={formik.errors.phone}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
@@ -332,28 +402,36 @@ export default function Clients(props) {
                 type="date"
                 placeholder="Start date"
                 name="contractStartDate"
-                onChange={formik.handleChange}
+                value={contractStartDate}
+                // error={contractStartDate}
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.contractStartDate}
-                error={formik.errors.contractStartDate}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
                 type="date"
                 placeholder="End date"
                 name="contractEndDate"
-                onChange={formik.handleChange}
+                value={contractEndDate}
+                // error={contractEndDate}
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.contractEndDate}
-                error={formik.errors.contractEndDate}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
               <RadioButton
                 name="contractType"
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.contractType}
-                error={formik.errors.contractType}
-                onChange={formik.handleChange}
+                value={contractType}
+                // error={contractType}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 items={[
                   { value: "CLIENTPERSITE", label: "Per Site" },
                   { value: "MASTERCLIENT", label: "Master Contract" },
@@ -364,9 +442,11 @@ export default function Clients(props) {
               <RadioButton
                 style={GLOBALS.Styles.inputWidth}
                 name="functionality"
-                onChange={formik.handleChange}
-                value={formik.values.functionality}
-                error={formik.errors.functionality}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                value={functionality}
+                // error={functionality}
                 items={[{ value: "DELIVERY", label: "Delivery module" }]}
               />
             </Form.Row>
@@ -375,9 +455,11 @@ export default function Clients(props) {
                 <FormInput
                   type="number"
                   name="monthlyCost"
-                  onChange={formik.handleChange}
-                  value={formik.values.monthlyCost}
-                  error={formik.errors.monthlyCost}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                  value={monthlyCost}
+                  // error={monthlyCost}
                   style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 />
                 <SmallText primary="€/month" />
@@ -387,22 +469,40 @@ export default function Clients(props) {
               <FormInput
                 textArea
                 rows={3}
-                onChange={formik.handleChange}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 placeholder="Additional information"
                 name="additionalInfo"
-                value={formik.values.additionalInfo}
-                error={formik.errors.additionalInfo}
+                value={additionalInfo}
+                // error={additionalInfo}
               />
             </Form.Row>
             <Form.Column alignItems="center">
               <Form.Row justifyContent="center">
                 <Button
                   type="submit"
-                  minWidth="30%"
+                  minWidth={200}
                   text="VALIDATE"
                   fullWidth={false}
-                  loading={formik.isSubmitting}
-                  disabled={formik.isSubmitting}
+                  loading={loading}
+                  disabled={
+                    loading ||
+                    !logo ||
+                    (contractType === "MASTERCLIENT" &&
+                      (!contractStartDate ||
+                        !contractEndDate ||
+                        moment(contractEndDate).diff(
+                          moment(contractStartDate),
+                          "days",
+                        ) <= 0)) ||
+                    firstName.length > 30 ||
+                    lastName.length > 30 ||
+                    (phone.length > 0 &&
+                      (!phone.startsWith("0") || phone.length !== 10)) ||
+                    additionalInfo.length > 300 ||
+                    Number(monthlyCost) < 0
+                  }
                 />
               </Form.Row>
               <Form.Row justifyContent="center">
@@ -410,7 +510,9 @@ export default function Clients(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={formik.isSubmitting}
+                  loading={loading}
+                  disabled={loading}
+                  onClick={() => onDelete(selectedItem._id)}
                   color={theme.palette.error.main}
                 />
               </Form.Row>

@@ -132,7 +132,11 @@ export default function Sites(props) {
         <Heading primary="SITES LIST" noWrap />
         <div>
           <Form.Row alignItems="center" noMargin>
-            <SubHeading disableMargin primary="Total : 234 Sites" bold />
+            <SubHeading
+              disableMargin
+              primary={`Total : ${rows.length} Sites`}
+              bold
+            />
             <Button
               fullWidth={false}
               component={NavLink}

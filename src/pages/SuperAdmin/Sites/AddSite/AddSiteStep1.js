@@ -92,12 +92,12 @@ export default function AddSiteStep1(props) {
       const clientsArray = [];
       clientsResult.data.items.map((client) => {
         if (client.userId) {
-          if (client.companyId.type !== "MASTERCLIENT") {
-            clientsArray.push({
-              value: client._id,
-              label: `${client.userId.firstName} ${client.userId.lastName}`,
-            });
-          }
+          // if (client.companyId.type !== "MASTERCLIENT") {
+          clientsArray.push({
+            value: client._id,
+            label: `${client.userId.firstName} ${client.userId.lastName}`,
+          });
+          // }
           return true;
         }
         return true;

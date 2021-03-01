@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {Images} from "../assets/Assets";
 
 export default function Input(props) {
   const theme = useTheme();
@@ -89,7 +88,6 @@ export default function Input(props) {
           name={props.name}
           value={props.value}
           className={classes.input}
-          // startIcon={Images.calender}
           onChange={props.onChange}
           disabled={props.disabled}
           placeholder={props.placeholder}
