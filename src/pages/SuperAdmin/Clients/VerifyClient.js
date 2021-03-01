@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { useFormik } from "formik";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
+// import * as Yup from "yup";
+import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -30,55 +30,95 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
+// const addClientYup = Yup.object().shape({
+//   logo: Yup.array().min(1, "Required").required("Required"),
+//   name: Yup.string().required("Required"),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string().required("Required"),
+//   lastName: Yup.string().required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   notificationPriorToDays: Yup.number(),
+//   notificationTo: Yup.array(),
+// });
 
 export default function VerifyClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const onSubmit = async (values) => {
+  const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState(false);
+
+  const [logo, setLogo] = useState([]);
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("green");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [contractType, setContractType] = useState("CLIENTPERSITE");
+  const [contractStartDate, setContractStartDate] = useState("");
+  const [contractEndDate, setContractEndDate] = useState("");
+  const [functionality, setFunctionality] = useState("DELIVERY");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
+  const [notificationTo, setNotificationTo] = useState([]);
+
+  const handleChange = (name, value) => {
+    if (name === "logo") {
+      setUpdate((st) => !st);
+      setLogo(value);
+    } else if (name === "name") setName(value);
+    else if (name === "color") setColor(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "email") setEmail(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "contractType") setContractType(value);
+    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractEndDate") setContractEndDate(value);
+    else if (name === "functionality") setFunctionality(value);
+    else if (name === "additionalInfo") setAdditionalInfo(value);
+    else if (name === "notificationPriorToDays")
+      setNotificationPriorToDays(value);
+    else if (name === "notificationTo") {
+      setUpdate((st) => !st);
+      setNotificationTo(value);
+    }
+  };
+
+  const onSubmit = async (e) => {
     try {
+      e.preventDefault();
+      setLoading(true);
       let item = props.location.item;
 
-      const notificationTo = values.notificationTo.map((item) => item.label);
+      const notificationToArray = notificationTo.map((item) => item.label);
 
       var formdata = new FormData();
-      formdata.append("logo", values.logo[0].file);
-      formdata.append("color", values.color);
+      formdata.append("logo", logo[0].file);
+      formdata.append("color", color);
       formdata.append("clientId", item._id);
       formdata.append("companyId", item.companyId._id);
-      formdata.append("contractType", values.contractType);
-      formdata.append("contractEndDate", values.contractEndDate);
-      formdata.append("contractStartDate", values.contractStartDate);
-      formdata.append("functionality", values.functionality);
-      formdata.append("additionalInfo", values.additionalInfo);
-      formdata.append(
-        "notificationPriorToDays",
-        values.notificationPriorToDays,
-      );
-      formdata.append("notificationTo", JSON.stringify(notificationTo));
+      formdata.append("contractType", contractType);
+      formdata.append("contractEndDate", contractEndDate);
+      formdata.append("contractStartDate", contractStartDate);
+      formdata.append("functionality", functionality);
+      formdata.append("additionalInfo", additionalInfo);
+      formdata.append("notificationPriorToDays", notificationPriorToDays);
+      formdata.append("notificationTo", JSON.stringify(notificationToArray));
 
       await GLOBALS.API({
         method: "PUT",
@@ -88,9 +128,10 @@ export default function VerifyClient(props) {
         },
         body: formdata,
       });
-      formik.setSubmitting(false);
+      setLoading(false);
       props.history.replace("/clients");
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -99,45 +140,16 @@ export default function VerifyClient(props) {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      logo: [],
-      name: "",
-      color: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    validationSchema: addClientYup,
-    onSubmit,
-  });
-
   useEffect(() => {
     let item = props.location.item;
-    formik.setValues({
-      logo: [],
-      name: item.companyId.name,
-      color: "",
-      firstName: item.companyId.incharge.firstName,
-      lastName: item.companyId.incharge.lastName,
-      email: item.companyId.incharge.email,
-      phone: item.companyId.incharge.phone,
-      contractType: item.companyId.type,
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: 0,
-      notificationTo: [],
-    });
+
+    setName(item.companyId.name);
+    setFirstName(item.companyId.incharge.firstName);
+    setLastName(item.companyId.incharge.lastName);
+    setEmail(item.companyId.incharge.email);
+    setPhone(item.companyId.incharge.phone);
+    setContractType(item.companyId.type);
+
     // eslint-disable-next-line
   }, []);
 
@@ -148,17 +160,19 @@ export default function VerifyClient(props) {
       </IconButton>
       <Heading primary="ADD A CLIENT" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="COMPANY NAME* :" />
             <FormInput
-              name="name"
               disabled
+              name="name"
+              value={name}
+              // error={name}
               placeholder="Company name"
-              value={formik.values.name}
-              error={formik.errors.name}
-              onChange={formik.handleChange}
               style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row>
@@ -166,17 +180,19 @@ export default function VerifyClient(props) {
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
-                error={formik.errors.logo}
-                values={formik.values.logo}
+                values={logo}
+                // error={logo}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={(values) => formik.setFieldValue("logo", values)}
+                onChange={(values) => handleChange("logo", values)}
               />
               <FormSelect
                 name="color"
+                value={color}
+                // error={color}
                 placeholder="Color"
-                value={formik.values.color}
-                error={formik.errors.color}
-                onChange={formik.handleChange}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
                 values={[
                   { value: "green", label: "Green" },
@@ -197,18 +213,22 @@ export default function VerifyClient(props) {
                 disabled
                 name="firstName"
                 placeholder="First Name"
-                onChange={formik.handleChange}
-                value={formik.values.firstName}
-                error={formik.errors.firstName}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                value={firstName}
+                // error={firstName}
                 style={GLOBALS.Styles.inputWidth}
               />
               <FormInput
                 disabled
                 name="lastName"
                 placeholder="Last Name"
-                onChange={formik.handleChange}
-                value={formik.values.lastName}
-                error={formik.errors.lastName}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                value={lastName}
+                // error={lastName}
                 style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
@@ -220,18 +240,22 @@ export default function VerifyClient(props) {
                 disabled
                 name="email"
                 placeholder="E-mail Address"
-                value={formik.values.email}
-                error={formik.errors.email}
-                onChange={formik.handleChange}
+                value={email}
+                // error={email}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
               />
               <FormInput
                 disabled
                 name="phone"
                 placeholder="Phone Number"
-                value={formik.values.phone}
-                error={formik.errors.phone}
-                onChange={formik.handleChange}
+                value={phone}
+                // error={phone}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
@@ -241,10 +265,12 @@ export default function VerifyClient(props) {
             <RadioButton
               disabled
               name="contractType"
-              onChange={formik.handleChange}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
               style={GLOBALS.Styles.inputWidth}
-              value={formik.values.contractType}
-              error={formik.errors.contractType}
+              value={contractType}
+              // error={contractType}
               items={[
                 { value: "CLIENTPERSITE", label: "Per Site" },
                 { value: "MASTERCLIENT", label: "Master Contract" },
@@ -258,19 +284,25 @@ export default function VerifyClient(props) {
                 type="date"
                 placeholder="Start date"
                 name="contractStartDate"
-                onChange={formik.handleChange}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.contractStartDate}
-                error={formik.errors.contractStartDate}
+                value={contractStartDate}
+                // error={contractStartDate}
               />
               <FormInput
                 type="date"
                 placeholder="End date"
                 name="contractEndDate"
-                onChange={formik.handleChange}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 style={GLOBALS.Styles.inputWidth}
-                value={formik.values.contractEndDate}
-                error={formik.errors.contractEndDate}
+                value={contractEndDate}
+                // error={contractEndDate}
               />
             </Form.Row>
           </Form.Row>
@@ -278,10 +310,12 @@ export default function VerifyClient(props) {
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
               name="functionality"
-              onChange={formik.handleChange}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
               style={GLOBALS.Styles.inputWidth}
-              value={formik.values.functionality}
-              error={formik.errors.functionality}
+              value={functionality}
+              // error={functionality}
               items={[{ value: "DELIVERY", label: "Delivery module" }]}
             />
           </Form.Row>
@@ -291,11 +325,13 @@ export default function VerifyClient(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
               placeholder="Additional information"
               name="additionalInfo"
-              value={formik.values.additionalInfo}
-              error={formik.errors.additionalInfo}
+              value={additionalInfo}
+              // error={additionalInfo}
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -309,9 +345,12 @@ export default function VerifyClient(props) {
               <FormInput
                 type="number"
                 name="notificationPriorToDays"
-                onChange={formik.handleChange}
-                value={formik.values.notificationPriorToDays}
-                error={formik.errors.notificationPriorToDays}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                value={notificationPriorToDays}
+                // error={notificationPriorToDays}
+                disabled={contractType !== "MASTERCLIENT"}
                 style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
               />
               <SmallText
@@ -323,14 +362,13 @@ export default function VerifyClient(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
             <MultiAdderInput
-              style={GLOBALS.Styles.inputWidth}
               name="notificationTo"
+              values={notificationTo}
               validateError="Invalid Email"
+              style={GLOBALS.Styles.inputWidth}
               placeholder="Enter email address"
-              values={formik.values.notificationTo}
-              onChange={(values) =>
-                formik.setFieldValue("notificationTo", values)
-              }
+              disabled={contractType !== "MASTERCLIENT"}
+              onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
                 return !re.test(String(text).toLowerCase());
@@ -343,8 +381,21 @@ export default function VerifyClient(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              loading={loading}
+              disabled={
+                loading ||
+                logo.length === 0 ||
+                (contractType === "MASTERCLIENT" &&
+                  (!contractStartDate ||
+                    !contractEndDate ||
+                    moment(contractEndDate).diff(
+                      moment(contractStartDate),
+                      "days",
+                    ) <= 0)) ||
+                additionalInfo.length > 300 ||
+                (phone && phone.length !== 10) ||
+                Number(notificationPriorToDays) < 0
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

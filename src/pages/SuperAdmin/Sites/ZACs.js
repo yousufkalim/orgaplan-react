@@ -70,6 +70,7 @@ export default function ZACS(props) {
         setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),

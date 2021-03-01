@@ -5,6 +5,14 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       myHeaders.append("Content-Type", "application/json");
       token && myHeaders.append("Authorization", `Bearer ${token}`);
 
+      if (body instanceof FormData) {
+        for (let values of body.entries()) {
+          console.log("values", values);
+        }
+      } else {
+        console.log("body", body);
+      }
+
       const response = await fetch(uri, {
         method,
         headers: headers || myHeaders,
