@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import {Images} from "../assets/Assets";
 
 export default function Heading({ className, bold, ...props }) {
   const useStyles = makeStyles((theme) => ({
@@ -14,12 +15,21 @@ export default function Heading({ className, bold, ...props }) {
   const classes = useStyles();
 
   return (
+   <>
     <Typography
       className={`${classes.heading} ${className}`}
       style={props.style}
       {...props}
     >
+       
       {props.primary}
+      {
+        props.icon && (
+          <span className="pl-5" > <img src={Images.uploadIcon} style={{width: "1.5rem"}} /></span>
+        )
+      }
     </Typography>
+  
+   </>
   );
 }

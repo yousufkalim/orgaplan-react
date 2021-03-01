@@ -11,6 +11,9 @@ import Main from "./container/Main";
 import Notifier from "./redux/Notifier";
 import ErrorBoundary from "./components/ErrorBoundary";
 
+// React Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const theme = createMuiTheme({
   breakpoints: {
     values: {
