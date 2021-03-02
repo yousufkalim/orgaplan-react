@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
@@ -10,6 +10,7 @@ import Modal from "./Modal";
 import Button from "./Button";
 import FormLabel from "./FormLabel";
 import FormSelect from "./FormSelect";
+import RadioButton from "./RadioButton";
 
 const addOpeningTimes = Yup.object().shape({
   day1Start: Yup.number()
@@ -76,6 +77,18 @@ export default function MultiAdderInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
 
+  const formik = useFormik({
+    initialValues: props.values,
+    validationSchema: addOpeningTimes,
+    onSubmit: onSubmit,
+  });
+
+  useEffect(() => {
+    setUpdate((st) => !st);
+    formik.setValues(props.values);
+    // eslint-disable-next-line
+  }, [props.values, modal]);
+
   async function onSubmit(values) {
     props.onChange(values);
     setUpdate((st) => !st);
@@ -83,12 +96,6 @@ export default function MultiAdderInputModal(props) {
     formik.setSubmitting(false);
     formik.handleReset();
   }
-
-  const formik = useFormik({
-    initialValues: props.values,
-    validationSchema: addOpeningTimes,
-    onSubmit: onSubmit,
-  });
 
   const values = [
     { value: 0, label: "0" },
@@ -133,17 +140,36 @@ export default function MultiAdderInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form onSubmit={formik.handleSubmit}>
+            <Form.Row alignItems="center" justifyContent="center">
+              <FormLabel disableMargin bold primary="Open Day" />
+            </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 1:" />
+                <FormLabel disableMargin bold primary="Monday" />
               </Form.Row>
+              <RadioButton
+                name="day1Off"
+                // error={contractType}
+                value={formik.values.day1Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day1Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day1Start}
                   error={formik.errors.day1Start}
+                  disabled={formik.values.day1Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -151,22 +177,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day1End}
                   error={formik.errors.day1End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day1Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 2:" />
+                <FormLabel disableMargin bold primary="Tuesday" />
               </Form.Row>
+              <RadioButton
+                name="day2Off"
+                // error={contractType}
+                value={formik.values.day2Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day2Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day2Start}
                   error={formik.errors.day2Start}
+                  disabled={formik.values.day2Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -174,22 +219,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day2End}
                   error={formik.errors.day2End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day2Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 3:" />
+                <FormLabel disableMargin bold primary="Wednesday" />
               </Form.Row>
+              <RadioButton
+                name="day3Off"
+                // error={contractType}
+                value={formik.values.day3Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day3Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day3Start}
                   error={formik.errors.day3Start}
+                  disabled={formik.values.day3Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -197,22 +261,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day3End}
                   error={formik.errors.day3End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day3Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 4:" />
+                <FormLabel disableMargin bold primary="Thursday" />
               </Form.Row>
+              <RadioButton
+                name="day4Off"
+                // error={contractType}
+                value={formik.values.day4Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day4Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day4Start}
                   error={formik.errors.day4Start}
+                  disabled={formik.values.day4Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -220,22 +303,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day4End}
                   error={formik.errors.day4End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day4Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 5:" />
+                <FormLabel disableMargin bold primary="Friday" />
               </Form.Row>
+              <RadioButton
+                name="day5Off"
+                // error={contractType}
+                value={formik.values.day5Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day5Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day5Start}
                   error={formik.errors.day5Start}
+                  disabled={formik.values.day5Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -243,22 +345,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day5End}
                   error={formik.errors.day5End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day5Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 6:" />
+                <FormLabel disableMargin bold primary="Saturday" />
               </Form.Row>
+              <RadioButton
+                name="day6Off"
+                // error={contractType}
+                value={formik.values.day6Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day6Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day6Start}
                   error={formik.errors.day6Start}
+                  disabled={formik.values.day6Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -266,22 +387,41 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day6End}
                   error={formik.errors.day6End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day6Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Day 7:" />
+                <FormLabel disableMargin bold primary="Sunday" />
               </Form.Row>
+              <RadioButton
+                name="day7Off"
+                // error={contractType}
+                value={formik.values.day7Off}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  formik.setFieldValue(name, value === "true" ? true : false)
+                }
+                items={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
               <Form.Row noMargin>
                 <FormSelect
                   values={values}
                   name="day7Start"
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
                   value={formik.values.day7Start}
                   error={formik.errors.day7Start}
+                  disabled={formik.values.day7Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
                 <FormSelect
@@ -289,7 +429,10 @@ export default function MultiAdderInputModal(props) {
                   values={values}
                   value={formik.values.day7End}
                   error={formik.errors.day7End}
-                  onChange={formik.handleChange}
+                  onChange={({ target: { name, value } }) =>
+                    formik.setFieldValue(name, Number(value))
+                  }
+                  disabled={formik.values.day7Off}
                   style={GLOBALS.Styles.inputWidth}
                 />
               </Form.Row>

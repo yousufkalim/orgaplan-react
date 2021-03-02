@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import * as Yup from "yup";
+// import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +21,6 @@ import SubHeading from "../../../components/SubHeading";
 import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
-
 
 import SiteImage from "../../../assets/images/Site.png";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
@@ -48,28 +47,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
+// const addClientYup = Yup.object().shape({
+//   logo: Yup.array().min(1, "Required").required("Required"),
+//   name: Yup.string().required("Required"),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string().required("Required"),
+//   lastName: Yup.string().required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   notificationPriorToDays: Yup.number(),
+//   notificationTo: Yup.array(),
+// });
 
 const Means = () => {
   const classes = useStyles();
@@ -154,7 +153,6 @@ const Means = () => {
 
   const formik = useFormik({
     initialValues: {
-     
       contractType: "CLIENTPERSITE",
       contractStartDate: "",
       contractEndDate: "",
@@ -285,12 +283,10 @@ const Means = () => {
         {/* <NavLink className={classes.link} to="/sites/archives">
           See archived sites
         </NavLink> */}
-
-        
       </Form.Row>
 
       <Form.Row alignItems="center" noMargin className="mt-3">
-      <Form.Row justifyContent="flex-start" noMargin>
+        <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
             values={[
@@ -318,33 +314,33 @@ const Means = () => {
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Start date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-         <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="End date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-           <SearchInput
+            icon
+            type="date"
+            placeholder="Start date"
+            name="contractStartDate"
+            onChange={formik.handleChange}
+            // style={GLOBALS.Styles.inputWidth}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <FormInput
+            icon
+            type="date"
+            placeholder="End date"
+            name="contractStartDate"
+            onChange={formik.handleChange}
+            // style={GLOBALS.Styles.inputWidth}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <SearchInput
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
-        </Form.Row>
+      </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.means.headings} rows={rows} />
       </div>

@@ -110,7 +110,7 @@ export default function ArchivedSites(props) {
         }}
       />
       <IconButton>
-        <Cross style={{ width: 18, height: 18, color: "red" }} />
+        <Cross style={{ width: 15, height: 15, color: "red" }} />
       </IconButton>
     </Form.Row>,
   ]);

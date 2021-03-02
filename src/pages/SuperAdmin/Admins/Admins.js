@@ -199,7 +199,7 @@ export default function Admins(props) {
           setModal(true);
         }}
       >
-        <Pencil style={{ width: 18, height: 18 }} />
+        <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>,
     ];
   });

@@ -26,7 +26,7 @@ export default function Input(props) {
       display: "flex",
       overflow: "hidden",
       textAlign: "center",
-      padding: "14px 12px",
+      padding: "10px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
@@ -55,6 +55,7 @@ export default function Input(props) {
         name={props.name}
         value={props.value}
         selected={props.value}
+        disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
       >

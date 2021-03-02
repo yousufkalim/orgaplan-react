@@ -246,14 +246,14 @@ export default function Clients(props) {
               disabled={loading}
               onClick={() => modifyClick(item, contract)}
             >
-              <Pencil style={{ width: 18, height: 18 }} />
+              <Pencil style={{ width: 15, height: 15 }} />
             </IconButton>
             <IconButton
               disabled={loading}
               component={NavLink}
               to={`/clients/invoices/${item._id}`}
             >
-              <Report style={{ width: 18, height: 18 }} />
+              <Report style={{ width: 15, height: 15 }} />
             </IconButton>
           </>,
         ]);
@@ -279,7 +279,7 @@ export default function Clients(props) {
             })
           }
         >
-          <Plus style={{ width: 18, height: 18 }} />
+          <Plus style={{ width: 15, height: 15 }} />
         </IconButton>,
       ]);
       return true;
@@ -316,6 +316,7 @@ export default function Clients(props) {
           <Table headers={GLOBALS.Data.clients.headings} rows={rows} />
         </div>
       </div>
+      {update && ""}
       <Modal
         title="EDIT CLIENT"
         open={selectedItem ? modal : false}
@@ -456,7 +457,7 @@ export default function Clients(props) {
                   type="number"
                   name="monthlyCost"
                   onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
+                    value >= 0 && handleChange(name, value)
                   }
                   value={monthlyCost}
                   // error={monthlyCost}

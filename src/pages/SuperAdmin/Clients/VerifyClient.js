@@ -159,6 +159,7 @@ export default function VerifyClient(props) {
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
       <Heading primary="ADD A CLIENT" />
+      {update && ""}
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
