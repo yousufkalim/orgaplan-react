@@ -111,7 +111,7 @@ export default function Sites(props) {
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
       <IconButton>
-        <Pencil style={{ width: 18, height: 18 }} />
+        <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <SmallButton
         text="Archive"

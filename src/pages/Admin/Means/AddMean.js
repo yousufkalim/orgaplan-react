@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const AddMean = () => {
-    return (
-        <div>
-            
-        </div>
-    )
-}
+  return <div></div>;
+};
 
-export default AddMean
+export default AddMean;

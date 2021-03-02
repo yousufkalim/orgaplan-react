@@ -105,7 +105,7 @@ export default function AddSiteStep1(props) {
       setClientsOriginal(clientsResult.data.items);
       setZacs(zacsArray);
       setClients(clientsArray);
-      setAdminId(clientsArray[0].value);
+      setAdminId(clientsArray[0]?.value);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -259,7 +259,7 @@ export default function AddSiteStep1(props) {
                 value={penaltyforLateDelivery}
                 // error={penaltyforLateDelivery}
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value >= 0 && handleChange(name, value)
                 }
               />
               <SmallText style={{ marginLeft: 10 }} primary="€" />
@@ -272,7 +272,7 @@ export default function AddSiteStep1(props) {
                 value={penaltyforUnexpDelivery}
                 // error={penaltyforUnexpDelivery}
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value >= 0 && handleChange(name, value)
                 }
               />
               <SmallText style={{ marginLeft: 10 }} primary="€" />

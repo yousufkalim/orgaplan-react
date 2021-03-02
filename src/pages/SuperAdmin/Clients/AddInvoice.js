@@ -214,7 +214,7 @@ export default function AddInvoice(props) {
               // error={amount}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
+                value >= 0 && handleChange(name, value)
               }
             />
           </Form.Row>

@@ -93,10 +93,10 @@ export default function Invoices(props) {
     item.description,
     <>
       <IconButton>
-        <Pencil style={{ width: 18, height: 18 }} />
+        <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <IconButton onClick={() => onDelete(item._id)}>
-        <Cross style={{ width: 18, height: 18, color: "red" }} />
+        <Cross style={{ width: 15, height: 15, color: "red" }} />
       </IconButton>
     </>,
   ]);
@@ -117,7 +117,9 @@ export default function Invoices(props) {
       </Form.Row>
       <Form.Row noMargin>
         <FormSelect
+          disabled={loading}
           placeholder="Client"
+          style={{ maxWidth: 250 }}
           values={[
             { value: "green", label: "Green" },
             { value: "Yellow", label: "Yellow" },
@@ -127,7 +129,6 @@ export default function Invoices(props) {
             { value: "Purple", label: "Purple" },
             { value: "Magenta", label: "Magenta" },
           ]}
-          style={{ maxWidth: 250 }}
         />
       </Form.Row>
       <div className={classes.content}>

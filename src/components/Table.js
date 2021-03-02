@@ -9,7 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 
 const StyledTableContainer = withStyles((theme) => ({
   root: {
-    borderRadius: theme.shape.borderRadius,
+    // borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.secondary.main,
   },
 }))(TableContainer);
@@ -17,39 +17,63 @@ const StyledTableContainer = withStyles((theme) => ({
 const StyledTable = withStyles((theme) => ({
   root: {
     // borderSpacing: "5px",
-    backgroundColor: theme.palette.secondary.main,
     // borderCollapse: "separate",
+    backgroundColor: theme.palette.secondary.main,
   },
 }))(Table);
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
     height: 20,
-    borderRadius: 20,
     backgroundColor: theme.palette.common.white,
+    borderTop: `15px solid ${theme.palette.secondary.main}`,
+  },
+  head: {
+    borderTop: 0,
   },
 }))(TableRow);
 
 const StyledTableCell = withStyles((theme) => ({
   root: {
-    border: "none",
     padding: 6,
+    border: "none",
   },
   head: {
     fontSize: 16,
     fontWeight: "bold",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
     backgroundColor: "transparent",
     color: theme.palette.primary.contrastText,
   },
   body: {
     fontSize: 15,
+    overflow: "hidden",
     fontWeight: "normal",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
     backgroundColor: "transparent",
     color: theme.palette.primary.contrastText,
   },
 }))(TableCell);
 
+// const useStyles = makeStyles((theme) => ({
+//   cellText: {
+//     background: "red",
+//     color: "inherit",
+//     fontSize: "inherit",
+//     fontWeight: "inherit",
+//     display: "block",
+//     maxWidth: 200,
+//     overflow: "hidden",
+//     whiteSpace: "nowrap",
+//     textOverflow: "ellipsis",
+//   },
+// }));
 export default function DataTable(props) {
+  // const classes = useStyles();
+
   return (
     <StyledTableContainer>
       <StyledTable>
@@ -73,7 +97,9 @@ export default function DataTable(props) {
                   align="center"
                   // noWrap
                 >
+                  {/* <span className={classes.cellText}> */}
                   {cell}
+                  {/* </span> */}
                 </StyledTableCell>
               ))}
             </StyledTableRow>

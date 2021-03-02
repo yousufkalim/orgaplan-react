@@ -443,16 +443,24 @@
       ]
     ]
   },
-  "addSite": {
-    "headings": ["Name of location", "Level", "Plan ", "Action"],
+  "buildings": {
+    "headings": ["Name of building", "Levels", "Action"],
     "items": [
-      ["Exterior", "N/A", "Plan de masse 20.01.2022.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"]
+      ["Bâtiment 1", "4"],
+      ["Bâtiment 2", "2"],
+      ["Bâtiment 3", "3"],
+      ["Bâtiment 4", "2"],
+      ["Bâtiment 5", "2"],
+      ["Bâtiment 6", "1"]
+    ]
+  },
+  "levels": {
+    "headings": ["Level", "Plan", "Action"],
+    "items": [
+      ["RDC", "Plan 1.pdf"],
+      ["2", "Plan 2.pdf"],
+      ["3", "Plan 3.pdf"],
+      ["4", "Plan 4.pdf"]
     ]
   },
   "admins": {
@@ -510,7 +518,17 @@
     ]
   },
   "incidents": {
-    "headings": ["Data", "Type", "Designation", "Company", "Status", "Location", "Billable ?","Amount", "Paid ?"],
+    "headings": [
+      "Data",
+      "Type",
+      "Designation",
+      "Company",
+      "Status",
+      "Location",
+      "Billable ?",
+      "Amount",
+      "Paid ?"
+    ],
     "items": [
       [
         "Marché couvert des ULYSSES",

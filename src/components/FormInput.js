@@ -85,6 +85,9 @@ export default function Input(props) {
       ) : props.type === "date" ? (
         <input
           type="text"
+          max={props.max}
+          min={props.min}
+          step={props.step}
           name={props.name}
           value={props.value}
           className={classes.input}

@@ -9,8 +9,6 @@ import Means from "./Means/Means";
 import Organigramme from "./Organigramme/Organigramme";
 import Pic from "./Pic/Pic";
 
-import Home from "./Home";
-
 export default function UnAuth() {
   return (
     <>

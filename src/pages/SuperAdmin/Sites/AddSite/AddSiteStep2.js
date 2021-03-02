@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
@@ -76,14 +77,14 @@ export default function AddSiteStep2(props) {
     day5Off: false,
     day6Start: 0,
     day6End: 23,
-    day6Off: false,
+    day6Off: true,
     day7Start: 0,
     day7End: 23,
-    day7Off: false,
+    day7Off: true,
   });
   const [unavailabilityDates, setUnavailabilityDates] = useState([]);
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
 
   function handleChange(name, value) {
@@ -230,6 +231,7 @@ export default function AddSiteStep2(props) {
             // error={start}
             placeholder="Start date"
             style={GLOBALS.Styles.inputWidth}
+            min={moment().format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
@@ -239,8 +241,10 @@ export default function AddSiteStep2(props) {
             type="date"
             value={end}
             // error={end}
+            disabled={!start}
             placeholder="End date"
             style={GLOBALS.Styles.inputWidth}
+            min={moment(start).add(1, "days").format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
@@ -308,7 +312,7 @@ export default function AddSiteStep2(props) {
             // error={notificationPriorToDays}
             style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
             onChange={({ target: { name, value } }) =>
-              handleChange(name, value)
+              value >= 0 && handleChange(name, value)
             }
           />
           <SmallText

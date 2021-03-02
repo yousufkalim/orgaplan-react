@@ -31,6 +31,10 @@ const endpoints = {
   SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
 
   COMPANY: BASE_URL_V1 + "superadmin/companies",
+
+  BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
+  LEVELS: BASE_URL_V1 + "superadmin/levels",
+  LEVELS_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
 };
 
 export default endpoints;
