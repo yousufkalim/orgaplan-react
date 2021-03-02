@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
-import Calender from "./Calender/Calender";
+import Calender from "./Calender";
 import Comapnies from "./Companies/Companies";
 import Incidents from "./Incidents/Incidents";
 import Invoices from "./Invoices/Invoices";
