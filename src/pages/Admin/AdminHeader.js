@@ -102,8 +102,8 @@ const userItems = [
     icon: <Calender />,
   },
   {
-    name: "Comapnies",
-    path: "/comapnies",
+    name: "Companies",
+    path: "/companies",
     icon: <Companies />,
   },
   {
@@ -233,6 +233,7 @@ export default function AdminHeader(props) {
         >
           <MenuIcon color="primary" />
         </Fab>
+
         {props.children}
       </main>
     </div>

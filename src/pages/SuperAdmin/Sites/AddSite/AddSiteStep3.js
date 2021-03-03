@@ -71,8 +71,7 @@ export default function AddSiteStep3(props) {
   // DELIVERY
 
   useEffect(() => {
-    // setSiteId(props?.step2Data?.data._id);
-    setSiteId("603dd504b30f160522d71c50");
+    setSiteId(props?.step2Data?.data._id);
   }, [props]);
 
   const handleChange = (name, value) => {
