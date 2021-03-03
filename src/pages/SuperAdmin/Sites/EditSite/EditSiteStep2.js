@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
@@ -13,42 +13,6 @@ import FormLabel from "../../../../components/FormLabel";
 import OpeningTimes from "../../../../components/OpeningTimes";
 import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
-
-// const addSiteYup = Yup.object().shape({
-//   start: Yup.string().required("Required"),
-//   end: Yup.string().required("Required"),
-//   openingHours: Yup.object().shape({
-//     day1Start: Yup.number().required("Required"),
-//     day1End: Yup.number().required("Required"),
-//     day2Start: Yup.number().required("Required"),
-//     day2End: Yup.number().required("Required"),
-//     day3Start: Yup.number().required("Required"),
-//     day3End: Yup.number().required("Required"),
-//     day4Start: Yup.number().required("Required"),
-//     day4End: Yup.number().required("Required"),
-//     day5Start: Yup.number().required("Required"),
-//     day5End: Yup.number().required("Required"),
-//     day6Start: Yup.number().required("Required"),
-//     day6End: Yup.number().required("Required"),
-//     day7Start: Yup.number().required("Required"),
-//     day7End: Yup.number().required("Required"),
-//   }),
-//   unavailabilityDates: Yup.array()
-//     .of(
-//       Yup.object().shape({
-//         key: Yup.number().required("Required"),
-//         date: Yup.date().required("Required"),
-//         startHour: Yup.number().required("Required"),
-//         endHour: Yup.number().required("Required"),
-//         dayOff: Yup.bool().required("Required"),
-//         reason: Yup.string().optional(),
-//       }),
-//     )
-//     .optional(),
-//   additionalInfo: Yup.string().optional(),
-//   notificationPriorToDays: Yup.number().optional(),
-//   notificationTo: Yup.array().optional(),
-// });
 
 export default function AddSiteStep2(props) {
   const dispatch = useDispatch();
@@ -86,6 +50,21 @@ export default function AddSiteStep2(props) {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
+
+  useEffect(() => {
+    // Filling the fields
+    const propData = props.step2Data;
+    propData.start && setStart(propData.start);
+    propData.end && setEnd(propData.end);
+    propData.openingHours && setOpeningHours(propData.openingHours);
+    propData.unavailabilityDates &&
+      setUnavailabilityDates(propData.unavailabilityDates);
+    propData.additionalInfo && setAdditionalInfo(propData.additionalInfo);
+    propData.notificationPriorToDays &&
+      setNotificationPriorToDays(propData.notificationPriorToDays);
+    propData.notificationTo && setNotificationTo(propData.notificationTo);
+    // eslint-disable-next-line
+  }, []);
 
   function handleChange(name, value) {
     if (name === "start") setStart(value);
@@ -167,9 +146,12 @@ export default function AddSiteStep2(props) {
       ];
 
       var formdata = new FormData();
+      formdata.append("siteId", props.data._id);
       formdata.append("name", step1.name);
-      step1.logo.length > 0 && formdata.append("logo", step1.logo[0].file);
-      formdata.append("zacId", step1.zacId);
+      step1.logo.length > 0 &&
+        step1.logo[0].file &&
+        formdata.append("logo", step1.logo[0].file);
+      step1.zacId && formdata.append("zacId", step1.zacId);
       formdata.append("adminId", step1.adminId);
       formdata.append("functionality", step1.functionality);
       formdata.append("addresses", JSON.stringify(addresses));
@@ -198,8 +180,8 @@ export default function AddSiteStep2(props) {
       formdata.append("notificationTo", JSON.stringify(notificationToArray));
 
       const data = await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.SITE,
+        method: "PUT",
+        uri: GLOBALS.Constants.SITES,
         headers: {
           Authorization: store.token,
         },
@@ -221,6 +203,7 @@ export default function AddSiteStep2(props) {
 
   return (
     <Form.Form onSubmit={onSubmit}>
+      {update && ""}
       <Form.Row>
         <FormLabel bold primary="SITE DATES* : " />
         <Form.Row width="48%" noMargin>
@@ -251,7 +234,6 @@ export default function AddSiteStep2(props) {
           />
         </Form.Row>
       </Form.Row>
-      {update && ""}
       <Form.Row>
         <FormLabel bold primary="OPENING TIME : " />
         <Form.Row

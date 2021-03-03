@@ -144,7 +144,7 @@ const ButtonContainer = (props) => {
       margin:
         props.margin || props.noMargin
           ? 0
-          : `${GLOBALS.Styles.marginButtonContainer}px 0`,
+          : GLOBALS.Styles.marginButtonContainer,
     },
   }));
   const classes = useStyles();

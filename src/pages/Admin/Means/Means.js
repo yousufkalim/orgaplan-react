@@ -90,7 +90,7 @@ const Means = () => {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE}?page=${page}`,
+        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
       });
       setItems(result.data.items);
       setLoading(false);
