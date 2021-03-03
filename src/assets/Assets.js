@@ -10,6 +10,10 @@ import mapIcon from "./icons/map-icon.png";
 
 import picMap from "./images/picMap.png";
 import Site from "./images/Site.png";
+import profile2 from "./images/profile2.png";
+import avatar from "./images/avatar.png";
+
+
 
 export const Images = {
 
@@ -22,13 +26,14 @@ export const Images = {
     organigramme:Organigramme,
     uploadIcon: uploadIcon,
     pic: pic,
-
-
+    avatar: avatar,
 
     // Images
     picMap:picMap,
     mapIcon:mapIcon,
     site:Site,
+    profile2:profile2,
+    
 
 
 }

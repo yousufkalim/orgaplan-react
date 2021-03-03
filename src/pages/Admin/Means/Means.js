@@ -22,8 +22,9 @@ import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
 
-
 import SiteImage from "../../../assets/images/Site.png";
+import { Images } from "../../../assets/Assets";
+
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -102,32 +103,27 @@ const Means = () => {
     }
   }
 
-  const rows = items.map((item) => [
-    <img
-      src={item.logo ? GLOBALS.Constants.BASE_URL + item.logo : SiteImage}
-      alt="siteimage"
-      className={classes.image}
-    />,
-    item.name,
-    item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
-    item.status,
-    <Form.Row alignItems="center" justifyContent="center">
-      <IconButton>
-        <Pencil style={{ width: 18, height: 18 }} />
-      </IconButton>
-      <SmallButton
-        text="Archive"
-        disabled={loading}
-        onClick={() => onArchive(item._id)}
-        color={theme.palette.primary.contrastText}
-        style={{
-          marginLeft: 10,
-          borderRadius: 4,
-        }}
-      />
-    </Form.Row>,
-  ]);
+  const rows = GLOBALS.Data.means.items.map((item) => {
+    return [
+      ...item,
+      <div>
+        <NavLink to="/means/edit-mean" style={{color: '#959491 !important', textDecoration: "none"}}>
+          <Pencil style={{ width: 18, height: 15, cursor: "pointer"}} />
+        </NavLink>
+        <img
+          src={Images.calender}
+          style={{ width: 18, height: 15, paddingLeft: 5 }}
+          alt="Icon"
+        />
+
+        <img
+          src={Images.incidents}
+          style={{ width: 18, height: 15, paddingLeft: 5 }}
+          alt="Icon"
+        />
+      </div>,
+    ];
+  });
 
   async function onArchive(itemId) {
     try {
@@ -154,7 +150,6 @@ const Means = () => {
 
   const formik = useFormik({
     initialValues: {
-     
       contractType: "CLIENTPERSITE",
       contractStartDate: "",
       contractEndDate: "",
@@ -192,7 +187,7 @@ const Means = () => {
                 fullWidth={false}
                 component={NavLink}
                 text="ADD A MEAN"
-                to={"/sites/add-mean"}
+                to={"/means/add-mean"}
                 style={{
                   marginLeft: "20px",
                   marginBottom: "7px",
@@ -285,12 +280,10 @@ const Means = () => {
         {/* <NavLink className={classes.link} to="/sites/archives">
           See archived sites
         </NavLink> */}
-
-        
       </Form.Row>
 
       <Form.Row alignItems="center" noMargin className="mt-3">
-      <Form.Row justifyContent="flex-start" noMargin>
+        <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
             values={[
@@ -318,33 +311,33 @@ const Means = () => {
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Start date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-         <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="End date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-           <SearchInput
+            type="date"
+            style={GLOBALS.Styles.inputWidth}
+            placeholder="Start date"
+            name="contractStartDate"
+            icon
+            onChange={formik.handleChange}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <FormInput
+            type="date"
+            style={GLOBALS.Styles.inputWidth}
+            placeholder="End date"
+            name="contractStartDate"
+            icon
+            onChange={formik.handleChange}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <SearchInput
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
-        </Form.Row>
+      </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.means.headings} rows={rows} />
       </div>

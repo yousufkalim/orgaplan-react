@@ -1,7 +1,5 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import AddMean from "./AddMean/AddMean";
-import Mean from "./Means";
 import Pic from "./Pic";
 
 // import ZACs from "./ZACs";

@@ -22,7 +22,7 @@ import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 
-import {Images} from "../../assets/Assets.js";
+import { Images } from "../../assets/Assets.js";
 
 const drawerWidth = 240;
 
@@ -87,9 +87,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     marginTop: "1.5rem",
-    marginBottom: "1rem"
-
-  }
+    marginBottom: "1rem",
+  },
 }));
 
 const userItems = [
@@ -104,8 +103,8 @@ const userItems = [
     icon: <Calender />,
   },
   {
-    name: "Comapnies",
-    path: "/comapnies",
+    name: "Companies",
+    path: "/companies",
     icon: <Companies />,
   },
   {
@@ -172,9 +171,17 @@ export default function AdminHeader(props) {
             <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
           </div>
           <div className={classes.imageContainer}>
-            <div style={{color: "#7E7878", fontWeight: "bold", fontSize: "16px", marginBottom: "5px"}}>Hôpital de la Tourelle</div>
+            <div
+              style={{
+                color: "#7E7878",
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "5px",
+              }}
+            >
+              Hôpital de la Tourelle
+            </div>
             <img src={Images.site} />
-
           </div>
           <List>
             {userItems.map((item) => (
@@ -196,7 +203,6 @@ export default function AdminHeader(props) {
                       : location.pathname.startsWith(item.path),
                   })}
                 >
-
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.name} />
@@ -229,6 +235,7 @@ export default function AdminHeader(props) {
         >
           <MenuIcon color="primary" />
         </Fab>
+
         {props.children}
       </main>
     </div>
