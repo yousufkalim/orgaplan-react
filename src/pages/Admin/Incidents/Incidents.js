@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
-import IconButton from "@material-ui/core/IconButton";
 
 // import Actions from "../../../redux/actions";
 
@@ -18,13 +17,8 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
-import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
-import {Images} from "../../../assets/Assets";
-
-import SiteImage from "../../../assets/images/Site.png";
-import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,36 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
-
 const Incidents = () => {
   const classes = useStyles();
-  const theme = useTheme();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [items, setItems] = useState([]);
   const [page] = useState(1);
 
@@ -102,59 +72,10 @@ const Incidents = () => {
     }
   }
 
-  const rows = items.map((item) => [
-    <img
-      src={item.logo ? GLOBALS.Constants.BASE_URL + item.logo : SiteImage}
-      alt="siteimage"
-      className={classes.image}
-    />,
-    item.name,
-    item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
-    item.status,
-    <Form.Row alignItems="center" justifyContent="center">
-      <IconButton>
-        <Pencil style={{ width: 18, height: 18 }} />
-      </IconButton>
-      <SmallButton
-        text="Archive"
-        disabled={loading}
-        onClick={() => onArchive(item._id)}
-        color={theme.palette.primary.contrastText}
-        style={{
-          marginLeft: 10,
-          borderRadius: 4,
-        }}
-      />
-    </Form.Row>,
-  ]);
-
-  async function onArchive(itemId) {
-    try {
-      if (window.confirm("Are you sure, you want to do this?")) {
-        setLoading(true);
-        await GLOBALS.API({
-          method: "PUT",
-          token: store.token,
-          uri: GLOBALS.Constants.SITE_ARCHIVE + "/" + itemId,
-        });
-        const itemsArray = items.filter((item) => item._id !== itemId);
-        setItems(itemsArray);
-        setLoading(false);
-      }
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  }
+  const rows = GLOBALS.Data.incidents.items.map((item) => [...item]);
 
   const formik = useFormik({
     initialValues: {
-     
       contractType: "CLIENTPERSITE",
       contractStartDate: "",
       contractEndDate: "",
@@ -184,8 +105,7 @@ const Incidents = () => {
             <SubHeading
               disableMargin
               topPadding
-              style={{color: "#F80303"}}
-              
+              style={{ color: "#F80303" }}
               primary="TOTAL : 5 RE-INVOICING
               345€ 
 "
@@ -195,9 +115,8 @@ const Incidents = () => {
               <Button
                 fullWidth={false}
                 component={NavLink}
-               
                 text="CREATE AN INCIDENT"
-                to={"/sites/add-mean"}
+                to={"/incidents/add-incidents"}
                 style={{
                   marginLeft: "20px",
                   marginBottom: "7px",
@@ -206,13 +125,13 @@ const Incidents = () => {
                   backgroundColor: "#F80303",
                 }}
               />
-              <Button
+              {/* <Button
                 fullWidth={false}
                 component={NavLink}
                 text="MEANS REQUEST"
                 to={"/sites/means-request"}
                 style={{ marginLeft: "20px", width: "200px" }}
-              />
+              /> */}
             </Form.Column>
           </Form.Row>
         </div>
@@ -292,12 +211,10 @@ const Incidents = () => {
         {/* <NavLink className={classes.link} to="/sites/archives">
           See archived sites
         </NavLink> */}
-
-        
       </Form.Row>
 
-      <Form.Row alignItems="center" noMargin className="mt-3">
-      <Form.Row justifyContent="flex-start" noMargin>
+      <Form.Row alignItems="center" className="mt-3">
+        <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
             values={[
@@ -311,30 +228,30 @@ const Incidents = () => {
             ]}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
-          
+
           <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Start date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-         <FormInput
-                type="date"
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="End date"
-                name="contractStartDate"
-                icon
-                onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
-                // error={formik.errors.contractStartDate}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-              <FormSelect
+            type="date"
+            style={GLOBALS.Styles.inputWidth}
+            placeholder="Start date"
+            name="contractStartDate"
+            icon
+            onChange={formik.handleChange}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <FormInput
+            type="date"
+            style={GLOBALS.Styles.inputWidth}
+            placeholder="End date"
+            name="contractStartDate"
+            icon
+            onChange={formik.handleChange}
+            // value={formik.values.contractStartDate}
+            // error={formik.errors.contractStartDate}
+            style={{ marginRight: "20px", maxWidth: 250 }}
+          />
+          <FormSelect
             placeholder="Status"
             values={[
               { value: "green", label: "Green" },
@@ -347,12 +264,12 @@ const Incidents = () => {
             ]}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
-           <SearchInput
+          <SearchInput
             placeholder="Designation"
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
-        </Form.Row>
+      </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.incidents.headings} rows={rows} />
       </div>

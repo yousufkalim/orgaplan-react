@@ -16,7 +16,6 @@ const StyledTableContainer = withStyles((theme) => ({
 
 const StyledTable = withStyles((theme) => ({
   root: {
-    // borderSpacing: "5px",
     backgroundColor: theme.palette.secondary.main,
     // borderCollapse: "separate",
   },
@@ -64,7 +63,7 @@ export default function DataTable(props) {
         </TableHead>
         <TableBody>
           {props.rows.map((row, i) => (
-            <StyledTableRow key={i}>
+            <StyledTableRow key={i} onClick={() => props.modalHandler && props.modalHandler(true)}>
               {row.map((cell, index) => (
                 <StyledTableCell
                   component="th"
