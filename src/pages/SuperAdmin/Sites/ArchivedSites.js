@@ -71,7 +71,7 @@ export default function ArchivedSites(props) {
         await GLOBALS.API({
           method: "PUT",
           token: store.token,
-          uri: GLOBALS.Constants.SITE_UN_ARCHIVE + "/" + itemId,
+          uri: GLOBALS.Constants.SITES_UN_ARCHIVE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
