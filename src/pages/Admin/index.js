@@ -1,13 +1,13 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
-import Calender from "./Calender/Calender";
-import Comapnies from "./Companies/Companies";
+import Calender from "./Calender";
+import Companies from "./Companies";
 import Incidents from "./Incidents/Incidents";
 import Invoices from "./Invoices/Invoices";
-import Means from "./Means/Means";
-import Organigramme from "./Organigramme/Organigramme";
-import Pic from "./Pic/Pic";
+import Means from "./Means";
+import Organigramme from "./Organigramme";
+import Pic from "./Pic"
 
 export default function UnAuth() {
   return (
@@ -15,13 +15,13 @@ export default function UnAuth() {
       <AdminHeader>
         <Switch>
           <Route exact path="/" component={Calender} />
-          <Route exact path="/calender" component={Calender} />
-          <Route exact path="/comapnies" component={Comapnies} />
-          <Route exact path="/incidents" component={Incidents} />
-          <Route exact path="/invoices" component={Invoices} />
-          <Route exact path="/means" component={Means} />
-          <Route exact path="/organigramme" component={Organigramme} />
-          <Route exact path="/pic-interactive" component={Pic} />
+          <Route path="/calender" component={Calender} />
+          <Route path="/companies" component={Companies} />
+          <Route path="/incidents" component={Incidents} />
+          <Route path="/invoices" component={Invoices} />
+          <Route path="/means" component={Means} />
+          <Route path="/pic-interactive" component={Pic} />
+          <Route path="/organigramme" component={Organigramme} />
           <Redirect from="*" to="/" />
         </Switch>
       </AdminHeader>

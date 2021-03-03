@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+import moment from "moment";
 // import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
@@ -174,6 +175,7 @@ export default function AddInvoice(props) {
                 // error={startDate}
                 placeholder="Start date"
                 style={GLOBALS.Styles.inputWidth}
+                min={moment().format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -184,6 +186,7 @@ export default function AddInvoice(props) {
                 value={endDate}
                 // error={endDate}
                 placeholder="End date"
+                min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)

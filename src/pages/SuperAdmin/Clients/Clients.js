@@ -406,6 +406,7 @@ export default function Clients(props) {
                 value={contractStartDate}
                 // error={contractStartDate}
                 style={GLOBALS.Styles.inputWidth}
+                min={moment().format("YYYY-MM-DD")}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -417,6 +418,9 @@ export default function Clients(props) {
                 name="contractEndDate"
                 value={contractEndDate}
                 // error={contractEndDate}
+                min={moment(contractStartDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
