@@ -88,7 +88,10 @@ export default function DataTable(props) {
         </TableHead>
         <TableBody>
           {props.rows.map((row, i) => (
-            <StyledTableRow key={i}>
+            <StyledTableRow
+              key={i}
+              onClick={() => props.modalHandler && props.modalHandler(true)}
+            >
               {row.map((cell, index) => (
                 <StyledTableCell
                   component="th"
