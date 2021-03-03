@@ -289,6 +289,7 @@ export default function VerifyClient(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
+                min={moment().format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 value={contractStartDate}
                 // error={contractStartDate}
@@ -301,6 +302,9 @@ export default function VerifyClient(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
+                min={moment(contractStartDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 value={contractEndDate}
                 // error={contractEndDate}

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-// import * as Yup from "yup";
 import moment from "moment";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -286,6 +286,7 @@ export default function AddClient(props) {
                 name="contractStartDate"
                 value={contractStartDate}
                 // error={contractStartDate}
+                min={moment().format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
@@ -298,6 +299,9 @@ export default function AddClient(props) {
                 name="contractEndDate"
                 value={contractEndDate}
                 // error={contractEndDate}
+                min={moment(contractStartDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
