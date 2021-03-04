@@ -5,24 +5,23 @@ import List from "@material-ui/core/List";
 import Drawer from "@material-ui/core/Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 import ListItem from "@material-ui/core/ListItem";
-// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 // import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
-import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
+import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
+import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
 import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
 import { ReactComponent as Incidents } from "../../assets/icons/incidents.svg";
-import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
-import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
+import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
 
-import {Images} from "../../assets/Assets.js";
+import { Images } from "../../assets/Assets.js";
 
 const drawerWidth = 240;
 
@@ -87,8 +86,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     marginTop: "1.5rem",
-    marginBottom: "1rem"
-
+    marginBottom: "1rem",
+  },
+  profileImage: {
+    position: 'absolute',
+    top: "1rem",
+    right:"3rem",
+    textAlign: 'center',
+    color: '#454545',
   }
 }));
 
@@ -104,8 +109,8 @@ const userItems = [
     icon: <Calender />,
   },
   {
-    name: "Comapnies",
-    path: "/comapnies",
+    name: "Companies",
+    path: "/companies",
     icon: <Companies />,
   },
   {
@@ -148,7 +153,6 @@ const userItems = [
 export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
 
@@ -172,9 +176,17 @@ export default function AdminHeader(props) {
             <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
           </div>
           <div className={classes.imageContainer}>
-            <div style={{color: "#7E7878", fontWeight: "bold", fontSize: "16px", marginBottom: "5px"}}>Hôpital de la Tourelle</div>
-            <img src={Images.site} />
-
+            <div
+              style={{
+                color: "#7E7878",
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "5px",
+              }}
+            >
+              Hôpital de la Tourelle
+            </div>
+            <img src={Images.site} alt="img" />
           </div>
           <List>
             {userItems.map((item) => (
@@ -196,7 +208,6 @@ export default function AdminHeader(props) {
                       : location.pathname.startsWith(item.path),
                   })}
                 >
-
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.name} />
@@ -221,6 +232,7 @@ export default function AdminHeader(props) {
           [classes.contentShift]: open,
         })}
       >
+        <div className="d-flex">
         <Fab
           color="inherit"
           aria-label="handle-drawer"
@@ -229,6 +241,12 @@ export default function AdminHeader(props) {
         >
           <MenuIcon color="primary" />
         </Fab>
+        <div className={classes.profileImage}>
+          <img src={Images.profile2} alt="Profile" />
+          <div>Thierry Marles</div>
+        </div>
+        </div>
+
         {props.children}
       </main>
     </div>

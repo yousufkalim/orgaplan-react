@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     margin: 0,
     textAlign: "center",
+    whiteSpace: "nowrap",
     color: "rgba(0, 0, 0, 0.54)",
   },
   headerRight: {

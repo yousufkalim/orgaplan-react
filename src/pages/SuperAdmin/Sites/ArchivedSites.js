@@ -71,7 +71,7 @@ export default function ArchivedSites(props) {
         await GLOBALS.API({
           method: "PUT",
           token: store.token,
-          uri: GLOBALS.Constants.SITE_UN_ARCHIVE + "/" + itemId,
+          uri: GLOBALS.Constants.SITES_UN_ARCHIVE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
@@ -110,7 +110,7 @@ export default function ArchivedSites(props) {
         }}
       />
       <IconButton>
-        <Cross style={{ width: 18, height: 18, color: "red" }} />
+        <Cross style={{ width: 15, height: 15, color: "red" }} />
       </IconButton>
     </Form.Row>,
   ]);

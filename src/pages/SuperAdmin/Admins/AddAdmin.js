@@ -48,6 +48,7 @@ export default function AddAdmin(props) {
 
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
+  const [update, setUpdate] = useState(false);
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -94,8 +95,11 @@ export default function AddAdmin(props) {
     else if (name === "phone") setPhone(value);
     else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
-    else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
+    else if (name === "image") {
+      setUpdate((st) => !st);
+      setImage(value);
+      console.log("updated image");
+    } else if (name === "companyId") setCompanyId(value);
   };
 
   const onSubmit = async (e) => {
@@ -121,6 +125,7 @@ export default function AddAdmin(props) {
       setLoading(false);
       props.history.push("/admins");
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -138,7 +143,7 @@ export default function AddAdmin(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO: " />
+            <FormLabel bold primary="CONTACT INFO*: " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
@@ -162,8 +167,9 @@ export default function AddAdmin(props) {
               />
             </Form.Row>
           </Form.Row>
+          {update && ""}
           <Form.Row>
-            <FormLabel bold primary="IDENTITY: " />
+            <FormLabel bold primary="IDENTITY*: " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
@@ -190,11 +196,11 @@ export default function AddAdmin(props) {
           <Form.Row>
             <FormLabel bold primary="PROFILE*: " />
             <FormMultipleUpload
-              name="profile"
+              name="image"
               // error={image}
               values={image}
               style={GLOBALS.Styles.inputWidth}
-              onChange={(values) => handleChange("profile", values)}
+              onChange={(values) => handleChange("image", values)}
             />
           </Form.Row>
           <Form.Row>
@@ -222,6 +228,7 @@ export default function AddAdmin(props) {
                 loading ||
                 !email ||
                 !phone ||
+                phone.length !== 10 ||
                 !firstName ||
                 !lastName ||
                 image.length === 0 ||

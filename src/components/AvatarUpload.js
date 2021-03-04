@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
+
+import Actions from "../redux/actions";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -36,6 +39,7 @@ export default function FormMultipleUpload(props) {
   }));
 
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [update, setUpdate] = useState(false);
 
   return (
@@ -57,8 +61,25 @@ export default function FormMultipleUpload(props) {
         type="file"
         id={`fileinput`}
         onChange={(e) => {
-          props.onChange(e.target.files[0]);
-          setUpdate((st) => !st);
+          const file = e.target.files[0];
+          if (
+            file.size <= 1000000 &&
+            (file.type === "image/png" ||
+              file.type === "image/jpg" ||
+              file.type === "image/jpeg")
+          ) {
+            props.onChange(file);
+            setUpdate((st) => !st);
+          } else {
+            dispatch(
+              Actions.notistack.enqueueSnackbar(
+                Actions.notistack.snackbar(
+                  "Max size can be 10MB of types: PNG, JPEG, JPG",
+                  "error",
+                ),
+              ),
+            );
+          }
         }}
       />
     </div>

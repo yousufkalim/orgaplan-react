@@ -443,16 +443,25 @@
       ]
     ]
   },
-  "addSite": {
-    "headings": ["Name of location", "Level", "Plan ", "Action"],
+  "buildings": {
+    "headingsExterior": ["Type", "Plan", "Action"],
+    "headings": ["Name of building", "Levels", "Action"],
     "items": [
-      ["Exterior", "N/A", "Plan de masse 20.01.2022.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"],
-      ["Bâtiment 1", "Niveau 1", "Plan 1.pdf"]
+      ["Bâtiment 1", "4"],
+      ["Bâtiment 2", "2"],
+      ["Bâtiment 3", "3"],
+      ["Bâtiment 4", "2"],
+      ["Bâtiment 5", "2"],
+      ["Bâtiment 6", "1"]
+    ]
+  },
+  "levels": {
+    "headings": ["Level", "Plan", "Action"],
+    "items": [
+      ["RDC", "Plan 1.pdf"],
+      ["2", "Plan 2.pdf"],
+      ["3", "Plan 3.pdf"],
+      ["4", "Plan 4.pdf"]
     ]
   },
   "admins": {
@@ -468,6 +477,52 @@
       ["ContructBTP", "Thierry Marles", "0666446644", 2]
     ]
   },
+  "meansOfHistoric": {
+    "headings": [
+      "Start of booking",
+      "End of booking",
+      "Company",
+      "Reason of booking"
+    ],
+    "items": [
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ],
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ],
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ],
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ],
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ],
+      [
+        "13/04/21 to 13h00",
+        "17/04/21 to 17h00",
+        "ConstructBTP",
+        "Pour la livarsion des euipments HVAC"
+      ]
+    ]
+  },
   "means": {
     "headings": ["Name", "Status", "Type", "Area", "Zone", "Action"],
     "items": [
@@ -475,78 +530,328 @@
         "Marché couvert des ULYSSES",
         "N/A",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 1"
       ],
       [
         "Marché couvert des ULYSSES",
         "ZAC de la VAR",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 2"
       ],
       [
         "Marché couvert des ULYSSES",
         "ZAC de la VAR",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 3"
       ],
       [
         "Marché couvert des ULYSSES",
         "N/A",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 4"
       ],
       [
         "Marché couvert des ULYSSES",
         "N/A",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 5"
       ],
       [
         "Marché couvert des ULYSSES",
         "N/A",
         "Thierry Marles ConstructBTP",
-        "Active"
+        "Active",
+        "Zone 6"
       ]
     ]
   },
   "incidents": {
-    "headings": ["Data", "Type", "Designation", "Company", "Status", "Location", "Billable ?","Amount", "Paid ?"],
+    "headings": [
+      "Data",
+      "Type",
+      "Designation",
+      "Company",
+      "Status",
+      "Location",
+      "Billable ?",
+      "Amount",
+      "Paid ?"
+    ],
     "items": [
       [
-        "Marché couvert des ULYSSES",
-        "N/A",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "12/03/2021",
+        "Retard",
+        "Truck Incidents",
+        "Enterprise 1",
+        "Ouvert",
+        "Paris",
+        "Yes",
+        "23$",
+        "Yes"
       ],
       [
-        "Marché couvert des ULYSSES",
-        "ZAC de la VAR",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "12/03/2021",
+        "Retard",
+        "Truck Incidents",
+        "Enterprise 1",
+        "Ouvert",
+        "Paris",
+        "Yes",
+        "23$",
+        "Yes"
       ],
       [
-        "Marché couvert des ULYSSES",
-        "ZAC de la VAR",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "12/03/2021",
+        "Retard",
+        "Truck Incidents",
+        "Enterprise 1",
+        "Ouvert",
+        "Paris",
+        "Yes",
+        "23$",
+        "Yes"
       ],
       [
-        "Marché couvert des ULYSSES",
-        "N/A",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "12/03/2021",
+        "Retard",
+        "Truck Incidents",
+        "Enterprise 1",
+        "Ouvert",
+        "Paris",
+        "Yes",
+        "23$",
+        "Yes"
       ],
       [
-        "Marché couvert des ULYSSES",
-        "N/A",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "12/03/2021",
+        "Retard",
+        "Truck Incidents",
+        "Enterprise 1",
+        "Ouvert",
+        "Paris",
+        "Yes",
+        "23$",
+        "Yes"
+      ]
+    ]
+  },
+  "companies": {
+    "headings": [
+      "",
+      "Company",
+      "Subcontractor",
+      "Responsible",
+      "Telephone",
+      "Email",
+      "Action"
+    ],
+    "items": [
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"],
+      ["ContructBTP", "Thierry Marles", "y", "0666446644", "name@email.com"]
+    ]
+  },
+  "userList": {
+    "headings": ["Name", "Company", "Role", "Status", "Email", "Action"],
+    "items": [
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
       ],
       [
-        "Marché couvert des ULYSSES",
-        "N/A",
-        "Thierry Marles ConstructBTP",
-        "Active"
+        "Thierry Marles",
+        "Enterprise 1",
+        "En attente",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "En attente",
+        "Enterpriese",
+        "name@email.com"
+      ],
+      [
+        "Thierry Marles",
+        "Enterprise 1",
+        "inscrit",
+        "Enterpriese",
+        "name@email.com"
+      ]
+    ]
+  },
+  "oranigramme": {
+    "headings": [
+      "",
+      "First Name",
+      "Last Name",
+      "Company",
+      "Position",
+      "Telephone",
+      "Addresse e-mail"
+    ],
+    "items": [
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
+      ],
+      [
+        "ContructBTP",
+        "Thierry Marles",
+        "org",
+        "MEMBER",
+        "0666446644",
+        "name@email.com"
       ]
     ]
   }

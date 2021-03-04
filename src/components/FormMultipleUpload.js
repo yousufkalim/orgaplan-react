@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import ClearIcon from "@material-ui/icons/Clear";
+
+import Actions from "../redux/actions";
+import GLOBALS from "../globals";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -66,18 +70,35 @@ export default function FormMultipleUpload(props) {
   }));
 
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [update, setUpdate] = useState(false);
 
   const onAdd = (e) => {
     const file = e.target.files[0];
-    const uri = URL.createObjectURL(file);
-    let newValues = props.values;
-    props.multiple
-      ? newValues.push({ key: newValues.length, file: file, uri: uri })
-      : (newValues[0] = { key: newValues.length, file: file, uri: uri });
-    props.onChange(newValues);
-    document.getElementById(`fileinput`).value = "";
-    setUpdate((st) => !st);
+    if (
+      file.size <= 1000000 &&
+      (file.type === "image/png" ||
+        file.type === "image/jpg" ||
+        file.type === "image/jpeg")
+    ) {
+      const uri = URL.createObjectURL(file);
+      let newValues = props.values;
+      props.multiple
+        ? newValues.push({ key: newValues.length, file: file, uri: uri })
+        : (newValues[0] = { key: newValues.length, file: file, uri: uri });
+      props.onChange(newValues);
+      document.getElementById(`fileinput`).value = "";
+      setUpdate((st) => !st);
+    } else {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            "Max size can be 10MB of types: PNG, JPEG, JPG",
+            "error",
+          ),
+        ),
+      );
+    }
   };
 
   const handleDelete = (value) => () => {
@@ -89,7 +110,7 @@ export default function FormMultipleUpload(props) {
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <div className={classes.container}>
             <div
               onClick={() => {
@@ -98,7 +119,13 @@ export default function FormMultipleUpload(props) {
             >
               <Plus style={{ width: 20, height: 20 }} />
             </div>
-            <input hidden type="file" id={`fileinput`} onChange={onAdd} onBlur={props.onBlur}/>
+            <input
+              hidden
+              type="file"
+              id={`fileinput`}
+              onChange={onAdd}
+              onBlur={props.onBlur}
+            />
           </div>
           {props.error !== "" && (
             <span className={classes.error}>{props.error}</span>
@@ -111,7 +138,11 @@ export default function FormMultipleUpload(props) {
               <Avatar
                 variant="square"
                 className={classes.image}
-                src={value.uri}
+                src={
+                  value.file
+                    ? value.uri
+                    : GLOBALS.Constants.BASE_URL + value.uri
+                }
                 alt="Natacha"
               />
               <div onClick={handleDelete(value)} className={classes.imageCross}>
