@@ -67,10 +67,11 @@ export default function Clients(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
-  const [update, setUpdate] = useState(false);
-  const [items, setItems] = useState([]);
   const [page] = useState(1);
+  const [query, setQuery] = useState("");
+  const [items, setItems] = useState([]);
+  const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
@@ -97,7 +98,7 @@ export default function Clients(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
+        uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
       setLoading(false);
@@ -310,10 +311,21 @@ export default function Clients(props) {
           </div>
         </Form.Row>
         <Form.Row noMargin>
-          <SearchInput placeholder="Name of Client" />
+          <SearchInput
+            value={query}
+            onClick={fetchData}
+            placeholder="Name of Client"
+            onChange={({ target: { value } }) => setQuery(value)}
+          />
         </Form.Row>
         <div className={classes.content}>
-          <Table headers={GLOBALS.Data.clients.headings} rows={rows} />
+          <Table
+            rows={rows}
+            onClick={(index) =>
+              props.history.push(`/sites/${items[index]._id}`)
+            }
+            headers={GLOBALS.Data.clients.headings}
+          />
         </div>
       </div>
       {update && ""}

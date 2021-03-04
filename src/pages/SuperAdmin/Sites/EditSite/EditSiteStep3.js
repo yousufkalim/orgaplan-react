@@ -172,7 +172,7 @@ export default function AddSiteStep3(props) {
       // FormData Creation
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.LEVELS_IMAGE,
+        uri: GLOBALS.Constants.LEVEL_IMAGE,
         headers: {
           Authorization: store.token,
         },
