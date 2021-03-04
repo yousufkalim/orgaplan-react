@@ -24,15 +24,14 @@ export default function Main() {
 
   return (
     <>
-     <Admin />
-      {/* {store.loading && <Loader.AbsoluteLinear />}
+      {store.loading && <Loader.AbsoluteLinear />}
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (
         <SuperAdmin />
       ) : (
         <UnAuth />
-      )} */}
+      )}
     </>
   );
 }
