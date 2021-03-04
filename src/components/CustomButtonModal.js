@@ -12,9 +12,6 @@ import FormSelect from "../components/FormSelect";
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
-import FormInput from "./FormInput";
-
-import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 // const addAddressesYup = Yup.object().shape({
 //   street: Yup.string().required("Required"),
@@ -26,7 +23,6 @@ export default function CustomButtonModal(props) {
   const theme = useTheme();
 
   const error = theme.palette.error.main;
-  const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
   const borderColor = props.error ? error : theme.palette.grey[100];
 
@@ -100,12 +96,6 @@ export default function CustomButtonModal(props) {
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postal, setPostal] = useState("");
-
-  const handleChange = (name, value) => {
-    if (name === "street") setStreet(value);
-    else if (name === "city") setCity(value);
-    else if (name === "postal") setPostal(value);
-  };
 
   async function onSubmit() {
     let newValues = props.values;

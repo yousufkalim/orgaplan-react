@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import GLOBALS from "../../../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
-import IconButton from "@material-ui/core/IconButton";
 
 // import Actions from "../../../redux/actions";
 
@@ -20,6 +20,7 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
+
 import moment from "moment";
 import SiteImage from "../../../assets/images/Site.png";
 import { Images } from "../../../assets/Assets";
@@ -410,6 +411,22 @@ const Means = () => {
     ];
   });
 
+  const formik = useFormik({
+    initialValues: {
+      contractType: "CLIENTPERSITE",
+      contractStartDate: "",
+      contractEndDate: "",
+      functionality: "DELIVERY",
+      additionalInfo: "",
+      notificationPriorToDays: "",
+      notificationTo: [],
+    },
+    // validationSchema: addClientYup,
+    // onSubmit,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnMount: false,
+  });
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
@@ -644,24 +661,18 @@ const Means = () => {
           />
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
             placeholder="Start date"
-            name="contractStartDate"
+            name="startDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
             placeholder="End date"
             name="contractEndDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput

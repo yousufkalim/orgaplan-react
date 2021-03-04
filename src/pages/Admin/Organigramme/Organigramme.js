@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -54,7 +53,6 @@ export default function Organigramme() {
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
 
-  const [modal, setModal] = useState(false);
   const [selectedItem] = useState("");
 
   const [firstName, setFirstName] = useState("");
@@ -66,7 +64,7 @@ export default function Organigramme() {
 
   useEffect(() => {
     fetchData();
-    console.log("items", items);
+
     // eslint-disable-next-line
   }, []);
 
@@ -135,7 +133,7 @@ export default function Organigramme() {
       );
       setItems(itemsArray);
       setLoading(false);
-      setModal(false);
+      
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -145,12 +143,10 @@ export default function Organigramme() {
       );
     }
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+
   const rows = GLOBALS.Data.oranigramme.items.map((item) => {
     return [
-      <img src={Images.avatar} style={{ width: 50, height: 50 }} />,
+      <img src={Images.avatar} alt="Organigramme" style={{ width: 50, height: 50 }} />,
       ...item,
     ];
   });
@@ -161,7 +157,7 @@ export default function Organigramme() {
   return (
     <>
       <div className={classes.root}>
-        <Form.Row alignItems="center">
+        <Form.Row alignItems="center" className="pr-3">
           <Heading primary="ORGANNIGRAMME" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>

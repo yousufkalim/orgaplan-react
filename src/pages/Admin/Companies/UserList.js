@@ -169,7 +169,7 @@ export default function UserList(props) {
   return (
     <>
       <div className={classes.root}>
-        <Form.Row alignItems="center">
+        <Form.Row alignItems="center" className="pr-3">
           <Heading primary="LIST OF USERS" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
