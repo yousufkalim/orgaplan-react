@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
@@ -49,6 +49,7 @@ const Incidents = () => {
 
   // const [loading, setLoading] = useState(true);
   // const [items, setItems] = useState([]);
+  // const [page, setPage] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -57,11 +58,11 @@ const Incidents = () => {
 
   async function fetchData() {
     try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
-      });
-      setItems(result.data.items);
-      setLoading(false);
+      // const result = await GLOBALS.API({
+      //   // uri: `${GLOBALS.Constants.SITES}?page=${page}`,
+      // });
+      // setItems(result.data.items);
+      // setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
