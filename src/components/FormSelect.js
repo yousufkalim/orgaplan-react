@@ -60,8 +60,8 @@ export default function Input(props) {
         className={classes.select}
       >
         {props.placeholder && <option value="">{props.placeholder}</option>}
-        {props.values.map((item) => (
-          <option key={item.value} value={item.value}>
+        {props.values.map((item, index) => (
+          <option key={item.value + index} value={item.value}>
             {item.label}
           </option>
         ))}
