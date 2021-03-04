@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useSelector } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
@@ -54,13 +55,11 @@ const Means = () => {
   const store = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
-  const [page] = useState(1);
 
   const [siteDeliveryAreas, setSiteDeliveryAreas] = useState([]);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-  const [isSnackbarVisible, setSnakbarVisible] = useState(false);
   const [
     selectedSiteDeliveryAreadIndex,
     seltSelectedSiteDeliveryAreaIndex,
@@ -103,13 +102,7 @@ const Means = () => {
   const [selectedStorageArea, setSelectedStorageArea] = useState("");
   const [storageMeans, setStorageMeans] = useState([]);
   const [means, setMeans] = useState([]);
-  const [tableData, setTableData] = useState([]);
-  const [country, setCountry] = useState("");
-  const [startDate, setStartDate] = useState("Date de début");
-  const [endDate, setEndDate] = useState("Date de fin");
   const [meanText, setMeanText] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const onChangeMeanText = (text) => setMeanText(text);
 
   const getMeans = async () => {
     try {
@@ -266,6 +259,41 @@ const Means = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      contractType: "CLIENTPERSITE",
+      contractStartDate: "",
+      contractEndDate: "",
+      functionality: "DELIVERY",
+      additionalInfo: "",
+      notificationPriorToDays: "",
+      notificationTo: [],
+    },
+    // validationSchema: addClientYup,
+    // onSubmit,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnMount: false,
+  });
+
+  useEffect(() => {
+    filterMean();
+  }, [
+    selectedSiteDeliveryAreadIndex,
+    selectedLocationIndex,
+    selectedDropdownLevelIndex,
+    selectedDropdownStorageAreaIndex,
+    selectedStorageArea,
+    selectedTypeIndex,
+    selectedType,
+    selectedCompanyIndex,
+    selectedCompany,
+    selectedStatusIndex,
+    selectedStatus,
+    formik.values.contractStartDate,
+    formik.values.contractEndDate,
+  ]);
+
   const filterMean = async () => {
     try {
       setLoading(true);
@@ -383,29 +411,6 @@ const Means = () => {
     ];
   });
 
-  // async function onArchive(itemId) {
-  //   try {
-  //     if (window.confirm("Are you sure, you want to do this?")) {
-  //       setLoading(true);
-  //       await GLOBALS.API({
-  //         method: "PUT",
-  //         token: store.token,
-  //         uri: GLOBALS.Constants.SITE_ARCHIVE + "/" + itemId,
-  //       });
-  //       const itemsArray = items.filter((item) => item._id !== itemId);
-  //       setItems(itemsArray);
-  //       setLoading(false);
-  //     }
-  //   } catch (err) {
-  //     setLoading(false);
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // }
-
   const formik = useFormik({
     initialValues: {
       contractType: "CLIENTPERSITE",
@@ -422,7 +427,6 @@ const Means = () => {
     validateOnChange: false,
     validateOnMount: false,
   });
-
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
@@ -465,10 +469,6 @@ const Means = () => {
       </Form.Row>
       <Form.Row alignItems="center" noMargin>
         <Form.Row justifyContent="flex-start" noMargin>
-          {/* <SearchInput
-            placeholder="Site name"
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          /> */}
           <FormSelect
             placeholder="Delivery area"
             values={dropdownDeliveryAreas}
@@ -483,14 +483,14 @@ const Means = () => {
                 console.log("HERE 3");
                 setSelectedDropdownArea(item);
                 console.log("HERE 4");
-                filterMean();
+                // filterMean();
                 console.log("HERE 5");
               } else {
                 seltSelectedSiteDeliveryAreaIndex(null);
                 console.log("HERE 6");
                 setSelectedDropdownArea("");
                 console.log("HERE 7");
-                filterMean();
+                // filterMean();
                 console.log("HERE 8");
               }
             }}
@@ -584,11 +584,11 @@ const Means = () => {
                 // Reset Storage Means
                 setStorageMeans([]);
 
-                filterMean();
+                // filterMean();
               } else {
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
-                filterMean();
+                //  filterMean();
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -603,12 +603,12 @@ const Means = () => {
                 setSelectedTypeIndex(index);
                 setSelectedType(item);
                 // Reset Storage Means
-                filterMean();
+                //filterMean();
               } else {
                 setSelectedTypeIndex(0);
                 setSelectedType("");
                 // Reset Storage Means
-                filterMean();
+                //filterMean();
               }
             }}
             style={{ marginRight: "5px", maxWidth: 250 }}
@@ -632,11 +632,11 @@ const Means = () => {
               if (index != -1) {
                 setSeletedCompanyIndex(index);
                 setSelectedCompany(item);
-                filterMean();
+                //   filterMean();
               } else {
                 setSeletedCompanyIndex(0);
                 setSelectedCompany("");
-                filterMean();
+                // filterMean();
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -650,18 +650,17 @@ const Means = () => {
                 const item = event.target.value;
                 setSelectedStatusIndex(index);
                 setSelectedStatus(item);
-                filterMean();
+                // filterMean();
               } else {
                 setSelectedStatusIndex(0);
                 setSelectedStatus("");
-                filterMean();
+                //filterMean();
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
-          
             placeholder="Start date"
             name="startDate"
             icon
@@ -674,7 +673,6 @@ const Means = () => {
             name="contractEndDate"
             icon
             onChange={formik.handleChange}
-    
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput
