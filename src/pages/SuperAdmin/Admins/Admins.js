@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -34,19 +33,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const updateAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   image: Yup.object().optional(""),
-//   companyId: Yup.string().required("Required"),
-// });
-
 export default function Admins(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -54,6 +40,7 @@ export default function Admins(props) {
   const store = useSelector((state) => state.auth);
 
   const [page] = useState(1);
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
@@ -76,8 +63,9 @@ export default function Admins(props) {
 
   async function fetchData() {
     try {
+      setLoading(true);
       const admins = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
+        uri: `${GLOBALS.Constants.ADMINS}?page=${page}&name=${query}`,
       });
       const companies = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY}`,
@@ -227,7 +215,12 @@ export default function Admins(props) {
           </div>
         </Form.Row>
         <Form.Row noMargin>
-          <SearchInput placeholder="Name" />
+          <SearchInput
+            value={query}
+            placeholder="Name"
+            onClick={fetchData}
+            onChange={({ target: { value } }) => setQuery(value)}
+          />
         </Form.Row>
         <div className={classes.content}>
           <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
