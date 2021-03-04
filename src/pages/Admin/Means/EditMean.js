@@ -1,4 +1,4 @@
-import React , { useState, useEffect }from "react";
+import React , { useState }from "react";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,11 +11,8 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
-import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
-import RadioButton from "../../../components/RadioButton";
-import MultiAdderInput from "../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import MultiAdderInputModal from "../../../components/MultiAdderInputModal";
@@ -56,7 +53,7 @@ const addClientYup = Yup.object().shape({
 
 export default function EditMean(props) {
     const [addresses, setAddresses] = useState([]);
-    const [update, setUpdate] = useState(false);
+    // const [update, setUpdate] = useState(false);
 
 
   const classes = useStyles();
@@ -119,7 +116,7 @@ export default function EditMean(props) {
 
   function handleChange(name, value) {
     if (name === "addresses") {
-      setUpdate((st) => !st);
+      // setUpdate((st) => !st);
       setAddresses(value);
     } 
   }
@@ -127,17 +124,10 @@ export default function EditMean(props) {
 
   return (
     <div className={classes.root}>
-      <Form.Row>
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
-
       </IconButton>
-      <div className="text-center pr-5">
-      <img src={Images.profile2} />
-      <div>Thierry Marles</div>
-      </div>
 
-      </Form.Row>
       <Form.Row>
       <Heading primary="EDIT A MEAN" />
       <Button
