@@ -4,7 +4,7 @@ import Week from "react-big-calendar/lib/Week";
 import TimeGrid from "react-big-calendar/lib/TimeGrid";
 
 function workWeekRange(date, options, custom_week_days) {
-  if (custom_week_days == undefined) {
+  if (custom_week_days === undefined) {
     return Week.range(date, options).filter(
       (d) => [0, 1].indexOf(d.getDay()) === -1
     );
