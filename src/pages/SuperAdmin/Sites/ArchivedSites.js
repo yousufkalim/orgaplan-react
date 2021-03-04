@@ -40,6 +40,7 @@ export default function ArchivedSites(props) {
   const store = useSelector((state) => state.auth);
 
   const [page] = useState(1);
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +52,7 @@ export default function ArchivedSites(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_ARCHIVES}?page=${page}`,
+        uri: `${GLOBALS.Constants.SITE_ARCHIVES}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
       setLoading(false);
@@ -71,7 +72,30 @@ export default function ArchivedSites(props) {
         await GLOBALS.API({
           method: "PUT",
           token: store.token,
-          uri: GLOBALS.Constants.SITES_UN_ARCHIVE + "/" + itemId,
+          uri: GLOBALS.Constants.SITE_UN_ARCHIVE + "/" + itemId,
+        });
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
+        setLoading(false);
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function onDelete(itemId) {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        await GLOBALS.API({
+          method: "DELETE",
+          token: store.token,
+          uri: GLOBALS.Constants.SITE_DELETE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
@@ -109,7 +133,7 @@ export default function ArchivedSites(props) {
           borderRadius: 4,
         }}
       />
-      <IconButton>
+      <IconButton onClick={() => onDelete(item._id)}>
         <Cross style={{ width: 15, height: 15, color: "red" }} />
       </IconButton>
     </Form.Row>,
@@ -122,7 +146,13 @@ export default function ArchivedSites(props) {
       </IconButton>
       <Form.Column>
         <Heading primary="ARCHIVED SITES" />
-        <SearchInput placeholder="Site name" />
+        <SearchInput
+          value={query}
+          onClick={fetchData}
+          placeholder="Site name"
+          style={{ marginRight: "20px", maxWidth: 250 }}
+          onChange={({ target: { value } }) => setQuery(value)}
+        />
       </Form.Column>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.archivedSites.headings} rows={rows} />
