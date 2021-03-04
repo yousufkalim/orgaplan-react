@@ -85,7 +85,7 @@ export default function AddInvoice(props) {
   async function fetchSitesByClient() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_BY_CLIENT}/${clientId}`,
+        uri: `${GLOBALS.Constants.SITES_BY_CLIENT}/${clientId}`,
         token: store.token,
       });
       let itemsArray = result.data.items.map((item) => ({

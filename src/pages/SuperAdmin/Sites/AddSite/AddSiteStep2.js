@@ -14,42 +14,6 @@ import OpeningTimes from "../../../../components/OpeningTimes";
 import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 
-// const addSiteYup = Yup.object().shape({
-//   start: Yup.string().required("Required"),
-//   end: Yup.string().required("Required"),
-//   openingHours: Yup.object().shape({
-//     day1Start: Yup.number().required("Required"),
-//     day1End: Yup.number().required("Required"),
-//     day2Start: Yup.number().required("Required"),
-//     day2End: Yup.number().required("Required"),
-//     day3Start: Yup.number().required("Required"),
-//     day3End: Yup.number().required("Required"),
-//     day4Start: Yup.number().required("Required"),
-//     day4End: Yup.number().required("Required"),
-//     day5Start: Yup.number().required("Required"),
-//     day5End: Yup.number().required("Required"),
-//     day6Start: Yup.number().required("Required"),
-//     day6End: Yup.number().required("Required"),
-//     day7Start: Yup.number().required("Required"),
-//     day7End: Yup.number().required("Required"),
-//   }),
-//   unavailabilityDates: Yup.array()
-//     .of(
-//       Yup.object().shape({
-//         key: Yup.number().required("Required"),
-//         date: Yup.date().required("Required"),
-//         startHour: Yup.number().required("Required"),
-//         endHour: Yup.number().required("Required"),
-//         dayOff: Yup.bool().required("Required"),
-//         reason: Yup.string().optional(),
-//       }),
-//     )
-//     .optional(),
-//   additionalInfo: Yup.string().optional(),
-//   notificationPriorToDays: Yup.number().optional(),
-//   notificationTo: Yup.array().optional(),
-// });
-
 export default function AddSiteStep2(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -199,13 +163,12 @@ export default function AddSiteStep2(props) {
 
       const data = await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.SITE,
+        uri: GLOBALS.Constants.SITES,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
-
       props.setStep2Data(data);
       setLoading(false);
       props.setStep(3);

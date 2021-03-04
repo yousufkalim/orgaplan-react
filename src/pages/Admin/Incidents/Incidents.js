@@ -57,11 +57,11 @@ const Incidents = () => {
 
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.SITE}?page=${page}`,
-      // });
-      // setItems(result.data.items);
-      // setLoading(false);
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
+      });
+      setItems(result.data.items);
+      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
