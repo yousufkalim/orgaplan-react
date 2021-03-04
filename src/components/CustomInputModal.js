@@ -31,7 +31,7 @@ export default function CustomInputModal(props) {
       logo: [],
       name: "",
       storage: "",
-      deliveryAreas:"",
+      deliveryAreas: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -44,7 +44,7 @@ export default function CustomInputModal(props) {
       notificationPriorToDays: "",
       notificationTo: [],
     },
-    
+
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
@@ -97,7 +97,8 @@ export default function CustomInputModal(props) {
 
   async function onSubmit() {
     let newValues = props.values;
-
+    console.log(newValues);
+    return;
     const values = {
       key: newValues.length,
       street: street,
@@ -160,52 +161,40 @@ export default function CustomInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>
-            
             <Form.Row>
-            <FormSelect
-                placeholder="Storage"
+              <FormSelect
+                placeholder={props.leftDropdwonPlaceholder}
                 name="Storage"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.storage}
+                onChange={(event) => {
+                  props.leftDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={(formik.values.storage = props.leftValue)}
                 error={formik.errors.storage}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.leftDropdownValues}
               />
               <FormSelect
-                placeholder="Delivery Areas"
+                placeholder={props.rightDropdownPlaceholder}
                 name="deliveryAreas"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.deliveryAreas}
+                onChange={(event) => {
+                  props.rightDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={(formik.values.deliveryAreas = props.rightValue)}
                 error={formik.errors.deliveryAreas}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.rightDropdownValues}
               />
             </Form.Row>
-            
-    
+
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={ !formik.values.storage || !formik.values.deliveryAreas}
+                disabled={!props.rightValue || !props.leftValue}
               />
             </Form.Row>
           </Form.Form>
