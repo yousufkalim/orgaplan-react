@@ -411,22 +411,22 @@ const Means = () => {
     ];
   });
 
-  const formik = useFormik({
-    initialValues: {
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    // validationSchema: addClientYup,
-    // onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
+  // const formik = useFormik({
+  //   initialValues: {
+  //     contractType: "CLIENTPERSITE",
+  //     contractStartDate: "",
+  //     contractEndDate: "",
+  //     functionality: "DELIVERY",
+  //     additionalInfo: "",
+  //     notificationPriorToDays: "",
+  //     notificationTo: [],
+  //   },
+  //   // validationSchema: addClientYup,
+  //   // onSubmit,
+  //   validateOnBlur: false,
+  //   validateOnChange: false,
+  //   validateOnMount: false,
+  // });
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">

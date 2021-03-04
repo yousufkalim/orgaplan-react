@@ -59,7 +59,11 @@ export default function Sites(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [client]);
+  useEffect(() => {
+    props.match.params.clientId && setClient(props.match.params.clientId);
+    // eslint-disable-next-line
+  }, [clients]);
 
   async function fetchData() {
     try {
@@ -192,7 +196,10 @@ export default function Sites(props) {
             value={client}
             values={clientsArray}
             style={{ marginRight: "20px", maxWidth: 250 }}
-            onChange={({ target: { value } }) => setClient(value)}
+            onChange={({ target: { value } }) => {
+              props.history.replace("/sites");
+              setClient(value);
+            }}
           />
           <FormSelect
             name="status"
