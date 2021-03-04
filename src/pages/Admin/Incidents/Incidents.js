@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
@@ -19,9 +19,6 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
-
-import SiteImage from "../../../assets/images/Site.png";
-import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,11 +45,10 @@ const useStyles = makeStyles((theme) => ({
 const Incidents = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.auth);
+  // const store = useSelector((state) => state.auth);
 
-  const [, setLoading] = useState(true);
-  const [items, setItems] = useState([]);
-  const [page] = useState(1);
+  // const [loading, setLoading] = useState(true);
+  // const [items, setItems] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -61,11 +57,11 @@ const Incidents = () => {
 
   async function fetchData() {
     try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE}?page=${page}`,
-      });
-      setItems(result.data.items);
-      setLoading(false);
+      // const result = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.SITE}?page=${page}`,
+      // });
+      // setItems(result.data.items);
+      // setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -103,7 +99,7 @@ const Incidents = () => {
             alignItems="flex-start"
             noMargin
             justifyContent="flex-end"
-            style={{ paddingRight: "50px" }}
+           
           >
             <SubHeading
               disableMargin
@@ -234,24 +230,22 @@ const Incidents = () => {
 
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
+         
             placeholder="Start date"
-            name="contractStartDate"
+            name="startDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
+        
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
+        
             placeholder="End date"
-            name="contractStartDate"
+            name="endDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
+            
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect

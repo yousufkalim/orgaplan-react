@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {Images} from "../assets/Assets";
 
 export default function Input(props) {
   const theme = useTheme();
