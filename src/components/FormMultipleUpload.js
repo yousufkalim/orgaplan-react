@@ -6,6 +6,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ClearIcon from "@material-ui/icons/Clear";
 
 import Actions from "../redux/actions";
+import GLOBALS from "../globals";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -109,7 +110,7 @@ export default function FormMultipleUpload(props) {
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <div className={classes.container}>
             <div
               onClick={() => {
@@ -137,7 +138,11 @@ export default function FormMultipleUpload(props) {
               <Avatar
                 variant="square"
                 className={classes.image}
-                src={value.uri}
+                src={
+                  value.file
+                    ? value.uri
+                    : GLOBALS.Constants.BASE_URL + value.uri
+                }
                 alt="Natacha"
               />
               <div onClick={handleDelete(value)} className={classes.imageCross}>

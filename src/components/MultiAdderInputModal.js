@@ -79,7 +79,7 @@ export default function MultiAdderInputModal(props) {
     let newValues = props.values;
 
     const values = {
-      key: newValues.length,
+      _id: newValues.length,
       street: street,
       city: city,
       postal: postal,
@@ -96,7 +96,7 @@ export default function MultiAdderInputModal(props) {
   }
 
   const handleDelete = (value) => () => {
-    const newValues = props.values.filter((chip) => chip.key !== value.key);
+    const newValues = props.values.filter((chip) => chip._id !== value._id);
     props.onChange(newValues);
     setUpdate((st) => !st);
   };
@@ -123,7 +123,7 @@ export default function MultiAdderInputModal(props) {
           {update && ""}
           <ul className={classes.chips}>
             {props.values.map((data) => (
-              <li key={data.key}>
+              <li key={data._id}>
                 <Chip
                   label={data.label}
                   className={classes.chip}
@@ -154,7 +154,7 @@ export default function MultiAdderInputModal(props) {
             <Form.Row>
               <FormInput
                 name="city"
-                placeholder="City"
+                placeholder="City (text only)"
                 value={city}
                 // error={city}
                 onChange={({ target: { name, value } }) =>
@@ -164,10 +164,11 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <FormInput
+                type="number"
                 name="postal"
-                placeholder="Postal"
                 value={postal}
                 // error={postal}
+                placeholder="Postal (5 digits only"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -179,7 +180,13 @@ export default function MultiAdderInputModal(props) {
                 text="VALIDATE"
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={!street || !city || !postal}
+                disabled={
+                  !street ||
+                  !postal ||
+                  postal.length !== 5 ||
+                  !city ||
+                  !/^[a-zA-Z]+$/.test(city)
+                }
               />
             </Form.Row>
           </Form.Form>

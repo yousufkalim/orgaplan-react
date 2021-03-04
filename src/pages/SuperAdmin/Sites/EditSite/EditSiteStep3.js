@@ -66,23 +66,38 @@ export default function AddSiteStep3(props) {
 
   const [buildingName, setBuildingName] = useState("");
 
-  const [levelName, setLevelName] = useState("");
   const [levelNumber, setLevelNumber] = useState("");
-  // DELIVERY
 
   useEffect(() => {
-    setSiteId(props?.step2Data?.data._id);
+    setSiteId(props.match.params.siteId);
+    fetchData();
+    // eslint-disable-next-line
   }, [props]);
+
+  async function fetchData() {
+    try {
+      let response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.BUILDINGS_BY_SITE}/${props.match.params.siteId}`,
+      });
+      setBuildings(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
 
   const handleChange = (name, value) => {
     if (name === "buildingName") setBuildingName(value);
-    else if (name === "levelName") setLevelName(value);
     else if (name === "levelNumber") setLevelNumber(value);
   };
 
   function resetStates() {
     setBuildingName("");
-    setLevelName("");
+    setLevelNumber("");
   }
 
   async function onCreateBuilding() {
@@ -100,20 +115,6 @@ export default function AddSiteStep3(props) {
         token: store.token,
         body: formdata,
       });
-      // const response = {
-      //   data: {
-      //     _id: buildings.length,
-      //     ...formdata,
-      //     levels: [
-      //       {
-      //         _id: 0,
-      //         name: "RDC",
-      //         number: 0,
-      //         building: buildings.length,
-      //       },
-      //     ],
-      //   },
-      // };
 
       const buildingsArray = buildings;
       buildingsArray.push(response.data);
@@ -137,7 +138,6 @@ export default function AddSiteStep3(props) {
 
       // FormData Creation
       const formdata = new FormData();
-      formdata.append("name", levelName);
       formdata.append("number", Number(levelNumber));
       formdata.append("building", activeBuilding._id);
 
@@ -149,16 +149,9 @@ export default function AddSiteStep3(props) {
         },
         body: formdata,
       });
-      // const response = {
-      //   data: {
-      //     ...formdata,
-      //     _id: activeBuilding.levels.length,
-      //   },
-      // };
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels.push(response.data);
       setActiveBuilding(activeBuildingObj);
-      // setLevelModal((st) => !st);
       setLoading(false);
       resetStates();
     } catch (err) {
@@ -173,7 +166,6 @@ export default function AddSiteStep3(props) {
   async function onAddLevelImage(levelId, file, index) {
     try {
       setLoading(true);
-      console.log("onAddImage", levelId, index);
       const formdata = new FormData();
       formdata.append("image", file);
       formdata.append("levelId", levelId);
@@ -187,8 +179,6 @@ export default function AddSiteStep3(props) {
         body: formdata,
       });
       const activeBuildingObj = activeBuilding;
-      console.log(activeBuildingObj.levels);
-      console.log(activeBuildingObj.levels[index]);
       activeBuildingObj.levels[index].image = response.data.image;
       setActiveBuilding(activeBuildingObj);
       setLoading(false);
@@ -207,7 +197,7 @@ export default function AddSiteStep3(props) {
   // Rendering
   const buildingRows = buildings.map((building) => [
     building.name,
-    building.levels.length,
+    building.name === "Exterior" ? 0 : building.levels.length,
     <Form.Row style={{ justifyContent: "center" }}>
       <SmallButton
         text="Modify"
@@ -225,58 +215,114 @@ export default function AddSiteStep3(props) {
   ]);
   const levelRows = [];
   activeBuilding.levels?.map((level, index) =>
-    levelRows.push([
-      level.name,
-      level.image,
-      <Form.Row style={{ justifyContent: "center" }}>
-        <SmallButton
-          text="Add Plan"
-          disabled={loading}
-          color={theme.palette.primary.contrastText}
-          onClick={() => {
-            if (level.image) {
-              if (
-                window.confirm("Are you sure? The current file will be deleted")
-              ) {
-                document.getElementById(`fileinput${index}`).click();
-              }
-            } else {
-              document.getElementById(`fileinput${index}`).click();
-            }
-          }}
-          style={{
-            marginLeft: 10,
-            borderRadius: 4,
-          }}
-        />
-        <input
-          hidden
-          type="file"
-          id={`fileinput${index}`}
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (
-              file.size <= 1000000 &&
-              (file.type === "image/png" ||
-                file.type === "image/jpg" ||
-                file.type === "image/jpeg")
-            ) {
-              onAddLevelImage(level._id, file, index);
-              e.target.value = "";
-            } else {
-              dispatch(
-                Actions.notistack.enqueueSnackbar(
-                  Actions.notistack.snackbar(
-                    "Max size can be 10MB of types: PNG, JPEG, JPG",
-                    "error",
-                  ),
-                ),
-              );
-            }
-          }}
-        />
-      </Form.Row>,
-    ]),
+    activeBuilding.name === "Exterior"
+      ? levelRows.push([
+          level.image,
+          <Form.Row style={{ justifyContent: "center" }}>
+            <SmallButton
+              text="Add Plan"
+              disabled={loading}
+              color={theme.palette.primary.contrastText}
+              onClick={() => {
+                if (level.image) {
+                  if (
+                    window.confirm(
+                      "Are you sure? The current file will be deleted",
+                    )
+                  ) {
+                    document.getElementById(`fileinput${index}`).click();
+                  }
+                } else {
+                  document.getElementById(`fileinput${index}`).click();
+                }
+              }}
+              style={{
+                marginLeft: 10,
+                borderRadius: 4,
+              }}
+            />
+            <input
+              hidden
+              type="file"
+              id={`fileinput${index}`}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (
+                  file.size <= 1000000 &&
+                  (file.type === "image/png" ||
+                    file.type === "image/jpg" ||
+                    file.type === "image/jpeg")
+                ) {
+                  onAddLevelImage(level._id, file, index);
+                  e.target.value = "";
+                } else {
+                  dispatch(
+                    Actions.notistack.enqueueSnackbar(
+                      Actions.notistack.snackbar(
+                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "error",
+                      ),
+                    ),
+                  );
+                }
+              }}
+            />
+          </Form.Row>,
+        ])
+      : levelRows.push([
+          level.number === 0 ? "RDC" : level.number,
+          level.image,
+          <Form.Row style={{ justifyContent: "center" }}>
+            <SmallButton
+              text="Add Plan"
+              disabled={loading}
+              color={theme.palette.primary.contrastText}
+              onClick={() => {
+                if (level.image) {
+                  if (
+                    window.confirm(
+                      "Are you sure? The current file will be deleted",
+                    )
+                  ) {
+                    document.getElementById(`fileinput${index}`).click();
+                  }
+                } else {
+                  document.getElementById(`fileinput${index}`).click();
+                }
+              }}
+              style={{
+                marginLeft: 10,
+                borderRadius: 4,
+              }}
+            />
+            <input
+              hidden
+              type="file"
+              id={`fileinput${index}`}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (
+                  file.size <= 1000000 &&
+                  (file.type === "image/png" ||
+                    file.type === "image/jpg" ||
+                    file.type === "image/jpeg")
+                ) {
+                  onAddLevelImage(level._id, file, index);
+                  e.target.value = "";
+                } else {
+                  dispatch(
+                    Actions.notistack.enqueueSnackbar(
+                      Actions.notistack.snackbar(
+                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "error",
+                      ),
+                    ),
+                  );
+                }
+              }}
+            />
+          </Form.Row>,
+        ]),
   );
 
   return (
@@ -343,68 +389,67 @@ export default function AddSiteStep3(props) {
       {/* Create a level */}
       <Modal
         open={levelModal}
-        title="Create a level"
+        title={
+          activeBuilding.name === "Exterior" ? "Site Plan" : "Create a level"
+        }
         onClose={() => setLevelModal((st) => !st)}
         body={
-          <>
-            <Form.Form>
-              <Form.Row>
-                <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Level Name" />
+          activeBuilding.name === "Exterior" ? (
+            <>
+              <div className={classes.content}>
+                <Table rows={levelRows} headers={["Plan", "Action"]} />
+              </div>
+            </>
+          ) : (
+            <>
+              <Form.Form>
+                <Form.Row alignItems="center">
+                  <Form.Row noMargin>
+                    <FormLabel disableMargin bold primary="Level Number" />
+                  </Form.Row>
+                  {activeBuilding && (
+                    <FormSelect
+                      name="levelNumber"
+                      value={levelNumber}
+                      // error={levelNumber}
+                      style={GLOBALS.Styles.inputWidth}
+                      onChange={({ target: { name, value } }) =>
+                        handleChange(name, value)
+                      }
+                      values={levelNumberList.filter(
+                        (item) =>
+                          !activeBuilding.levels.some(
+                            (item2) => item2.number === item.value,
+                          ),
+                      )}
+                    />
+                  )}
                 </Form.Row>
-                <FormInput
-                  name="levelName"
-                  value={levelName}
-                  placeholder="Level Name"
-                  style={GLOBALS.Styles.inputWidth}
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
-                />
-              </Form.Row>
-              <Form.Row>
-                <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Level Number" />
-                </Form.Row>
-                {activeBuilding && (
-                  <FormSelect
-                    name="levelNumber"
-                    value={levelNumber}
-                    // error={levelNumber}
-                    style={GLOBALS.Styles.inputWidth}
-                    onChange={({ target: { name, value } }) =>
-                      handleChange(name, value)
-                    }
-                    values={levelNumberList.filter(
-                      (item) =>
-                        !activeBuilding.levels.some(
-                          (item2) => item2.number === item.value,
-                        ),
-                    )}
+                <Form.Row justifyContent="center">
+                  <Button
+                    minWidth={200}
+                    text="VALIDATE"
+                    fullWidth={false}
+                    onClick={onCreateLevel}
+                    disabled={loading || !levelNumber}
                   />
-                )}
-              </Form.Row>
-              <Form.Row justifyContent="center">
-                <Button
-                  minWidth={200}
-                  text="VALIDATE"
-                  fullWidth={false}
-                  onClick={onCreateLevel}
-                  disabled={loading || !levelName || !levelNumber}
+                </Form.Row>
+              </Form.Form>
+              <Divider />
+              <FormLabel
+                bold
+                disableMargin
+                primary={`Building: ${activeBuilding.name}`}
+              />
+              <Divider />
+              <div className={classes.content}>
+                <Table
+                  rows={levelRows}
+                  headers={GLOBALS.Data.levels.headings}
                 />
-              </Form.Row>
-            </Form.Form>
-            <Divider />
-            <FormLabel
-              bold
-              disableMargin
-              primary={`Building: ${activeBuilding.name}`}
-            />
-            <Divider />
-            <div className={classes.content}>
-              <Table rows={levelRows} headers={GLOBALS.Data.levels.headings} />
-            </div>
-          </>
+              </div>
+            </>
+          )
         }
       />
     </>
