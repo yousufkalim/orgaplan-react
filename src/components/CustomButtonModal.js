@@ -7,8 +7,6 @@ import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
 
-
-
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
@@ -43,7 +41,7 @@ export default function CustomButtonModal(props) {
       notificationPriorToDays: "",
       notificationTo: [],
     },
-    
+
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
@@ -162,52 +160,41 @@ export default function CustomButtonModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>
-            
             <Form.Row>
-            <FormSelect
-                placeholder="Storage"
+              <FormSelect
+                placeholder={props.leftDropdwonPlaceholder}
                 name="Storage"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
+                onChange={(event) => {
+                  props.leftDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={props.leftValue}
                 error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.leftDropdownValues}
               />
               <FormSelect
-                placeholder="Delivery Areas"
+                placeholder={props.rightDropdownPlaceholder}
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
+                disabled={props.disabled}
+                onChange={(event) => {
+                  props.rightDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={(formik.values.color = props.rightValue)}
                 error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.rightDropdownValues}
               />
             </Form.Row>
-            
-    
+
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={ !formik.values.color}
+                disabled={props.disabled ? false : !formik.values.color}
               />
             </Form.Row>
           </Form.Form>
