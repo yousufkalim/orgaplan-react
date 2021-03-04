@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import GLOBALS from "../../../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Modal, Button, Alert, Row, Col } from "react-bootstrap";
+import { Modal, Button, Alert, } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -15,22 +13,8 @@ import MyWorkWeek from "./components/MyWorkWeek";
 import FormGroup from "@material-ui/core/FormGroup";
 import Checkbox from "@material-ui/core/Checkbox";
 import OverLapSelect from "./components/overlapSelect";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import TimePicker from "react-time-picker";
-import DateTimePicker from "react-datetime-picker";
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: GLOBALS.Styles.pagePadding,
-  },
-  content: {
-    overflow: "hidden",
-    borderRadius: theme.shape.borderRadius,
-    padding: GLOBALS.Styles.pageContentPadding,
-    marginTop: GLOBALS.Styles.pageContentMargin,
-    backgroundColor: theme.palette.secondary.main,
-  },
-}));
+
 let view = {
   month: true,
   day: true,
@@ -39,12 +23,6 @@ let view = {
 };
 
 const localizer = momentLocalizer(moment);
-const ColoredDateCellWrapper = ({ children }) =>
-  React.cloneElement(React.Children.only(children), {
-    style: {
-      backgroundColor: "#fff",
-    },
-  });
 
 let formats = {
   dateFormat: "DD",
@@ -58,8 +36,6 @@ let formats = {
 };
 
 const Calender = () => {
-  const classes = useStyles();
-  const [availabilitieModal, setavailabilitieModal] = useState(false);
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days, setDays] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
@@ -81,7 +57,6 @@ const Calender = () => {
   let [starttimesliceEdit, setstarttimesliceEdit] = useState("");
   let [endtimesliceEdit, setEndtimesliceEdit] = useState("");
   const [statusColorEdit, setStatusColorEdit] = useState("");
-  const [dayLayoutAlgorithm, setdayLayoutAlgorithm] = useState("no-overlap");
   const [bookingslot, setbookingslot] = useState(false);
   const [bookingEvent, setbookingEvent] = useState();
   const [bookingTitle, setBookingTitle] = useState();
@@ -292,7 +267,7 @@ const Calender = () => {
       milliseconds = milliseconds - 1 * 60 * 1000;
       preDateTime = new Date(milliseconds);
       if (startTimeEdit > preDateTime && startTimeEdit < endTimeEdit) {
-        const updateElement = events.filter((e) => e.id == eventID);
+        const updateElement = events.filter((e) => e.id === eventID);
         updateElement[0].title = titleEdit;
         updateElement[0].start = startTimeEdit;
         updateElement[0].end = endTimeEdit;
@@ -348,8 +323,8 @@ const Calender = () => {
       let afterTime = moment(endTime).format("DD/MM/YYYY HH:mm");
       let dateCheck1 = events.find((item) => {
         return (
-          moment(item.start).format("DD/MM/YYYY HH:mm") == beforeTime ||
-          moment(item.end).format("DD/MM/YYYY HH:mm") == afterTime
+          moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime ||
+          moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
         );
       });
 
@@ -370,7 +345,7 @@ const Calender = () => {
       /*check not in previous day End  */
 
       if (startTime > preDateTime && startTime < endTime) {
-        if (overlap == "Enable") {
+        if (overlap === "Enable") {
           setShow(false);
           const newElement = {
             id: uniqid,
@@ -382,7 +357,7 @@ const Calender = () => {
           setEvents([...events, newElement]);
           setTitle("");
         } else if (
-          overlap == "Disable" &&
+          overlap === "Disable" &&
           dateCheck2 !== -1 &&
           dateCheck3 !== -1 &&
           dateCheck1 !== undefined
@@ -443,7 +418,7 @@ const Calender = () => {
           moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
         );
       });
-      if (dateCheck.length == 0 && overlap) {
+      if (dateCheck.length === 0 && overlap) {
         if (start > preDateTime && start < end) {
           if (slots.length >= 2) {
             var format = "HH:mm";
@@ -454,7 +429,7 @@ const Calender = () => {
             if (
               beforeTime !== "17:00" &&
               beforeTime !== "17:30" &&
-              checkDiff == false
+              checkDiff === false
             ) {
               setShow(!show);
               setStartTime(start);
@@ -491,7 +466,7 @@ const Calender = () => {
       }
     }
   };
-  const AddAvailability = ({ start, end }) => {};
+
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -515,7 +490,7 @@ const Calender = () => {
     // End slice a time
   };
   const handleDeleteEvent = () => {
-    const fill = events.filter((e) => e.id != eventID);
+    const fill = events.filter((e) => e.id !== eventID);
     setEvents(fill);
     setpopoverShow(!popoverShow);
   };
@@ -574,15 +549,15 @@ const Calender = () => {
     bookingEndTime = bookingEndTime.replace(/,/g, "");
     bookingEndTime = new Date(bookingEndTime);
     /* End time*/
-    let uniqid = Math.random();
-    const newElement = {
-      p_id: bookingEvent.id,
-      id: uniqid,
-      title: bookingTitle,
-      start: bookingstartTime,
-      end: bookingEndTime,
-      color: statusbooking,
-    };
+    // let uniqid = Math.random();
+    // const newElement = {
+    //   p_id: bookingEvent.id,
+    //   id: uniqid,
+    //   title: bookingTitle,
+    //   start: bookingstartTime,
+    //   end: bookingEndTime,
+    //   color: statusbooking,
+    // };
     if (
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
@@ -595,9 +570,9 @@ const Calender = () => {
       }, 1000);
     }
   };
-  const statusBookingChange = (event) => {
-    setStatusbooking(event.target.value);
-  };
+  // const statusBookingChange = (event) => {
+  //   setStatusbooking(event.target.value);
+  // };
   function Alertbox(props) {
     return (
       <Alert
@@ -632,7 +607,7 @@ const Calender = () => {
   };
   return (
     <>
-      <div className="row ">
+      {/* <div className="row ">
         <div className="col-md-2"></div>
         <div className="col-md-2"></div>
         <div className="col-md-2"></div>
@@ -672,15 +647,7 @@ const Calender = () => {
               }}
             ></span>
             <span style={{ "margin-left": "10px" }}>Validate</span>
-            {/* <Button
-              variant="primary"
-              style={{ "margin-left": "auto", "margin-right": "10px" }}
-              onClick={() => {
-                setavailabilitieModal(true);
-              }}
-            >
-              Add Availability
-            </Button> */}
+            
             <div style={{ "margin-left": "auto", "margin-right": "10px" }}>
               <OverLapSelect
                 overlap={overlap}
@@ -774,31 +741,20 @@ const Calender = () => {
             </FormGroup>
           </div>
         </div>
-      </div>
-      <Modal show={bookingslot} onHide={() => setbookingslot(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Book a slot</Modal.Title>
+      </div> */}
+      <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
+        <Modal.Header closeButton style={{border: 'none'}}>
+          <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
         </Modal.Header>
         <Alertbox message="Invalid Time" />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
-              <div className="description">
-                <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Add message</label>
-                  <textarea
-                    class="form-control"
-                    id="exampleFormControlTextarea1"
-                    rows="3"
-                    value={bookingTitle}
-                    onChange={(e) => setBookingTitle(e.target.value)}
-                  ></textarea>
-                </div>
-              </div>
+              <input type="text" style={{border: "1px solid #707070"}} placeholder="Company : ConstructBTP" className="w-100 p-2 mb-2"  />
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-12">
               <div className="starttime">
                 <label>Start time</label>
                 <TimePicker
@@ -807,7 +763,7 @@ const Calender = () => {
                   locale="sv-sv"
                 />
               </div>
-              <div class="form-group statusColor">
+              {/* <div class="form-group statusColor">
                 <label>Status Color </label>
 
                 <FormControl component="fieldset">
@@ -853,9 +809,9 @@ const Calender = () => {
                     />
                   </RadioGroup>
                 </FormControl>
-              </div>
+              </div> */}
             </div>
-            <div className="col-md-6">
+            <div className="col-md-12">
               <div className="endTime">
                 <label>End Time</label>
                 <TimePicker
@@ -866,14 +822,32 @@ const Calender = () => {
               </div>
             </div>
           </div>
+          <div className="row pt-3">
+            <div className="col-md-12">
+              <div className="description">
+                <div className="form-group ">
+                  {/* <label for="exampleFormControlTextarea1">Add message</label> */}
+                  <textarea
+                    className="form-control"
+                    id="exampleFormControlTextarea1"
+                    placeholder="Reason of booking"
+                    rows="3"
+                    value={bookingTitle}
+                    onChange={(e) => setBookingTitle(e.target.value)}
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={saveBooking}>
+        <Modal.Footer style={{border: 'none'}}>
+          <button className="w-100 py-2" onClick={saveBooking} style={{color: "#fff", backgroundColor: "#DBB20A", border: 'none', borderRadius: '5px'}}>Book</button>
+          {/* <Button variant="primary" onClick={saveBooking}>
             Add Booking
           </Button>
           <Button variant="secondary" onClick={() => setbookingslot(false)}>
             Close
-          </Button>
+          </Button> */}
         </Modal.Footer>
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
@@ -1074,7 +1048,7 @@ const Calender = () => {
         </Modal.Footer>
       </Modal>
 
-      <div>
+      <div className="pt-5">
         <PopoverModal
           popoverShow={popoverShow}
           handlePopoverClose={handlePopoverClose}
