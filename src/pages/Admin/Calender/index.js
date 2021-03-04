@@ -10,9 +10,6 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
-import FormGroup from "@material-ui/core/FormGroup";
-import Checkbox from "@material-ui/core/Checkbox";
-import OverLapSelect from "./components/overlapSelect";
 import TimePicker from "react-time-picker";
 
 let view = {
@@ -37,10 +34,10 @@ let formats = {
 
 const Calender = () => {
   const [alertBoxTime, setAlertBoxTime] = useState(false);
-  const [days, setDays] = useState([0]);
+  const [days] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
-  const [eventID, seteventID] = useState("");
-  const [event, setEvent] = useState("");
+  const [eventID] = useState("");
+  const [event] = useState("");
   const [events, setEvents] = useState(myEventsList);
   const [show, setShow] = useState(false);
   let [startTime, setStartTime] = useState("");
@@ -64,19 +61,19 @@ const Calender = () => {
   let [bookingEndTime, setBookingEndTime] = useState("");
   let [bookingstartTimeslice, setBookingstartTimeslice] = useState("");
   let [bookingendTimeslice, setBookingendTimeslice] = useState("");
-  const [statusbooking, setStatusbooking] = useState("#FFFF00");
-  const [overlap, setoverlap] = React.useState("Enable");
-  const [overlapOpen, setoverlapOpen] = React.useState(false);
+  // const [statusbooking, setStatusbooking] = useState("#FFFF00");
+  const [overlap] = React.useState("Enable");
+  // const [overlapOpen, setoverlapOpen] = React.useState(false);
   // overlap functions **************
-  const handleOverLapChange = (event) => {
-    setoverlap(event.target.value);
-  };
-  const handleOverLapClose = () => {
-    setoverlapOpen(false);
-  };
-  const handleOverLapOpen = () => {
-    setoverlapOpen(true);
-  };
+  // const handleOverLapChange = (event) => {
+  //   setoverlap(event.target.value);
+  // };
+  // const handleOverLapClose = () => {
+  //   setoverlapOpen(false);
+  // };
+  // const handleOverLapOpen = () => {
+  //   setoverlapOpen(true);
+  // };
   const handleClose = () => setShow(false);
   let work_week_obj = {
     Sunday: true,
@@ -104,133 +101,133 @@ const Calender = () => {
       work_week_obj.Saturday = false;
     }
   }
-  const [workWeekstate, workWeekSetState] = useState(work_week_obj);
-  const workWeekHandleChange = (event) => {
-    workWeekSetState({
-      ...workWeekstate,
-      [event.target.name]: event.target.checked,
-    });
+  // const [workWeekstate, workWeekSetState] = useState(work_week_obj);
+  // const workWeekHandleChange = (event) => {
+  //   workWeekSetState({
+  //     ...workWeekstate,
+  //     [event.target.name]: event.target.checked,
+  //   });
 
-    // if (event.target.checked === true) {
-    //   setavailabilitieModal(true);
-    // }
+  //   // if (event.target.checked === true) {
+  //   //   setavailabilitieModal(true);
+  //   // }
 
-    // sunday Start
-    if (event.target.name === "Sunday" && event.target.checked === true) {
-      let remove = days.indexOf(0);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-      // setAvailibilityDateMin();
-    } else if (
-      event.target.name === "Sunday" &&
-      event.target.checked === false
-    ) {
-      days.push(0);
-      days.sort();
-      setDays(days);
-    }
-    // sunday End
-    // Monday Start
-    else if (event.target.name === "Monday" && event.target.checked === true) {
-      let remove = days.indexOf(1);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Monday" &&
-      event.target.checked === false
-    ) {
-      days.push(1);
-      days.sort();
-      setDays(days);
-    }
-    // Monday End
-    // Tuesday Start
-    else if (event.target.name === "Tuesday" && event.target.checked === true) {
-      let remove = days.indexOf(2);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Tuesday" &&
-      event.target.checked === false
-    ) {
-      days.push(2);
-      days.sort();
-      setDays(days);
-    }
-    // Tuesday End
-    // Wednesday Start
-    else if (
-      event.target.name === "Wednesday" &&
-      event.target.checked === true
-    ) {
-      let remove = days.indexOf(3);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Wednesday" &&
-      event.target.checked === false
-    ) {
-      days.push(3);
-      days.sort();
-      setDays(days);
-    }
-    // Wednesday End
-    // Thursday Start
-    else if (
-      event.target.name === "Thursday" &&
-      event.target.checked === true
-    ) {
-      let remove = days.indexOf(4);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Thursday" &&
-      event.target.checked === false
-    ) {
-      days.push(4);
-      days.sort();
-      setDays(days);
-    }
-    // Thursday End
-    // Friday Start
-    else if (event.target.name === "Friday" && event.target.checked === true) {
-      let remove = days.indexOf(5);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Friday" &&
-      event.target.checked === false
-    ) {
-      days.push(5);
-      days.sort();
-      setDays(days);
-    }
-    // Friday End
-    // Saturday Start
-    else if (
-      event.target.name === "Saturday" &&
-      event.target.checked === true
-    ) {
-      let remove = days.indexOf(6);
-      days.splice(remove, 1);
-      days.sort();
-      setDays(days);
-    } else if (
-      event.target.name === "Saturday" &&
-      event.target.checked === false
-    ) {
-      days.push(6);
-      days.sort();
-      setDays(days);
-    }
-    // Saturday End
-  };
+  //   // sunday Start
+  //   if (event.target.name === "Sunday" && event.target.checked === true) {
+  //     let remove = days.indexOf(0);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //     // setAvailibilityDateMin();
+  //   } else if (
+  //     event.target.name === "Sunday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(0);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // sunday End
+  //   // Monday Start
+  //   else if (event.target.name === "Monday" && event.target.checked === true) {
+  //     let remove = days.indexOf(1);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Monday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(1);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Monday End
+  //   // Tuesday Start
+  //   else if (event.target.name === "Tuesday" && event.target.checked === true) {
+  //     let remove = days.indexOf(2);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Tuesday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(2);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Tuesday End
+  //   // Wednesday Start
+  //   else if (
+  //     event.target.name === "Wednesday" &&
+  //     event.target.checked === true
+  //   ) {
+  //     let remove = days.indexOf(3);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Wednesday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(3);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Wednesday End
+  //   // Thursday Start
+  //   else if (
+  //     event.target.name === "Thursday" &&
+  //     event.target.checked === true
+  //   ) {
+  //     let remove = days.indexOf(4);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Thursday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(4);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Thursday End
+  //   // Friday Start
+  //   else if (event.target.name === "Friday" && event.target.checked === true) {
+  //     let remove = days.indexOf(5);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Friday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(5);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Friday End
+  //   // Saturday Start
+  //   else if (
+  //     event.target.name === "Saturday" &&
+  //     event.target.checked === true
+  //   ) {
+  //     let remove = days.indexOf(6);
+  //     days.splice(remove, 1);
+  //     days.sort();
+  //     setDays(days);
+  //   } else if (
+  //     event.target.name === "Saturday" &&
+  //     event.target.checked === false
+  //   ) {
+  //     days.push(6);
+  //     days.sort();
+  //     setDays(days);
+  //   }
+  //   // Saturday End
+  // };
   const updateEvent = () => {
     if (titleEdit !== "") {
       /* start time*/
@@ -494,14 +491,14 @@ const Calender = () => {
     setEvents(fill);
     setpopoverShow(!popoverShow);
   };
-  const handlePopoverShow = (event) => {
-    // admin code Start
-    seteventID(event.id);
-    const fill = events.filter((e) => e.id === event.id);
-    setEvent(fill[0]);
-    setpopoverShow(!popoverShow);
-    // admin code end
-  };
+  // const handlePopoverShow = (event) => {
+  //   // admin code Start
+  //   seteventID(event.id);
+  //   const fill = events.filter((e) => e.id === event.id);
+  //   setEvent(fill[0]);
+  //   setpopoverShow(!popoverShow);
+  //   // admin code end
+  // };
   const bookingSlot = (event) => {
     // booking Event
     setbookingslot(true);
@@ -981,6 +978,7 @@ const Calender = () => {
                 />
               </div>
               <div class="form-group statusColor">
+                {value && ""}
                 <label>Status Color </label>
                 <FormControl component="fieldset">
                   <RadioGroup

@@ -14,7 +14,6 @@ import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
 import CustomButtonModal from "../../../components/CustomButtonModal";
-import { Images } from "../../../assets/Assets";
 
 const useStyles = makeStyles((theme) => ({
   root: {
