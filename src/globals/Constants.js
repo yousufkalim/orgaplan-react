@@ -19,6 +19,7 @@ const endpoints = {
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
+  INVOICES_BY_CLIENT: BASE_URL_V1 + "superadmin/invoices/client",
   INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
   LEVELS: BASE_URL_V1 + "superadmin/levels",
   LEVEL_IMAGE: BASE_URL_V1 + "superadmin/levels/image",

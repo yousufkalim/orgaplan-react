@@ -48,7 +48,7 @@ export default function Invoices(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.INVOICES}/${props.match.params.clientId}?page=${page}`,
+        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${props.match.params.clientId}?page=${page}`,
       });
       setItems(result.data.items);
       setLoading(false);
