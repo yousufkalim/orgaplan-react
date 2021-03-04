@@ -60,7 +60,7 @@ export default function Companies(props) {
   const [companies, setCompanies] = useState([]);
 
   const [modal, setModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState("");
+  const [selectedItem] = useState("");
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -219,7 +219,7 @@ export default function Companies(props) {
               style={{ marginLeft: "20px" }}
               placeholder="Name of company"
             />
-            <a href="#">
+            <a href="#companies">
               <img
                 style={{
                   width: "1.3rem",

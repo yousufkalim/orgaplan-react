@@ -16,7 +16,6 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import MultiAdderInputModal from "../../../components/MultiAdderInputModal";
-import { Images } from "../../../assets/Assets";
 
 const useStyles = makeStyles((theme) => ({
   root: {
