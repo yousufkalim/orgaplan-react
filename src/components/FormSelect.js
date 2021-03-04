@@ -26,7 +26,7 @@ export default function Input(props) {
       display: "flex",
       overflow: "hidden",
       textAlign: "center",
-      padding: "14px 12px",
+      padding: "10px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
@@ -55,12 +55,13 @@ export default function Input(props) {
         name={props.name}
         value={props.value}
         selected={props.value}
+        disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
       >
         {props.placeholder && <option value="">{props.placeholder}</option>}
-        {props.values.map((item) => (
-          <option key={item.value} value={item.value}>
+        {props.values.map((item, index) => (
+          <option key={item.value + index} value={item.value}>
             {item.label}
           </option>
         ))}

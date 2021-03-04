@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
@@ -15,35 +14,6 @@ import RadioButton from "../../../../components/RadioButton";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
 import MultiAdderInputModal from "../../../../components/MultiAdderInputModal";
-
-// const addSiteYup = Yup.object().shape({
-//   name: Yup.string().required("Required"),
-//   logo: Yup.array().min(1, "Required").required("Required"),
-//   zacId: Yup.string().optional(),
-//   adminId: Yup.string().optional(),
-//   functionality: Yup.string().required("Required"),
-//   addresses: Yup.array()
-//     .of(
-//       Yup.object().shape({
-//         key: Yup.number().required("Required"),
-//         street: Yup.string().required("Required"),
-//         city: Yup.string().required("Required"),
-//         postal: Yup.string().required("Required"),
-//       }),
-//     )
-//     .min(1, "At least one address is required")
-//     // .max(3)
-//     .required("Required"),
-//   trades: Yup.array().of(Yup.string()).optional(),
-//   penaltyforLateDelivery: Yup.number()
-//     .min(1, "Value should be greater than 0")
-//     .max(9999)
-//     .required("Required"),
-//   penaltyforUnexpDelivery: Yup.number()
-//     .min(1, "Value should be greater than 0")
-//     .max(9999)
-//     .required("Required"),
-// });
 
 export default function AddSiteStep1(props) {
   const dispatch = useDispatch();
@@ -92,12 +62,12 @@ export default function AddSiteStep1(props) {
       const clientsArray = [];
       clientsResult.data.items.map((client) => {
         if (client.userId) {
-          if (client.companyId.type !== "MASTERCLIENT") {
-            clientsArray.push({
-              value: client._id,
-              label: `${client.userId.firstName} ${client.userId.lastName}`,
-            });
-          }
+          // if (client.companyId.type !== "MASTERCLIENT") {
+          clientsArray.push({
+            value: client._id,
+            label: `${client.userId.firstName} ${client.userId.lastName}`,
+          });
+          // }
           return true;
         }
         return true;
@@ -105,7 +75,7 @@ export default function AddSiteStep1(props) {
       setClientsOriginal(clientsResult.data.items);
       setZacs(zacsArray);
       setClients(clientsArray);
-      setAdminId(clientsArray[0].value);
+      setAdminId(clientsArray[0]?.value);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -259,7 +229,7 @@ export default function AddSiteStep1(props) {
                 value={penaltyforLateDelivery}
                 // error={penaltyforLateDelivery}
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value >= 0 && handleChange(name, value)
                 }
               />
               <SmallText style={{ marginLeft: 10 }} primary="€" />
@@ -272,7 +242,7 @@ export default function AddSiteStep1(props) {
                 value={penaltyforUnexpDelivery}
                 // error={penaltyforUnexpDelivery}
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value >= 0 && handleChange(name, value)
                 }
               />
               <SmallText style={{ marginLeft: 10 }} primary="€" />

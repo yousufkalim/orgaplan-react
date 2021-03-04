@@ -57,6 +57,7 @@ export default function Admins(props) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
+  const [update, setUpdate] = useState(false);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
@@ -109,8 +110,10 @@ export default function Admins(props) {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
+    else if (name === "image") {
+      setUpdate((st) => !st);
+      setImage(value);
+    } else if (name === "companyId") setCompanyId(value);
   };
 
   const onUpdate = async (e) => {
@@ -149,6 +152,30 @@ export default function Admins(props) {
     }
   };
 
+  async function onDelete(itemId) {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        await GLOBALS.API({
+          method: "DELETE",
+          token: store.token,
+          uri: GLOBALS.Constants.ADMINS_DELETE + "/" + itemId,
+        });
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
+        setModal(false);
+        setLoading(false);
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
@@ -172,7 +199,7 @@ export default function Admins(props) {
           setModal(true);
         }}
       >
-        <Pencil style={{ width: 18, height: 18 }} />
+        <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>,
     ];
   });
@@ -184,7 +211,11 @@ export default function Admins(props) {
           <Heading primary="ADMINS LIST" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 Admins" bold />
+              <SubHeading
+                disableMargin
+                primary={`Total : ${items.length} Admins`}
+                bold
+              />
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -202,6 +233,7 @@ export default function Admins(props) {
           <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
         </div>
       </div>
+      {update && ""}
       <Modal
         title="EDIT ADMIN"
         open={selectedItem ? modal : false}
@@ -279,7 +311,7 @@ export default function Admins(props) {
                     loading ||
                     !firstName ||
                     !lastName ||
-                    !phone ||
+                    phone.length !== 10 ||
                     image === "" ||
                     !companyId
                   }
@@ -290,8 +322,9 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={loading || true}
+                  disabled={loading}
                   color={theme.palette.error.main}
+                  onClick={() => onDelete(selectedItem._id)}
                 />
               </Form.Row>
             </Form.Column>

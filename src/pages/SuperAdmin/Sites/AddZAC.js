@@ -54,6 +54,7 @@ export default function AddZac(props) {
       setLoading(false);
       props.history.push("/sites/zacs");
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),

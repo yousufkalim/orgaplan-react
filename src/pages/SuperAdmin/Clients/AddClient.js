@@ -1,11 +1,13 @@
-import React from "react";
-import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
+import moment from "moment";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -28,87 +30,130 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
+// const addClientYup = Yup.object().shape({
+//   logo: Yup.array().min(1, "Required").required("Required"),
+//   name: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   lastName: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   // .test(
+//   // "len",
+//   // "Must be less than 300 characters",
+//   // (val) => val.length <= 300,
+//   //)
+//   notificationPriorToDays: Yup.number().test("positive", "Invalid", (val) => {
+//     console.log(val);
+//     return false;
+//   }),
+//   notificationTo: Yup.array(),
+// });
 
 export default function AddClient(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const onSubmit = async (values) => {
-    const notificationTo = values.notificationTo.map((item) => item.label);
+  const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState(false);
 
-    var formdata = new FormData();
-    formdata.append("logo", values.logo[0].file);
-    formdata.append("name", values.name);
-    formdata.append("color", values.color);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-    formdata.append("contractType", values.contractType);
-    formdata.append("contractStartDate", values.contractStartDate);
-    formdata.append("contractEndDate", values.contractEndDate);
-    formdata.append("functionality", values.functionality);
-    formdata.append("additionalInfo", values.additionalInfo);
-    formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    formdata.append("notificationTo", JSON.stringify(notificationTo));
+  const [logo, setLogo] = useState([]);
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("green");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [contractType, setContractType] = useState("CLIENTPERSITE");
+  const [contractStartDate, setContractStartDate] = useState("");
+  const [contractEndDate, setContractEndDate] = useState("");
+  const [functionality, setFunctionality] = useState("DELIVERY");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationTo, setNotificationTo] = useState([]);
 
-    await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.CLIENTS,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    formik.setSubmitting(false);
-    props.history.push("/clients");
+  const handleChange = (name, value) => {
+    if (name === "logo") {
+      setUpdate((st) => !st);
+      setLogo(value);
+    } else if (name === "name") setName(value);
+    else if (name === "color") setColor(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "email") setEmail(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "contractType") setContractType(value);
+    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractEndDate") setContractEndDate(value);
+    else if (name === "functionality") setFunctionality(value);
+    else if (name === "additionalInfo") setAdditionalInfo(value);
+    else if (name === "notificationPriorToDays")
+      setNotificationPriorToDays(value);
+    else if (name === "notificationTo") {
+      setUpdate((st) => !st);
+      setNotificationTo(value);
+    }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      logo: [],
-      name: "",
-      color: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    validationSchema: addClientYup,
-    onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const notificationToArray = notificationTo.map((item) => item.label);
+
+      var formdata = new FormData();
+      formdata.append("logo", logo[0].file);
+      formdata.append("name", name);
+      formdata.append("color", color);
+      formdata.append("firstName", firstName);
+      formdata.append("lastName", lastName);
+      formdata.append("email", email);
+      formdata.append("phone", phone);
+      formdata.append("contractType", contractType);
+      formdata.append("contractStartDate", contractStartDate);
+      formdata.append("contractEndDate", contractEndDate);
+      formdata.append("functionality", functionality);
+      formdata.append("additionalInfo", additionalInfo);
+      formdata.append("notificationPriorToDays", notificationPriorToDays);
+      formdata.append("notificationTo", JSON.stringify(notificationToArray));
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.CLIENTS,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      setLoading(false);
+      props.history.push("/clients");
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -117,43 +162,39 @@ export default function AddClient(props) {
       </IconButton>
       <Heading primary="ADD A CLIENT" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="COMPANY NAME* :" />
             <FormInput
               name="name"
-              style={GLOBALS.Styles.inputWidth}
+              value={name}
+              // error={name}
               placeholder="Company name"
-              onChange={formik.handleChange}
-              value={formik.values.name}
-              error={formik.errors.name}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
+          {update && ""}
           <Form.Row>
             <FormLabel bold primary="COMPANY LOGO* :" />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
+                // error={logo}
+                values={logo}
                 style={GLOBALS.Styles.inputWidth}
-                error={formik.errors.logo}
-                values={formik.values.logo}
-                onChange={(values) =>
-                  formik.handleChange({
-                    target: {
-                      type: "text",
-                      name: "logo",
-                      value: values,
-                    },
-                  })
-                }
+                onChange={(values) => handleChange("logo", values)}
               />
               <FormSelect
-                placeholder="Color"
                 name="color"
+                value={color}
+                // error={color}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
                 values={[
                   { value: "green", label: "Green" },
                   { value: "Yellow", label: "Yellow" },
@@ -170,20 +211,24 @@ export default function AddClient(props) {
             <FormLabel bold primary="RESPONSIBLE COMPANY : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="First Name"
-                onChange={formik.handleChange}
                 name="firstName"
-                value={formik.values.firstName}
-                error={formik.errors.firstName}
+                value={firstName}
+                // error={firstName}
+                placeholder="First Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Last Name"
-                onChange={formik.handleChange}
                 name="lastName"
-                value={formik.values.lastName}
-                error={formik.errors.lastName}
+                value={lastName}
+                // error={lastName}
+                placeholder="Last Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -191,20 +236,28 @@ export default function AddClient(props) {
             <FormLabel bold primary="RESPONSIBLE CONTACT : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="E-mail Address"
-                onChange={formik.handleChange}
                 name="email"
-                value={formik.values.email}
-                error={formik.errors.email}
+                value={email}
+                // error={email}
+                placeholder="E-mail Address"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                validate={(text) => {
+                  const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
+                  return !re.test(String(text).toLowerCase());
+                }}
               />
               <FormInput
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Phone Number"
-                onChange={formik.handleChange}
                 name="phone"
-                value={formik.values.phone}
-                error={formik.errors.phone}
+                value={phone}
+                // error={phone}
+                placeholder="Phone Number"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -212,10 +265,12 @@ export default function AddClient(props) {
             <FormLabel bold primary="TYPE OF CONTRACT* : " />
             <RadioButton
               name="contractType"
+              value={contractType}
+              // error={contractType}
               style={GLOBALS.Styles.inputWidth}
-              value={formik.values.contractType}
-              error={formik.errors.contractType}
-              onChange={formik.handleChange}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
               items={[
                 { value: "CLIENTPERSITE", label: "Per Site" },
                 { value: "MASTERCLIENT", label: "Master Contract" },
@@ -227,33 +282,45 @@ export default function AddClient(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
-                style={GLOBALS.Styles.inputWidth}
                 placeholder="Start date"
                 name="contractStartDate"
-                onChange={formik.handleChange}
-                value={formik.values.contractStartDate}
-                error={formik.errors.contractStartDate}
+                value={contractStartDate}
+                // error={contractStartDate}
+                min={moment().format("YYYY-MM-DD")}
+                style={GLOBALS.Styles.inputWidth}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
               <FormInput
                 type="date"
                 placeholder="End date"
-                style={GLOBALS.Styles.inputWidth}
                 name="contractEndDate"
-                onChange={formik.handleChange}
-                value={formik.values.contractEndDate}
-                error={formik.errors.contractEndDate}
+                value={contractEndDate}
+                // error={contractEndDate}
+                min={moment(contractStartDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD")}
+                style={GLOBALS.Styles.inputWidth}
+                disabled={contractType !== "MASTERCLIENT"}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
-              style={GLOBALS.Styles.inputWidth}
               name="functionality"
-              onChange={formik.handleChange}
-              value={formik.values.functionality}
-              error={formik.errors.functionality}
+              value={functionality}
+              // error={functionality}
+              style={GLOBALS.Styles.inputWidth}
               items={[{ value: "DELIVERY", label: "Delivery module" }]}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -261,12 +328,14 @@ export default function AddClient(props) {
             <FormInput
               textArea
               rows={3}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
-              placeholder="Additional information"
               name="additionalInfo"
-              value={formik.values.additionalInfo}
-              error={formik.errors.additionalInfo}
+              value={additionalInfo}
+              // error={additionalInfo}
+              style={GLOBALS.Styles.inputWidth}
+              placeholder="Additional information"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -279,11 +348,15 @@ export default function AddClient(props) {
             >
               <FormInput
                 type="number"
+                placeholder="0"
                 name="notificationPriorToDays"
-                onChange={formik.handleChange}
-                value={formik.values.notificationPriorToDays}
-                error={formik.errors.notificationPriorToDays}
+                value={notificationPriorToDays}
+                // error={notificationPriorToDays}
+                disabled={contractType !== "MASTERCLIENT"}
                 style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
+                onChange={({ target: { name, value } }) =>
+                  value >= 0 && handleChange(name, value)
+                }
               />
               <SmallText
                 primary="Days before end of the contract"
@@ -294,20 +367,13 @@ export default function AddClient(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
             <MultiAdderInput
-              style={GLOBALS.Styles.inputWidth}
               name="notificationTo"
+              values={notificationTo}
               validateError="Invalid Email"
               placeholder="Enter email address"
-              values={formik.values.notificationTo}
-              onChange={(values) =>
-                formik.handleChange({
-                  target: {
-                    type: "text",
-                    name: "notificationTo",
-                    value: values,
-                  },
-                })
-              }
+              style={GLOBALS.Styles.inputWidth}
+              disabled={contractType !== "MASTERCLIENT"}
+              onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
                 return !re.test(String(text).toLowerCase());
@@ -320,8 +386,26 @@ export default function AddClient(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              loading={loading}
+              disabled={
+                loading ||
+                !name ||
+                name.length > 30 ||
+                logo.length === 0 ||
+                (contractType === "MASTERCLIENT" &&
+                  (!contractStartDate ||
+                    !contractEndDate ||
+                    moment(contractEndDate).diff(
+                      moment(contractStartDate),
+                      "days",
+                    ) <= 0)) ||
+                firstName.length > 30 ||
+                lastName.length > 30 ||
+                (phone.length > 0 &&
+                  (!phone.startsWith("0") || phone.length !== 10)) ||
+                additionalInfo.length > 300 ||
+                Number(notificationPriorToDays) < 0
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

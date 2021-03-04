@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
@@ -12,42 +13,6 @@ import FormLabel from "../../../../components/FormLabel";
 import OpeningTimes from "../../../../components/OpeningTimes";
 import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
-
-// const addSiteYup = Yup.object().shape({
-//   start: Yup.string().required("Required"),
-//   end: Yup.string().required("Required"),
-//   openingHours: Yup.object().shape({
-//     day1Start: Yup.number().required("Required"),
-//     day1End: Yup.number().required("Required"),
-//     day2Start: Yup.number().required("Required"),
-//     day2End: Yup.number().required("Required"),
-//     day3Start: Yup.number().required("Required"),
-//     day3End: Yup.number().required("Required"),
-//     day4Start: Yup.number().required("Required"),
-//     day4End: Yup.number().required("Required"),
-//     day5Start: Yup.number().required("Required"),
-//     day5End: Yup.number().required("Required"),
-//     day6Start: Yup.number().required("Required"),
-//     day6End: Yup.number().required("Required"),
-//     day7Start: Yup.number().required("Required"),
-//     day7End: Yup.number().required("Required"),
-//   }),
-//   unavailabilityDates: Yup.array()
-//     .of(
-//       Yup.object().shape({
-//         key: Yup.number().required("Required"),
-//         date: Yup.date().required("Required"),
-//         startHour: Yup.number().required("Required"),
-//         endHour: Yup.number().required("Required"),
-//         dayOff: Yup.bool().required("Required"),
-//         reason: Yup.string().optional(),
-//       }),
-//     )
-//     .optional(),
-//   additionalInfo: Yup.string().optional(),
-//   notificationPriorToDays: Yup.number().optional(),
-//   notificationTo: Yup.array().optional(),
-// });
 
 export default function AddSiteStep2(props) {
   const dispatch = useDispatch();
@@ -76,14 +41,14 @@ export default function AddSiteStep2(props) {
     day5Off: false,
     day6Start: 0,
     day6End: 23,
-    day6Off: false,
+    day6Off: true,
     day7Start: 0,
     day7End: 23,
-    day7Off: false,
+    day7Off: true,
   });
   const [unavailabilityDates, setUnavailabilityDates] = useState([]);
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
 
   function handleChange(name, value) {
@@ -198,13 +163,12 @@ export default function AddSiteStep2(props) {
 
       const data = await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.SITE,
+        uri: GLOBALS.Constants.SITES,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
-
       props.setStep2Data(data);
       setLoading(false);
       props.setStep(3);
@@ -230,6 +194,7 @@ export default function AddSiteStep2(props) {
             // error={start}
             placeholder="Start date"
             style={GLOBALS.Styles.inputWidth}
+            min={moment().format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
@@ -239,8 +204,10 @@ export default function AddSiteStep2(props) {
             type="date"
             value={end}
             // error={end}
+            disabled={!start}
             placeholder="End date"
             style={GLOBALS.Styles.inputWidth}
+            min={moment(start).add(1, "days").format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
@@ -308,7 +275,7 @@ export default function AddSiteStep2(props) {
             // error={notificationPriorToDays}
             style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
             onChange={({ target: { name, value } }) =>
-              handleChange(name, value)
+              value >= 0 && handleChange(name, value)
             }
           />
           <SmallText

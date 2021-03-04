@@ -51,10 +51,6 @@ export default function Sites(props) {
   const [items, setItems] = useState([]);
   const [page] = useState(1);
 
-  // const [modal, setModal] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState("");
-  // const [selectedNestedItem, setSelectedNestedItem] = useState("");
-
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -63,7 +59,7 @@ export default function Sites(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE}?page=${page}`,
+        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
       });
       setItems(result.data.items);
       setLoading(false);
@@ -110,8 +106,10 @@ export default function Sites(props) {
     `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
-      <IconButton>
-        <Pencil style={{ width: 18, height: 18 }} />
+      <IconButton
+        onClick={() => props.history.push(`/sites/edit-site/${item._id}`)}
+      >
+        <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <SmallButton
         text="Archive"
@@ -132,7 +130,11 @@ export default function Sites(props) {
         <Heading primary="SITES LIST" noWrap />
         <div>
           <Form.Row alignItems="center" noMargin>
-            <SubHeading disableMargin primary="Total : 234 Sites" bold />
+            <SubHeading
+              disableMargin
+              primary={`Total : ${rows.length} Sites`}
+              bold
+            />
             <Button
               fullWidth={false}
               component={NavLink}
