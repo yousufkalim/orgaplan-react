@@ -80,15 +80,12 @@ export default function AddMean(props) {
 
   return (
     <div className={classes.root}>
-      <Form.Row>
+     
         <IconButton onClick={() => props.history.goBack()}>
           <BackArrow style={{ width: 30, height: 30 }} />
         </IconButton>
-        <div className="text-center pr-5">
-          <img src={Images.profile2} alt="imgs" />
-          <div>Thierry Marles</div>
-        </div>
-      </Form.Row>
+       
+
       <Form.Row>
         <Heading primary="ADD A MEAN" />
         <CustomButtonModal
