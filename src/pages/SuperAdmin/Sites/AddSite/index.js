@@ -26,16 +26,7 @@ export default function AddSite(props) {
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
-  const [siteCreated, setSiteCreated] = useState("");
-
-  const onSubmit = () => {
-    console.log("onSubmit", {
-      step1Data,
-      step2Data,
-      siteCreated,
-    });
-    setSiteCreated("");
-  };
+  const [step2SubmittedData, setStep2SubmittedData] = useState("");
 
   return (
     <div className={classes.root}>
@@ -56,7 +47,11 @@ export default function AddSite(props) {
             step={step}
             setStep={setStep}
             step1Data={step1Data}
+            step2Data={step2Data}
             setStep1Data={setStep1Data}
+            setStep2Data={setStep2Data}
+            step2SubmittedData={step2SubmittedData}
+            setStep2SubmittedData={setStep2SubmittedData}
           />
         ) : step === 2 ? (
           <AddSiteStep2
@@ -64,16 +59,23 @@ export default function AddSite(props) {
             step={step}
             setStep={setStep}
             step1Data={step1Data}
+            step2Data={step2Data}
+            setStep1Data={setStep1Data}
             setStep2Data={setStep2Data}
+            step2SubmittedData={step2SubmittedData}
+            setStep2SubmittedData={setStep2SubmittedData}
           />
         ) : (
           <AddSiteStep3
             {...props}
             step={step}
             setStep={setStep}
-            onSubmit={onSubmit}
+            step1Data={step1Data}
             step2Data={step2Data}
-            siteCreated={siteCreated}
+            setStep1Data={setStep1Data}
+            setStep2Data={setStep2Data}
+            step2SubmittedData={step2SubmittedData}
+            setStep2SubmittedData={setStep2SubmittedData}
           />
         )}
       </div>
