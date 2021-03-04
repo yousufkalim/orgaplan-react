@@ -44,7 +44,7 @@ export default function EditSite(props) {
   async function fetchData() {
     try {
       let response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITES_GET}/${props.match.params.siteId}`,
+        uri: `${GLOBALS.Constants.SITE_GET}/${props.match.params.siteId}`,
       });
       response = response.data;
 

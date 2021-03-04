@@ -63,7 +63,7 @@ export default function ZACS(props) {
         await GLOBALS.API({
           method: "DELETE",
           token: store.token,
-          uri: GLOBALS.Constants.ZACS + "/" + itemId,
+          uri: GLOBALS.Constants.ZAC_DELETE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
