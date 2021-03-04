@@ -1,4 +1,4 @@
-export default [
+const events = [
   {
     id: 0,
     title: "All Day Event very long title",
@@ -29,3 +29,5 @@ export default [
     color: "#008000",
   },
 ];
+
+export default events;

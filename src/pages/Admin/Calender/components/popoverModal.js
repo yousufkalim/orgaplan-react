@@ -1,19 +1,7 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import moment from "moment";
 import "./sass/custom.scss";
-var days = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
 const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
@@ -22,7 +10,6 @@ const PopoverModal = ({
   event,
 }) => {
   const getStartDate = (start) => {
-    var start = start;
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
     var yyyy = start.getFullYear();

@@ -2,11 +2,6 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Organigramme from "./Organigramme";
 import AddContact from "./AddContact";
-// import ZACs from "./ZACs";
-// import Sites from "./Sites";
-// import AddZAC from "./AddZAC";
-// import AddSite from "./AddSite";
-// import ArchivedSites from "./ArchivedSites";
 
 export default function Index(props) {
   return (
