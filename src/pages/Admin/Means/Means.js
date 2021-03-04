@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useSelector } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
@@ -661,7 +662,6 @@ const Means = () => {
           />
           <FormInput
             type="date"
-          
             placeholder="Start date"
             name="startDate"
             icon
@@ -674,7 +674,6 @@ const Means = () => {
             name="contractEndDate"
             icon
             onChange={formik.handleChange}
-    
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput
