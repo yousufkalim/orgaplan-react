@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import GLOBALS from "../../../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
-import IconButton from "@material-ui/core/IconButton";
 
 // import Actions from "../../../redux/actions";
 
@@ -18,11 +17,9 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
-import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
 
-import SiteImage from "../../../assets/images/Site.png";
 import { Images } from "../../../assets/Assets";
 
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
@@ -74,13 +71,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Means = () => {
   const classes = useStyles();
-  const theme = useTheme();
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.auth);
+  // const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([]);
-  const [page] = useState(1);
+  // const [loading, setLoading] = useState(true);
+  // const [page] = useState(1);
 
   useEffect(() => {
     fetchData();
@@ -89,11 +84,11 @@ const Means = () => {
 
   async function fetchData() {
     try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE}?page=${page}`,
-      });
-      setItems(result.data.items);
-      setLoading(false);
+      // const result = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.SITE}?page=${page}`,
+      // });
+      // setItems(result.data.items);
+      // setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -128,28 +123,28 @@ const Means = () => {
     ];
   });
 
-  async function onArchive(itemId) {
-    try {
-      if (window.confirm("Are you sure, you want to do this?")) {
-        setLoading(true);
-        await GLOBALS.API({
-          method: "PUT",
-          token: store.token,
-          uri: GLOBALS.Constants.SITE_ARCHIVE + "/" + itemId,
-        });
-        const itemsArray = items.filter((item) => item._id !== itemId);
-        setItems(itemsArray);
-        setLoading(false);
-      }
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  }
+  // async function onArchive(itemId) {
+  //   try {
+  //     if (window.confirm("Are you sure, you want to do this?")) {
+  //       setLoading(true);
+  //       await GLOBALS.API({
+  //         method: "PUT",
+  //         token: store.token,
+  //         uri: GLOBALS.Constants.SITE_ARCHIVE + "/" + itemId,
+  //       });
+  //       const itemsArray = items.filter((item) => item._id !== itemId);
+  //       setItems(itemsArray);
+  //       setLoading(false);
+  //     }
+  //   } catch (err) {
+  //     setLoading(false);
+  //     dispatch(
+  //       Actions.notistack.enqueueSnackbar(
+  //         Actions.notistack.snackbar(err.message, "error"),
+  //       ),
+  //     );
+  //   }
+  // }
 
   const formik = useFormik({
     initialValues: {
@@ -315,24 +310,21 @@ const Means = () => {
           />
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
+          
             placeholder="Start date"
-            name="contractStartDate"
+            name="startDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
-            style={GLOBALS.Styles.inputWidth}
+          
             placeholder="End date"
-            name="contractStartDate"
+            name="endDate"
             icon
             onChange={formik.handleChange}
-            // value={formik.values.contractStartDate}
-            // error={formik.errors.contractStartDate}
+    
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput

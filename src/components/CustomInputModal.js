@@ -7,13 +7,9 @@ import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
 
-
-
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
-import FormInput from "./FormInput";
-
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 // const addAddressesYup = Yup.object().shape({
@@ -98,12 +94,6 @@ export default function CustomInputModal(props) {
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postal, setPostal] = useState("");
-
-  const handleChange = (name, value) => {
-    if (name === "street") setStreet(value);
-    else if (name === "city") setCity(value);
-    else if (name === "postal") setPostal(value);
-  };
 
   async function onSubmit() {
     let newValues = props.values;

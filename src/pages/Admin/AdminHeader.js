@@ -88,6 +88,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "1.5rem",
     marginBottom: "1rem",
   },
+  profileImage: {
+    position: 'absolute',
+    top: "1rem",
+    right:"3rem",
+    textAlign: 'center',
+    color: '#454545',
+  }
 }));
 
 const userItems = [
@@ -225,6 +232,7 @@ export default function AdminHeader(props) {
           [classes.contentShift]: open,
         })}
       >
+        <div className="d-flex">
         <Fab
           color="inherit"
           aria-label="handle-drawer"
@@ -233,6 +241,11 @@ export default function AdminHeader(props) {
         >
           <MenuIcon color="primary" />
         </Fab>
+        <div className={classes.profileImage}>
+          <img src={Images.profile2} />
+          <div>Thierry Marles</div>
+        </div>
+        </div>
 
         {props.children}
       </main>
