@@ -242,7 +242,7 @@ export default function AdminHeader(props) {
           <MenuIcon color="primary" />
         </Fab>
         <div className={classes.profileImage}>
-          <img src={Images.profile2} />
+          <img src={Images.profile2} alt="Profile" />
           <div>Thierry Marles</div>
         </div>
         </div>
