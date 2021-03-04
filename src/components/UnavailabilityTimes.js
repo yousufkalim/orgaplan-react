@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
 import Chip from "@material-ui/core/Chip";
+import Input from "./Input";
 
 import GLOBALS from "../globals";
 
@@ -46,6 +47,13 @@ export default function MultiAdderInputModal(props) {
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [reason, setReason] = useState("");
+  const [time, setTime] = useState({
+    start: "0",
+    end: "23",
+  });
+  const [unavailabilityDates ,setUnavailabilityDates] = useState([]); 
 
   async function onSubmit(values) {
     let newValues = props.values;
@@ -55,7 +63,24 @@ export default function MultiAdderInputModal(props) {
     formik.setSubmitting(false);
     formik.handleReset();
   }
-
+  const getTime = (e) => {
+    setTime({ ...time, [e.target.name]: e.target.value });
+  };
+  const getDate = (e) => {
+    setDate(e.target.value);
+  };
+  const getreason = (e) => {
+    setReason(e.target.value);
+  };
+  const deleteUnavailability = (id) =>{ 
+ let tempAvailibilty= unavailabilityDates.map((key, index)=>{
+    if (index === id ){
+    unavailabilityDates.splice(index, 1);
+    }
+  })
+  setUnavailabilityDates(tempAvailibilty);
+  }
+  
   const handleDelete = (chipToDelete) => () => {
     const newValues = props.values.filter(
       (chip) => chip.key !== chipToDelete.key,
@@ -75,7 +100,57 @@ export default function MultiAdderInputModal(props) {
   const values = [
     { value: 0, label: "0" },
     { value: 1, label: "1" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
+    { value: 4, label: "4" },
+    { value: 5, label: "5" },
+    { value: 6, label: "6" },
+    { value: 7, label: "7" },
+    { value: 8, label: "8" },
+    { value: 9, label: "9" },
+    { value: 10, label: "10" },
+    { value: 11, label: "11" },
+    { value: 12, label: "12" },
+    { value: 13, label: "13" },
+    { value: 14, label: "14" },
+    { value: 15, label: "15" },
+    { value: 16, label: "16" },
+    { value: 17, label: "17" },
+    { value: 18, label: "18" },
+    { value: 19, label: "19" },
+    { value: 20, label: "20" },
+    { value: 21, label: "21" },
+    { value: 22, label: "22" },
+    { value: 23, label: "23" },
   ];
+
+
+  const unavailabilityDatesHandal = () =>{ 
+
+
+      let newDate = new Date(); 
+      let formDate = new Date(date);
+      const newarray = { 
+        date: date,
+        startHour: time.start,
+        endHour: time.end,
+        dayOff: true,
+        reason: reason,
+      } 
+      if(
+          (parseInt(time.start) < parseInt(newarray.endHour))
+        &&  (newarray.reason !="" )
+        &&  (newDate.getDate()<= formDate.getDate() &&
+         newDate.getMonth() + 1<= formDate.getMonth() + 1 &&
+          newDate.getFullYear() <= formDate.getFullYear() )
+          ){ 
+            setUnavailabilityDates((prevState) => [...prevState, newarray]);
+        console.log("valid");
+      }else{
+       console.log("not valid");
+      }
+
+  } 
 
   return (
     <>
@@ -84,7 +159,7 @@ export default function MultiAdderInputModal(props) {
         fullWidth={false}
         color={theme.palette.blue}
         text="SEE UNAVAILABILITIES"
-        // onClick={() => setModal(true)}
+        onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
@@ -104,42 +179,116 @@ export default function MultiAdderInputModal(props) {
                 </li>
               ))}
             </ul>
-            <Form.Form onSubmit={formik.handleSubmit}>
+            <Form.Form>
               <Form.Row>
                 <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Day 1:" />
+                  <FormLabel disableMargin bold primary="Date:" />
                 </Form.Row>
+
+                <Form.Row noMargin>
+                  <Input
+                    name="date"
+                    type="date"
+                    value={date}
+                    className={classes.input}
+                    onChange={getDate}
+                  />
+                </Form.Row>
+              </Form.Row>
+              <Form.Row>
+                <Form.Row noMargin>
+                  <FormLabel disableMargin bold primary="Time:" />
+                </Form.Row>
+
                 <Form.Row noMargin>
                   <FormSelect
                     values={values}
-                    name="day1Start"
-                    onChange={formik.handleChange}
-                    value={formik.values.day1Start}
-                    error={formik.errors.day1Start}
-                    style={GLOBALS.Styles.inputWidth}
+                    name="start"
+                    value={time.start}
+                    onChange={getTime}
                   />
+
                   <FormSelect
-                    name="day1End"
+                    name="end"
                     values={values}
-                    value={formik.values.day1End}
-                    error={formik.errors.day1End}
-                    onChange={formik.handleChange}
-                    style={GLOBALS.Styles.inputWidth}
+                    value={time.end}
+                    onChange={getTime}
                   />
                 </Form.Row>
               </Form.Row>
-              <Form.Row justifyContent="center">
-                <Button
-                  type="submit"
-                  minWidth={200}
-                  text="VALIDATE"
-                  fullWidth={false}
-                  loading={formik.isSubmitting}
-                  disabled={formik.isSubmitting}
-                />
+
+              <Form.Row>
+                <Form.Row noMargin>
+                  <FormLabel disableMargin bold primary="Reason:" />
+                </Form.Row>
+
+                <Form.Row noMargin>
+                  <textarea
+                    name="reason"
+                    rows="3"
+                    value={reason}
+                    onChange={getreason}
+                    maxLength="50"
+                    minLength="3"
+                    placeholder="Reason"
+                    style={{ width: "100%" }}
+                  />
+                </Form.Row>
               </Form.Row>
+              
+              <Form.Row>
+                <Form.Row noMargin>
+                  
+                </Form.Row>
+
+                <Form.Row noMargin  justifyContent="center">
+                   <Button 
+                  minWidth={200}
+                  onClick={unavailabilityDatesHandal}
+                  text="Add"
+                  fullWidth={false}   
+                />
+                </Form.Row>
+              </Form.Row>
+           
             </Form.Form>
+       
+                <table className="table">
+            { unavailabilityDates.length > 0  ?
+            <>
+                <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                    </tr>  
+               { unavailabilityDates.map((key, index)=>{
+             
+                  return (
+                        <tr key={index}>
+                          <td> {key.date} </td>
+                          <td>{key.startHour}</td>
+                          <td>{key.endHour}</td>
+                          <td>{key.reason}</td>
+                          <td>
+                          <button onClick={()=>{deleteUnavailability(index)}}
+                           className="btn btn-danger" 
+                          style={{"font-size": "13px","padding": "0px 12px"}}>
+                              X
+                          </button>
+                          </td>
+                        </tr>
+            )
+                 
+                })
+               }
+                </>
+             :"" 
+            }
+             </table>
           </>
+        
         }
       />
     </>
