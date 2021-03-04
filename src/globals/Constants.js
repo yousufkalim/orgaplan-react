@@ -37,6 +37,7 @@ const endpoints = {
 
   // ADMIN
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
+  GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
   GET_EXTERIOR_MEANS: BASE_URL_V1 + "get_exterior_means/enterprise",
   GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",

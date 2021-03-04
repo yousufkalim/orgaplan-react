@@ -57,7 +57,6 @@ const Means = () => {
   const [items, setItems] = useState([]);
 
   const [siteDeliveryAreas, setSiteDeliveryAreas] = useState([]);
-  const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
   const [
@@ -139,7 +138,6 @@ const Means = () => {
           });
           setSiteDeliveryAreas(response.data.site_delivery_areas);
           setDropdownDeliveryAreas(temp);
-          setDeliveryAreas(response.data.site_delivery_areas);
         }
 
         if (response.data.site_companies != null) {
@@ -411,22 +409,7 @@ const Means = () => {
     ];
   });
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     contractType: "CLIENTPERSITE",
-  //     contractStartDate: "",
-  //     contractEndDate: "",
-  //     functionality: "DELIVERY",
-  //     additionalInfo: "",
-  //     notificationPriorToDays: "",
-  //     notificationTo: [],
-  //   },
-  //   // validationSchema: addClientYup,
-  //   // onSubmit,
-  //   validateOnBlur: false,
-  //   validateOnChange: false,
-  //   validateOnMount: false,
-  // });
+  
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">

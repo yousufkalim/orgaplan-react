@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
-
+import { useSelector, useDispatch } from "react-redux";
+import Actions from "../../../redux/actions";
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -49,8 +50,9 @@ const useStyles = makeStyles((theme) => ({
 // });
 
 export default function AddMean(props) {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
   const [addresses] = useState([]);
-
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [color, setColor] = useState("");
@@ -61,10 +63,116 @@ export default function AddMean(props) {
   const [techSheet, setTechSheet] = useState([]);
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [disableDropdpwn, setDisableDropdown] = useState(false);
 
   const classes = useStyles();
 
+  const [DeliveryAreas, setDeliveryAreas] = useState([]);
+  const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
+  const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
+  const [
+    selectedSiteDeliveryAreadIndex,
+    seltSelectedSiteDeliveryAreaIndex,
+  ] = useState(null);
+
+  const [storageAreas, setStorageAreas] = useState([]);
+  const [dropdownStorageAreas, setDropdownStorageAreas] = useState([]);
+  const [
+    selectedDropdownStorageArea,
+    setSelectedDropdownStorageArea,
+  ] = useState("");
+  const [selectedStorageAreaIndex, setSelectedStorageAreaIndex] = useState(
+    null,
+  );
+
+  const [buildings, setBuidings] = useState([]);
+  const [dropdownBuildings, setDropdownBuildings] = useState([]);
+  const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
+  const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
+
+  const [levels, setLevels] = useState([]);
+  const [dropdownLevels, setDropdownLevels] = useState([]);
+  const [selectedDropdownLevel, setSelectedDropdownLevel] = useState("");
+  const [selectedDropdownIndex, setSelectedLevelIndex] = useState(null);
+
+  const [meanTypes, setMeanTypes] = useState([]);
+  const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
+  const [selectedMeanType, setSelectedMeanType] = useState("");
+  const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    console.log(JSON.stringify(store, null, 2));
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
+        token: store.token,
+      });
+      if (response.success) {
+        console.log(JSON.stringify(response, null, 2));
+        if (response.data.site_delivery_areas != null) {
+          const temp = [];
+          response.data.site_delivery_areas.map((item, index) => {
+            temp.push({ label: item.name, value: item.name });
+          });
+          setDeliveryAreas(response.data.site_delivery_areas);
+          setDropdownDeliveryAreas(temp);
+        }
+
+        if (response.data.site_storage_areas != null) {
+          const temp = [];
+          response.data.site_storage_areas.map((item, index) => {
+            temp.push({ label: item.name, value: item.name });
+          });
+          setStorageAreas(response.data.site_storage_areas);
+          setDropdownStorageAreas(temp);
+        }
+
+        if (response.data.site_buildings != null) {
+          const temp = [];
+          response.data.site_buildings.map((item, index) => {
+            temp.push({ label: item.name, value: item.name });
+          });
+          setBuidings(response.data.site_buildings);
+          setDropdownBuildings(temp);
+        }
+
+        if (response.data.mean_types != null) {
+          const temp = [];
+          response.data.mean_types.map((item, index) => {
+            temp.push({ label: item, value: item });
+          });
+          setMeanTypes(response.data.mean_types);
+          setDropdownMeanTypes(temp);
+        }
+        // if (response.data.mean_types != null) {
+        //   setTypes(response.data.mean_types);
+        //   const temp = [];
+        //   response.data.mean_types.map((item, index) => {
+        //     temp.push({ label: item, value: item });
+        //   });
+        //   setDropdownTypes(temp);
+        // }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   function handleChange(name, value) {
+    alert("HERE");
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
@@ -77,13 +185,45 @@ export default function AddMean(props) {
     else if (name === "addInfo") setAddInfo(value);
   }
 
+  const getLevels = async (buidlingId) => {
+    try {
+      setLoading(true);
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        setLevels(response.data);
+        if (response.data != null && response.data.length > 0) {
+          const temp = [];
+          response.data.map((item, index) => {
+            temp.push({ label: item.name, value: item.name });
+          });
+
+          setDropdownLevels(temp);
+        }
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   return (
     <div className={classes.root}>
-     
-        <IconButton onClick={() => props.history.goBack()}>
-          <BackArrow style={{ width: 30, height: 30 }} />
-        </IconButton>
-       
+      <IconButton onClick={() => props.history.goBack()}>
+        <BackArrow style={{ width: 30, height: 30 }} />
+      </IconButton>
 
       <Form.Row>
         <Heading primary="ADD A MEAN" />
@@ -91,6 +231,50 @@ export default function AddMean(props) {
           name="addresses"
           values={addresses}
           title="LOCALISATION"
+          leftValue={selectedDropdownBuilding}
+          rightValue={selectedDropdownLevel}
+          leftDropdownValues={dropdownBuildings}
+          rightDropdownValues={dropdownLevels}
+          leftDropdwonPlaceholder={"Select Building"}
+          rightDropdownPlaceholder={"Select Level"}
+          disabled={disableDropdpwn}
+          leftDropdwonValueChange={(event) => {
+            const index = event.target.selectedIndex - 1;
+            if (index != -1) {
+              const item = event.target.value;
+
+              setSelectedBuildingIndex(index);
+              setSelectedDropdownBuilding(item);
+              // Reset Levels
+              setSelectedLevelIndex(0);
+              setSelectedDropdownLevel("");
+              setDropdownLevels([]);
+              if (buildings[index].buildingType == "EXTERIOR") {
+                setDisableDropdown(true);
+              } else {
+                setDisableDropdown(false);
+                getLevels(buildings[index]._id);
+              }
+            } else {
+              setSelectedBuildingIndex(0);
+              setSelectedDropdownBuilding("");
+              // Reset Levels
+              setSelectedLevelIndex(0);
+              setSelectedDropdownLevel("");
+              setDropdownLevels([]);
+            }
+          }}
+          rightDropdwonValueChange={(event) => {
+            const index = event.target.selectedIndex - 1;
+            if (index != -1) {
+              const item = event.target.value;
+              setSelectedLevelIndex(index);
+              setSelectedDropdownLevel(item);
+            } else {
+              setSelectedLevelIndex(0);
+              setSelectedDropdownLevel("");
+            }
+          }}
           // error={addresses}
           //    style={GLOBALS.Styles.inputWidth}
           style={{ width: "250px", marginRight: "240px" }}
@@ -134,16 +318,7 @@ export default function AddMean(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={type}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={dropdownMeanTypes}
               />
               <FormSelect
                 placeholder="color"
@@ -178,10 +353,40 @@ export default function AddMean(props) {
               <CustomInputModal
                 name="location"
                 values={location}
+                leftValue={selectedDropdownArea}
+                rightValue={selectedDropdownStorageArea}
+                leftDropdownValues={dropdownDeliveryAreas}
+                leftDropdwonPlaceholder={"Select Delivery Area"}
+                rightDropdownPlaceholder={"Select Storage Area"}
+                leftDropdwonValueChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
+
+                  if (index != -1) {
+                    const item = event.target.value;
+                    seltSelectedSiteDeliveryAreaIndex(index);
+                    setSelectedDropdownArea(item);
+                    // filterMean();
+                  } else {
+                    seltSelectedSiteDeliveryAreaIndex(null);
+                    setSelectedDropdownArea("");
+                    // filterMean();
+                  }
+                }}
+                rightDropdownValues={dropdownStorageAreas}
                 // error={addresses}
                 style={GLOBALS.Styles.inputWidth}
-                placeholder="Enter Delivery areas"
-                onChange={(values) => handleChange("addresses", values)}
+                rightDropdwonValueChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
+                  if (index != -1) {
+                    const item = event.target.value;
+
+                    setSelectedStorageAreaIndex(index);
+                    setSelectedDropdownStorageArea(item);
+                  } else {
+                    setSelectedStorageAreaIndex(0);
+                    setSelectedDropdownStorageArea("");
+                  }
+                }}
               />
             </Form.Row>
           </Form.Row>
