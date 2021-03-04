@@ -24,7 +24,8 @@ const endpoints = {
 
   ZACS: BASE_URL_V1 + "superadmin/zacs",
 
-  SITE: BASE_URL_V1 + "superadmin/sites",
+  SITES: BASE_URL_V1 + "superadmin/sites",
+  SITES_GET: BASE_URL_V1 + "superadmin/sites/get",
   SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
   SITE_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
@@ -33,7 +34,9 @@ const endpoints = {
   COMPANY: BASE_URL_V1 + "superadmin/companies",
 
   BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
+  BUILDINGS_BY_SITE: BASE_URL_V1 + "superadmin/buildings/site",
   LEVELS: BASE_URL_V1 + "superadmin/levels",
+  LEVELS_BUILDING: BASE_URL_V1 + "superadmin/levels/building",
   LEVELS_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
 
   // ADMIN END POINTS
