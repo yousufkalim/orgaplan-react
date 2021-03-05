@@ -225,14 +225,19 @@ export default function Clients(props) {
           <>
             <IconButton
               disabled={loading}
-              onClick={() => modifyClick(item, contract)}
+              onClick={(e) => {
+                e.stopPropagation();
+                modifyClick(item, contract);
+              }}
             >
               <Pencil style={{ width: 15, height: 15 }} />
             </IconButton>
             <IconButton
               disabled={loading}
-              component={NavLink}
-              to={`/clients/invoices/${item._id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.history.push(`/clients/invoices/${item._id}`);
+              }}
             >
               <Report style={{ width: 15, height: 15 }} />
             </IconButton>
@@ -253,12 +258,13 @@ export default function Clients(props) {
         "Requested",
         <IconButton
           disabled={loading}
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation();
             props.history.push({
               pathname: "/clients/verify-client",
               item,
-            })
-          }
+            });
+          }}
         >
           <Plus style={{ width: 15, height: 15 }} />
         </IconButton>,
