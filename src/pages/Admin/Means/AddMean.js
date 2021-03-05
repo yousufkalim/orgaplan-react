@@ -26,29 +26,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const addClientYup = Yup.object().shape({
-//   logo: Yup.array().min(1, "Required").required("Required"),
-//   name: Yup.string().required("Required"),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   notificationPriorToDays: Yup.number(),
-//   notificationTo: Yup.array(),
-// });
-
 export default function AddMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -98,11 +75,12 @@ export default function AddMean(props) {
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
-  const [selectedMeanType, setSelectedMeanType] = useState("");
-  const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
+  // const [selectedMeanType, setSelectedMeanType] = useState("");
+  // const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   const getData = async () => {
@@ -114,42 +92,42 @@ export default function AddMean(props) {
       });
       if (response.success) {
         console.log(JSON.stringify(response, null, 2));
-        if (response.data.site_delivery_areas != null) {
+        if (response.data.site_delivery_areas !== null) {
           const temp = [];
-          response.data.site_delivery_areas.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
-          });
+          response.data.site_delivery_areas.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
           setDeliveryAreas(response.data.site_delivery_areas);
           setDropdownDeliveryAreas(temp);
         }
 
-        if (response.data.site_storage_areas != null) {
+        if (response.data.site_storage_areas !== null) {
           const temp = [];
-          response.data.site_storage_areas.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
-          });
+          response.data.site_storage_areas.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
           setStorageAreas(response.data.site_storage_areas);
           setDropdownStorageAreas(temp);
         }
 
-        if (response.data.site_buildings != null) {
+        if (response.data.site_buildings !== null) {
           const temp = [];
-          response.data.site_buildings.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
-          });
+          response.data.site_buildings.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
           setBuidings(response.data.site_buildings);
           setDropdownBuildings(temp);
         }
 
-        if (response.data.mean_types != null) {
+        if (response.data.mean_types !== null) {
           const temp = [];
-          response.data.mean_types.map((item, index) => {
-            temp.push({ label: item, value: item });
-          });
+          response.data.mean_types.map((item, index) =>
+            temp.push({ label: item, value: item }),
+          );
           setMeanTypes(response.data.mean_types);
           setDropdownMeanTypes(temp);
         }
-        // if (response.data.mean_types != null) {
+        // if (response.data.mean_types !== null) {
         //   setTypes(response.data.mean_types);
         //   const temp = [];
         //   response.data.mean_types.map((item, index) => {
@@ -196,11 +174,11 @@ export default function AddMean(props) {
 
       if (response.success) {
         setLevels(response.data);
-        if (response.data != null && response.data.length > 0) {
+        if (response.data !== null && response.data.length > 0) {
           const temp = [];
-          response.data.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
-          });
+          response.data.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
 
           setDropdownLevels(temp);
         }
@@ -240,7 +218,7 @@ export default function AddMean(props) {
           disabled={disableDropdpwn}
           leftDropdwonValueChange={(event) => {
             const index = event.target.selectedIndex - 1;
-            if (index != -1) {
+            if (index !== -1) {
               const item = event.target.value;
 
               setSelectedBuildingIndex(index);
@@ -249,7 +227,7 @@ export default function AddMean(props) {
               setSelectedLevelIndex(0);
               setSelectedDropdownLevel("");
               setDropdownLevels([]);
-              if (buildings[index].buildingType == "EXTERIOR") {
+              if (buildings[index].buildingType === "EXTERIOR") {
                 setDisableDropdown(true);
               } else {
                 setDisableDropdown(false);
@@ -266,7 +244,7 @@ export default function AddMean(props) {
           }}
           rightDropdwonValueChange={(event) => {
             const index = event.target.selectedIndex - 1;
-            if (index != -1) {
+            if (index !== -1) {
               const item = event.target.value;
               setSelectedLevelIndex(index);
               setSelectedDropdownLevel(item);
@@ -295,6 +273,15 @@ export default function AddMean(props) {
                 }}
               /> */}
       </Form.Row>
+      {loading && ""}
+      {levels && ""}
+      {selectedDropdownIndex && ""}
+      {meanTypes && ""}
+      {selectedBuildingIndex && ""}
+      {DeliveryAreas && ""}
+      {selectedSiteDeliveryAreadIndex && ""}
+      {storageAreas && ""}
+      {selectedStorageAreaIndex && ""}
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
@@ -361,7 +348,7 @@ export default function AddMean(props) {
                 leftDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
 
-                  if (index != -1) {
+                  if (index !== -1) {
                     const item = event.target.value;
                     seltSelectedSiteDeliveryAreaIndex(index);
                     setSelectedDropdownArea(item);
@@ -377,7 +364,7 @@ export default function AddMean(props) {
                 style={GLOBALS.Styles.inputWidth}
                 rightDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
-                  if (index != -1) {
+                  if (index !== -1) {
                     const item = event.target.value;
 
                     setSelectedStorageAreaIndex(index);
@@ -517,12 +504,3 @@ export default function AddMean(props) {
     </div>
   );
 }
-
-/*
- onChange={(value) => {
-            if(props.validte) 
-            {
-              props.ypuprop.validate(value)
-            }
-          }}
-        */

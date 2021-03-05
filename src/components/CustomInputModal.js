@@ -91,29 +91,29 @@ export default function CustomInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
 
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [postal, setPostal] = useState("");
+  // const [street, setStreet] = useState("");
+  // const [city, setCity] = useState("");
+  // const [postal, setPostal] = useState("");
 
   async function onSubmit() {
     let newValues = props.values;
     console.log(newValues);
     return;
-    const values = {
-      key: newValues.length,
-      street: street,
-      city: city,
-      postal: postal,
-      label: `${street} ${city} ${postal}`,
-    };
-    newValues.push(values);
-    props.onChange(newValues);
+    // const values = {
+    //   key: newValues.length,
+    //   street: street,
+    //   city: city,
+    //   postal: postal,
+    //   label: `${street} ${city} ${postal}`,
+    // };
+    // newValues.push(values);
+    // props.onChange(newValues);
 
-    setUpdate((st) => !st);
-    setModal(false);
-    setStreet("");
-    setCity("");
-    setPostal("");
+    // setUpdate((st) => !st);
+    // setModal(false);
+    // setStreet("");
+    // setCity("");
+    // setPostal("");
   }
 
   const handleDelete = (value) => () => {
