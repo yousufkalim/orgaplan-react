@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Heading from "../../../components/Heading";
+import Pagination from "../../../components/Pagination";
 import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 
@@ -39,7 +40,8 @@ export default function ArchivedSites(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
   const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function ArchivedSites(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
@@ -55,6 +57,7 @@ export default function ArchivedSites(props) {
         uri: `${GLOBALS.Constants.SITE_ARCHIVES}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -156,6 +159,15 @@ export default function ArchivedSites(props) {
       </Form.Column>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.archivedSites.headings} rows={rows} />
+        {!loading && data.totalItems > 10 && (
+          <Pagination
+            page={page}
+            count={data.totalPages}
+            onChange={(e, value) => {
+              setPage(value);
+            }}
+          />
+        )}
       </div>
     </div>
   );

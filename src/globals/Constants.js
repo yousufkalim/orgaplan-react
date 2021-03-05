@@ -18,6 +18,7 @@ const endpoints = {
   COMPANY: BASE_URL_V1 + "superadmin/companies",
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
+  DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
   INVOICES_BY_CLIENT: BASE_URL_V1 + "superadmin/invoices/client",
   INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
@@ -31,7 +32,7 @@ const endpoints = {
   SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
   SITE_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
-  SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
+  SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
   ZACS: BASE_URL_V1 + "superadmin/zacs",
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
 
