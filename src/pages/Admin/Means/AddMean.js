@@ -65,7 +65,7 @@ export default function AddMean(props) {
   const [addInfo, setAddInfo] = useState("");
   const [loading, setLoading] = useState(true);
   const [disableDropdpwn, setDisableDropdown] = useState(false);
-
+  const [isExterior, setIsExterior] = useState(false);
   const classes = useStyles();
 
   const [DeliveryAreas, setDeliveryAreas] = useState([]);
@@ -86,6 +86,14 @@ export default function AddMean(props) {
     null,
   );
 
+  const [deliveryAreaId, setDeilveryAreaId] = useState("");
+  const [storageAreaId, setStorageAreaId] = useState("");
+
+  const [
+    deliveryAndStorageLocations,
+    setDeliveryAndStorageLocations,
+  ] = useState([]);
+
   const [buildings, setBuidings] = useState([]);
   const [dropdownBuildings, setDropdownBuildings] = useState([]);
   const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
@@ -105,6 +113,13 @@ export default function AddMean(props) {
     getData();
   }, []);
 
+  useEffect(() => {}, [
+    meanTypes,
+    dropdownMeanTypes,
+    selecetedMeanTypeIndex,
+    selectedMeanType,
+  ]);
+
   const getData = async () => {
     console.log(JSON.stringify(store, null, 2));
     try {
@@ -117,7 +132,7 @@ export default function AddMean(props) {
         if (response.data.site_delivery_areas != null) {
           const temp = [];
           response.data.site_delivery_areas.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            temp.push({ label: item.name, value: item.name, id: item._id });
           });
           setDeliveryAreas(response.data.site_delivery_areas);
           setDropdownDeliveryAreas(temp);
@@ -126,7 +141,7 @@ export default function AddMean(props) {
         if (response.data.site_storage_areas != null) {
           const temp = [];
           response.data.site_storage_areas.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            temp.push({ label: item.name, value: item.name, id: item._id });
           });
           setStorageAreas(response.data.site_storage_areas);
           setDropdownStorageAreas(temp);
@@ -172,7 +187,7 @@ export default function AddMean(props) {
   };
 
   function handleChange(name, value) {
-    alert("HERE");
+    //alert(JSON.stringify(value, null, 2));
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
@@ -184,6 +199,112 @@ export default function AddMean(props) {
     else if (name === "rate") setRate(value);
     else if (name === "addInfo") setAddInfo(value);
   }
+
+  const createMean = async () => {
+    try {
+      // setLoading(true);
+
+      var formdata = new FormData();
+
+      let locations = [];
+      if (isExterior) {
+        let loc = {
+          locationType: "EXTERIOR",
+          buildingId: buildings[selectedBuildingIndex]._id,
+        };
+
+        locations.push(loc);
+      } else {
+        let loc = {
+          locationType: "LEVEL",
+          buildingId: buildings[selectedBuildingIndex]._id,
+          levelID: levels[selectedDropdownIndex]._id,
+        };
+        locations.push(loc);
+      }
+
+      deliveryAndStorageLocations.forEach((item) => {
+        if (item.type == "STORAGEAREA") {
+          let loc = {
+            locationType: item.type,
+            storageArea: item.id,
+          };
+          locations.push(loc);
+        }
+        if (item.type == "DELIVERYAREA") {
+          let loc = {
+            locationType: item.type,
+            deliveryArea: item.id,
+          };
+          locations.push(loc);
+        }
+      });
+
+      let availabilities = {
+        availability: {
+          start: startDate,
+          end: endDate,
+        },
+      };
+
+      // TEST DATA , CALENDAR NOT MADE YET
+
+      const sampleDateOne = new Date("05/20/2021");
+      const sampleDateTwo = new Date("05/28/2021");
+      const unavailabilities = {
+        unavailability: [
+          {
+            date: sampleDateOne,
+            reason: "Public Holiday",
+            startingHour: new Date().getTime(),
+            endingHour: new Date().getTime(),
+          },
+          {
+            date: sampleDateTwo,
+            reason: "Maintenance",
+            startingHour: new Date().getTime(),
+            endingHour: new Date().getTime(),
+          },
+        ],
+      };
+
+      formdata.append("name", name);
+      formdata.append("color", color);
+      formdata.append("image", image[0].file);
+      formdata.append("sheet", image[0].file);
+      formdata.append("pricePerHour", rate);
+      formdata.append("additionalInfo", addInfo);
+      formdata.append("siteId", "6008169bedbb7816d40b197d");
+      formdata.append("meanType", selectedMeanType);
+      formdata.append("location", JSON.stringify(locations));
+      formdata.append("availability", JSON.stringify(availabilities));
+      formdata.append("unavailability", JSON.stringify(unavailabilities));
+
+      const response = await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.CREATE_MEAN,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+
+      if (response.success) {
+        alert(JSON.stringify(response, null, 2));
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   const getLevels = async (buidlingId) => {
     try {
@@ -251,7 +372,9 @@ export default function AddMean(props) {
               setDropdownLevels([]);
               if (buildings[index].buildingType == "EXTERIOR") {
                 setDisableDropdown(true);
+                setIsExterior(true);
               } else {
+                setIsExterior(false);
                 setDisableDropdown(false);
                 getLevels(buildings[index]._id);
               }
@@ -304,7 +427,7 @@ export default function AddMean(props) {
                 name="name"
                 error
                 style={GLOBALS.Styles.inputWidth}
-                placeholder="Company name"
+                placeholder="name"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -315,9 +438,18 @@ export default function AddMean(props) {
                 placeholder="Type"
                 name="type"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                onChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
+
+                  if (index != -1) {
+                    const item = event.target.value;
+                    setSelectedMeanTypeIndex(index);
+                    setSelectedMeanType(item);
+                  } else {
+                    setSelectedMeanTypeIndex(null);
+                    setSelectedMeanType("");
+                  }
+                }}
                 values={dropdownMeanTypes}
               />
               <FormSelect
@@ -342,7 +474,10 @@ export default function AddMean(props) {
                 name="image"
                 style={GLOBALS.Styles.inputWidth}
                 values={image}
-                onChange={(values) => handleChange("profile", values)}
+                onChange={(values) => {
+                  console.log("IMAGE", JSON.stringify(values, null, 2));
+                  handleChange("image", values);
+                }}
               />
             </Form.Row>
           </Form.Row>
@@ -355,20 +490,27 @@ export default function AddMean(props) {
                 values={location}
                 leftValue={selectedDropdownArea}
                 rightValue={selectedDropdownStorageArea}
+                leftId={deliveryAreaId}
+                rightId={storageAreaId}
+                chipValues={(values) => {
+                  console.log(JSON.stringify(values, null, 2));
+                  setDeliveryAndStorageLocations(values);
+                }}
                 leftDropdownValues={dropdownDeliveryAreas}
                 leftDropdwonPlaceholder={"Select Delivery Area"}
                 rightDropdownPlaceholder={"Select Storage Area"}
                 leftDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
-
                   if (index != -1) {
                     const item = event.target.value;
                     seltSelectedSiteDeliveryAreaIndex(index);
                     setSelectedDropdownArea(item);
+                    setDeilveryAreaId(DeliveryAreas[index]._id);
                     // filterMean();
                   } else {
                     seltSelectedSiteDeliveryAreaIndex(null);
                     setSelectedDropdownArea("");
+                    setDeilveryAreaId("");
                     // filterMean();
                   }
                 }}
@@ -379,7 +521,7 @@ export default function AddMean(props) {
                   const index = event.target.selectedIndex - 1;
                   if (index != -1) {
                     const item = event.target.value;
-
+                    setStorageAreaId(storageAreas[index]._id);
                     setSelectedStorageAreaIndex(index);
                     setSelectedDropdownStorageArea(item);
                   } else {
@@ -428,10 +570,11 @@ export default function AddMean(props) {
               <FormMultipleUpload
                 name="techSheet"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
                 values={techSheet}
+                onChange={(values) => {
+                  console.log("TECH", JSON.stringify(values, null, 2));
+                  handleChange("techSheet", values);
+                }}
               />
             </Form.Row>
           </Form.Row>
@@ -501,14 +644,17 @@ export default function AddMean(props) {
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
+                onClick={() => {
+                  createMean();
+                }}
                 // loading={formik.isSubmitting}
-                disabled={
-                  !name ||
-                  location.length === 0 ||
-                  !type ||
-                  !color ||
-                  !startDate
-                }
+                // disabled={
+                //   !name ||
+                //   location.length === 0 ||
+                //   !type ||
+                //   !color ||
+                //   !startDate
+                // }
               />
             </Form.ButtonContainer>
           </Form.Row>

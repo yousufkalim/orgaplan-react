@@ -94,32 +94,44 @@ export default function CustomInputModal(props) {
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postal, setPostal] = useState("");
+  const [chipValues, setChipValues] = useState([]);
 
   async function onSubmit() {
-    let newValues = props.values;
-    console.log(newValues);
-    return;
-    const values = {
-      key: newValues.length,
-      street: street,
-      city: city,
-      postal: postal,
-      label: `${street} ${city} ${postal}`,
-    };
-    newValues.push(values);
-    props.onChange(newValues);
+    let leftValue = props.leftValue;
+    let rightValue = props.rightValue;
+    let leftId = props.leftId;
+    let rightId = props.rightId;
 
-    setUpdate((st) => !st);
+    let valuesTemp = [...chipValues];
+    if (leftValue) {
+      const values = {
+        key: leftValue.length + Date.now().toString(),
+        label: leftValue,
+        id: leftId,
+        type: "DELIVERYAREA",
+      };
+      valuesTemp.push(values);
+    }
+    if (rightValue) {
+      const values = {
+        key: rightValue.length + Date.now().toString(),
+        label: rightValue,
+        id: rightId,
+        type: "STORAGEAREA",
+      };
+      valuesTemp.push(values);
+    }
+    setChipValues(valuesTemp);
+    if (props.chipValues != undefined) props.chipValues(valuesTemp);
     setModal(false);
-    setStreet("");
-    setCity("");
-    setPostal("");
   }
 
   const handleDelete = (value) => () => {
-    const newValues = props.values.filter((chip) => chip.key !== value.key);
-    props.onChange(newValues);
-    setUpdate((st) => !st);
+    const newValues = chipValues.filter((chip) => chip.key !== value.key);
+    setChipValues(newValues);
+    if (props.chipValues != undefined) props.chipValues(newValues);
+    //props.onChange(newValues);
+    //  setUpdate((st) => !st);
   };
 
   return (
@@ -143,7 +155,7 @@ export default function CustomInputModal(props) {
           </Grid>
           {update && ""}
           <ul className={classes.chips}>
-            {props.values.map((data) => (
+            {chipValues.map((data) => (
               <li key={data.key}>
                 <Chip
                   label={data.label}
