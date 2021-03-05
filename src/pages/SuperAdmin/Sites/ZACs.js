@@ -11,6 +11,7 @@ import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import Pagination from "../../../components/Pagination";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,14 +32,15 @@ export default function ZACS(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
   const [items, setItems] = useState([]);
-  const [page] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
@@ -46,6 +48,7 @@ export default function ZACS(props) {
         uri: `${GLOBALS.Constants.ZACS}?page=${page}`,
       });
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -104,6 +107,15 @@ export default function ZACS(props) {
       </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.zacs.headings} rows={rows} />
+        {!loading && data.totalItems > 10 && (
+          <Pagination
+            page={page}
+            count={data.totalPages}
+            onChange={(e, value) => {
+              setPage(value);
+            }}
+          />
+        )}
       </div>
     </div>
   );
