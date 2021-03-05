@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Invoices(props) {
   const classes = useStyles();
-
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
@@ -41,17 +40,29 @@ export default function Invoices(props) {
   const [data, setData] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState(props.match.params.clientId);
+
+  const [clients, setClients] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    client && fetchData();
     // eslint-disable-next-line
-  }, [page]);
+  }, [page, client]);
+
+  useEffect(() => {
+    props.match.params.clientId && setClient(props.match.params.clientId);
+    // eslint-disable-next-line
+  }, [client]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${props.match.params.clientId}?page=${page}`,
+        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${client}?page=${page}`,
       });
+      const clients = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.CLIENTS}`,
+      });
+      setClients(clients.data.items);
       setItems(result.data.items);
       setData(result.data);
       setLoading(false);
@@ -87,6 +98,14 @@ export default function Invoices(props) {
     }
   }
 
+  let clientsArray = [];
+  clients.map((client) =>
+    clientsArray.push({
+      value: client._id,
+      label: client.companyId.name,
+    }),
+  );
+
   const rows = items.map((item) => [
     item.clientId.companyId.name,
     moment(item.startDate).format("DD/MM/YYYY"),
@@ -120,18 +139,14 @@ export default function Invoices(props) {
       </Form.Row>
       <Form.Row noMargin>
         <FormSelect
+          value={client}
           disabled={loading}
-          placeholder="Client"
+          values={clientsArray}
           style={{ maxWidth: 250 }}
-          values={[
-            { value: "green", label: "Green" },
-            { value: "Yellow", label: "Yellow" },
-            { value: "Red", label: "Red" },
-            { value: "Blue", label: "Blue" },
-            { value: "Orange", label: "Orange" },
-            { value: "Purple", label: "Purple" },
-            { value: "Magenta", label: "Magenta" },
-          ]}
+          onChange={({ target: { value } }) => {
+            props.history.replace(`/clients/invoices/${value}`);
+            setClient(value);
+          }}
         />
       </Form.Row>
       <div className={classes.content}>
