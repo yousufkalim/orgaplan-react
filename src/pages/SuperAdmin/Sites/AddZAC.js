@@ -52,7 +52,7 @@ export default function AddZac(props) {
         body: formdata,
       });
       setLoading(false);
-      props.history.push("/sites/zacs");
+      props.history.goBack();
     } catch (err) {
       setLoading(false);
       dispatch(

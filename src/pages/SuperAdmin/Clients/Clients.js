@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -17,6 +15,7 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
+import Pagination from "../../../components/Pagination";
 import SubHeading from "../../../components/SubHeading";
 import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
@@ -40,34 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const updateClientYup = Yup.object().shape({
-//   logo: Yup.mixed(),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
-// });
-
 export default function Clients(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
   const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [update, setUpdate] = useState(false);
@@ -93,7 +72,7 @@ export default function Clients(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
@@ -101,6 +80,7 @@ export default function Clients(props) {
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -245,14 +225,19 @@ export default function Clients(props) {
           <>
             <IconButton
               disabled={loading}
-              onClick={() => modifyClick(item, contract)}
+              onClick={(e) => {
+                e.stopPropagation();
+                modifyClick(item, contract);
+              }}
             >
               <Pencil style={{ width: 15, height: 15 }} />
             </IconButton>
             <IconButton
               disabled={loading}
-              component={NavLink}
-              to={`/clients/invoices/${item._id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.history.push(`/clients/invoices/${item._id}`);
+              }}
             >
               <Report style={{ width: 15, height: 15 }} />
             </IconButton>
@@ -273,12 +258,13 @@ export default function Clients(props) {
         "Requested",
         <IconButton
           disabled={loading}
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation();
             props.history.push({
               pathname: "/clients/verify-client",
               item,
-            })
-          }
+            });
+          }}
         >
           <Plus style={{ width: 15, height: 15 }} />
         </IconButton>,
@@ -297,7 +283,7 @@ export default function Clients(props) {
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 disableMargin
-                primary={`Total : ${rows.length} Clients`}
+                primary={data && `Total : ${data.totalItems} Clients`}
                 bold
               />
               <Button
@@ -326,6 +312,15 @@ export default function Clients(props) {
             }
             headers={GLOBALS.Data.clients.headings}
           />
+          {!loading && data.totalItems > 10 && (
+            <Pagination
+              page={page}
+              count={data.totalPages}
+              onChange={(e, value) => {
+                setPage(value);
+              }}
+            />
+          )}
         </div>
       </div>
       {update && ""}
