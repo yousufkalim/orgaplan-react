@@ -427,7 +427,7 @@ const Means = () => {
             style={{ paddingRight: "50px" }}
           >
             <SubHeading
-              disableMargin
+              noMargin
               topPadding
               primary={`TOTAL : ${means.length} means`}
               bold

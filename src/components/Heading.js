@@ -9,7 +9,7 @@ export default function Heading({ className, bold, ...props }) {
       fontWeight: "bold",
       fontSize: theme.typography.pxToRem(26),
       color: theme.palette.primary.contrastText,
-      margin: props.disableMargin ? 0 : props.margin || "0 0 10px 0",
+      margin: props.noMargin ? 0 : props.margin || "0 0 10px 0",
     },
   }));
   const classes = useStyles();

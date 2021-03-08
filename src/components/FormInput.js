@@ -4,11 +4,21 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 export default function Input(props) {
   const theme = useTheme();
 
-  const error = theme.palette.error.main;
+  const error = props.disabled
+    ? theme.palette.custom.disabled
+    : theme.palette.error.main;
 
   const white = theme.palette.common.white;
-  const color = props.error ? error : theme.palette.primary.contrastText;
-  const borderColor = props.error ? error : theme.palette.grey[100];
+  const color = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.primary.contrastText;
+  const borderColor = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.grey[100];
 
   const useStyles = makeStyles((theme) => ({
     root: {

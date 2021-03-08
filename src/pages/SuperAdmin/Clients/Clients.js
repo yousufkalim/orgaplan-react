@@ -115,7 +115,6 @@ export default function Clients(props) {
       uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
     });
     setColor(item.companyId.color);
-    console.log(item.companyId.incharge);
     if (item.companyId.incharge) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
@@ -207,14 +206,18 @@ export default function Clients(props) {
   const rows = [];
   items.map((item) => {
     if (item.companyId.quoteVerified) {
-      item.contractsIds.map((contract) => {
+      item.contractIds.map((contract) => {
         rows.push([
           item.companyId.name,
           item.companyId.incharge
             ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
             : "",
-          item.companyId.incharge ? item.companyId.incharge.phone : "",
-          0,
+          item.companyId.incharge
+            ? item.companyId.incharge.phone
+              ? `0${item.companyId.incharge.phone}`
+              : ""
+            : "",
+          item.sites,
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractStartDate).format("DD/MM/YY")
             : "-",
@@ -251,8 +254,10 @@ export default function Clients(props) {
         item.companyId.incharge.firstName +
           " " +
           item.companyId.incharge.lastName,
-        item.companyId.incharge.phone,
-        0,
+        item.companyId.incharge.phone
+          ? `0${item.companyId.incharge.phone}`
+          : "",
+        item.sites,
         "-",
         "-",
         "Requested",
@@ -282,7 +287,7 @@ export default function Clients(props) {
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
-                disableMargin
+                noMargin
                 primary={data && `Total : ${data.totalItems} Clients`}
                 bold
               />
@@ -474,7 +479,7 @@ export default function Clients(props) {
                   // error={monthlyCost}
                   style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 />
-                <SmallText primary="€/month" />
+                <SmallText primary="€/month" noMargin />
               </Form.Row>
             </Form.Row>
             <Form.Row>
@@ -508,11 +513,13 @@ export default function Clients(props) {
                           moment(contractStartDate),
                           "days",
                         ) <= 0)) ||
-                    firstName.length > 30 ||
-                    lastName.length > 30 ||
-                    (phone.length > 0 &&
-                      (!phone.startsWith("0") || phone.length !== 10)) ||
-                    additionalInfo.length > 300 ||
+                    (firstName && firstName.length > 30) ||
+                    (lastName && lastName.length) > 30 ||
+                    (phone &&
+                      String(phone).length > 0 &&
+                      (!String(phone).startsWith("0") ||
+                        String(phone).length !== 10)) ||
+                    (additionalInfo && additionalInfo.length > 300) ||
                     Number(monthlyCost) < 0
                   }
                 />

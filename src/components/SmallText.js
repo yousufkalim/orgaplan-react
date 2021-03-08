@@ -10,7 +10,7 @@ export default function SmallText({ className, bold, ...props }) {
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.primary.contrastText,
       fontWeight: bold ? "bold" : "normal",
-      marginBottom: props.disableMargin ? 0 : 10,
+      marginBottom: props.noMargin ? 0 : 10,
     },
   }));
   const classes = useStyles();
