@@ -11,6 +11,7 @@ import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SmallButton from "../../../components/SmallButton";
@@ -47,11 +48,12 @@ export default function Sites(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("ALL");
   const [client, setClient] = useState("ALL");
 
+  const [data, setData] = useState("");
   const [items, setItems] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function Sites(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, [client]);
+  }, [client, page, status]);
   useEffect(() => {
     props.match.params.clientId && setClient(props.match.params.clientId);
     // eslint-disable-next-line
@@ -75,6 +77,7 @@ export default function Sites(props) {
       });
       setClients(clients.data.items);
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -162,7 +165,7 @@ export default function Sites(props) {
           <Form.Row alignItems="center" noMargin>
             <SubHeading
               disableMargin
-              primary={`Total : ${rows.length} Sites`}
+              primary={data && `Total : ${data.totalItems} Sites`}
               bold
             />
             <Button
@@ -186,7 +189,7 @@ export default function Sites(props) {
         <Form.Row justifyContent="flex-start" noMargin>
           <SearchInput
             value={query}
-            buttonDisabled
+            onClick={fetchData}
             placeholder="Site name"
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => setQuery(value)}
@@ -208,12 +211,6 @@ export default function Sites(props) {
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => setStatus(value)}
           />
-          <Button
-            text="FILTER"
-            fullWidth={false}
-            onClick={fetchData}
-            style={{ marginLeft: "20px" }}
-          />
         </Form.Row>
         <NavLink className={classes.link} to="/sites/archives">
           See archived sites
@@ -221,6 +218,15 @@ export default function Sites(props) {
       </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.sites.headings} rows={rows} />
+        {!loading && data.totalItems > 10 && (
+          <Pagination
+            page={page}
+            count={data.totalPages}
+            onChange={(e, value) => {
+              setPage(value);
+            }}
+          />
+        )}
       </div>
     </div>
   );

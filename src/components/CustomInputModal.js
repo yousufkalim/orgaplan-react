@@ -89,11 +89,11 @@ export default function CustomInputModal(props) {
 
   const classes = useStyles();
   const [modal, setModal] = useState(false);
-  const [update, setUpdate] = useState(false);
+  const [update] = useState(false);
 
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [postal, setPostal] = useState("");
+  // const [street, setStreet] = useState("");
+  // const [city, setCity] = useState("");
+  // const [postal, setPostal] = useState("");
   const [chipValues, setChipValues] = useState([]);
 
   async function onSubmit() {
@@ -122,14 +122,14 @@ export default function CustomInputModal(props) {
       valuesTemp.push(values);
     }
     setChipValues(valuesTemp);
-    if (props.chipValues != undefined) props.chipValues(valuesTemp);
+    if (props.chipValues !== undefined) props.chipValues(valuesTemp);
     setModal(false);
   }
 
   const handleDelete = (value) => () => {
     const newValues = chipValues.filter((chip) => chip.key !== value.key);
     setChipValues(newValues);
-    if (props.chipValues != undefined) props.chipValues(newValues);
+    if (props.chipValues !== undefined) props.chipValues(newValues);
     //props.onChange(newValues);
     //  setUpdate((st) => !st);
   };

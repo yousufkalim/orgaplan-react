@@ -13,6 +13,7 @@ import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
@@ -39,7 +40,8 @@ export default function Admins(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
   const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function Admins(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
@@ -84,6 +86,7 @@ export default function Admins(props) {
 
       setItems(admins.data.items);
       setCompanies(companiesArray);
+      setData(admins.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -201,7 +204,7 @@ export default function Admins(props) {
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 disableMargin
-                primary={`Total : ${items.length} Admins`}
+                primary={data && `Total : ${data.totalItems} Admins`}
                 bold
               />
               <Button
@@ -224,6 +227,15 @@ export default function Admins(props) {
         </Form.Row>
         <div className={classes.content}>
           <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
+          {!loading && data.totalItems > 10 && (
+            <Pagination
+              page={page}
+              count={data.totalPages}
+              onChange={(e, value) => {
+                setPage(value);
+              }}
+            />
+          )}
         </div>
       </div>
       {update && ""}
