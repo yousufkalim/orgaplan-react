@@ -57,7 +57,7 @@ export default function Invoices(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${client}?page=${page}`,
+        uri: `${GLOBALS.Constants.INVOICES}/?page=${page}&clientId=${client}`,
       });
       const clients = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
@@ -98,7 +98,12 @@ export default function Invoices(props) {
     }
   }
 
-  let clientsArray = [];
+  let clientsArray = [
+    {
+      value: "ALL",
+      label: "ALL",
+    },
+  ];
   clients.map((client) =>
     clientsArray.push({
       value: client._id,
@@ -114,7 +119,7 @@ export default function Invoices(props) {
     item.amount,
     item.description,
     <>
-      <IconButton>
+      <IconButton component={NavLink} to={`/clients/edit-invoice/${item._id}`}>
         <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <IconButton onClick={() => onDelete(item._id)}>

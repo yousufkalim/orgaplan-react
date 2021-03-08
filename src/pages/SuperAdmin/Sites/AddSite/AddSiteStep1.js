@@ -20,8 +20,8 @@ export default function AddSiteStep1(props) {
 
   const [loading, setLoading] = useState(false);
   const [zacs, setZacs] = useState([]);
-  const [clientsOriginal, setClientsOriginal] = useState([]);
   const [clients, setClients] = useState([]);
+  const [admins, setAdmins] = useState([]);
   const [clientName, setClientName] = useState("");
   const [update, setUpdate] = useState(false);
 
@@ -32,8 +32,8 @@ export default function AddSiteStep1(props) {
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
-  const [penaltyforLateDelivery, setPenaltyforLateDelivery] = useState("0");
-  const [penaltyforUnexpDelivery, setPenaltyforUnexpDelivery] = useState("0");
+  const [penaltyforLateDelivery, setPenaltyforLateDelivery] = useState("");
+  const [penaltyforUnexpDelivery, setPenaltyforUnexpDelivery] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -41,11 +41,13 @@ export default function AddSiteStep1(props) {
   }, []);
 
   useEffect(() => {
-    clientsOriginal.map((client) => {
-      if (client._id === adminId) setClientName(client.companyId.name);
-      return true;
-    });
-  }, [clientsOriginal, adminId]);
+    clients.map((client) =>
+      client.adminIds.map(
+        (admin) =>
+          admin._id === adminId && setClientName(client.companyId.name),
+      ),
+    );
+  }, [clients, adminId]);
 
   async function fetchData() {
     try {
@@ -59,23 +61,20 @@ export default function AddSiteStep1(props) {
         value: zac._id,
         label: zac.name,
       }));
-      const clientsArray = [];
+      const adminsArray = [];
       clientsResult.data.items.map((client) => {
-        if (client.userId) {
-          // if (client.companyId.type !== "MASTERCLIENT") {
-          clientsArray.push({
-            value: client._id,
-            label: `${client.userId.firstName} ${client.userId.lastName}`,
-          });
-          // }
-          return true;
-        }
+        client.adminIds.map((admin) =>
+          adminsArray.push({
+            value: admin._id,
+            label: `${admin.firstName} ${admin.lastName}`,
+          }),
+        );
         return true;
       });
-      setClientsOriginal(clientsResult.data.items);
       setZacs(zacsArray);
-      setClients(clientsArray);
-      setAdminId(clientsArray[0]?.value);
+      setAdmins(adminsArray);
+      setClients(clientsResult.data.items);
+      setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -165,15 +164,15 @@ export default function AddSiteStep1(props) {
         <Form.Row>
           <FormLabel bold primary="SITE RESPONSIBLE* :" />
           <Form.Row
-            width="48%"
             noMargin
+            width="48%"
             alignItems="center"
             justifyContent="flex-start"
           >
             <FormSelect
               name="adminId"
               value={adminId}
-              values={clients}
+              values={admins}
               // error={adminId}
               // placeholder="Admin"
               style={GLOBALS.Styles.inputWidth}
@@ -181,7 +180,11 @@ export default function AddSiteStep1(props) {
                 handleChange(name, value)
               }
             />
-            <SmallText style={{ marginLeft: 10 }} primary={clientName} />
+            <SmallText
+              noMargin
+              primary={clientName}
+              style={{ marginLeft: 10 }}
+            />
           </Form.Row>
         </Form.Row>
         <Form.Row>
@@ -232,7 +235,7 @@ export default function AddSiteStep1(props) {
                   value >= 0 && handleChange(name, value)
                 }
               />
-              <SmallText style={{ marginLeft: 10 }} primary="€" />
+              <SmallText noMargin style={{ marginLeft: 10 }} primary="€" />
             </Form.Row>
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
@@ -245,7 +248,7 @@ export default function AddSiteStep1(props) {
                   value >= 0 && handleChange(name, value)
                 }
               />
-              <SmallText style={{ marginLeft: 10 }} primary="€" />
+              <SmallText noMargin style={{ marginLeft: 10 }} primary="€" />
             </Form.Row>
           </Form.Row>
         </Form.Row>

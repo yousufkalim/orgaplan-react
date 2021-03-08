@@ -107,7 +107,7 @@ export default function MultiAdderInputModal(props) {
             <Form.Form onSubmit={formik.handleSubmit}>
               <Form.Row>
                 <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Day 1:" />
+                  <FormLabel noMargin bold primary="Day 1:" />
                 </Form.Row>
                 <Form.Row noMargin>
                   <FormSelect

@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -26,23 +25,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const addInvoiceYup = Yup.object().shape({
-//   clientId: Yup.string().required("Required"),
-//   startDate: Yup.string().required("Required"),
-//   endDate: Yup.string().required("Required"),
-//   siteId: Yup.string().required("Required"),
-//   amount: Yup.number().min(1, "Must have a value").required("Required"),
-//   description: Yup.string().optional(),
-// });
-
 export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(false);
-  const [clients, setClients] = useState([]);
   const [sites, setSites] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [clientId, setClientId] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -58,6 +48,7 @@ export default function AddInvoice(props) {
 
   useEffect(() => {
     clientId && fetchSitesByClient();
+    setSiteId("");
     // eslint-disable-next-line
   }, [clientId]);
 

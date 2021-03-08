@@ -15,7 +15,11 @@ export default function FormMultipleUpload(props) {
 
   const white = theme.palette.common.white;
   const error = theme.palette.error.main;
-  const borderColor = props.error ? error : theme.palette.grey[100];
+  const borderColor = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.grey[100];
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -75,11 +79,19 @@ export default function FormMultipleUpload(props) {
 
   const onAdd = (e) => {
     const file = e.target.files[0];
+
+    let fileSize = 10000000;
+    let fileTypes = ["image/png", "image/jpg", "image/jpeg"];
+    if (props.fileTypes) {
+      fileTypes = props.fileTypes;
+    }
+    if (props.fileSize) {
+      fileSize = props.fileSize;
+    }
     if (
-      file.size <= 1000000 &&
-      (file.type === "image/png" ||
-        file.type === "image/jpg" ||
-        file.type === "image/jpeg")
+      file &&
+      file.size <= fileSize &&
+      fileTypes.some((typ) => typ === file.type)
     ) {
       const uri = URL.createObjectURL(file);
       let newValues = props.values;

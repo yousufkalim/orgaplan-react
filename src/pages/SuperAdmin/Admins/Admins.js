@@ -171,8 +171,8 @@ export default function Admins(props) {
     const sendTo = [
       item.company.name,
       item.firstName + " " + item.lastName,
-      item.phone,
-      0,
+      `0${item.phone}`,
+      item.sites,
     ];
     return [
       ...sendTo,
@@ -203,7 +203,7 @@ export default function Admins(props) {
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
-                disableMargin
+                noMargin
                 primary={data && `Total : ${data.totalItems} Admins`}
                 bold
               />

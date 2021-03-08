@@ -173,7 +173,7 @@ export default function UserList(props) {
           <Heading primary="LIST OF USERS" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 Users" bold />
+              <SubHeading noMargin primary="Total : 234 Users" bold />
               <Button
                 fullWidth={false}
                 component={NavLink}

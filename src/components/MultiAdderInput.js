@@ -10,9 +10,19 @@ export default function MultiAdderInput(props) {
 
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
-  const primaryColor = theme.palette.primary.contrastText;
-  const borderColor = props.error ? error : theme.palette.grey[100];
-  const color = props.error ? error : theme.palette.primary.contrastText;
+  const primaryColor = props.disabled
+    ? theme.palette.custom.disabled
+    : theme.palette.primary.contrastText;
+  const borderColor = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.grey[100];
+  const color = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.primary.contrastText;
 
   const useStyles = makeStyles((theme) => ({
     root: {
