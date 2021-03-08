@@ -99,14 +99,12 @@ export default function AddMean(props) {
   ]);
 
   const getData = async () => {
-    console.log(JSON.stringify(store, null, 2));
     try {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
         token: store.token,
       });
       if (response.success) {
-        console.log(JSON.stringify(response, null, 2));
         if (response.data.site_delivery_areas !== null) {
           const temp = [];
           response.data.site_delivery_areas.map((item, index) =>
@@ -219,32 +217,28 @@ export default function AddMean(props) {
       });
 
       let availabilities = {
-        availability: {
-          start: startDate,
-          end: endDate,
-        },
+        start: startDate,
+        end: endDate,
       };
 
       // TEST DATA , CALENDAR NOT MADE YET
 
       const sampleDateOne = new Date("05/20/2021");
       const sampleDateTwo = new Date("05/28/2021");
-      const unavailabilities = {
-        unavailability: [
-          {
-            date: sampleDateOne,
-            reason: "Public Holiday",
-            startingHour: new Date().getTime(),
-            endingHour: new Date().getTime(),
-          },
-          {
-            date: sampleDateTwo,
-            reason: "Maintenance",
-            startingHour: new Date().getTime(),
-            endingHour: new Date().getTime(),
-          },
-        ],
-      };
+      const unavailabilities = [
+        {
+          date: sampleDateOne,
+          reason: "Public Holiday",
+          startingHour: new Date().getTime(),
+          endingHour: new Date().getTime(),
+        },
+        {
+          date: sampleDateTwo,
+          reason: "Maintenance",
+          startingHour: new Date().getTime(),
+          endingHour: new Date().getTime(),
+        },
+      ];
 
       formdata.append("name", name);
       formdata.append("color", color);
@@ -266,12 +260,18 @@ export default function AddMean(props) {
         },
         body: formdata,
       });
+      console.log(JSON.stringify(response, null, 2));
 
       if (response.success) {
         alert(JSON.stringify(response, null, 2));
         setLoading(false);
       } else {
         setLoading(false);
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(response.message, "error"),
+          ),
+        );
       }
       setLoading(false);
     } catch (err) {
@@ -462,7 +462,6 @@ export default function AddMean(props) {
                 style={GLOBALS.Styles.inputWidth}
                 values={image}
                 onChange={(values) => {
-                  console.log("IMAGE", JSON.stringify(values, null, 2));
                   handleChange("image", values);
                 }}
               />
@@ -480,7 +479,6 @@ export default function AddMean(props) {
                 leftId={deliveryAreaId}
                 rightId={storageAreaId}
                 chipValues={(values) => {
-                  console.log(JSON.stringify(values, null, 2));
                   setDeliveryAndStorageLocations(values);
                 }}
                 leftDropdownValues={dropdownDeliveryAreas}
@@ -559,7 +557,6 @@ export default function AddMean(props) {
                 style={GLOBALS.Styles.inputWidth}
                 values={techSheet}
                 onChange={(values) => {
-                  console.log("TECH", JSON.stringify(values, null, 2));
                   handleChange("techSheet", values);
                 }}
               />
@@ -616,7 +613,6 @@ export default function AddMean(props) {
                 placeholder="Informations complémentaires"
                 name="addInfo"
                 onChange={({ target: { name, value } }) => {
-                  console.log("add, info", value);
                   handleChange(name, value);
                 }}
                 value={addInfo}
@@ -627,12 +623,11 @@ export default function AddMean(props) {
           <Form.Row>
             <Form.ButtonContainer style={{ width: "80%" }}>
               <Button
-                type="submit"
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
-                onClick={() => {
-                  createMean();
+                onClick={async () => {
+                  await createMean();
                 }}
                 // loading={formik.isSubmitting}
                 // disabled={

@@ -113,21 +113,42 @@ const Means = () => {
 
         if (response.data.means != null) {
           let temp = [];
-
           response.data.means.map((item, index) => {
             let data = [];
             data[0] = item.name;
             data[1] = item.status;
             data[2] = item.meanType;
-            data[3] = item.location
-              .map((innerItem, index) => innerItem.storageArea.name)
-              .toString();
-            data[4] = item.location
-              .map((innerItem, index) => innerItem.deliveryArea.name)
-              .toString();
+
+            {
+              data[3] = item.location
+                .map((innerItem, index) => {
+                  if (
+                    innerItem.locationType != undefined &&
+                    innerItem.locationType === "STORAGEAREA"
+                  ) {
+                    console.log(innerItem.locationType);
+                    return innerItem.storageArea.name;
+                  }
+                  return "";
+                })
+                .toString()
+                .replace(/,/g, " ");
+              data[4] = item.location
+                .map((innerItem, index) => {
+                  if (
+                    innerItem.locationType != undefined &&
+                    innerItem.locationType === "DELIVERYAREA"
+                  )
+                    return innerItem.deliveryArea.name;
+                  return "";
+                })
+                .toString()
+                .replace(/,/g, " ");
+            }
             temp.push(data);
             return true;
           });
+
           setItems(temp);
         }
 
@@ -199,15 +220,28 @@ const Means = () => {
       });
 
       if (response.success) {
-        setStorageAreas(response.data);
+        const tempStorageAreas = [];
         if (response.data != null && response.data.length > 0) {
           const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
 
+          response.data.map((item, index) => {
+            item.location.map((innerItem, innerIndex) => {
+              console.log(JSON.stringify(innerItem, null, 2));
+              if (innerItem.locationType === "STORAGEAREA") {
+                tempStorageAreas.push(innerItem);
+                return temp.push({
+                  label: innerItem.storageArea.name,
+                  value: innerItem.storageArea.name,
+                });
+              }
+            });
+
+            //
+          });
+          setStorageAreas(tempStorageAreas);
           setDropdownStorageAreas(temp);
         }
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -312,7 +346,7 @@ const Means = () => {
         params["startDate"] = formik.values.contractStartDate;
       if (!isNaN(moment(formik.values.contractEndDate)))
         params["endDate"] = formik.values.contractEndDate;
-      console.log(JSON.stringify(params, null, 2));
+
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
         token: store.token,
@@ -327,12 +361,32 @@ const Means = () => {
           data[0] = item.name;
           data[1] = item.status;
           data[2] = item.meanType;
-          data[3] = item.location
-            .map((innerItem, index) => innerItem.storageArea.name)
-            .toString();
-          data[4] = item.location
-            .map((innerItem, index) => innerItem.deliveryArea.name)
-            .toString();
+          {
+            data[3] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType != undefined &&
+                  innerItem.locationType === "STORAGEAREA"
+                ) {
+                  console.log(innerItem.locationType);
+                  return innerItem.storageArea.name;
+                }
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
+            data[4] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType != undefined &&
+                  innerItem.locationType === "DELIVERYAREA"
+                )
+                  return innerItem.deliveryArea.name;
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
+          }
           return temp.push(data);
         });
         setItems(temp);
@@ -464,22 +518,15 @@ const Means = () => {
               const index = event.target.selectedIndex - 1;
 
               if (index !== -1) {
-                console.log("HERE 1");
                 const item = event.target.value;
-                console.log("HERE 2");
+
                 seltSelectedSiteDeliveryAreaIndex(index);
-                console.log("HERE 3");
+
                 setSelectedDropdownArea(item);
-                console.log("HERE 4");
-                // filterMean();
-                console.log("HERE 5");
               } else {
                 seltSelectedSiteDeliveryAreaIndex(null);
-                console.log("HERE 6");
+
                 setSelectedDropdownArea("");
-                console.log("HERE 7");
-                // filterMean();
-                console.log("HERE 8");
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -504,12 +551,12 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
-                if (locations[index].locationType === "EXTERIOR") {
+                if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
                   getExternalMeans();
                 } else {
                   setDisableDropdown(false);
-                  getLevels(locations[index].building._id);
+                  getLevels(locations[index]._id);
                 }
               } else {
                 setSelectedLocationIndex(0);
@@ -666,7 +713,7 @@ const Means = () => {
           <SearchInput
             placeholder="Mean name"
             value={meanText}
-            onIconButtonClick={() => {
+            onClick={() => {
               filterMean();
             }}
             onChange={(event) => {
