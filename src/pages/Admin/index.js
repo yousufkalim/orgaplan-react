@@ -7,7 +7,7 @@ import Incidents from "./Incidents";
 import Invoices from "./Invoices/Invoices";
 import Means from "./Means";
 import Organigramme from "./Organigramme";
-import Pic from "./Pic"
+import Pic from "./Pic";
 
 export default function UnAuth() {
   return (
