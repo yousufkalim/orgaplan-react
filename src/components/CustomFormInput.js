@@ -111,11 +111,12 @@ export default function Input(props) {
           onBlur={props.onBlur}
           onFocus={props.onFocus}
           className={classes.input}
-          onChange={(value) => {
-            if(props.validateSchema){
-              props.validateSchema.validate(value) && props.onChange()
-            }
-          }}
+          onChange={props.onChange}
+          // onChange={(value) => {
+          //   if(props.validateSchema){
+          //     props.validateSchema.validate(value) && props.onChange()
+          //   }
+          // }}
           disabled={props.disabled}
           placeholder={props.placeholder}
         />

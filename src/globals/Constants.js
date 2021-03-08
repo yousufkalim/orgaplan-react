@@ -43,6 +43,8 @@ const endpoints = {
   GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
   GET_STORAGE_AREA_BY_LEVEL_ID:
     BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
+
+  CREATE_MEAN: BASE_URL_V1 + "mean",
 };
 
 export default endpoints;
