@@ -14,11 +14,11 @@ export default function FormMultipleUpload(props) {
   const theme = useTheme();
 
   const white = theme.palette.common.white;
-  const error = theme.palette.error.main;
+  const errorColor = theme.palette.error.main;
   const borderColor = props.disabled
     ? theme.palette.custom.disabled
     : props.error
-    ? error
+    ? errorColor
     : theme.palette.grey[100];
 
   const useStyles = makeStyles((theme) => ({
@@ -66,7 +66,7 @@ export default function FormMultipleUpload(props) {
       backgroundColor: theme.palette.common.black,
     },
     error: {
-      color: error,
+      color: errorColor,
       fontWeight: 400,
       position: "absolute",
       fontSize: theme.typography.pxToRem(12),
@@ -80,14 +80,13 @@ export default function FormMultipleUpload(props) {
   const onAdd = (e) => {
     const file = e.target.files[0];
 
-    let fileSize = 10000000;
+    let fileSize = 10485760;
     let fileTypes = ["image/png", "image/jpg", "image/jpeg"];
-    if (props.fileTypes) {
-      fileTypes = props.fileTypes;
-    }
-    if (props.fileSize) {
-      fileSize = props.fileSize;
-    }
+    let errorTypes = "PNG, JPEG, JPG";
+
+    if (props.fileTypes) fileTypes = props.fileTypes;
+    if (props.fileSize) fileSize = props.fileSize;
+    if (props.errorTypes) errorTypes = props.errorTypes;
     if (
       file &&
       file.size <= fileSize &&
@@ -105,7 +104,7 @@ export default function FormMultipleUpload(props) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(
-            "Max size can be 10MB of types: PNG, JPEG, JPG",
+            `Max size can be ${fileSize / 1048576}MB of types: ${errorTypes}`,
             "error",
           ),
         ),

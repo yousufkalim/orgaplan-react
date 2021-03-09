@@ -243,7 +243,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "Max size can be 10MB of type: PDF",
                         "error",
                       ),
                     ),
@@ -296,7 +296,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "Max size can be 10MB of type: PDF",
                         "error",
                       ),
                     ),

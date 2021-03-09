@@ -50,7 +50,9 @@ export default function Invoices(props) {
   }, [page, client]);
 
   useEffect(() => {
-    props.match.params.clientId && setClient(props.match.params.clientId);
+    props.match.params.clientId
+      ? setClient(props.match.params.clientId)
+      : setClient("ALL");
     // eslint-disable-next-line
   }, [client]);
 
