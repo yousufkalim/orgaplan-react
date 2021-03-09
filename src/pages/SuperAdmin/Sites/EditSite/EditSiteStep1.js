@@ -253,9 +253,8 @@ export default function EditSiteStep1(props) {
               />
               <SmallText
                 noMargin
-                style={{ marginLeft: 10 }}
                 primary="€"
-                noMargin
+                style={{ marginLeft: 10 }}
               />
             </Form.Row>
             <Form.Row width="48%" noMargin alignItems="center">
@@ -271,9 +270,8 @@ export default function EditSiteStep1(props) {
               />
               <SmallText
                 noMargin
-                style={{ marginLeft: 10 }}
                 primary="€"
-                noMargin
+                style={{ marginLeft: 10 }}
               />
             </Form.Row>
           </Form.Row>
