@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 // import * as Yup from "yup";
 import Grid from "@material-ui/core/Grid";
@@ -19,6 +19,11 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 // });
 
 export default function CustomInputModal(props) {
+  useEffect(() => {
+    if (props.chipDefaultValues != undefined)
+      setChipValues(props.chipDefaultValues);
+  });
+
   const theme = useTheme();
 
   const error = theme.palette.error.main;
@@ -101,6 +106,7 @@ export default function CustomInputModal(props) {
     let rightValue = props.rightValue;
     let leftId = props.leftId;
     let rightId = props.rightId;
+    console.log(leftValue);
 
     let valuesTemp = [...chipValues];
     if (leftValue) {
@@ -110,19 +116,20 @@ export default function CustomInputModal(props) {
         id: leftId,
         type: "DELIVERYAREA",
       };
-      valuesTemp.push(values);
+      //  valuesTemp.push(values);
     }
     if (rightValue) {
       const values = {
         key: rightValue.length + Date.now().toString(),
         label: rightValue,
         id: rightId,
-        type: "STORAGEAREA",
+        type: leftValue,
       };
       valuesTemp.push(values);
+      setChipValues(valuesTemp);
+      if (props.chipValues !== undefined) props.chipValues(valuesTemp);
     }
-    setChipValues(valuesTemp);
-    if (props.chipValues !== undefined) props.chipValues(valuesTemp);
+
     setModal(false);
   }
 

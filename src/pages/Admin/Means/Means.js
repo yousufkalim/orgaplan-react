@@ -339,6 +339,9 @@ const Means = () => {
         params["storageArea"] =
           storageAreas[selectedDropdownStorageAreaIndex]._id;
 
+      if (selectedCompany.length !== 0)
+        params["company"] = company[selectedCompanyIndex]._id;
+
       if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
       if (selectedStatus.length !== 0)
         params["status"] = status[selectedStatusIndex];
@@ -439,12 +442,15 @@ const Means = () => {
     // eslint-disable-next-line
   }, []);
 
-  const rows = items.map((item) => {
+  const rows = items.map((item, index) => {
     return [
       ...item,
       <div>
         <NavLink
-          to="/means/edit-mean"
+          to={{
+            pathname: "/means/edit-mean",
+            mean: means[index],
+          }}
           style={{ color: "#959491 !important", textDecoration: "none" }}
         >
           <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
@@ -697,7 +703,7 @@ const Means = () => {
           <FormInput
             type="date"
             placeholder="Start date"
-            name="startDate"
+            name="contractStartDate"
             icon
             onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
