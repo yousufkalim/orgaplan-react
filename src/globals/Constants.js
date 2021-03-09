@@ -45,6 +45,11 @@ const endpoints = {
   GET_STORAGE_AREA_BY_LEVEL_ID:
     BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
 
+  GET_STORAGE_AREA_BY_SITE_ID:
+    BASE_URL_V1 + "storage-area/get_storage_site/enterprise",
+  GET_DELIVERY_AREA_BY_SITE_ID:
+    BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
+  UPDATE_MEAN: BASE_URL_V1 + "mean",
   CREATE_MEAN: BASE_URL_V1 + "mean",
 };
 
