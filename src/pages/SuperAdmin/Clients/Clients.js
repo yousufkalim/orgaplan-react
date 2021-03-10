@@ -81,6 +81,7 @@ export default function Clients(props) {
       });
       setItems(result.data.items);
       setData(result.data);
+      setModal(false);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -192,10 +193,11 @@ export default function Clients(props) {
           token: store.token,
           uri: GLOBALS.Constants.CLIENT_DELETE + "/" + itemId,
         });
-        const itemsArray = items.filter((item) => item._id !== itemId);
-        setItems(itemsArray);
-        setModal(false);
-        setLoading(false);
+        // const itemsArray = items.filter((item) => item._id !== itemId);
+        // setItems(itemsArray);
+        fetchData();
+        // setModal(false);
+        // setLoading(false);
       }
     } catch (err) {
       setLoading(false);

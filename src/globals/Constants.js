@@ -12,7 +12,9 @@ const endpoints = {
 
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
-  ADMINS_DELETE: BASE_URL_V1 + "superadmin/admins/delete",
+  ADMIN_GET: BASE_URL_V1 + "superadmin/admins/get",
+  ADMIN_DELETE: BASE_URL_V1 + "superadmin/admins/delete",
+  ADMIN_REGISTRATION: BASE_URL_V1 + "superadmin/admins/complete-registeration",
   BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
   BUILDINGS_BY_SITE: BASE_URL_V1 + "superadmin/buildings/site",
   COMPANY: BASE_URL_V1 + "superadmin/companies",
