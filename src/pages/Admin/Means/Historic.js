@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 // import Actions from "../../../redux/actions";
@@ -10,7 +10,7 @@ import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Heading from "../../../components/Heading";
 import FormSelect from "../../../components/FormSelect";
-
+import moment from "moment";
 import { Images } from "../../../assets/Assets";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,24 +35,102 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Historic = () => {
+const Historic = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const store = useSelector((state) => state.auth);
+  const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [isLoading, setLoading] = useState(true);
+  const [history, setHistory] = useState([]);
+
+  const [means, setMeans] = useState([]);
+  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const [selectedMean, setSelectedMean] = useState("");
+  const [selectedMeanIndex, setSelectedMeanIndex] = useState(null);
+
+  const [companies, setCompanies] = useState([]);
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line
+    getData();
   }, []);
 
-  async function fetchData() {
+  useEffect(() => {
+    filterBooking();
+  }, [selectedMeanIndex, selectedCompanyIndex]);
+
+  const filterBooking = async () => {
     try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
+      setLoading(true);
+      const params = { siteId: "6008169bedbb7816d40b197d" };
+      if (selectedMean.length !== 0)
+        params["meanId"] = means[selectedMeanIndex]._id;
+      if (selectedCompany.length !== 0)
+        params["companyId"] = companies[selectedCompanyIndex]._id;
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.FILTER_BOOKING}`,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify(params),
       });
-      // setItems(result.data.items);
+      if (response.success) {
+        setHistory(response.data);
+
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/6008169bedbb7816d40b197d`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        setHistory(response.data.history);
+        setCompanies(response.data.site_companies.companies);
+        if (response.data.site_means != null) {
+          setMeans(response.data.site_means);
+          let selectedMeanIndex = 0;
+
+          const temp = [];
+          const companyTemp = [];
+          response.data.site_means.map((item, index) => {
+            if (item._id === props.location.mean._id) {
+              selectedMeanIndex = index;
+              setSelectedMean(item.name);
+            }
+            return temp.push({ label: item.name, value: item.name });
+          });
+          setDropdownMeans(temp);
+
+          setSelectedMeanIndex(selectedMeanIndex);
+
+          response.data.site_companies.companies.map((item, index) => {
+            return companyTemp.push({ label: item.name, value: item.name });
+          });
+          setDropdownCompanies(companyTemp);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -60,10 +138,15 @@ const Historic = () => {
         ),
       );
     }
-  }
+  };
 
-  const rows = GLOBALS.Data.meansOfHistoric.items.map((item) => {
-    return [...item];
+  const rows = history.map((item) => {
+    return [
+      moment(item.startDate).format("MM/DD/yyy") + " " + item.startTime,
+      moment(item.endDate).format("MM/DD/yyy") + " " + item.endTime,
+      item.companyId.name,
+      item.bookingReason,
+    ];
   });
 
   return (
@@ -91,28 +174,44 @@ const Historic = () => {
           /> */}
           <FormSelect
             placeholder="Company"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={dropdownCompanies}
+            value={selectedCompany}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+
+              if (index !== -1) {
+                const item = event.target.value;
+
+                setSelectedCompanyIndex(index);
+
+                setSelectedCompany(item);
+              } else {
+                setSelectedCompanyIndex(null);
+
+                setSelectedCompany("");
+              }
+            }}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Mean"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={dorpdownMeans}
+            value={selectedMean}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+
+              if (index !== -1) {
+                const item = event.target.value;
+
+                setSelectedMeanIndex(index);
+
+                setSelectedMean(item);
+              } else {
+                setSelectedMeanIndex(null);
+
+                setSelectedMean("");
+              }
+            }}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
         </Form.Row>
