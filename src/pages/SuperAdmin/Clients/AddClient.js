@@ -62,8 +62,11 @@ export default function AddClient(props) {
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "contractType") setContractType(value);
-    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractType") {
+      setContractStartDate("");
+      setContractEndDate("");
+      setContractType(value);
+    } else if (name === "contractStartDate") setContractStartDate(value);
     else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);

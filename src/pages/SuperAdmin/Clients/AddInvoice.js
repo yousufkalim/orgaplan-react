@@ -34,7 +34,7 @@ export default function AddInvoice(props) {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [clientId, setClientId] = useState("");
+  const [clientId, setClientId] = useState(props.location.clientId);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");

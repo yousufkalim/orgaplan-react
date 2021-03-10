@@ -91,7 +91,7 @@ export default function Clients(props) {
     }
   }
 
-  const handleChange = (name, value) => {
+  function handleChange(name, value) {
     if (name === "logo") {
       setUpdate((st) => !st);
       setLogo(value);
@@ -100,13 +100,16 @@ export default function Clients(props) {
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "contractType") setContractType(value);
-    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractType") {
+      setContractStartDate("");
+      setContractEndDate("");
+      setContractType(value);
+    } else if (name === "contractStartDate") setContractStartDate(value);
     else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "monthlyCost") setMonthlyCost(value);
-  };
+  }
 
   function modifyClick(item, contract) {
     setSelectedItem(item);
@@ -119,7 +122,7 @@ export default function Clients(props) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
       setEmail(item.companyId.incharge.email || "");
-      setPhone(item.companyId.incharge.phone || "");
+      setPhone(`0${item.companyId.incharge.phone}` || "");
     }
     setContractType(contract.contractType);
     if (contract.contractType === "MASTERCLIENT") {
@@ -169,6 +172,7 @@ export default function Clients(props) {
       setItems(itemsArray);
       setModal(false);
       setLoading(false);
+      resetForm();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -201,6 +205,21 @@ export default function Clients(props) {
         ),
       );
     }
+  }
+
+  function resetForm() {
+    setLogo([]);
+    setColor("green");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setContractType("CLIENTPERSITE");
+    setContractStartDate("");
+    setContractEndDate("");
+    setFunctionality("DELIVERY");
+    setAdditionalInfo("");
+    setMonthlyCost("0");
   }
 
   const rows = [];
@@ -332,7 +351,10 @@ export default function Clients(props) {
       <Modal
         title="EDIT CLIENT"
         open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        onClose={() => {
+          setModal((st) => !st);
+          resetForm();
+        }}
         body={
           <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
