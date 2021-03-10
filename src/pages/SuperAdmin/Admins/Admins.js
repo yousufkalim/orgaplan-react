@@ -83,7 +83,7 @@ export default function Admins(props) {
         }
         return true;
       });
-
+      setModal(false);
       setItems(admins.data.items);
       setCompanies(companiesArray);
       setData(admins.data);
@@ -151,12 +151,13 @@ export default function Admins(props) {
         await GLOBALS.API({
           method: "DELETE",
           token: store.token,
-          uri: GLOBALS.Constants.ADMINS_DELETE + "/" + itemId,
+          uri: GLOBALS.Constants.ADMIN_DELETE + "/" + itemId,
         });
-        const itemsArray = items.filter((item) => item._id !== itemId);
-        setItems(itemsArray);
-        setModal(false);
-        setLoading(false);
+        // const itemsArray = items.filter((item) => item._id !== itemId);
+        // setItems(itemsArray);
+        fetchData();
+        // setModal(false);
+        // setLoading(false);
       }
     } catch (err) {
       setLoading(false);
