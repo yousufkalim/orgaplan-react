@@ -89,7 +89,8 @@ const Means = () => {
     0,
   );
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [disableDropdpwn, setDisableDropdown] = useState(false);
+  const [disableDropdpwn, setDisableDropdown] = useState(true);
+  const [disableStorageDropdown, setDisableStorageDropdow] = useState(true);
 
   const [storageAreas, setStorageAreas] = useState([]);
   const [droprownStorageAreas, setDropdownStorageAreas] = useState([]);
@@ -455,17 +456,31 @@ const Means = () => {
         >
           <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
         </NavLink>
-        <img
-          src={Images.calender}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
 
-        <img
-          src={Images.incidents}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
+        <NavLink
+          to={{
+            pathname: "/means/calendar",
+            mean: means[index],
+          }}
+        >
+          <img
+            src={Images.calender}
+            style={{ width: 18, height: 15, paddingLeft: 5 }}
+            alt="Icon"
+          />
+        </NavLink>
+        <NavLink
+          to={{
+            pathname: "/means/mean-history",
+            mean: means[index],
+          }}
+        >
+          <img
+            src={Images.incidents}
+            style={{ width: 18, height: 15, paddingLeft: 5 }}
+            alt="Icon"
+          />
+        </NavLink>
       </div>,
     ];
   });
@@ -555,11 +570,13 @@ const Means = () => {
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
                 setDropdownStorageAreas([]);
+                setDisableStorageDropdow(true);
                 // Reset Storage Means
                 setStorageMeans([]);
                 if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
                   getExternalMeans();
+                  setDisableStorageDropdow(false);
                 } else {
                   setDisableDropdown(false);
                   getLevels(locations[index]._id);
@@ -577,6 +594,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
+                setDisableStorageDropdow(true);
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -597,7 +615,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
-
+                setDisableStorageDropdow(false);
                 getStorageAreasByLevel(levels[index]._id);
               } else {
                 setSelectedDropdownLevelIndex(0);
@@ -608,6 +626,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
+                setDisableStorageDropdow(true);
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -615,6 +634,7 @@ const Means = () => {
           <FormSelect
             placeholder="Storage area"
             values={droprownStorageAreas}
+            disabled={disableStorageDropdown}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {

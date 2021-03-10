@@ -51,6 +51,7 @@ const endpoints = {
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
   CREATE_MEAN: BASE_URL_V1 + "mean",
+  GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
+  FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
 };
-
 export default endpoints;

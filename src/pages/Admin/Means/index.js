@@ -3,17 +3,28 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import AddMean from "./AddMean";
 import Mean from "./Means";
 import EditMean from "./EditMean";
+import Historic from "./Historic";
+import MeanCalendar from "../MeanCalender";
 
 export default function Index(props) {
-
   return (
     <Switch>
       <Route exact path={props.match.path + "/"} component={Mean} />
       <Route exact path={props.match.path + "/add-mean"} component={AddMean} />
       <Route
         exact
+        path={props.match.path + "/calendar"}
+        component={MeanCalendar}
+      />
+      <Route
+        exact
         path={props.match.path + "/edit-mean"}
         component={EditMean}
+      />
+      <Route
+        exact
+        path={props.match.path + "/mean-history"}
+        component={Historic}
       />
       {/* <Route exact path={props.match.path + "/add-site"} component={AddSite} /> */}
       {/* <Route
