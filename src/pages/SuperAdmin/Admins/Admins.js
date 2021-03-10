@@ -97,7 +97,7 @@ export default function Admins(props) {
     }
   }
 
-  const handleChange = (name, value) => {
+  function handleChange(name, value) {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "phone") setPhone(value);
@@ -105,9 +105,9 @@ export default function Admins(props) {
       setUpdate((st) => !st);
       setImage(value);
     } else if (name === "companyId") setCompanyId(value);
-  };
+  }
 
-  const onUpdate = async (e) => {
+  async function onUpdate(e) {
     try {
       e.preventDefault();
       setLoading(true);
@@ -116,7 +116,7 @@ export default function Admins(props) {
       formdata.append("lastName", lastName);
       formdata.append("phone", phone);
       formdata.append("companyId", companyId);
-      formdata.append("userId", selectedItem._id);
+      formdata.append("adminId", selectedItem._id);
       image.file && formdata.append("image", image.file);
 
       const result = await GLOBALS.API({
@@ -131,8 +131,9 @@ export default function Admins(props) {
         item._id === selectedItem._id ? result.data : item,
       );
       setItems(itemsArray);
-      setLoading(false);
       setModal(false);
+      setLoading(false);
+      resetForm();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -141,7 +142,7 @@ export default function Admins(props) {
         ),
       );
     }
-  };
+  }
 
   async function onDelete(itemId) {
     try {
@@ -167,6 +168,15 @@ export default function Admins(props) {
     }
   }
 
+  function resetForm() {
+    setFirstName("");
+    setLastName("");
+    setPhone("");
+    setImage("");
+    setCompanyId("");
+    setCompanyName("");
+  }
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
@@ -184,7 +194,7 @@ export default function Admins(props) {
           });
           setFirstName(item.firstName);
           setLastName(item.lastName);
-          setPhone(item.phone);
+          setPhone(`0${item.phone}`);
           setCompanyId(item.company._id);
           setCompanyName(item.company.name);
           setModal(true);
@@ -242,7 +252,10 @@ export default function Admins(props) {
       <Modal
         title="EDIT ADMIN"
         open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        onClose={() => {
+          setModal((st) => !st);
+          resetForm();
+        }}
         body={
           <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">

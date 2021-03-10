@@ -141,7 +141,10 @@ export default function Invoices(props) {
           fullWidth={false}
           component={NavLink}
           text="CREATE AN INVOICE"
-          to="/clients/add-invoice"
+          to={{
+            pathname: "/clients/add-invoice",
+            clientId: client,
+          }}
         />
       </Form.Row>
       <Form.Row noMargin>

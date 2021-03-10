@@ -133,7 +133,7 @@ export default function MultiAdderInput(props) {
           onChange={(e) => setText(e.target.value)}
         />
         <div className={classes.endAdornment}>
-          <IconButton onClick={onAdd} disabled={props.disabled}>
+          <IconButton onClick={onAdd} disabled={props.disabled || !text}>
             <Plus style={{ width: 20, height: 20 }} />
           </IconButton>
         </div>
