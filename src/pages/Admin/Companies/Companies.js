@@ -58,54 +58,43 @@ export default function Companies(props) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
-
   const [modal, setModal] = useState(false);
   const [selectedItem] = useState("");
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
+  const [nameOfResponsible, setNameOfResponsible] = useState("");
+  const [nameOfCompany, setNameOfCompany] = useState("");
 
   useEffect(() => {
-    fetchData();
+    getData();
 
     // eslint-disable-next-line
   }, []);
 
-  async function fetchData() {
+  const getData = async () => {
     try {
-      const admins = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/6008169bedbb7816d40b197d`,
+        token: store.token,
       });
-      const companies = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.COMPANY}`,
-      });
-
-      const companiesArray = [];
-      companies.data.items.map((item) => {
-        if (!item.adminId) {
-          companiesArray.push({
-            value: item._id,
-            label: item.name,
-          });
-        }
-        return true;
-      });
-
-      setItems(admins.data.items);
-      setCompanies(companiesArray);
-      setLoading(false);
+      if (response.success) {
+        setCompanies(response.data.companies);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
-  }
-
+  };
   const handleChange = (name, value) => {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
@@ -150,18 +139,75 @@ export default function Companies(props) {
     }
   };
 
-  const rows = GLOBALS.Data.companies.items.map((item) => {
+  const getParentComapnies = (connection) => {
+    if (connection.length > 0) {
+      const value = connection[0].childCompanyId
+        .map((item, index) => {
+          if (item.name != undefined) return item.name;
+          return "N/A";
+        })
+        .toString()
+        .replace(/,/g, " ");
+      return value;
+    }
+    return "N/A";
+  };
+
+  const filterCompany = async () => {
+    try {
+      setLoading(true);
+      const params = { siteId: "6008169bedbb7816d40b197d" };
+      if (nameOfCompany.length !== 0) params["companyName"] = nameOfCompany;
+      if (nameOfResponsible.length !== 0)
+        params["responsibleName"] = nameOfResponsible;
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.FILTER_COMPANY_SITES}`,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+      if (response.success) {
+        setCompanies(response.data.companies);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const rows = companies.map((item) => {
     return [
       <img src={Images.site} alt="Icon" />,
-      ...item,
+      item.name,
+      getParentComapnies(item.connection),
+      item.incharge != undefined
+        ? item.incharge.firstName + " " + item.incharge.lastName
+        : "N/A",
+      item.incharge != undefined ? item.incharge.phone : "N/A",
+      item.incharge != undefined ? item.incharge.email : "N/A",
+
       <div>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <NavLink to="/companies/user-list">
-          <img
-            src={Images.comapnies}
-            style={{ width: 18, height: 17 }}
-            alt="Icon"
-          />
+          <NavLink
+            to={{
+              pathname: "/companies/user-list",
+              id: item._id,
+            }}
+          >
+            <img
+              src={Images.comapnies}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
@@ -201,7 +247,11 @@ export default function Companies(props) {
           <Heading primary="LIST OF COMPANIES" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 COMPANIES" bold />
+              <SubHeading
+                disableMargin
+                primary={`Total : ${companies.length} COMPANIES`}
+                bold
+              />
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -214,10 +264,26 @@ export default function Companies(props) {
         </Form.Row>
         <Form.Row noMargin className="pr-3">
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
-            <SearchInput placeholder="Name of responsible" />
+            <SearchInput
+              placeholder="Name of responsible"
+              value={nameOfResponsible}
+              onClick={() => {
+                filterCompany();
+              }}
+              onChange={(event) => {
+                setNameOfResponsible(event.target.value);
+              }}
+            />
             <SearchInput
               style={{ marginLeft: "20px" }}
               placeholder="Name of company"
+              value={nameOfCompany}
+              onClick={() => {
+                filterCompany();
+              }}
+              onChange={(event) => {
+                setNameOfCompany(event.target.value);
+              }}
             />
             <a href="#companies">
               <img
