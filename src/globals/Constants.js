@@ -53,5 +53,9 @@ const endpoints = {
   CREATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
+
+  GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
+  GET_COMPANY_USERS: BASE_URL_V1 + "company/company_user",
+  FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
 };
 export default endpoints;

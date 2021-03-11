@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
+import MultiAdderInput from "../../../components/MultiAdderInput";
+
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -15,6 +17,7 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import { InputSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +27,18 @@ const useStyles = makeStyles((theme) => ({
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
+  error: {
+    color: "red",
+  },
+  radioLabel: {
+    marginLeft: "7px",
+    color: "#7E7878",
+    marginRight: "50px"
+
+  },
+  radioBtn: {
+
+  }
 }));
 
 const addClientYup = Yup.object().shape({
@@ -53,6 +68,38 @@ export default function AddCompanies(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
 
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [color, setColor] = useState("");
+  const [colorError, setColorError] = useState("");
+  const [images, setImages] = useState([]);
+  const [companyType, setCompanyType] = useState("subcontractor");
+  const [companyTypeError, setCompanyTypeError] = useState("");
+  const [contract, setContract] = useState("");
+  const [contractError, setContractError] = useState("");
+  const [typeError, setTypeError] = useState("");
+  const [trades, setTrades] = useState([]);
+  const [update, setUpdate] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [website, setWebsite] = useState("");
+  const [addInfo, setAddInfo] = useState("");
+
+
+  // const [startDate, setStartDate] = useState("");
+  // const [startDateError, setStartDateError] = useState("");
+  // const [isDateSelect, setIsDateSelect] = useState("");
+  // const [endDate, setEndDate] = useState("");
+  // const [endDateError, setEndDateError] = useState("");
+  // const [available, setAvailable] = useState("VOIR LES INDISPONIBILITÉS");
+  // const [techSheet, setTechSheet] = useState([]);
+  // const [rate, setRate] = useState("");
+  // const [rateError, setRateError] = useState("");
+
   const onSubmit = async (values) => {
     const notificationTo = values.notificationTo.map((item) => item.label);
 
@@ -79,11 +126,130 @@ export default function AddCompanies(props) {
         Authorization: store.token,
       },
       body: formdata,
+     
     });
     formik.setSubmitting(false);
     props.history.push("/clients");
   };
 
+  const inputChange = (e) => {
+    if (e.target.name === "name") {
+      setName(e.target.value);
+      if (e.target.name === "" || name === null) {
+        setNameError(true);
+      } else {
+        setNameError(false);
+      }
+    }
+    if (e.target.name === "color") {
+      setColor(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setColorError(true);
+      } else {
+        setColorError(false);
+      }
+    }
+    // if (e.target.name === "companyType") {
+    //   console.log(e.target.value);
+    //   setCompanyType(e.target.value);
+    //   console.log("company type", companyType);
+    //   if (e.target.value === "" || e.target.value === null) {
+    //     setCompanyTypeError(true);
+    //   } else {
+    //     setCompanyTypeError(false);
+    //   }
+    // }
+    if (e.target.name === "contract") {
+      setContract(e.target.value);
+      if (
+        e.target.value === "" ||
+        e.target.value === null ||
+        e.target.value === undefined
+      ) {
+        setContractError(true);
+      } else {
+        setContractError(false);
+      }
+    }
+    
+    if (e.target.name === "email") {
+      setEmail(e.target.value);
+      var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!e.target.value.match(mailformat)) {
+        setEmailError(true);
+      } else {
+        setEmailError(false);
+      }
+    }
+    if (e.target.name === "phone") {
+      setPhone(e.target.value);
+      if (e.target.value.length !== 10) {
+        setPhoneError(true);
+      } else {
+        setPhoneError(false);
+      }
+    }
+   
+    if(e.target.name === "images"){
+      setImages(e.target.value);
+    }
+    if(e.target.name === "trades"){
+      setTrades(e.target.value);
+    }
+  
+    if (e.target.name === "addInfo") {
+      setAddInfo(e.target.value);
+    }
+   
+  };
+
+  const handleChange = (name, value) => {
+    if (name === "trades") {
+     if(value !== ""){
+      setUpdate((st) => !st);
+      setTrades(value);
+      console.log("trades", trades);
+    }
+     }
+  }
+
+
+  const submitHandler = (e) => {
+    var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    e.preventDefault();
+    if (name === "" || name === null) {
+      setNameError(true);
+    }
+    if (color === "" || color === null) {
+      setColorError(true);
+    }
+    if (
+      companyType === "" ||
+      companyType === null ||
+      companyType === undefined
+    ) {
+      setCompanyTypeError(true);
+    }
+    if (contract === "" || contract === null || contract === undefined) {
+      setContractError(true);
+    }
+    if (email !== "") {
+      if (!email.match(mailformat)) {
+        setEmailError(true);
+      } else {
+        setEmailError(false);
+      }
+    }
+    if (phone !== "") {
+      if (phone.length !== 10) {
+        setPhoneError(true);
+      } else {
+        setPhoneError(false);
+      }
+    } else {
+      console.log("contarct submit", companyType);
+    }
+  };
   const formik = useFormik({
     initialValues: {
       logo: [],
@@ -107,7 +273,7 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
-
+console.log("type ==> ",companyType);
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -115,169 +281,237 @@ export default function AddCompanies(props) {
       </IconButton>
       <Heading primary="ADD A COMPANY" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={submitHandler}>
           <Form.Row>
             <FormLabel bold primary="IDENTITY* :" />
-            <Form.Row width="48%">
-              <FormInput
-                name="name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                placeholder="Name of Company"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
-              <FormInput
-                name="name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                placeholder="Color"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
+            <Form.Row width="55%" style={{ gap: "20px" }}>
+              <div style={{ width: "35%", height: "100%" }}>
+                <FormInput
+                  name="name"
+                  onChange={inputChange}
+                  style={{ width: "100%" }}
+                  placeholder="Company name"
+                  value={name}
+                />
+                {nameError && (
+                  <div className={classes.error}>Please enter name</div>
+                )}
+              </div>
+              <div style={{ width: "35%", height: "100%" }}>
+                <FormInput
+                  name="color"
+                  onChange={inputChange}
+                  style={{ width: "100%" }}
+                  placeholder="Color"
+                  value={color}
+                />
+                {colorError && (
+                  <div className={classes.error}>Please enter color</div>
+                )}
+              </div>
               <FormMultipleUpload
-                name="logo"
+                name="images"
                 style={GLOBALS.Styles.inputWidth}
-                error={formik.errors.logo}
-                values={formik.values.logo}
+                multiple
+                values={images}
                 onChange={(values) =>
-                  formik.handleChange({
+                  inputChange({
                     target: {
                       type: "text",
-                      name: "logo",
+                      name: "images",
                       value: values,
                     },
                   })
                 }
+                // onChange={inputChange}
+                // onChange={(values) =>
+                
+                   
+                //      ( {type: "text",
+                //       name: "trades",
+                //       value: values})
+                   
+               
+                // }
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
-            <RadioButton
-              name="contractType"
-              style={GLOBALS.Styles.inputWidth}
-              value={formik.values.contractType}
-              error={formik.errors.contractType}
-              onChange={formik.handleChange}
-              items={[
-                { value: "GENERALCONTRACTOR", label: "General Contractor" },
-                { value: "Subcontractor", label: "Subcontract" },
-              ]}
-            />
+            <Form.Row width="55%" style={{ gap: "20px" }}>
+              <div>
+                <div>
+                  <input
+                  className={classes.radioBtn}
+                    type="radio"
+                    onChange={(e) => setCompanyType("generalcontractor")}
+                    id="generalcontractor"
+                    name="companyType"
+                    value="generalcontractor"
+                  />
+                  <label for="generalcontractor" className={classes.radioLabel}>General Contractor</label>
+                  <input
+                  className={classes.radioBtn}
+                    type="radio"
+                   
+                    id="subcontractor"
+                    name="companyType"
+                    onChange={(e) => {setCompanyType("subcontractor"); console.log(companyType)}}
+                    value="subcontractor"
+                    defaultChecked
+                  />
+                  <label for="subcontractor" className={classes.radioLabel}>Sub contractor</label>
+                </div>
+                {companyTypeError === true && (
+                  <div className={classes.error}>Please select company</div>
+                )}
+              </div>
+
+              {/* <RadioButton
+                name="contractType"
+                style={{width: '80%'}}
+                value={formik.values.contractType}
+                error={formik.errors.contractType}
+                onChange={formik.handleChange}
+                items={[
+                  { value: "GENERALCONTRACTOR", label: "General Contractor" },
+                  { value: "Subcontractor", label: "Subcontract" },
+                ]}
+              /> */}
+            </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="GENERAL CONTRACTOR : " />
-            <Form.Row noMargin width="48%">
-              <FormSelect
-                placeholder="List"
-                name="color"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
+            <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
+              <div style={{ width: "100%", height: "100%" }}>
+                <select
+                  name="contract"
+                  disabled={companyType === "generalcontractor" ? true : false}
+                  id="contract"
+                  type={contract}
+                  style={{ width: "40%", height: "45px", color: "#8B8989", padding: '0px 10px' }}
+                  onChange={inputChange}
+                >
+                  <option value="">List</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Red">Red</option>
+                  <option value="Blue">Blue</option>
+                </select>
+                {contractError === true && (
+                  <div className={classes.error}>Please select contract</div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TRADES : " />
-            <Form.Row noMargin width="48%">
-              <FormMultipleUpload
-                name="logo"
-                style={GLOBALS.Styles.inputWidth}
-                error={formik.errors.logo}
-                values={formik.values.logo}
-                onChange={(values) =>
-                  formik.handleChange({
-                    target: {
-                      type: "text",
-                      name: "logo",
-                      value: values,
-                    },
-                  })
+            <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
+            <MultiAdderInput
+              name="trades"
+              values={trades}
+              validateError="Please enter trades"
+              placeholder="Trades"
+              style={{width: "40%"}}
+              // disabled={contractType !== "MASTERCLIENT"}
+              onChange={(values) => handleChange("trades", values)}
+              validate={(text) => {
+                if(text !== ""){
+                  return false;
                 }
-              />
+                else{
+                  return true;
+                }
+              }}
+            />
+           
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IDEMTITY OF RESPONSIBLE* : " />
-            <Form.Row width="48%">
-              <FormInput
-                name="name"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="Adresse e-mail"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
-              <FormInput
-                name="name"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="Téléphone"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
+            <Form.Row
+              width="55%"
+              style={{ gap: "20px", justifyContent: "flex-start" }}
+            >
+              <div style={{ width: "40%", height: "100%" }}>
+                <FormInput
+                  name="email"
+                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
+                  placeholder="Adresse e-mail"
+                  onChange={inputChange}
+                  value={email}
+                />
+                {emailError === true && (
+                  <div className={classes.error}>Please enter valid email</div>
+                )}
+              </div>
+              <div style={{ width: "40%", height: "100%" }}>
+                <FormInput
+                  name="phone"
+                  type="number"
+                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
+                  placeholder="Téléphone"
+                  onChange={inputChange}
+                  value={phone}
+                />
+                {phoneError === true && (
+                  <div className={classes.error}>
+                    Telephone should be 10 digits
+                  </div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="name"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="First Name"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
-              <FormInput
-                name="name"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="Last Name"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
-              />
+            <Form.Row
+              width="55%"
+              style={{ gap: "20px", justifyContent: "flex-start" }}
+            >
+              <div style={{ width: "35%", height: "100%" }}>
+                <FormInput
+                  name="fname"
+                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
+                  placeholder="First Name"
+                  onChange={(e) => setFname(e.target.value)}
+                  value={fname}
+                />
+              </div>
+              <div style={{ width: "35%", height: "100%" }}>
+                <FormInput
+                  name="lname"
+                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
+                  placeholder="Last Name"
+                  onChange={(e) => setLname(e.target.value)}
+                  value={lname}
+                />
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Website : " />
-            <Form.Row width="48%">
+            <Form.Row width="55%">
               <FormInput
-                name="name"
-                style={
-                  (GLOBALS.Styles.inputWidth,
-                  { marginRight: "10px", textAlign: "left" })
-                }
+                name="website"
+                style={{width: '50%'}}
                 placeholder="http://"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                error={formik.errors.name}
+                onChange={(e) => setWebsite(e.target.value)}
+                value={website}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <Form.Row width="55%">
             <FormInput
               textArea
               rows={3}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
+              style={{width: '90%'}}
+              onChange={(e) => setAddInfo(e.target.value)}
               placeholder="Informations complémentaires"
-              name="additionalInfo"
-              value={formik.values.additionalInfo}
-              error={formik.errors.additionalInfo}
+              name="addInfo"
+              value={addInfo}
             />
+            </Form.Row>
           </Form.Row>
 
           <Form.ButtonContainer>
@@ -286,8 +520,14 @@ export default function AddCompanies(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              // loading={formik.isSubmitting}
+              disabled={
+                name === "" ||
+                color === "" ||
+                companyType === "" ||
+                contract === "" ?
+                true : false
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

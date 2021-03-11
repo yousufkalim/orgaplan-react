@@ -65,45 +65,37 @@ export default function UserList(props) {
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
-
+  const [companyName, setCompanyName] = useState("");
+  const [users, setUsers] = useState([]);
   useEffect(() => {
-    fetchData();
-    console.log("items", items);
+    getData();
     // eslint-disable-next-line
   }, []);
 
-  async function fetchData() {
+  const getData = async () => {
     try {
-      const admins = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/6008169bedbb7816d40b197d/${props.location.id}`,
+        token: store.token,
       });
-      const companies = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.COMPANY}`,
-      });
-
-      const companiesArray = [];
-      companies.data.items.map((item) => {
-        if (!item.adminId) {
-          companiesArray.push({
-            value: item._id,
-            label: item.name,
-          });
-        }
-        return true;
-      });
-
-      setItems(admins.data.items);
-      setCompanies(companiesArray);
-      setLoading(false);
+      console.log(JSON.stringify(response.data.users, null, 2));
+      if (response.success) {
+        setCompanyName(response.data.name);
+        setUsers(response.data.users);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
+      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
-  }
-
+  };
+  const resendVerificaiontRequest = () => {};
   const handleChange = (name, value) => {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
@@ -149,12 +141,18 @@ export default function UserList(props) {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const rows = GLOBALS.Data.userList.items.map((item) => {
+  const rows = users.map((item) => {
+    console.log(JSON.stringify(item, null, 2));
+    const user = item.userId;
     return [
-      ...item,
+      user.firstName + " " + user.lastName,
+      companyName,
+      item.role,
+      user.isVerified ? "Inscrit" : "En attente",
+      user.email,
       <SmallButton
-        text="Edit"
-        onClick={handleClickOpen}
+        text={user.isVerified ? "Edit" : "Re-Send"}
+        onClick={user.isVerified ? handleClickOpen : resendVerificaiontRequest}
         color={theme.palette.primary.contrastText}
         to={"/companies"}
         // component={NavLink}
@@ -173,7 +171,11 @@ export default function UserList(props) {
           <Heading primary="LIST OF USERS" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 Users" bold />
+              <SubHeading
+                disableMargin
+                primary={`Total : ${users.length} Users`}
+                bold
+              />
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -188,9 +190,19 @@ export default function UserList(props) {
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <SearchInput placeholder="Name OF USER" />
-            <SearchInput
-              style={{ marginLeft: "20px" }}
-              placeholder="Name OF COMPANY"
+            <FormSelect
+              placeholder="Company"
+              name="color"
+              style={{ marginLeft: "20px", maxWidth: 250 }}
+              values={[
+                { value: "green", label: "Green" },
+                { value: "Yellow", label: "Yellow" },
+                { value: "Red", label: "Red" },
+                { value: "Blue", label: "Blue" },
+                { value: "Orange", label: "Orange" },
+                { value: "Purple", label: "Purple" },
+                { value: "Magenta", label: "Magenta" },
+              ]}
             />
           </Form.Row>
         </Form.Row>
@@ -238,22 +250,7 @@ export default function UserList(props) {
                 }
               />
             </Form.Row>
-            <Form.Row justifyContent="center">
-              <FormSelect
-                placeholder="Company"
-                name="color"
-                style={GLOBALS.Styles.inputWidth}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
-            </Form.Row>
+            <Form.Row justifyContent="center"></Form.Row>
             <Form.ButtonContainer>
               <Button
                 type="submit"
