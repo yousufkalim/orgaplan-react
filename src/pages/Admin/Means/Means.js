@@ -614,9 +614,7 @@ const Means = () => {
             values={dropdownCompany}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-
               const item = event.target.value;
-
               if (index !== -1) {
                 setSeletedCompanyIndex(index);
                 setSelectedCompany(item);

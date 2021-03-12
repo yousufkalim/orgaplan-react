@@ -75,9 +75,7 @@ export default function AddSiteStep2(props) {
       setLoading(true);
 
       const notificationToArray = notificationTo.map((item) => item.label);
-
       let step1 = props.step1Data;
-
       const trades = step1.trades.map((item) => item.label);
       const addresses = step1.addresses.map((item) => ({
         street: item.street,
@@ -243,6 +241,8 @@ export default function AddSiteStep2(props) {
             name="unavailabilityDates"
             values={unavailabilityDates}
             style={GLOBALS.Styles.inputWidth}
+            unavailabilityDates={unavailabilityDates}
+            setUnavailabilityDates= {setUnavailabilityDates}
             onChange={(values) => handleChange("unavailabilityDates", values)}
           />
         </Form.Row>
