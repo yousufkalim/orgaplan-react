@@ -77,23 +77,12 @@ export default function MultiAdderInputModal(props) {
   };
   const deleteUnavailability = (id) => {
     let deleteArray = [];
-    let i = 0;
-    unavailabilityDates.map((key, index) => {
-      if (index !== id) {
-        deleteArray[i] = key;
-      }
-      i++;
-    });
+    unavailabilityDates.map(
+      (key, index) => index !== id && (deleteArray[index] = key),
+    );
     setUnavailabilityDates(deleteArray);
-    console.log(deleteArray);
   };
 
-  // const handleDelete = (chipToDelete) => () => {
-  //   const newValues = props.values.filter(
-  //     (chip) => chip.key !== chipToDelete.key,
-  //   );
-  //   props.onChange(newValues);
-  // };
   const handledayOff = (event) => {
     setDayOff(event.target.checked);
 
@@ -163,11 +152,6 @@ export default function MultiAdderInputModal(props) {
       date !== ""
     ) {
       setUnavailabilityDates((prevState) => [...prevState, newarray]);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Added Successfully", "success"),
-        ),
-      );
     } else {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -193,17 +177,6 @@ export default function MultiAdderInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <>
-            {/* <ul className={classes.chips}>
-              {props.values.map((data) => (
-                <li key={data.key}>
-                  <Chip
-                    label={data.label}
-                    className={classes.chip}
-                    onDelete={handleDelete(data)}
-                  />
-                </li>
-              ))}
-            </ul> */}
             <Form.Form>
               <Form.Row>
                 <Form.Row noMargin>
@@ -284,41 +257,45 @@ export default function MultiAdderInputModal(props) {
                 </Form.Row>
               </Form.Row>
             </Form.Form>
-
             <table className="table">
-              {unavailabilityDates.length > 0 ? (
+              {unavailabilityDates.length > 0 && (
                 <>
-                  <tr>
-                    <th>Date</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Reason</th>
-                    <th>Action</th>
-                  </tr>
-                  {unavailabilityDates.map((key, index) => {
-                    return (
-                      <tr key={index}>
-                        <td> {key.date} </td>
-                        <td>{key.startHour}</td>
-                        <td>{key.endHour}</td>
-                        <td>{key.reason}</td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              deleteUnavailability(index);
-                            }}
-                            className="btn btn-danger"
-                            style={{ "font-size": "13px", padding: "0px 12px" }}
-                          >
-                            X
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Reason</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {unavailabilityDates.map((key, index) => {
+                      return (
+                        <tr key={index}>
+                          <td> {key.date} </td>
+                          <td>{key.startHour}</td>
+                          <td>{key.endHour}</td>
+                          <td>{key.reason}</td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                deleteUnavailability(index);
+                              }}
+                              className="btn btn-danger"
+                              style={{
+                                fontSize: "13px",
+                                padding: "0px 12px",
+                              }}
+                            >
+                              X
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
                 </>
-              ) : (
-                ""
               )}
             </table>
           </>

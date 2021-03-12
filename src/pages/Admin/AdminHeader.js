@@ -137,7 +137,7 @@ export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleDrawer = () => {
     setOpen((st) => !st);
