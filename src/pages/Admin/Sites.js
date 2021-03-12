@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: "repeat(auto-fit, minmax(300px, 300px))",
   },
   image: {
-    width: 290,
+    width: 260,
     height: 175,
     backgroundSize: "contain",
     borderRadius: theme.shape.borderRadius,
@@ -83,12 +83,12 @@ function generatePhone(phone) {
   return new_value;
 }
 
-function SiteCard({ site, onClick }) {
+function SiteCard({ site, role, onClick }) {
   const classes = useStyles();
   return (
     <Card onClick={onClick} padding="20px">
       <Form.Row noMargin justifyContent="center">
-        <SmallText primary={site.name} bold textAlign="center" noWrap />
+        <SmallText primary={site.name} bold noWrap />
       </Form.Row>
       <Form.Row>
         <img
@@ -98,7 +98,7 @@ function SiteCard({ site, onClick }) {
         />
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <SmallText primary={`Rôle: ${site.role}`} noMargin />
+        <SmallText primary={`Rôle: ${role}`} noMargin />
       </Form.Row>
     </Card>
   );
@@ -117,7 +117,7 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
         <img
           alt="avatar"
           className={classes.avatar}
-          src={GLOBALS.Constants.BASE_URL + user.image}
+          src={user.image ? GLOBALS.Constants.BASE_URL + user.image : SiteImage}
         />
       </Form.Row>
       <Form.Row justifyContent="center">
@@ -166,46 +166,14 @@ export default function Sites(props) {
 
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.SITES_BY_ADMIN}/${store.user._id}`,
-      // });
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_USER_SITES}/${store.user._id}`,
+      });
       const adminCompany = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
       });
       setCompany(adminCompany.data);
-      // setItems(result.data.items);
-      setItems([
-        {
-          _id: 1,
-          name: "Project Louviere",
-          role: "Admin",
-        },
-        {
-          _id: 2,
-          name: "Hôpital de la Tourelle",
-          role: "Entreprise",
-        },
-        {
-          _id: 3,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 4,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 5,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 6,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-      ]);
+      setItems(result.data.sites);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -239,8 +207,9 @@ export default function Sites(props) {
             <div className={classes.sitesGrid}>
               {items.map((site) => (
                 <SiteCard
-                  site={site}
-                  key={site._id}
+                  role={site.role}
+                  site={site.siteId}
+                  key={site.siteId._id}
                   onClick={() => {
                     if (window.confirm("Are you sure?")) {
                       dispatch(Actions.admin.set_site(site));
