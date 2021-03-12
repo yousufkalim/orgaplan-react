@@ -17,6 +17,7 @@ import OutlinedCapsuledButton from "../../components/OutlinedCapsuledButton";
 import Logo from "../../assets/icons/Logo.svg";
 import SiteImage from "../../assets/images/Site.png";
 import { ReactComponent as Pencil } from "../../assets/icons/Pencil.svg";
+import { ReactComponent as PlusCircle } from "../../assets/icons/PlusCircle.svg";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -52,6 +53,30 @@ const useStyles = makeStyles((theme) => ({
     height: 175,
     backgroundSize: "contain",
     borderRadius: theme.shape.borderRadius,
+  },
+  // Add Site Card
+  addSiteCardImageContainer: {
+    position: "relative",
+  },
+  addSiteCardImage: {
+    width: 260,
+    height: 175,
+    opacity: 0.5,
+    backgroundSize: "contain",
+    borderRadius: theme.shape.borderRadius,
+  },
+  addSitePlusContainer: {
+    zIndex: 10,
+    width: "100%",
+    height: "100%",
+    display: "grid",
+    position: "absolute",
+    placeItems: "center",
+  },
+  addSitePlus: {
+    width: "80%",
+    height: "80%",
+    color: theme.palette.grey[100],
   },
   // Profile Card
   profile: {
@@ -99,6 +124,29 @@ function SiteCard({ site, role, onClick }) {
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
         <SmallText primary={`Rôle: ${role}`} noMargin />
+      </Form.Row>
+    </Card>
+  );
+}
+function SiteAddCard({ onClick }) {
+  const classes = useStyles();
+  return (
+    <Card padding="20px" onClick={onClick}>
+      <Form.Row noMargin justifyContent="center">
+        <SmallText primary="Créer un nouveau projet" bold noWrap />
+      </Form.Row>
+      <Form.Row className={classes.addSiteCardImageContainer}>
+        <img
+          src={SiteImage}
+          alt={`create-site`}
+          className={classes.addSiteCardImage}
+        />
+        <div className={classes.addSitePlusContainer}>
+          <PlusCircle className={classes.addSitePlus} />
+        </div>
+      </Form.Row>
+      <Form.Row justifyContent="center" noMargin>
+        <SmallText primary={""} noMargin />
       </Form.Row>
     </Card>
   );
@@ -217,6 +265,10 @@ export default function Sites(props) {
                   }}
                 />
               ))}
+              {company.type === "CLIENTPERSITE" &&
+                company.adminIds.some(
+                  (admin) => admin._id === store.user._id,
+                ) && <SiteAddCard onClick={() => console.log("asdf")} />}
             </div>
           )}
         </div>
