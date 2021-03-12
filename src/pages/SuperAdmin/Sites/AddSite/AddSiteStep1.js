@@ -71,6 +71,10 @@ export default function AddSiteStep1(props) {
         );
         return true;
       });
+      console.log("zacsResult", zacsResult);
+      console.log("clientsResult", clientsResult);
+      console.log("zacsArray", zacsArray);
+      console.log("adminsArray", adminsArray);
       setZacs(zacsArray);
       setAdmins(adminsArray);
       setClients(clientsResult.data.items);

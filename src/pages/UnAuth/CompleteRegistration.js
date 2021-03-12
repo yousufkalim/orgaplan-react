@@ -7,6 +7,7 @@ import Actions from "../../redux/actions";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
+import Loader from "../../components/Loader";
 import Heading from "../../components/Heading";
 import FormInput from "../../components/FormInput";
 import FormLabel from "../../components/FormLabel";
@@ -25,9 +26,10 @@ export default function Login(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [admin, setAdmin] = useState(false);
-  const [verifyToken, setVerifyToken] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [expired, setExpired] = useState(true);
+  const [admin, setAdmin] = useState("");
+  const [verifyToken, setVerifyToken] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
@@ -38,11 +40,11 @@ export default function Login(props) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    fetchData();
+    validateToken();
     // eslint-disable-next-line
   }, []);
 
-  async function fetchData() {
+  async function validateToken() {
     try {
       const {
         location: { search },
@@ -53,6 +55,29 @@ export default function Login(props) {
 
       setVerifyToken(verifyToken);
 
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.VALIDATE_TOKEN}/${uid}/${verifyToken}`,
+      });
+      setExpired(false);
+      fetchData();
+    } catch (err) {
+      setExpired(true);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function fetchData() {
+    try {
+      const {
+        location: { search },
+      } = props;
+      const query = new URLSearchParams(search);
+      const uid = query.get("uid");
+
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ADMIN_GET}/${uid}`,
       });
@@ -62,8 +87,10 @@ export default function Login(props) {
       setPhone(`0${result.data.phone}`);
       setFirstName(result.data.firstName);
       setLastName(result.data.lastName);
+      setExpired(false);
       setLoading(false);
     } catch (err) {
+      setExpired(true);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -119,127 +146,135 @@ export default function Login(props) {
 
   return (
     <div className={classes.root}>
-      <Heading primary={"Complete your registration"} />
-      <div className={classes.content}>
-        <Form.Form onSubmit={onSubmit}>
-          <Form.Row>
-            <FormLabel bold primary="COMPANY*: " />
-            <FormInput
-              disabled
-              type="text"
-              name="company"
-              value={company}
-              // error={company}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder={GLOBALS.I18n.t("companyPlaceholder")}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="Contact*: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                disabled
-                type="email"
-                name="email"
-                value={email}
-                // error={email}
-                style={GLOBALS.Styles.inputWidth}
-                placeholder={GLOBALS.I18n.t("emailPlaceholder")}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                type="number"
-                name="phone"
-                value={phone}
-                // error={phone}
-                style={GLOBALS.Styles.inputWidth}
-                placeholder={GLOBALS.I18n.t("phonePlaceholder")}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="Identity*: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                type="text"
-                name="firstName"
-                value={firstName}
-                // error={firstName}
-                style={GLOBALS.Styles.inputWidth}
-                placeholder={GLOBALS.I18n.t("firstNamePlaceholder")}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                type="text"
-                name="lastName"
-                value={lastName}
-                // error={lastName}
-                style={GLOBALS.Styles.inputWidth}
-                placeholder={GLOBALS.I18n.t("lastNamePlaceholder")}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="Password*: " />
-            <FormInput
-              type="password"
-              name="password"
-              value={password}
-              // error={password}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="Confirm Password*: " />
-            <FormInput
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              // error={confirmPassword}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder={GLOBALS.I18n.t("confirmPasswordPlaceholder")}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-          <Form.ButtonContainer>
-            <Button
-              type="submit"
-              minWidth={200}
-              text="VALIDATE"
-              fullWidth={false}
-              loading={loading}
-              disabled={
-                loading ||
-                !firstName ||
-                !lastName ||
-                !phone ||
-                phone.length !== 10 ||
-                !password ||
-                confirmPassword !== password
-              }
-            />
-          </Form.ButtonContainer>
-        </Form.Form>
-      </div>
+      {loading ? (
+        <Loader.Progress />
+      ) : expired ? (
+        <Heading primary={"Invalid or expired verification token"} />
+      ) : (
+        <>
+          <Heading primary={"Complete your registration"} />
+          <div className={classes.content}>
+            <Form.Form onSubmit={onSubmit}>
+              <Form.Row>
+                <FormLabel bold primary="COMPANY*: " />
+                <FormInput
+                  disabled
+                  type="text"
+                  name="company"
+                  value={company}
+                  // error={company}
+                  style={GLOBALS.Styles.inputWidth}
+                  placeholder={GLOBALS.I18n.t("companyPlaceholder")}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </Form.Row>
+              <Form.Row>
+                <FormLabel bold primary="Contact*: " />
+                <Form.Row noMargin width="48%">
+                  <FormInput
+                    disabled
+                    type="email"
+                    name="email"
+                    value={email}
+                    // error={email}
+                    style={GLOBALS.Styles.inputWidth}
+                    placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+                    onChange={({ target: { name, value } }) =>
+                      handleChange(name, value)
+                    }
+                  />
+                  <FormInput
+                    type="number"
+                    name="phone"
+                    value={phone}
+                    // error={phone}
+                    style={GLOBALS.Styles.inputWidth}
+                    placeholder={GLOBALS.I18n.t("phonePlaceholder")}
+                    onChange={({ target: { name, value } }) =>
+                      handleChange(name, value)
+                    }
+                  />
+                </Form.Row>
+              </Form.Row>
+              <Form.Row>
+                <FormLabel bold primary="Identity*: " />
+                <Form.Row noMargin width="48%">
+                  <FormInput
+                    type="text"
+                    name="firstName"
+                    value={firstName}
+                    // error={firstName}
+                    style={GLOBALS.Styles.inputWidth}
+                    placeholder={GLOBALS.I18n.t("firstNamePlaceholder")}
+                    onChange={({ target: { name, value } }) =>
+                      handleChange(name, value)
+                    }
+                  />
+                  <FormInput
+                    type="text"
+                    name="lastName"
+                    value={lastName}
+                    // error={lastName}
+                    style={GLOBALS.Styles.inputWidth}
+                    placeholder={GLOBALS.I18n.t("lastNamePlaceholder")}
+                    onChange={({ target: { name, value } }) =>
+                      handleChange(name, value)
+                    }
+                  />
+                </Form.Row>
+              </Form.Row>
+              <Form.Row>
+                <FormLabel bold primary="Password*: " />
+                <FormInput
+                  type="password"
+                  name="password"
+                  value={password}
+                  // error={password}
+                  style={GLOBALS.Styles.inputWidth}
+                  placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </Form.Row>
+              <Form.Row>
+                <FormLabel bold primary="Confirm Password*: " />
+                <FormInput
+                  type="password"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  // error={confirmPassword}
+                  style={GLOBALS.Styles.inputWidth}
+                  placeholder={GLOBALS.I18n.t("confirmPasswordPlaceholder")}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </Form.Row>
+              <Form.ButtonContainer>
+                <Button
+                  type="submit"
+                  minWidth={200}
+                  text="VALIDATE"
+                  fullWidth={false}
+                  loading={loading}
+                  disabled={
+                    loading ||
+                    !firstName ||
+                    !lastName ||
+                    !phone ||
+                    phone.length !== 10 ||
+                    !password ||
+                    confirmPassword !== password
+                  }
+                />
+              </Form.ButtonContainer>
+            </Form.Form>
+          </div>
+        </>
+      )}
     </div>
   );
 }

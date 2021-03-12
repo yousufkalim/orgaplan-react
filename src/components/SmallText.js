@@ -7,10 +7,11 @@ export default function SmallText({ className, bold, ...props }) {
   const useStyles = makeStyles((theme) => ({
     text: {
       textDecoration: "none",
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.primary.contrastText,
       fontWeight: bold ? "bold" : "normal",
       marginBottom: props.noMargin ? 0 : 10,
+      fontSize: theme.typography.pxToRem(15),
+      color: theme.palette.primary.contrastText,
+      textAlign: props.textAlign ? props.textAlign : "left",
     },
   }));
   const classes = useStyles();
