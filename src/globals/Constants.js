@@ -57,5 +57,8 @@ const endpoints = {
   GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/company_user",
   FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
+
+  GET_ADD_USER: BASE_URL_V1 + "users/add_user",
+  ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
 };
 export default endpoints;
