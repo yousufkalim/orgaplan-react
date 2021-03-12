@@ -49,7 +49,7 @@ export default function FormMultipleUpload(props) {
       onClick={() => document.getElementById(`fileinput`).click()}
     >
       {update && ""}
-      <Plus className={classes.plus} />
+      {!props.disabled && <Plus className={classes.plus} />}
       <Avatar
         alt="avatar"
         variant="circular"
@@ -60,6 +60,7 @@ export default function FormMultipleUpload(props) {
         hidden
         type="file"
         id={`fileinput`}
+        disabled={props.disabled}
         onChange={(e) => {
           const file = e.target.files[0];
           let fileSize = 10000000;

@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import Actions from "../redux/actions";
 import Loader from "../components/Loader";
 
+import User from "../pages/Admin";
 import UnAuth from "../pages/UnAuth";
 import SuperAdmin from "../pages/SuperAdmin";
-import Admin from "../pages/Admin";
 
 export default function Main() {
   const store = useSelector((state) => state.auth);
@@ -24,7 +24,6 @@ export default function Main() {
 
   return (
     <>
-      {/* <Admin /> */}
       {store.loading && <Loader.AbsoluteLinear />}
       {loading ? (
         <Loader.CenterProgress />
@@ -32,7 +31,7 @@ export default function Main() {
         store.user.role === "SUPERADMIN" ? (
           <SuperAdmin />
         ) : (
-          <Admin />
+          <User />
         )
       ) : (
         <UnAuth />

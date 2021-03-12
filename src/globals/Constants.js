@@ -9,6 +9,7 @@ const endpoints = {
   LOGIN: BASE_URL_V1 + "auth/sign-in",
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
+  VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
 
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
@@ -33,6 +34,7 @@ const endpoints = {
   SITE_GET: BASE_URL_V1 + "superadmin/sites/get",
   SITE_DELETE: BASE_URL_V1 + "superadmin/sites/delete",
   SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
+  SITES_BY_ADMIN: BASE_URL_V1 + "superadmin/sites/admin",
   SITES_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
   SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",

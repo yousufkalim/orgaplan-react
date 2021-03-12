@@ -11,6 +11,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
+import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
@@ -76,6 +77,7 @@ export default function Clients(props) {
 
   async function fetchData() {
     try {
+      setLoading(true)
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
@@ -193,8 +195,8 @@ export default function Clients(props) {
           token: store.token,
           uri: GLOBALS.Constants.CLIENT_DELETE + "/" + itemId,
         });
-        // const itemsArray = items.filter((item) => item._id !== itemId);
-        // setItems(itemsArray);
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
         fetchData();
         // setModal(false);
         // setLoading(false);
@@ -331,13 +333,17 @@ export default function Clients(props) {
           />
         </Form.Row>
         <div className={classes.content}>
-          <Table
-            rows={rows}
-            onClick={(index) =>
-              props.history.push(`/sites/${items[index]._id}`)
-            }
-            headers={GLOBALS.Data.clients.headings}
-          />
+          {loading ? (
+            <Loader.Progress />
+          ) : (
+            <Table
+              rows={rows}
+              onClick={(index) =>
+                props.history.push(`/sites/${items[index]._id}`)
+              }
+              headers={GLOBALS.Data.clients.headings}
+            />
+          )}
           {!loading && data.totalItems > 10 && (
             <Pagination
               page={page}

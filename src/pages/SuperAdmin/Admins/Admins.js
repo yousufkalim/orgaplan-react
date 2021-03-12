@@ -153,11 +153,9 @@ export default function Admins(props) {
           token: store.token,
           uri: GLOBALS.Constants.ADMIN_DELETE + "/" + itemId,
         });
-        // const itemsArray = items.filter((item) => item._id !== itemId);
-        // setItems(itemsArray);
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
         fetchData();
-        // setModal(false);
-        // setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -342,6 +340,7 @@ export default function Admins(props) {
                   minWidth="30%"
                   fullWidth={false}
                   disabled={loading}
+                  loading={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}
                 />
