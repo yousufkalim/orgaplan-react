@@ -43,6 +43,8 @@ const endpoints = {
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
 
   // ADMIN
+  CREATE_MEAN: BASE_URL_V1 + "mean",
+  GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
@@ -50,8 +52,6 @@ const endpoints = {
   GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
   GET_STORAGE_AREA_BY_LEVEL_ID:
     BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
-
-  CREATE_MEAN: BASE_URL_V1 + "mean",
 };
 
 export default endpoints;

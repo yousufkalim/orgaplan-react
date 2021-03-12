@@ -48,10 +48,10 @@ export default function Login(props) {
       <Heading primary={GLOBALS.I18n.t("loginHeaderPrimary")} />
       <Formik
         initialValues={{
-          // email: "talha28.falcon@gmail.com",
-          // password: "shutdown12",
-          email: "yousaf.falcon321@gmail.com",
-          password: "1",
+          email: "talha28.falcon@gmail.com",
+          password: "shutdown12",
+          // email: "yousaf.falcon321@gmail.com",
+          // password: "1",
         }}
         validationSchema={loginYup}
         onSubmit={onSubmit}
