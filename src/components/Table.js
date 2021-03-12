@@ -58,22 +58,7 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-// const useStyles = makeStyles((theme) => ({
-//   cellText: {
-//     background: "red",
-//     color: "inherit",
-//     fontSize: "inherit",
-//     fontWeight: "inherit",
-//     display: "block",
-//     maxWidth: 200,
-//     overflow: "hidden",
-//     whiteSpace: "nowrap",
-//     textOverflow: "ellipsis",
-//   },
-// }));
 export default function DataTable(props) {
-  // const classes = useStyles();
-
   return (
     <StyledTableContainer>
       <StyledTable>
@@ -90,7 +75,17 @@ export default function DataTable(props) {
           {props.rows.map((row, i) => (
             <StyledTableRow
               key={i}
-              onClick={() => props.modalHandler && props.modalHandler(true)}
+              onClick={() => {
+                props.onClick && props.onClick(i);
+                props.modalHandler && props.modalHandler(true);
+              }}
+              style={
+                props.onClick
+                  ? {
+                      cursor: "pointer",
+                    }
+                  : {}
+              }
             >
               {row.map((cell, index) => (
                 <StyledTableCell
@@ -98,11 +93,8 @@ export default function DataTable(props) {
                   scope="row"
                   key={index}
                   align="center"
-                  // noWrap
                 >
-                  {/* <span className={classes.cellText}> */}
                   {cell}
-                  {/* </span> */}
                 </StyledTableCell>
               ))}
             </StyledTableRow>

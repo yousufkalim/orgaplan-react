@@ -1,4 +1,4 @@
-import React, {useEffect } from "react";
+import React, { useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
@@ -96,14 +96,9 @@ const Incidents = () => {
       <Form.Row alignItems="center">
         <Heading icon primary="RE-INVOICING" noWrap />
         <div>
-          <Form.Row
-            alignItems="flex-start"
-            noMargin
-            justifyContent="flex-end"
-           
-          >
+          <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
             <SubHeading
-              disableMargin
+              noMargin
               topPadding
               style={{ color: "#F80303" }}
               primary="TOTAL : 5 RE-INVOICING
@@ -231,22 +226,18 @@ const Incidents = () => {
 
           <FormInput
             type="date"
-         
             placeholder="Start date"
             name="startDate"
             icon
             onChange={formik.handleChange}
-        
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
-        
             placeholder="End date"
             name="endDate"
             icon
             onChange={formik.handleChange}
-            
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect

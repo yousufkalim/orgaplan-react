@@ -51,8 +51,11 @@ const Item = (props) => {
   const useStyles = makeStyles((theme) => ({
     formItem: {
       width: props.width || "100%",
-      margin:
-        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
+      margin: props.margin
+        ? props.margin
+        : props.noMargin
+        ? 0
+        : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -75,8 +78,11 @@ const Row = (props) => {
       flexDirection: props.flexDirection || "row",
       alignItems: props.alignItems || "flex-start",
       justifyContent: props.justifyContent || "space-between",
-      margin:
-        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
+      margin: props.margin
+        ? props.margin
+        : props.noMargin
+        ? 0
+        : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -117,8 +123,11 @@ const Column = (props) => {
       alignItems: props.alignItems || "flex-start",
       flexDirection: props.flexDirection || "column",
       justifyContent: props.justifyContent || "space-between",
-      margin:
-        props.margin || props.noMargin ? 0 : `${GLOBALS.Styles.margin}px 0`,
+      margin: props.margin
+        ? props.margin
+        : props.noMargin
+        ? 0
+        : `${GLOBALS.Styles.margin}px 0`,
     },
   }));
   const classes = useStyles();
@@ -141,10 +150,11 @@ const ButtonContainer = (props) => {
       alignItems: props.alignItems || "center",
       flexDirection: props.flexDirection || "row",
       justifyContent: props.justifyContent || "center",
-      margin:
-        props.margin || props.noMargin
-          ? 0
-          : GLOBALS.Styles.marginButtonContainer,
+      margin: props.margin
+        ? props.margin
+        : props.noMargin
+        ? 0
+        : GLOBALS.Styles.marginButtonContainer,
     },
   }));
   const classes = useStyles();

@@ -11,6 +11,7 @@ import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SmallButton from "../../../components/SmallButton";
@@ -47,21 +48,36 @@ export default function Sites(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("ALL");
+  const [client, setClient] = useState("ALL");
+
+  const [data, setData] = useState("");
   const [items, setItems] = useState([]);
-  const [page] = useState(1);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [client, page, status]);
+  useEffect(() => {
+    props.match.params.clientId && setClient(props.match.params.clientId);
+    // eslint-disable-next-line
+  }, [clients]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITES}?page=${page}`,
+        uri: `${GLOBALS.Constants.SITES}?page=${page}&name=${query}&status=${status}&client=${client}`,
       });
+      const clients = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.CLIENTS}`,
+      });
+      setClients(clients.data.items);
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -95,6 +111,23 @@ export default function Sites(props) {
     }
   }
 
+  const clientsArray = [
+    {
+      value: "ALL",
+      label: "Client",
+    },
+  ];
+  clients.map((client) =>
+    clientsArray.push({
+      value: client._id,
+      label: client.companyId.name,
+    }),
+  );
+  const statusArray = [
+    { value: "ALL", label: "Status" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+  ];
   const rows = items.map((item) => [
     <img
       src={item.logo ? GLOBALS.Constants.BASE_URL + item.logo : SiteImage}
@@ -103,7 +136,7 @@ export default function Sites(props) {
     />,
     item.name,
     item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
+    `${item.adminId.firstName} ${item.adminId.lastName}`,
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
       <IconButton
@@ -131,8 +164,8 @@ export default function Sites(props) {
         <div>
           <Form.Row alignItems="center" noMargin>
             <SubHeading
-              disableMargin
-              primary={`Total : ${rows.length} Sites`}
+              noMargin
+              primary={data && `Total : ${data.totalItems} Sites`}
               bold
             />
             <Button
@@ -155,34 +188,28 @@ export default function Sites(props) {
       <Form.Row alignItems="center" noMargin>
         <Form.Row justifyContent="flex-start" noMargin>
           <SearchInput
+            value={query}
+            onClick={fetchData}
             placeholder="Site name"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => setQuery(value)}
           />
           <FormSelect
-            placeholder="Client"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            name="client"
+            value={client}
+            values={clientsArray}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              props.history.replace("/sites");
+              setClient(value);
+            }}
           />
           <FormSelect
-            placeholder="Status"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            name="status"
+            value={status}
+            values={statusArray}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => setStatus(value)}
           />
         </Form.Row>
         <NavLink className={classes.link} to="/sites/archives">
@@ -191,6 +218,15 @@ export default function Sites(props) {
       </Form.Row>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.sites.headings} rows={rows} />
+        {!loading && data.totalItems > 10 && (
+          <Pagination
+            page={page}
+            count={data.totalPages}
+            onChange={(e, value) => {
+              setPage(value);
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export default function CustomInputModal(props) {
       logo: [],
       name: "",
       storage: "",
-      deliveryAreas:"",
+      deliveryAreas: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -44,7 +44,7 @@ export default function CustomInputModal(props) {
       notificationPriorToDays: "",
       notificationTo: [],
     },
-    
+
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
@@ -89,36 +89,49 @@ export default function CustomInputModal(props) {
 
   const classes = useStyles();
   const [modal, setModal] = useState(false);
-  const [update, setUpdate] = useState(false);
+  const [update] = useState(false);
 
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [postal, setPostal] = useState("");
+  // const [street, setStreet] = useState("");
+  // const [city, setCity] = useState("");
+  // const [postal, setPostal] = useState("");
+  const [chipValues, setChipValues] = useState([]);
 
   async function onSubmit() {
-    let newValues = props.values;
+    let leftValue = props.leftValue;
+    let rightValue = props.rightValue;
+    let leftId = props.leftId;
+    let rightId = props.rightId;
 
-    const values = {
-      key: newValues.length,
-      street: street,
-      city: city,
-      postal: postal,
-      label: `${street} ${city} ${postal}`,
-    };
-    newValues.push(values);
-    props.onChange(newValues);
-
-    setUpdate((st) => !st);
+    let valuesTemp = [...chipValues];
+    if (leftValue) {
+      const values = {
+        key: leftValue.length + Date.now().toString(),
+        label: leftValue,
+        id: leftId,
+        type: "DELIVERYAREA",
+      };
+      valuesTemp.push(values);
+    }
+    if (rightValue) {
+      const values = {
+        key: rightValue.length + Date.now().toString(),
+        label: rightValue,
+        id: rightId,
+        type: "STORAGEAREA",
+      };
+      valuesTemp.push(values);
+    }
+    setChipValues(valuesTemp);
+    if (props.chipValues !== undefined) props.chipValues(valuesTemp);
     setModal(false);
-    setStreet("");
-    setCity("");
-    setPostal("");
   }
 
   const handleDelete = (value) => () => {
-    const newValues = props.values.filter((chip) => chip.key !== value.key);
-    props.onChange(newValues);
-    setUpdate((st) => !st);
+    const newValues = chipValues.filter((chip) => chip.key !== value.key);
+    setChipValues(newValues);
+    if (props.chipValues !== undefined) props.chipValues(newValues);
+    //props.onChange(newValues);
+    //  setUpdate((st) => !st);
   };
 
   return (
@@ -142,7 +155,7 @@ export default function CustomInputModal(props) {
           </Grid>
           {update && ""}
           <ul className={classes.chips}>
-            {props.values.map((data) => (
+            {chipValues.map((data) => (
               <li key={data.key}>
                 <Chip
                   label={data.label}
@@ -160,52 +173,40 @@ export default function CustomInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>
-            
             <Form.Row>
-            <FormSelect
-                placeholder="Storage"
+              <FormSelect
+                placeholder={props.leftDropdwonPlaceholder}
                 name="Storage"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.storage}
+                onChange={(event) => {
+                  props.leftDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={(formik.values.storage = props.leftValue)}
                 error={formik.errors.storage}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.leftDropdownValues}
               />
               <FormSelect
-                placeholder="Delivery Areas"
+                placeholder={props.rightDropdownPlaceholder}
                 name="deliveryAreas"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.deliveryAreas}
+                onChange={(event) => {
+                  props.rightDropdwonValueChange(event);
+                  return formik.handleChange;
+                }}
+                value={(formik.values.deliveryAreas = props.rightValue)}
                 error={formik.errors.deliveryAreas}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={props.rightDropdownValues}
               />
             </Form.Row>
-            
-    
+
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={ !formik.values.storage || !formik.values.deliveryAreas}
+                disabled={!props.rightValue || !props.leftValue}
               />
             </Form.Row>
           </Form.Form>

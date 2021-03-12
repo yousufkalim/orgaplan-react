@@ -3,10 +3,7 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
-import Chip from "@material-ui/core/Chip";
 import Input from "./Input";
-
-import GLOBALS from "../globals";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -60,7 +57,6 @@ export default function MultiAdderInputModal(props) {
     end: "23",
   });
   const [dayOff, setDayOff] = useState(false);
-  const [getDayOff, setGetDayOff] = useState("");
 
   async function onSubmit(values) {
     let newValues = props.values;
@@ -92,12 +88,12 @@ export default function MultiAdderInputModal(props) {
     console.log(deleteArray);
   };
 
-  const handleDelete = (chipToDelete) => () => {
-    const newValues = props.values.filter(
-      (chip) => chip.key !== chipToDelete.key,
-    );
-    props.onChange(newValues);
-  };
+  // const handleDelete = (chipToDelete) => () => {
+  //   const newValues = props.values.filter(
+  //     (chip) => chip.key !== chipToDelete.key,
+  //   );
+  //   props.onChange(newValues);
+  // };
   const handledayOff = (event) => {
     setDayOff(event.target.checked);
 
