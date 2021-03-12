@@ -411,22 +411,22 @@ const Means = () => {
     ];
   });
 
-  const formik = useFormik({
-    initialValues: {
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    // validationSchema: addClientYup,
-    // onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
+  // const formik = useFormik({
+  //   initialValues: {
+  //     contractType: "CLIENTPERSITE",
+  //     contractStartDate: "",
+  //     contractEndDate: "",
+  //     functionality: "DELIVERY",
+  //     additionalInfo: "",
+  //     notificationPriorToDays: "",
+  //     notificationTo: [],
+  //   },
+  //   // validationSchema: addClientYup,
+  //   // onSubmit,
+  //   validateOnBlur: false,
+  //   validateOnChange: false,
+  //   validateOnMount: false,
+  // });
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
@@ -626,9 +626,7 @@ const Means = () => {
             values={dropdownCompany}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-
               const item = event.target.value;
-
               if (index != -1) {
                 setSeletedCompanyIndex(index);
                 setSelectedCompany(item);

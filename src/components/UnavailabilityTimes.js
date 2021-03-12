@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
@@ -12,6 +13,9 @@ import Modal from "./Modal";
 import Button from "./Button";
 import FormLabel from "./FormLabel";
 import FormSelect from "./FormSelect";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Actions from "../redux/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,19 +45,22 @@ const addUnavailabilityYup = Yup.object().shape({
 });
 
 export default function MultiAdderInputModal(props) {
+  const { unavailabilityDates, setUnavailabilityDates } = props;
+  const dispatch = useDispatch();
   const theme = useTheme();
 
   const classes = useStyles();
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState("");
   const [reason, setReason] = useState("");
   const [time, setTime] = useState({
     start: "0",
     end: "23",
   });
-  const [unavailabilityDates ,setUnavailabilityDates] = useState([]); 
+  const [dayOff, setDayOff] = useState(false);
+  const [getDayOff, setGetDayOff] = useState("");
 
   async function onSubmit(values) {
     let newValues = props.values;
@@ -72,20 +79,37 @@ export default function MultiAdderInputModal(props) {
   const getreason = (e) => {
     setReason(e.target.value);
   };
-  const deleteUnavailability = (id) =>{ 
- let tempAvailibilty= unavailabilityDates.map((key, index)=>{
-    if (index === id ){
-    unavailabilityDates.splice(index, 1);
-    }
-  })
-  setUnavailabilityDates(tempAvailibilty);
-  }
-  
+  const deleteUnavailability = (id) => {
+    let deleteArray = [];
+    let i = 0;
+    unavailabilityDates.map((key, index) => {
+      if (index !== id) {
+        deleteArray[i] = key;
+      }
+      i++;
+    });
+    setUnavailabilityDates(deleteArray);
+    console.log(deleteArray);
+  };
+
   const handleDelete = (chipToDelete) => () => {
     const newValues = props.values.filter(
       (chip) => chip.key !== chipToDelete.key,
     );
     props.onChange(newValues);
+  };
+  const handledayOff = (event) => {
+    setDayOff(event.target.checked);
+
+    if (event.target.checked) {
+      time.start = "0";
+      time.end = "0";
+      setTime(time);
+    } else {
+      time.start = "0";
+      time.end = "23";
+      setTime(time);
+    }
   };
 
   const formik = useFormik({
@@ -124,33 +148,38 @@ export default function MultiAdderInputModal(props) {
     { value: 23, label: "23" },
   ];
 
-
-  const unavailabilityDatesHandal = () =>{ 
-
-
-      let newDate = new Date(); 
-      let formDate = new Date(date);
-      const newarray = { 
-        date: date,
-        startHour: time.start,
-        endHour: time.end,
-        dayOff: true,
-        reason: reason,
-      } 
-      if(
-          (parseInt(time.start) < parseInt(newarray.endHour))
-        &&  (newarray.reason !="" )
-        &&  (newDate.getDate()<= formDate.getDate() &&
-         newDate.getMonth() + 1<= formDate.getMonth() + 1 &&
-          newDate.getFullYear() <= formDate.getFullYear() )
-          ){ 
-            setUnavailabilityDates((prevState) => [...prevState, newarray]);
-        console.log("valid");
-      }else{
-       console.log("not valid");
-      }
-
-  } 
+  const unavailabilityDatesHandal = () => {
+    let newDate = new Date();
+    let formDate = new Date(date);
+    const newarray = {
+      date: date,
+      startHour: time.start,
+      endHour: time.end,
+      dayOff: dayOff,
+      reason: reason,
+    };
+    if (
+      (parseInt(time.start) < parseInt(time.end) ||
+        (time.start === "0" && time.end === "0")) &&
+      newDate.getDate() <= formDate.getDate() &&
+      newDate.getMonth() + 1 <= formDate.getMonth() + 1 &&
+      newDate.getFullYear() <= formDate.getFullYear() &&
+      date !== ""
+    ) {
+      setUnavailabilityDates((prevState) => [...prevState, newarray]);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("Added Successfully", "success"),
+        ),
+      );
+    } else {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("Invalid", "error"),
+        ),
+      );
+    }
+  };
 
   return (
     <>
@@ -168,7 +197,7 @@ export default function MultiAdderInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <>
-            <ul className={classes.chips}>
+            {/* <ul className={classes.chips}>
               {props.values.map((data) => (
                 <li key={data.key}>
                   <Chip
@@ -178,13 +207,12 @@ export default function MultiAdderInputModal(props) {
                   />
                 </li>
               ))}
-            </ul>
+            </ul> */}
             <Form.Form>
               <Form.Row>
                 <Form.Row noMargin>
                   <FormLabel disableMargin bold primary="Date:" />
                 </Form.Row>
-
                 <Form.Row noMargin>
                   <Input
                     name="date"
@@ -193,9 +221,20 @@ export default function MultiAdderInputModal(props) {
                     className={classes.input}
                     onChange={getDate}
                   />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={dayOff}
+                        onChange={handledayOff}
+                        name="dayOff"
+                        color="primary"
+                      />
+                    }
+                    label="Day Off"
+                  />
                 </Form.Row>
               </Form.Row>
-              <Form.Row>
+              <Form.Row style={{ display: dayOff ? "none" : "flex" }}>
                 <Form.Row noMargin>
                   <FormLabel disableMargin bold primary="Time:" />
                 </Form.Row>
@@ -235,60 +274,58 @@ export default function MultiAdderInputModal(props) {
                   />
                 </Form.Row>
               </Form.Row>
-              
-              <Form.Row>
-                <Form.Row noMargin>
-                  
-                </Form.Row>
 
-                <Form.Row noMargin  justifyContent="center">
-                   <Button 
-                  minWidth={200}
-                  onClick={unavailabilityDatesHandal}
-                  text="Add"
-                  fullWidth={false}   
-                />
+              <Form.Row>
+                <Form.Row noMargin></Form.Row>
+
+                <Form.Row noMargin justifyContent="center">
+                  <Button
+                    minWidth={200}
+                    onClick={unavailabilityDatesHandal}
+                    text="Add"
+                    fullWidth={false}
+                  />
                 </Form.Row>
               </Form.Row>
-           
             </Form.Form>
-       
-                <table className="table">
-            { unavailabilityDates.length > 0  ?
-            <>
-                <tr>
+
+            <table className="table">
+              {unavailabilityDates.length > 0 ? (
+                <>
+                  <tr>
                     <th>Date</th>
                     <th>Start</th>
                     <th>End</th>
                     <th>Reason</th>
                     <th>Action</th>
-                    </tr>  
-               { unavailabilityDates.map((key, index)=>{
-             
-                  return (
-                        <tr key={index}>
-                          <td> {key.date} </td>
-                          <td>{key.startHour}</td>
-                          <td>{key.endHour}</td>
-                          <td>{key.reason}</td>
-                          <td>
-                          <button onClick={()=>{deleteUnavailability(index)}}
-                           className="btn btn-danger" 
-                          style={{"font-size": "13px","padding": "0px 12px"}}>
-                              X
+                  </tr>
+                  {unavailabilityDates.map((key, index) => {
+                    return (
+                      <tr key={index}>
+                        <td> {key.date} </td>
+                        <td>{key.startHour}</td>
+                        <td>{key.endHour}</td>
+                        <td>{key.reason}</td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              deleteUnavailability(index);
+                            }}
+                            className="btn btn-danger"
+                            style={{ "font-size": "13px", padding: "0px 12px" }}
+                          >
+                            X
                           </button>
-                          </td>
-                        </tr>
-            )
-                 
-                })
-               }
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </>
-             :"" 
-            }
-             </table>
+              ) : (
+                ""
+              )}
+            </table>
           </>
-        
         }
       />
     </>
