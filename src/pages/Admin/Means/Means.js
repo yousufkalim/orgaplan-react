@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
-
-// import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";

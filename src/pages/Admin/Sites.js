@@ -104,7 +104,7 @@ function SiteCard({ site, onClick }) {
   );
 }
 
-function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
+function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
   const classes = useStyles();
   return (
     <Card disableHeight>
@@ -114,11 +114,16 @@ function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
         </IconButton>
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <img src={SiteImage} className={classes.avatar} alt="avatar" />
+        <img
+          alt="avatar"
+          className={classes.avatar}
+          src={GLOBALS.Constants.BASE_URL + user.image}
+        />
       </Form.Row>
       <Form.Row justifyContent="center">
         <SubHeading bold primary={`${user.firstName} ${user.lastName}`} />
       </Form.Row>
+      <Form.Item />
       <Form.Column>
         <SmallText bold primary="ADRESSE E-MAIL :" noMargin />
         <SmallText primary={user.email} />
@@ -129,7 +134,7 @@ function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
       </Form.Column>
       <Form.Column>
         <SmallText bold primary="ENTREPRISE :" noMargin />
-        <SmallText primary={user?.company?.name} />
+        <SmallText primary={company?.name} />
       </Form.Column>
       <Form.Row></Form.Row>
       <Form.Row justifyContent="center">
@@ -151,6 +156,7 @@ export default function Sites(props) {
   const store = useSelector((state) => state.auth);
 
   const [items, setItems] = useState([]);
+  const [company, setCompany] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -160,10 +166,13 @@ export default function Sites(props) {
 
   async function fetchData() {
     try {
-      console.log("store", store);
       // const result = await GLOBALS.API({
       //   uri: `${GLOBALS.Constants.SITES_BY_ADMIN}/${store.user._id}`,
       // });
+      const adminCompany = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
+      });
+      setCompany(adminCompany.data);
       // setItems(result.data.items);
       setItems([
         {
@@ -210,8 +219,13 @@ export default function Sites(props) {
   return (
     <Form.Row className={classes.page} noMargin>
       <div className={classes.root}>
-        <Form.Row margin="0 0 20px 0">
+        <Form.Row
+          margin="0 0 20px 0"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
+          <SmallText primary="Go To Home Page" to="/" underline noMargin />
         </Form.Row>
         <Heading primary="BIENVENUE SUR ORGAPLAN ! " noWrap noMargin />
         <SmallText
@@ -227,7 +241,11 @@ export default function Sites(props) {
                 <SiteCard
                   site={site}
                   key={site._id}
-                  onClick={() => console.log("id", site._id)}
+                  onClick={() => {
+                    if (window.confirm("Are you sure?")) {
+                      dispatch(Actions.admin.set_site(site));
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -237,9 +255,10 @@ export default function Sites(props) {
       <div className={classes.profile}>
         <ProfileCard
           user={store.user}
+          company={company}
           onClick={() => console.log("onClick")}
-          onPasswordChange={() => console.log("onPasswordChange")}
           onLogout={() => dispatch(Actions.auth.do_logout())}
+          onPasswordChange={() => console.log("onPasswordChange")}
         />
       </div>
     </Form.Row>

@@ -19,6 +19,7 @@ const endpoints = {
   BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
   BUILDINGS_BY_SITE: BASE_URL_V1 + "superadmin/buildings/site",
   COMPANY: BASE_URL_V1 + "superadmin/companies",
+  COMPANY_GET: BASE_URL_V1 + "superadmin/companies/get",
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
   DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",
