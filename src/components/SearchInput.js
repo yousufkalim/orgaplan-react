@@ -70,7 +70,7 @@ export default function Input(props) {
         disabled={props.disabled}
         placeholder={props.placeholder}
       />
-      <IconButton onClick={props.onIconButtonClick}>
+      <IconButton onClick={props.onClick} disabled={props.buttonDisabled}>
         <Search style={{ width: 16, height: 16 }} />
       </IconButton>
     </div>

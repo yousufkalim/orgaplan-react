@@ -157,11 +157,11 @@ export default function Companies(props) {
       <div>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink to="/companies/user-list">
-          <img
-            src={Images.comapnies}
-            style={{ width: 18, height: 17 }}
-            alt="Icon"
-          />
+            <img
+              src={Images.comapnies}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
@@ -201,7 +201,7 @@ export default function Companies(props) {
           <Heading primary="LIST OF COMPANIES" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
-              <SubHeading disableMargin primary="Total : 234 COMPANIES" bold />
+              <SubHeading noMargin primary="Total : 234 COMPANIES" bold />
               <Button
                 fullWidth={false}
                 component={NavLink}

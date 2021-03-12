@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -13,10 +11,12 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
+import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
+import Pagination from "../../../components/Pagination";
 import SubHeading from "../../../components/SubHeading";
 import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
@@ -40,37 +40,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const updateClientYup = Yup.object().shape({
-//   logo: Yup.mixed(),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   monthlyCost: Yup.number().test("len", "Invalid", (val) => Number(val) >= 0),
-// });
-
 export default function Clients(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(true);
-  const [update, setUpdate] = useState(false);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
-  const [page] = useState(1);
+  const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
@@ -92,14 +73,17 @@ export default function Clients(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
+      setLoading(true)
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.CLIENTS}?page=${page}`,
+        uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
+      setData(result.data);
+      setModal(false);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -110,7 +94,7 @@ export default function Clients(props) {
     }
   }
 
-  const handleChange = (name, value) => {
+  function handleChange(name, value) {
     if (name === "logo") {
       setUpdate((st) => !st);
       setLogo(value);
@@ -119,13 +103,16 @@ export default function Clients(props) {
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "contractType") setContractType(value);
-    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractType") {
+      setContractStartDate("");
+      setContractEndDate("");
+      setContractType(value);
+    } else if (name === "contractStartDate") setContractStartDate(value);
     else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "monthlyCost") setMonthlyCost(value);
-  };
+  }
 
   function modifyClick(item, contract) {
     setSelectedItem(item);
@@ -134,12 +121,11 @@ export default function Clients(props) {
       uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
     });
     setColor(item.companyId.color);
-    console.log(item.companyId.incharge);
     if (item.companyId.incharge) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
       setEmail(item.companyId.incharge.email || "");
-      setPhone(item.companyId.incharge.phone || "");
+      setPhone(`0${item.companyId.incharge.phone}` || "");
     }
     setContractType(contract.contractType);
     if (contract.contractType === "MASTERCLIENT") {
@@ -189,6 +175,7 @@ export default function Clients(props) {
       setItems(itemsArray);
       setModal(false);
       setLoading(false);
+      resetForm();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -210,8 +197,9 @@ export default function Clients(props) {
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
-        setModal(false);
-        setLoading(false);
+        fetchData();
+        // setModal(false);
+        // setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -223,17 +211,36 @@ export default function Clients(props) {
     }
   }
 
+  function resetForm() {
+    setLogo([]);
+    setColor("green");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setContractType("CLIENTPERSITE");
+    setContractStartDate("");
+    setContractEndDate("");
+    setFunctionality("DELIVERY");
+    setAdditionalInfo("");
+    setMonthlyCost("0");
+  }
+
   const rows = [];
   items.map((item) => {
     if (item.companyId.quoteVerified) {
-      item.contractsIds.map((contract) => {
+      item.contractIds.map((contract) => {
         rows.push([
           item.companyId.name,
           item.companyId.incharge
             ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
             : "",
-          item.companyId.incharge ? item.companyId.incharge.phone : "",
-          0,
+          item.companyId.incharge
+            ? item.companyId.incharge.phone
+              ? `0${item.companyId.incharge.phone}`
+              : ""
+            : "",
+          item.sites,
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractStartDate).format("DD/MM/YY")
             : "-",
@@ -244,14 +251,19 @@ export default function Clients(props) {
           <>
             <IconButton
               disabled={loading}
-              onClick={() => modifyClick(item, contract)}
+              onClick={(e) => {
+                e.stopPropagation();
+                modifyClick(item, contract);
+              }}
             >
               <Pencil style={{ width: 15, height: 15 }} />
             </IconButton>
             <IconButton
               disabled={loading}
-              component={NavLink}
-              to={`/clients/invoices/${item._id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                props.history.push(`/clients/invoices/${item._id}`);
+              }}
             >
               <Report style={{ width: 15, height: 15 }} />
             </IconButton>
@@ -265,19 +277,22 @@ export default function Clients(props) {
         item.companyId.incharge.firstName +
           " " +
           item.companyId.incharge.lastName,
-        item.companyId.incharge.phone,
-        0,
+        item.companyId.incharge.phone
+          ? `0${item.companyId.incharge.phone}`
+          : "",
+        item.sites,
         "-",
         "-",
         "Requested",
         <IconButton
           disabled={loading}
-          onClick={() =>
+          onClick={(e) => {
+            e.stopPropagation();
             props.history.push({
               pathname: "/clients/verify-client",
               item,
-            })
-          }
+            });
+          }}
         >
           <Plus style={{ width: 15, height: 15 }} />
         </IconButton>,
@@ -295,8 +310,8 @@ export default function Clients(props) {
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
-                disableMargin
-                primary={`Total : ${rows.length} Clients`}
+                noMargin
+                primary={data && `Total : ${data.totalItems} Clients`}
                 bold
               />
               <Button
@@ -310,17 +325,44 @@ export default function Clients(props) {
           </div>
         </Form.Row>
         <Form.Row noMargin>
-          <SearchInput placeholder="Name of Client" />
+          <SearchInput
+            value={query}
+            onClick={fetchData}
+            placeholder="Name of Client"
+            onChange={({ target: { value } }) => setQuery(value)}
+          />
         </Form.Row>
         <div className={classes.content}>
-          <Table headers={GLOBALS.Data.clients.headings} rows={rows} />
+          {loading ? (
+            <Loader.Progress />
+          ) : (
+            <Table
+              rows={rows}
+              onClick={(index) =>
+                props.history.push(`/sites/${items[index]._id}`)
+              }
+              headers={GLOBALS.Data.clients.headings}
+            />
+          )}
+          {!loading && data.totalItems > 10 && (
+            <Pagination
+              page={page}
+              count={data.totalPages}
+              onChange={(e, value) => {
+                setPage(value);
+              }}
+            />
+          )}
         </div>
       </div>
       {update && ""}
       <Modal
         title="EDIT CLIENT"
         open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        onClose={() => {
+          setModal((st) => !st);
+          resetForm();
+        }}
         body={
           <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
@@ -467,7 +509,7 @@ export default function Clients(props) {
                   // error={monthlyCost}
                   style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 />
-                <SmallText primary="€/month" />
+                <SmallText primary="€/month" noMargin />
               </Form.Row>
             </Form.Row>
             <Form.Row>
@@ -501,11 +543,13 @@ export default function Clients(props) {
                           moment(contractStartDate),
                           "days",
                         ) <= 0)) ||
-                    firstName.length > 30 ||
-                    lastName.length > 30 ||
-                    (phone.length > 0 &&
-                      (!phone.startsWith("0") || phone.length !== 10)) ||
-                    additionalInfo.length > 300 ||
+                    (firstName && firstName.length > 30) ||
+                    (lastName && lastName.length) > 30 ||
+                    (phone &&
+                      String(phone).length > 0 &&
+                      (!String(phone).startsWith("0") ||
+                        String(phone).length !== 10)) ||
+                    (additionalInfo && additionalInfo.length > 300) ||
                     Number(monthlyCost) < 0
                   }
                 />

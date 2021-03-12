@@ -172,7 +172,7 @@ export default function AddSiteStep3(props) {
       // FormData Creation
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.LEVELS_IMAGE,
+        uri: GLOBALS.Constants.LEVEL_IMAGE,
         headers: {
           Authorization: store.token,
         },
@@ -197,7 +197,7 @@ export default function AddSiteStep3(props) {
   // Rendering
   const buildingRows = buildings.map((building) => [
     building.name,
-    building.name === "Exterior" ? 0 : building.levels.length,
+    building.name === "Exterior" ? "-" : building.levels.length,
     <Form.Row style={{ justifyContent: "center" }}>
       <SmallButton
         text="Modify"
@@ -248,10 +248,9 @@ export default function AddSiteStep3(props) {
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
+                  file &&
                   file.size <= 1000000 &&
-                  (file.type === "image/png" ||
-                    file.type === "image/jpg" ||
-                    file.type === "image/jpeg")
+                  file.type === "application/pdf"
                 ) {
                   onAddLevelImage(level._id, file, index);
                   e.target.value = "";
@@ -259,7 +258,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "Max size can be 10MB of type: PDF",
                         "error",
                       ),
                     ),
@@ -302,10 +301,9 @@ export default function AddSiteStep3(props) {
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
+                  file &&
                   file.size <= 1000000 &&
-                  (file.type === "image/png" ||
-                    file.type === "image/jpg" ||
-                    file.type === "image/jpeg")
+                  file.type === "application/pdf"
                 ) {
                   onAddLevelImage(level._id, file, index);
                   e.target.value = "";
@@ -313,7 +311,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of types: PNG, JPEG, JPG",
+                        "Max size can be 10MB of type: PDF",
                         "error",
                       ),
                     ),
@@ -362,7 +360,7 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Building Name" />
+                <FormLabel noMargin bold primary="Building Name" />
               </Form.Row>
               <FormInput
                 name="buildingName"
@@ -405,7 +403,7 @@ export default function AddSiteStep3(props) {
               <Form.Form>
                 <Form.Row alignItems="center">
                   <Form.Row noMargin>
-                    <FormLabel disableMargin bold primary="Level Number" />
+                    <FormLabel noMargin bold primary="Level Number" />
                   </Form.Row>
                   {activeBuilding && (
                     <FormSelect
@@ -438,7 +436,7 @@ export default function AddSiteStep3(props) {
               <Divider />
               <FormLabel
                 bold
-                disableMargin
+                noMargin
                 primary={`Building: ${activeBuilding.name}`}
               />
               <Divider />

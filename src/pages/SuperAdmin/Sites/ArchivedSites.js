@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Heading from "../../../components/Heading";
+import Pagination from "../../../components/Pagination";
 import SmallButton from "../../../components/SmallButton";
 import SearchInput from "../../../components/SearchInput";
 
@@ -39,21 +40,24 @@ export default function ArchivedSites(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_ARCHIVES}?page=${page}`,
+        uri: `${GLOBALS.Constants.SITE_ARCHIVES}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -71,7 +75,30 @@ export default function ArchivedSites(props) {
         await GLOBALS.API({
           method: "PUT",
           token: store.token,
-          uri: GLOBALS.Constants.SITES_UN_ARCHIVE + "/" + itemId,
+          uri: GLOBALS.Constants.SITE_UN_ARCHIVE + "/" + itemId,
+        });
+        const itemsArray = items.filter((item) => item._id !== itemId);
+        setItems(itemsArray);
+        setLoading(false);
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function onDelete(itemId) {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        await GLOBALS.API({
+          method: "DELETE",
+          token: store.token,
+          uri: GLOBALS.Constants.SITE_DELETE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
@@ -95,7 +122,7 @@ export default function ArchivedSites(props) {
     />,
     item.name,
     item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
+    `${item.adminId.firstName} ${item.adminId.lastName}`,
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
       <SmallButton
@@ -109,7 +136,7 @@ export default function ArchivedSites(props) {
           borderRadius: 4,
         }}
       />
-      <IconButton>
+      <IconButton onClick={() => onDelete(item._id)}>
         <Cross style={{ width: 15, height: 15, color: "red" }} />
       </IconButton>
     </Form.Row>,
@@ -122,10 +149,25 @@ export default function ArchivedSites(props) {
       </IconButton>
       <Form.Column>
         <Heading primary="ARCHIVED SITES" />
-        <SearchInput placeholder="Site name" />
+        <SearchInput
+          value={query}
+          onClick={fetchData}
+          placeholder="Site name"
+          style={{ marginRight: "20px", maxWidth: 250 }}
+          onChange={({ target: { value } }) => setQuery(value)}
+        />
       </Form.Column>
       <div className={classes.content}>
         <Table headers={GLOBALS.Data.archivedSites.headings} rows={rows} />
+        {!loading && data.totalItems > 10 && (
+          <Pagination
+            page={page}
+            count={data.totalPages}
+            onChange={(e, value) => {
+              setPage(value);
+            }}
+          />
+        )}
       </div>
     </div>
   );

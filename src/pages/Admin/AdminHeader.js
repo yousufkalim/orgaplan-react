@@ -9,9 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-// import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
@@ -89,20 +87,15 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "1rem",
   },
   profileImage: {
-    position: 'absolute',
+    position: "absolute",
     top: "1rem",
-    right:"3rem",
-    textAlign: 'center',
-    color: '#454545',
-  }
+    right: "3rem",
+    textAlign: "center",
+    color: "#454545",
+  },
 }));
 
 const userItems = [
-  // {
-  //   name: "Home",
-  //   path: ["/", "/home"],
-  //   icon: <HomeIcon />,
-  // },
   {
     name: "Calender",
     path: "/calender",
@@ -138,16 +131,6 @@ const userItems = [
     path: "/pic-interactive",
     icon: <Pic />,
   },
-  // {
-  //   name: "Logs",
-  //   path: "/logs",
-  //   icon: <Logs />,
-  // },
-  // {
-  //   name: "List of Admins",
-  //   path: "/admins",
-  //   icon: <Admins />,
-  // },
 ];
 
 export default function AdminHeader(props) {
@@ -213,16 +196,6 @@ export default function AdminHeader(props) {
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
-            {/* <ListItem
-              button
-              key={"logout"}
-              onClick={() => dispatch(Actions.auth.do_logout())}
-            >
-              <ListItemIcon className={classes.listItemIcon}>
-                {<ExitToAppIcon />}
-              </ListItemIcon>
-              <ListItemText primary={"Logout"} />
-            </ListItem> */}
           </List>
         </div>
       </Drawer>
@@ -233,18 +206,18 @@ export default function AdminHeader(props) {
         })}
       >
         <div className="d-flex">
-        <Fab
-          color="inherit"
-          aria-label="handle-drawer"
-          onClick={handleDrawer}
-          className={classes.menuButton}
-        >
-          <MenuIcon color="primary" />
-        </Fab>
-        <div className={classes.profileImage}>
-          <img src={Images.profile2} alt="Profile" />
-          <div>Thierry Marles</div>
-        </div>
+          <Fab
+            color="inherit"
+            aria-label="handle-drawer"
+            onClick={handleDrawer}
+            className={classes.menuButton}
+          >
+            <MenuIcon color="primary" />
+          </Fab>
+          <div className={classes.profileImage}>
+            <img src={Images.profile2} alt="Profile" />
+            <div>Thierry Marles</div>
+          </div>
         </div>
 
         {props.children}

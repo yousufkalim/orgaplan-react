@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -14,6 +13,7 @@ import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
@@ -34,26 +34,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const updateAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   image: Yup.object().optional(""),
-//   companyId: Yup.string().required("Required"),
-// });
-
 export default function Admins(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState("");
+  const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
@@ -72,12 +61,13 @@ export default function Admins(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [page]);
 
   async function fetchData() {
     try {
+      setLoading(true);
       const admins = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
+        uri: `${GLOBALS.Constants.ADMINS}?page=${page}&name=${query}`,
       });
       const companies = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY}`,
@@ -93,9 +83,10 @@ export default function Admins(props) {
         }
         return true;
       });
-
+      setModal(false);
       setItems(admins.data.items);
       setCompanies(companiesArray);
+      setData(admins.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -106,7 +97,7 @@ export default function Admins(props) {
     }
   }
 
-  const handleChange = (name, value) => {
+  function handleChange(name, value) {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "phone") setPhone(value);
@@ -114,9 +105,9 @@ export default function Admins(props) {
       setUpdate((st) => !st);
       setImage(value);
     } else if (name === "companyId") setCompanyId(value);
-  };
+  }
 
-  const onUpdate = async (e) => {
+  async function onUpdate(e) {
     try {
       e.preventDefault();
       setLoading(true);
@@ -125,7 +116,7 @@ export default function Admins(props) {
       formdata.append("lastName", lastName);
       formdata.append("phone", phone);
       formdata.append("companyId", companyId);
-      formdata.append("userId", selectedItem._id);
+      formdata.append("adminId", selectedItem._id);
       image.file && formdata.append("image", image.file);
 
       const result = await GLOBALS.API({
@@ -140,8 +131,9 @@ export default function Admins(props) {
         item._id === selectedItem._id ? result.data : item,
       );
       setItems(itemsArray);
-      setLoading(false);
       setModal(false);
+      setLoading(false);
+      resetForm();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -150,7 +142,7 @@ export default function Admins(props) {
         ),
       );
     }
-  };
+  }
 
   async function onDelete(itemId) {
     try {
@@ -159,12 +151,11 @@ export default function Admins(props) {
         await GLOBALS.API({
           method: "DELETE",
           token: store.token,
-          uri: GLOBALS.Constants.ADMINS_DELETE + "/" + itemId,
+          uri: GLOBALS.Constants.ADMIN_DELETE + "/" + itemId,
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
-        setModal(false);
-        setLoading(false);
+        fetchData();
       }
     } catch (err) {
       setLoading(false);
@@ -176,12 +167,21 @@ export default function Admins(props) {
     }
   }
 
+  function resetForm() {
+    setFirstName("");
+    setLastName("");
+    setPhone("");
+    setImage("");
+    setCompanyId("");
+    setCompanyName("");
+  }
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
       item.firstName + " " + item.lastName,
-      item.phone,
-      0,
+      `0${item.phone}`,
+      item.sites,
     ];
     return [
       ...sendTo,
@@ -193,7 +193,7 @@ export default function Admins(props) {
           });
           setFirstName(item.firstName);
           setLastName(item.lastName);
-          setPhone(item.phone);
+          setPhone(`0${item.phone}`);
           setCompanyId(item.company._id);
           setCompanyName(item.company.name);
           setModal(true);
@@ -212,8 +212,8 @@ export default function Admins(props) {
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
-                disableMargin
-                primary={`Total : ${items.length} Admins`}
+                noMargin
+                primary={data && `Total : ${data.totalItems} Admins`}
                 bold
               />
               <Button
@@ -227,17 +227,34 @@ export default function Admins(props) {
           </div>
         </Form.Row>
         <Form.Row noMargin>
-          <SearchInput placeholder="Name" />
+          <SearchInput
+            value={query}
+            placeholder="Name"
+            onClick={fetchData}
+            onChange={({ target: { value } }) => setQuery(value)}
+          />
         </Form.Row>
         <div className={classes.content}>
           <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
+          {!loading && data.totalItems > 10 && (
+            <Pagination
+              page={page}
+              count={data.totalPages}
+              onChange={(e, value) => {
+                setPage(value);
+              }}
+            />
+          )}
         </div>
       </div>
       {update && ""}
       <Modal
         title="EDIT ADMIN"
         open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        onClose={() => {
+          setModal((st) => !st);
+          resetForm();
+        }}
         body={
           <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
@@ -323,6 +340,7 @@ export default function Admins(props) {
                   minWidth="30%"
                   fullWidth={false}
                   disabled={loading}
+                  loading={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}
                 />

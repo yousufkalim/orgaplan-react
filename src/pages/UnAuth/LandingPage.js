@@ -1,8 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Header from "./UnAuthHeader";
-import Footer from "../../components/Footer";
 import Heading from "../../components/Heading";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
 }));
 
@@ -20,11 +18,8 @@ export default function LandingPage() {
   const classes = useStyles();
 
   return (
-    <Header>
-      <div className={classes.root}>
-        <Heading primary="Landing Page" />
-        <Footer />
-      </div>
-    </Header>
+    <div className={classes.root}>
+      <Heading primary="Landing Page" />
+    </div>
   );
 }

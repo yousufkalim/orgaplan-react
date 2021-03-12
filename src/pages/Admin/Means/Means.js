@@ -22,7 +22,6 @@ import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
 
 import moment from "moment";
-import SiteImage from "../../../assets/images/Site.png";
 import { Images } from "../../../assets/Assets";
 
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
@@ -57,7 +56,6 @@ const Means = () => {
   const [items, setItems] = useState([]);
 
   const [siteDeliveryAreas, setSiteDeliveryAreas] = useState([]);
-  const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
   const [
@@ -128,6 +126,7 @@ const Means = () => {
               .map((innerItem, index) => innerItem.deliveryArea.name)
               .toString();
             temp.push(data);
+            return true;
           });
           setItems(temp);
         }
@@ -135,17 +134,16 @@ const Means = () => {
         if (response.data.site_delivery_areas != null) {
           const temp = [];
           response.data.site_delivery_areas.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
           setSiteDeliveryAreas(response.data.site_delivery_areas);
           setDropdownDeliveryAreas(temp);
-          setDeliveryAreas(response.data.site_delivery_areas);
         }
 
         if (response.data.site_companies != null) {
           const temp = [];
           response.data.site_companies.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
           setCompany(response.data.site_companies);
           setDropdownCompany(temp);
@@ -155,7 +153,7 @@ const Means = () => {
           setLocations(response.data.site_locations);
           const temp = [];
           response.data.site_locations.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
           setDropdownLocations(temp);
         }
@@ -164,7 +162,7 @@ const Means = () => {
           setTypes(response.data.mean_types);
           const temp = [];
           response.data.mean_types.map((item, index) => {
-            temp.push({ label: item, value: item });
+            return temp.push({ label: item, value: item });
           });
           setDropdownTypes(temp);
         }
@@ -173,7 +171,7 @@ const Means = () => {
           setStatus(response.data.mean_status);
           const temp = [];
           response.data.mean_status.map((item, index) => {
-            temp.push({ label: item, value: item });
+            return temp.push({ label: item, value: item });
           });
           setDropdownStatus(temp);
         }
@@ -205,7 +203,7 @@ const Means = () => {
         if (response.data != null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
 
           setDropdownStorageAreas(temp);
@@ -239,7 +237,7 @@ const Means = () => {
         if (response.data != null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
 
           setDropdownLevels(temp);
@@ -278,6 +276,7 @@ const Means = () => {
 
   useEffect(() => {
     filterMean();
+    // eslint-disable-next-line
   }, [
     selectedSiteDeliveryAreadIndex,
     selectedLocationIndex,
@@ -298,16 +297,16 @@ const Means = () => {
     try {
       setLoading(true);
       const params = { siteId: "6008169bedbb7816d40b197d" };
-      if (meanText.length != 0) params["name"] = meanText;
-      if (selectedDropdownArea.length != 0)
+      if (meanText.length !== 0) params["name"] = meanText;
+      if (selectedDropdownArea.length !== 0)
         params["deliveryArea"] =
           siteDeliveryAreas[selectedSiteDeliveryAreadIndex]._id;
-      if (selectedStorageArea.length != 0)
+      if (selectedStorageArea.length !== 0)
         params["storageArea"] =
           storageAreas[selectedDropdownStorageAreaIndex]._id;
 
-      if (selectedType.length != 0) params["type"] = types[selectedTypeIndex];
-      if (selectedStatus.length != 0)
+      if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
+      if (selectedStatus.length !== 0)
         params["status"] = status[selectedStatusIndex];
       if (!isNaN(moment(formik.values.contractStartDate)))
         params["startDate"] = formik.values.contractStartDate;
@@ -334,7 +333,7 @@ const Means = () => {
           data[4] = item.location
             .map((innerItem, index) => innerItem.deliveryArea.name)
             .toString();
-          temp.push(data);
+          return temp.push(data);
         });
         setItems(temp);
 
@@ -366,7 +365,7 @@ const Means = () => {
         if (response.data != null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) => {
-            temp.push({ label: item.name, value: item.name });
+            return temp.push({ label: item.name, value: item.name });
           });
 
           setDropdownStorageAreas(temp);
@@ -411,25 +410,14 @@ const Means = () => {
     ];
   });
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     contractType: "CLIENTPERSITE",
-  //     contractStartDate: "",
-  //     contractEndDate: "",
-  //     functionality: "DELIVERY",
-  //     additionalInfo: "",
-  //     notificationPriorToDays: "",
-  //     notificationTo: [],
-  //   },
-  //   // validationSchema: addClientYup,
-  //   // onSubmit,
-  //   validateOnBlur: false,
-  //   validateOnChange: false,
-  //   validateOnMount: false,
-  // });
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
+        {loading && ""}
+        {selectedLocation && ""}
+        {company && ""}
+        {selectedLevel && ""}
+        {storageMeans && ""}
         <Heading primary="LIST OF MEANS" noWrap />
         <div>
           <Form.Row
@@ -439,7 +427,7 @@ const Means = () => {
             style={{ paddingRight: "50px" }}
           >
             <SubHeading
-              disableMargin
+              noMargin
               topPadding
               primary={`TOTAL : ${means.length} means`}
               bold
@@ -475,7 +463,7 @@ const Means = () => {
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
 
-              if (index != -1) {
+              if (index !== -1) {
                 console.log("HERE 1");
                 const item = event.target.value;
                 console.log("HERE 2");
@@ -501,7 +489,7 @@ const Means = () => {
             values={dropdownLocations}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-              if (index != -1) {
+              if (index !== -1) {
                 const item = event.target.value;
 
                 setSelectedLocationIndex(index);
@@ -516,7 +504,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
-                if (locations[index].locationType == "EXTERIOR") {
+                if (locations[index].locationType === "EXTERIOR") {
                   setDisableDropdown(true);
                   getExternalMeans();
                 } else {
@@ -546,7 +534,7 @@ const Means = () => {
             disabled={disableDropdpwn}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-              if (index != -1) {
+              if (index !== -1) {
                 const item = event.target.value;
                 setSelectedDropdownLevelIndex(index);
                 setSelectedLevel(item);
@@ -576,7 +564,7 @@ const Means = () => {
             values={droprownStorageAreas}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-              if (index != -1) {
+              if (index !== -1) {
                 const item = event.target.value;
 
                 setSelectedDropdownStorageAreaIndex(index);
@@ -598,7 +586,7 @@ const Means = () => {
             values={doropdownTypes}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-              if (index != -1) {
+              if (index !== -1) {
                 const item = event.target.value;
                 setSelectedTypeIndex(index);
                 setSelectedType(item);
@@ -627,7 +615,7 @@ const Means = () => {
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               const item = event.target.value;
-              if (index != -1) {
+              if (index !== -1) {
                 setSeletedCompanyIndex(index);
                 setSelectedCompany(item);
                 //   filterMean();
@@ -644,7 +632,7 @@ const Means = () => {
             values={dropdownStatus}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
-              if (index != -1) {
+              if (index !== -1) {
                 const item = event.target.value;
                 setSelectedStatusIndex(index);
                 setSelectedStatus(item);

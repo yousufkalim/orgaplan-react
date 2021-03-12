@@ -24,11 +24,13 @@ export default i18n.use(initReactI18next).init({
         forgotPassword: "Forgot Password ?",
         dontHaveAccount: "Don't have an account?",
         // Placeholders
+        companyPlaceholder: "Company",
         emailPlaceholder: "E-mail address",
         firstNamePlaceholder: "First Name",
         lastNamePlaceholder: "Last Name",
         dateOfBirthPlaceholder: "Date of Birth",
         passwordPlaceholder: "Password",
+        phonePlaceholder: "Phone Number",
         confirmPasswordPlaceholder: "Confirm Password",
         // Errors
         emailInvalid: "Email is invalid!",

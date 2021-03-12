@@ -141,11 +141,11 @@ export default function MultiAdderInputModal(props) {
         body={
           <Form.Form onSubmit={formik.handleSubmit}>
             <Form.Row alignItems="center" justifyContent="center">
-              <FormLabel disableMargin bold primary="Open Day" />
+              <FormLabel noMargin bold primary="Day Off" />
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Monday" />
+                <FormLabel noMargin bold primary="Monday" />
               </Form.Row>
               <RadioButton
                 name="day1Off"
@@ -187,7 +187,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Tuesday" />
+                <FormLabel noMargin bold primary="Tuesday" />
               </Form.Row>
               <RadioButton
                 name="day2Off"
@@ -229,7 +229,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Wednesday" />
+                <FormLabel noMargin bold primary="Wednesday" />
               </Form.Row>
               <RadioButton
                 name="day3Off"
@@ -271,7 +271,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Thursday" />
+                <FormLabel noMargin bold primary="Thursday" />
               </Form.Row>
               <RadioButton
                 name="day4Off"
@@ -313,7 +313,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Friday" />
+                <FormLabel noMargin bold primary="Friday" />
               </Form.Row>
               <RadioButton
                 name="day5Off"
@@ -355,7 +355,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Saturday" />
+                <FormLabel noMargin bold primary="Saturday" />
               </Form.Row>
               <RadioButton
                 name="day6Off"
@@ -397,7 +397,7 @@ export default function MultiAdderInputModal(props) {
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel disableMargin bold primary="Sunday" />
+                <FormLabel noMargin bold primary="Sunday" />
               </Form.Row>
               <RadioButton
                 name="day7Off"
