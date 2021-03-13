@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
 import Input from "./Input";
-
+import moment from "moment";
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
@@ -168,6 +168,15 @@ export default function MultiAdderInputModal(props) {
           Actions.notistack.snackbar("Added Successfully", "success"),
         ),
       );
+      // set value are all value empty
+      setDate("");
+      setReason("");
+      setTime({
+        start: "0",
+        end: "23",
+      });
+      setDayOff(false);
+      // set value are all value empty
     } else {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -241,6 +250,7 @@ export default function MultiAdderInputModal(props) {
                     name="start"
                     value={time.start}
                     onChange={getTime}
+                    style={{ "margin-right": "5px" }}
                   />
 
                   <FormSelect
@@ -298,7 +308,7 @@ export default function MultiAdderInputModal(props) {
                   {unavailabilityDates.map((key, index) => {
                     return (
                       <tr key={index}>
-                        <td> {key.date} </td>
+                        <td> {moment(key.date).format("YYYY-MM-DD")} </td>
                         <td>{key.startHour}</td>
                         <td>{key.endHour}</td>
                         <td>{key.reason}</td>
