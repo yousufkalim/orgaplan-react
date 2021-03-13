@@ -78,6 +78,17 @@ export default function EditSite(props) {
         openingHours[`day${day.day}Off`] = day.dayOff;
         return true;
       });
+      const unavailabilityDates = [];
+
+      response.unavailabilityDates.map((key) => {
+        unavailabilityDates.push({
+          date: key.date,
+          dayOff: key.dayOff,
+          endHour: key.endHour,
+          reason: key.reason,
+          startHour: key.startHour,
+        });
+      });
       const notificationToArray = response.notificationTo.map(
         (notification, index) => ({
           key: index,
@@ -88,7 +99,7 @@ export default function EditSite(props) {
         start: moment(response.start).format("YYYY-MM-DD"),
         end: moment(response.end).format("YYYY-MM-DD"),
         openingHours: openingHours,
-        unavailabilityDates: response.unavailabilityDates,
+        unavailabilityDates: unavailabilityDates,
         additionalInfo: response.additionalInfo,
         notificationPriorToDays: response.notificationPriorToDays,
         notificationTo: notificationToArray,
