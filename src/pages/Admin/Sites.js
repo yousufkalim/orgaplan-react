@@ -123,7 +123,7 @@ function SiteCard({ site, role, onClick }) {
         />
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <SmallText primary={`Rôle: ${role}`} noMargin />
+        <SmallText primary={`Rôle: ${role}`} />
       </Form.Row>
     </Card>
   );

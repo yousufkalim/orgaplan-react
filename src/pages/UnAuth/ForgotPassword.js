@@ -1,11 +1,13 @@
 import React from "react";
 import { Formik } from "formik";
-import { useSnackbar } from "notistack";
-import PersonIcon from "@material-ui/icons/Person";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import PersonIcon from "@material-ui/icons/Person";
 import * as Yup from "yup";
 
 import GLOBALS from "../../globals";
+import Actions from "../../redux/actions";
+
 import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
@@ -32,28 +34,32 @@ const forgotYup = Yup.object().shape({
 
 export default function ForgotPassword(props) {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
-  const onSubmit = (values, { setSubmitting }) => {
+  const onSubmit = async (values, { setSubmitting }) => {
     try {
-      // const data = await GLOBALS.API({
-      //   method: "POST",
-      //   uri: GLOBALS.Constants.LOGIN,
-      //   body: JSON.stringify({
-      //     email: values.email,
-      //     password: values.password,
-      //   }),
-      // });
+      await GLOBALS.API({
+        method: "GET",
+        uri: `${GLOBALS.Constants.REQUEST_PASSWORD_RESET}?email=${values.email}`,
+      });
 
-      setTimeout(() => {
-        setSubmitting(false);
-        enqueueSnackbar(GLOBALS.I18n.t("emailSentSuccess"), {
-          variant: "success",
-        });
-        props.history.replace("/login");
-      }, 2000);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            GLOBALS.I18n.t("emailSentSuccess"),
+            "success",
+          ),
+        ),
+      );
+      setSubmitting(false);
+      props.history.replace("/login");
     } catch (err) {
       setSubmitting(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
   };
 
