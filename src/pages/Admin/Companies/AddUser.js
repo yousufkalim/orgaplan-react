@@ -34,6 +34,7 @@ const addClientYup = Yup.object().shape({
   email: Yup.string().required("Required"),
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
+  site: Yup.string().required("Required"),
   phone: Yup.number()
     .test(
       "len",
@@ -48,7 +49,8 @@ export default function AddUser(props) {
   const dispatch = useDispatch();
 
   const store = useSelector((state) => state.auth);
-
+  const adminStore = useSelector((state) => state.admin);
+  const [page] = useState(1);
   const [companies, setCompanies] = useState([]);
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -59,11 +61,6 @@ export default function AddUser(props) {
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedRoleIndex, setSelectedRoleIndex] = useState(null);
 
-  const [sites, setSites] = useState([]);
-  const [dropdownSites, setDropdownSites] = useState([]);
-  const [selectedSite, setSelectedSite] = useState("");
-  const [selectedSiteIndex, setSelectedSiteIndex] = useState(null);
-  const [siteId, setSiteId] = useState("");
   const [siteParams, setSiteParams] = useState([]);
 
   const [users, setUsers] = useState([]);
@@ -74,15 +71,14 @@ export default function AddUser(props) {
 
   const getData = async () => {
     try {
+      formik.setFieldValue("site", adminStore.site.siteId.name);
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_USER}/6008169bedbb7816d40b197d/${store.user._id}`,
+        uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
       });
-
       if (response.success) {
         setCompanies(response.data.site_companies.companies);
         setRoles(response.data.site_companies.companies);
-        setSites(response.data.admin_sites.sites);
         setUsers(response.data.users);
         if (response.data.site_companies != null) {
           const companyTemp = [];
@@ -100,17 +96,43 @@ export default function AddUser(props) {
           });
           setDropdownRoles(rolesTemp);
         }
+      } else {
+      }
 
-        if (response.data.admin_sites != null) {
-          const sitesTemp = [];
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
-          response.data.admin_sites.sites.map((item, index) => {
-            return sitesTemp.push({
-              label: item.siteId.name,
-              value: item.siteId.name,
-            });
+  const getUserCompany = async (userId) => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_USER_COMPANY}/${adminStore.site.siteId._id}/${userId}`,
+        token: store.token,
+      });
+      if (response.success) {
+        console.log(JSON.stringify(response, null, 2));
+        if (response.data) {
+          companies.forEach((item, index) => {
+            if (item._id === response.data._id) {
+              item.users.forEach((innerItem, innerIndex) => {
+                console.log("innser ", innerItem.userId);
+                if (innerItem.userId === userId) {
+                  setSelectedRoleIndex(innerIndex);
+
+                  setSelectedRole(innerItem.role);
+                }
+              });
+              setSelectedCompanyIndex(index);
+
+              setSelectedCompany(item.name);
+            }
           });
-          setDropdownSites(sitesTemp);
         }
       } else {
       }
@@ -131,7 +153,6 @@ export default function AddUser(props) {
     siteParams.forEach((item) => {
       sites.push({ siteId: item.id, role: selectedRole });
     });
-    console.log(JSON.stringify(sites));
     var formdata = new FormData();
     formdata.append("image", values.logo[0].file);
     //formdata.append("name", values.name);
@@ -163,6 +184,7 @@ export default function AddUser(props) {
       lastName: "",
       email: "",
       phone: "",
+      site: "",
       contractType: "CLIENTPERSITE",
       contractStartDate: "",
       contractEndDate: "",
@@ -205,7 +227,16 @@ export default function AddUser(props) {
                 }}
                 onSelect={(event) => {
                   users.forEach((item, index) => {
-                    if (item.email === event.target.value) {
+                    if (item.userId.email === event.target.value) {
+                      console.log(JSON.stringify(item.sites, null, 2));
+                      formik.setFieldValue("firstName", item.userId.firstName);
+                      formik.setFieldValue("lastName", item.userId.lastName);
+                      formik.setFieldValue("phone", item.userId.phone);
+                      formik.setFieldValue("logo", [
+                        { uri: item.userId.image },
+                      ]);
+
+                      getUserCompany(item.userId._id);
                     }
                   });
                 }}
@@ -332,28 +363,14 @@ export default function AddUser(props) {
           <Form.Row>
             <FormLabel bold primary="CONSTRUCTION SITE : " />
             <Form.Row noMargin width="48%">
-              <CustomInputModal
-                name="sites"
-                values={dropdownSites}
-                value={selectedSite}
-                placeholder="Select A Site"
-                id={siteId}
-                chipValues={(values) => {
-                  setSiteParams(values);
-                }}
-                onChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-
-                    setSiteId(sites[index].siteId._id);
-                    setSelectedSiteIndex(index);
-                    setSelectedSite(item);
-                  } else {
-                    setSelectedSiteIndex(0);
-                    setSelectedSite("");
-                  }
-                }}
+              <FormInput
+                name="site"
+                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
+                placeholder="Site"
+                onChange={formik.handleChange}
+                value={formik.values.site}
+                error={formik.errors.site}
+                disabled={true}
               />
             </Form.Row>
           </Form.Row>

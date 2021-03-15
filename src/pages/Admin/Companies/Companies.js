@@ -53,6 +53,7 @@ export default function Companies(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
 
   const [page] = useState(1);
   const [items, setItems] = useState([]);
@@ -76,8 +77,9 @@ export default function Companies(props) {
 
   const getData = async () => {
     try {
+      console.log(adminStore.site.siteId._id);
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       if (response.success) {
