@@ -128,6 +128,7 @@ function SiteCard({ site, role, onClick }) {
     </Card>
   );
 }
+
 function SiteAddCard({ onClick }) {
   const classes = useStyles();
   return (
@@ -220,6 +221,7 @@ export default function Sites(props) {
       const adminCompany = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
       });
+      dispatch(Actions.admin.set_company(adminCompany.data));
       setCompany(adminCompany.data);
       setItems(result.data.sites);
       setLoading(false);

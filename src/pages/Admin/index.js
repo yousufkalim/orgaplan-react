@@ -24,7 +24,6 @@ export default function AdminIndex() {
     <AdminHeader>
       <Switch>
         <Route exact path="/" component={Calender} />
-        <Route path="/calender" component={Calender} />
         <Route path="/companies" component={Companies} />
         <Route path="/incidents" component={Incidents} />
         <Route path="/invoices" component={Invoices} />
