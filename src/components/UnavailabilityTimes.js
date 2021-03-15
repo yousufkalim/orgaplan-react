@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
 import Input from "./Input";
-
+import moment from "moment";
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
@@ -152,6 +152,20 @@ export default function MultiAdderInputModal(props) {
       date !== ""
     ) {
       setUnavailabilityDates((prevState) => [...prevState, newarray]);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("Added Successfully", "success"),
+        ),
+      );
+      // set value are all value empty
+      setDate("");
+      setReason("");
+      setTime({
+        start: "0",
+        end: "23",
+      });
+      setDayOff(false);
+      // set value are all value empty
     } else {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -214,6 +228,7 @@ export default function MultiAdderInputModal(props) {
                     name="start"
                     value={time.start}
                     onChange={getTime}
+                    style={{ "margin-right": "5px" }}
                   />
 
                   <FormSelect
@@ -260,41 +275,34 @@ export default function MultiAdderInputModal(props) {
             <table className="table">
               {unavailabilityDates.length > 0 && (
                 <>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Start</th>
-                      <th>End</th>
-                      <th>Reason</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {unavailabilityDates.map((key, index) => {
-                      return (
-                        <tr key={index}>
-                          <td> {key.date} </td>
-                          <td>{key.startHour}</td>
-                          <td>{key.endHour}</td>
-                          <td>{key.reason}</td>
-                          <td>
-                            <button
-                              onClick={() => {
-                                deleteUnavailability(index);
-                              }}
-                              className="btn btn-danger"
-                              style={{
-                                fontSize: "13px",
-                                padding: "0px 12px",
-                              }}
-                            >
-                              X
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
+                  <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                  </tr>
+                  {unavailabilityDates.map((key, index) => {
+                    return (
+                      <tr key={index}>
+                        <td> {moment(key.date).format("YYYY-MM-DD")} </td>
+                        <td>{key.startHour}</td>
+                        <td>{key.endHour}</td>
+                        <td>{key.reason}</td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              deleteUnavailability(index);
+                            }}
+                            className="btn btn-danger"
+                            style={{ "font-size": "13px", padding: "0px 12px" }}
+                          >
+                            X
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </>
               )}
             </table>
