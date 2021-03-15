@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import * as Yup from "yup";
 
 import GLOBALS from "../../globals";
-import Header from "./UnAuthHeader";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
@@ -59,58 +58,52 @@ export default function ForgotPassword(props) {
   };
 
   return (
-    <Header>
-      <div className={classes.root}>
-        <Heading
-          primary={GLOBALS.I18n.t("forgotPasswordHeaderPrimary")}
-          secondary={GLOBALS.I18n.t("forgotPasswordHeaderSecondary")}
-        />
-        <Formik
-          initialValues={{ email: "" }}
-          validationSchema={forgotYup}
-          onSubmit={onSubmit}
-        >
-          {({
-            values,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-          }) => (
-            <Form.Form onSubmit={handleSubmit} maxWidth="350px">
-              <Form.Item>
-                <Input
-                  type="email"
-                  name="email"
-                  onBlur={handleBlur}
-                  value={values.email}
-                  error={errors.email}
-                  onChange={handleChange}
-                  startAdornment={<PersonIcon />}
-                  placeholder={GLOBALS.I18n.t("emailPlaceholder")}
-                />
-              </Form.Item>
-              <Form.ButtonContainer>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  text={
-                    isSubmitting ? (
-                      <Loader.Progress />
-                    ) : (
-                      GLOBALS.I18n.t("submit")
-                    )
-                  }
-                />
-              </Form.ButtonContainer>
-              <Form.Row>
-                <SmallText primary={GLOBALS.I18n.t("orLogin")} to="/login" />
-              </Form.Row>
-            </Form.Form>
-          )}
-        </Formik>
-      </div>
-    </Header>
+    <div className={classes.root}>
+      <Heading
+        primary={GLOBALS.I18n.t("forgotPasswordHeaderPrimary")}
+        secondary={GLOBALS.I18n.t("forgotPasswordHeaderSecondary")}
+      />
+      <Formik
+        initialValues={{ email: "" }}
+        validationSchema={forgotYup}
+        onSubmit={onSubmit}
+      >
+        {({
+          values,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+        }) => (
+          <Form.Form onSubmit={handleSubmit} maxWidth="350px">
+            <Form.Item>
+              <Input
+                type="email"
+                name="email"
+                onBlur={handleBlur}
+                value={values.email}
+                error={errors.email}
+                onChange={handleChange}
+                startAdornment={<PersonIcon />}
+                placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+              />
+            </Form.Item>
+            <Form.ButtonContainer>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                text={
+                  isSubmitting ? <Loader.Progress /> : GLOBALS.I18n.t("submit")
+                }
+              />
+            </Form.ButtonContainer>
+            <Form.Row>
+              <SmallText primary={GLOBALS.I18n.t("orLogin")} to="/login" />
+            </Form.Row>
+          </Form.Form>
+        )}
+      </Formik>
+    </div>
   );
 }

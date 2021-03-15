@@ -3,13 +3,13 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { Images } from "../assets/Assets";
 
-export default function Heading({ className, bold, ...props }) {
+export default function Heading({ className, bold, noMargin, ...props }) {
   const useStyles = makeStyles((theme) => ({
     heading: {
       fontWeight: "bold",
       fontSize: theme.typography.pxToRem(26),
       color: theme.palette.primary.contrastText,
-      margin: props.disableMargin ? 0 : props.margin || "0 0 10px 0",
+      margin: noMargin ? 0 : props.margin ? props.margin : "0 0 10px 0",
     },
   }));
   const classes = useStyles();

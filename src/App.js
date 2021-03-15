@@ -12,7 +12,7 @@ import Notifier from "./redux/Notifier";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // React Bootstrap
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -39,6 +39,9 @@ const theme = createMuiTheme({
     blue: "#140772",
     grey: {
       100: "#707070",
+    },
+    custom: {
+      disabled: "#707070",
     },
   },
   shape: {

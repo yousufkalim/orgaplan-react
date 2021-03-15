@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 export default function SubHeading(props) {
   const useStyles = makeStyles((theme) => ({
     subHeading: {
-      marginBottom: props.disableMargin ? 0 : 10,
+      marginBottom: props.noMargin ? 0 : 10,
     },
     primary: {
       fontSize: theme.typography.pxToRem(18),

@@ -7,10 +7,20 @@ export default function SmallText({ className, bold, ...props }) {
   const useStyles = makeStyles((theme) => ({
     text: {
       textDecoration: "none",
+      fontWeight: bold ? "bold" : "normal",
+      marginBottom: props.noMargin ? 0 : 10,
+      paddingBottom: props.underline ? 3 : 0,
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.primary.contrastText,
-      fontWeight: bold ? "bold" : "normal",
-      marginBottom: props.disableMargin ? 0 : 10,
+      textAlign: props.textAlign ? props.textAlign : "left",
+      borderBottom: props.underline
+        ? `2px solid ${theme.palette.primary.contrastText}`
+        : 0,
+      "&:hover": {
+        textDecoration: "none",
+        color: props.to && theme.palette.blue,
+        borderBottom: props.underline ? `2px solid ${theme.palette.blue}` : 0,
+      },
     },
   }));
   const classes = useStyles();

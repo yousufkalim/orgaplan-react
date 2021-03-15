@@ -11,8 +11,8 @@ import SmallText from "../../../../components/SmallText";
 import FormInput from "../../../../components/FormInput";
 import FormLabel from "../../../../components/FormLabel";
 import OpeningTimes from "../../../../components/OpeningTimes";
-import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
+import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 
 export default function AddSiteStep2(props) {
   const dispatch = useDispatch();
@@ -58,6 +58,7 @@ export default function AddSiteStep2(props) {
       setUpdate((st) => !st);
       setOpeningHours(value);
     } else if (name === "unavailabilityDates") {
+      console.log(value);
       setUpdate((st) => !st);
       setUnavailabilityDates(value);
     } else if (name === "additionalInfo") setAdditionalInfo(value);
@@ -75,9 +76,7 @@ export default function AddSiteStep2(props) {
       setLoading(true);
 
       const notificationToArray = notificationTo.map((item) => item.label);
-
       let step1 = props.step1Data;
-
       const trades = step1.trades.map((item) => item.label);
       const addresses = step1.addresses.map((item) => ({
         street: item.street,
@@ -185,6 +184,7 @@ export default function AddSiteStep2(props) {
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
+        {console.log(unavailabilityDates)}
         <FormLabel bold primary="SITE DATES* : " />
         <Form.Row width="48%" noMargin>
           <FormInput
@@ -243,6 +243,8 @@ export default function AddSiteStep2(props) {
             name="unavailabilityDates"
             values={unavailabilityDates}
             style={GLOBALS.Styles.inputWidth}
+            unavailabilityDates={unavailabilityDates}
+            setUnavailabilityDates={setUnavailabilityDates}
             onChange={(values) => handleChange("unavailabilityDates", values)}
           />
         </Form.Row>
