@@ -10,9 +10,19 @@ export default function MultiAdderInput(props) {
 
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
-  const primaryColor = theme.palette.primary.contrastText;
-  const borderColor = props.error ? error : theme.palette.grey[100];
-  const color = props.error ? error : theme.palette.primary.contrastText;
+  const primaryColor = props.disabled
+    ? theme.palette.custom.disabled
+    : theme.palette.primary.contrastText;
+  const borderColor = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.grey[100];
+  const color = props.disabled
+    ? theme.palette.custom.disabled
+    : props.error
+    ? error
+    : theme.palette.primary.contrastText;
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -123,7 +133,7 @@ export default function MultiAdderInput(props) {
           onChange={(e) => setText(e.target.value)}
         />
         <div className={classes.endAdornment}>
-          <IconButton onClick={onAdd} disabled={props.disabled}>
+          <IconButton onClick={onAdd} disabled={props.disabled || !text}>
             <Plus style={{ width: 20, height: 20 }} />
           </IconButton>
         </div>

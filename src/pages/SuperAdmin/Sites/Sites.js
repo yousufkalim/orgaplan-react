@@ -99,6 +99,7 @@ export default function Sites(props) {
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
+        fetchData();
         setLoading(false);
       }
     } catch (err) {
@@ -136,7 +137,7 @@ export default function Sites(props) {
     />,
     item.name,
     item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
+    `${item.adminId.firstName} ${item.adminId.lastName}`,
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
       <IconButton
@@ -164,7 +165,7 @@ export default function Sites(props) {
         <div>
           <Form.Row alignItems="center" noMargin>
             <SubHeading
-              disableMargin
+              noMargin
               primary={data && `Total : ${data.totalItems} Sites`}
               bold
             />

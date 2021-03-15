@@ -4,7 +4,6 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       token && myHeaders.append("Authorization", `Bearer ${token}`);
-      console.log();
       if (process.env.NODE_ENV === "development") {
         if (body instanceof FormData) {
           for (let values of body.entries()) {
@@ -22,12 +21,12 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       });
       if (!response.ok) throw await response.json();
       let data = await response.json();
-      process.env.NODE_ENV === "development" &&
-        console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
+      // process.env.NODE_ENV === "development" &&
+      console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
       resolve(data);
     } catch (err) {
-      process.env.NODE_ENV === "development" &&
-        console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
+      // process.env.NODE_ENV === "development" &&
+      console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
       reject(err);
     }
   });
