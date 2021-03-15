@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Alert, } from "react-bootstrap";
+import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -740,14 +740,19 @@ const Calender = () => {
         </div>
       </div> */}
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
-        <Modal.Header closeButton style={{border: 'none'}}>
+        <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
         </Modal.Header>
         <Alertbox message="Invalid Time" />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
-              <input type="text" style={{border: "1px solid #707070"}} placeholder="Company : ConstructBTP" className="w-100 p-2 mb-2"  />
+              <input
+                type="text"
+                style={{ border: "1px solid #707070" }}
+                placeholder="Company : ConstructBTP"
+                className="w-100 p-2 mb-2"
+              />
             </div>
           </div>
           <div className="row">
@@ -837,8 +842,19 @@ const Calender = () => {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer style={{border: 'none'}}>
-          <button className="w-100 py-2" onClick={saveBooking} style={{color: "#fff", backgroundColor: "#DBB20A", border: 'none', borderRadius: '5px'}}>Book</button>
+        <Modal.Footer style={{ border: "none" }}>
+          <button
+            className="w-100 py-2"
+            onClick={saveBooking}
+            style={{
+              color: "#fff",
+              backgroundColor: "#DBB20A",
+              border: "none",
+              borderRadius: "5px",
+            }}
+          >
+            Book
+          </button>
           {/* <Button variant="primary" onClick={saveBooking}>
             Add Booking
           </Button>

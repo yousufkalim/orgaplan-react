@@ -48,10 +48,25 @@ const endpoints = {
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
-  GET_EXTERIOR_MEANS: BASE_URL_V1 + "get_exterior_means/enterprise",
+  GET_EXTERIOR_MEANS: BASE_URL_V1 + "mean/get_exterior_means",
   GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
   GET_STORAGE_AREA_BY_LEVEL_ID:
     BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
-};
 
+  GET_STORAGE_AREA_BY_SITE_ID:
+    BASE_URL_V1 + "storage-area/get_storage_site/enterprise",
+  GET_DELIVERY_AREA_BY_SITE_ID:
+    BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
+  UPDATE_MEAN: BASE_URL_V1 + "mean",
+  CREATE_MEAN: BASE_URL_V1 + "mean",
+  GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
+  FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
+
+  GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
+  GET_COMPANY_USERS: BASE_URL_V1 + "company/company_user",
+  FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
+
+  GET_ADD_USER: BASE_URL_V1 + "users/add_user",
+  ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
+};
 export default endpoints;

@@ -86,7 +86,8 @@ const Means = () => {
     0,
   );
   const [selectedLevel, setSelectedLevel] = useState("");
-  const [disableDropdpwn, setDisableDropdown] = useState(false);
+  const [disableDropdpwn, setDisableDropdown] = useState(true);
+  const [disableStorageDropdown, setDisableStorageDropdow] = useState(true);
 
   const [storageAreas, setStorageAreas] = useState([]);
   const [droprownStorageAreas, setDropdownStorageAreas] = useState([]);
@@ -110,21 +111,42 @@ const Means = () => {
 
         if (response.data.means != null) {
           let temp = [];
-
           response.data.means.map((item, index) => {
             let data = [];
             data[0] = item.name;
             data[1] = item.status;
             data[2] = item.meanType;
-            data[3] = item.location
-              .map((innerItem, index) => innerItem.storageArea.name)
-              .toString();
-            data[4] = item.location
-              .map((innerItem, index) => innerItem.deliveryArea.name)
-              .toString();
+
+            {
+              data[3] = item.location
+                .map((innerItem, index) => {
+                  if (
+                    innerItem.locationType != undefined &&
+                    innerItem.locationType === "STORAGEAREA"
+                  ) {
+                    console.log(innerItem.locationType);
+                    return innerItem.storageArea.name;
+                  }
+                  return "";
+                })
+                .toString()
+                .replace(/,/g, " ");
+              data[4] = item.location
+                .map((innerItem, index) => {
+                  if (
+                    innerItem.locationType != undefined &&
+                    innerItem.locationType === "DELIVERYAREA"
+                  )
+                    return innerItem.deliveryArea.name;
+                  return "";
+                })
+                .toString()
+                .replace(/,/g, " ");
+            }
             temp.push(data);
             return true;
           });
+
           setItems(temp);
         }
 
@@ -196,15 +218,28 @@ const Means = () => {
       });
 
       if (response.success) {
-        setStorageAreas(response.data);
+        const tempStorageAreas = [];
         if (response.data != null && response.data.length > 0) {
           const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
 
+          response.data.map((item, index) => {
+            item.location.map((innerItem, innerIndex) => {
+              console.log(JSON.stringify(innerItem, null, 2));
+              if (innerItem.locationType === "STORAGEAREA") {
+                tempStorageAreas.push(innerItem);
+                return temp.push({
+                  label: innerItem.storageArea.name,
+                  value: innerItem.storageArea.name,
+                });
+              }
+            });
+
+            //
+          });
+          setStorageAreas(tempStorageAreas);
           setDropdownStorageAreas(temp);
         }
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -302,6 +337,9 @@ const Means = () => {
         params["storageArea"] =
           storageAreas[selectedDropdownStorageAreaIndex]._id;
 
+      if (selectedCompany.length !== 0)
+        params["company"] = company[selectedCompanyIndex]._id;
+
       if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
       if (selectedStatus.length !== 0)
         params["status"] = status[selectedStatusIndex];
@@ -309,7 +347,7 @@ const Means = () => {
         params["startDate"] = formik.values.contractStartDate;
       if (!isNaN(moment(formik.values.contractEndDate)))
         params["endDate"] = formik.values.contractEndDate;
-      console.log(JSON.stringify(params, null, 2));
+
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
         token: store.token,
@@ -324,12 +362,32 @@ const Means = () => {
           data[0] = item.name;
           data[1] = item.status;
           data[2] = item.meanType;
-          data[3] = item.location
-            .map((innerItem, index) => innerItem.storageArea.name)
-            .toString();
-          data[4] = item.location
-            .map((innerItem, index) => innerItem.deliveryArea.name)
-            .toString();
+          {
+            data[3] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType != undefined &&
+                  innerItem.locationType === "STORAGEAREA"
+                ) {
+                  console.log(innerItem.locationType);
+                  return innerItem.storageArea.name;
+                }
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
+            data[4] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType != undefined &&
+                  innerItem.locationType === "DELIVERYAREA"
+                )
+                  return innerItem.deliveryArea.name;
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
+          }
           return temp.push(data);
         });
         setItems(temp);
@@ -382,27 +440,44 @@ const Means = () => {
     // eslint-disable-next-line
   }, []);
 
-  const rows = items.map((item) => {
+  const rows = items.map((item, index) => {
     return [
       ...item,
       <div>
         <NavLink
-          to="/means/edit-mean"
+          to={{
+            pathname: "/means/edit-mean",
+            mean: means[index],
+          }}
           style={{ color: "#959491 !important", textDecoration: "none" }}
         >
           <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
         </NavLink>
-        <img
-          src={Images.calender}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
 
-        <img
-          src={Images.incidents}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
+        <NavLink
+          to={{
+            pathname: "/means/calendar",
+            mean: means[index],
+          }}
+        >
+          <img
+            src={Images.calender}
+            style={{ width: 18, height: 15, paddingLeft: 5 }}
+            alt="Icon"
+          />
+        </NavLink>
+        <NavLink
+          to={{
+            pathname: "/means/mean-history",
+            mean: means[index],
+          }}
+        >
+          <img
+            src={Images.incidents}
+            style={{ width: 18, height: 15, paddingLeft: 5 }}
+            alt="Icon"
+          />
+        </NavLink>
       </div>,
     ];
   });
@@ -461,22 +536,15 @@ const Means = () => {
               const index = event.target.selectedIndex - 1;
 
               if (index !== -1) {
-                console.log("HERE 1");
                 const item = event.target.value;
-                console.log("HERE 2");
+
                 seltSelectedSiteDeliveryAreaIndex(index);
-                console.log("HERE 3");
+
                 setSelectedDropdownArea(item);
-                console.log("HERE 4");
-                // filterMean();
-                console.log("HERE 5");
               } else {
                 seltSelectedSiteDeliveryAreaIndex(null);
-                console.log("HERE 6");
+
                 setSelectedDropdownArea("");
-                console.log("HERE 7");
-                // filterMean();
-                console.log("HERE 8");
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -499,14 +567,16 @@ const Means = () => {
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
                 setDropdownStorageAreas([]);
+                setDisableStorageDropdow(true);
                 // Reset Storage Means
                 setStorageMeans([]);
-                if (locations[index].locationType === "EXTERIOR") {
+                if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
                   getExternalMeans();
+                  setDisableStorageDropdow(false);
                 } else {
                   setDisableDropdown(false);
-                  getLevels(locations[index].building._id);
+                  getLevels(locations[index]._id);
                 }
               } else {
                 setSelectedLocationIndex(0);
@@ -521,6 +591,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
+                setDisableStorageDropdow(true);
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -541,7 +612,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
-
+                setDisableStorageDropdow(false);
                 getStorageAreasByLevel(levels[index]._id);
               } else {
                 setSelectedDropdownLevelIndex(0);
@@ -552,6 +623,7 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
                 setStorageMeans([]);
+                setDisableStorageDropdow(true);
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -559,6 +631,7 @@ const Means = () => {
           <FormSelect
             placeholder="Storage area"
             values={droprownStorageAreas}
+            disabled={disableStorageDropdown}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
@@ -645,7 +718,7 @@ const Means = () => {
           <FormInput
             type="date"
             placeholder="Start date"
-            name="startDate"
+            name="contractStartDate"
             icon
             onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -661,7 +734,7 @@ const Means = () => {
           <SearchInput
             placeholder="Mean name"
             value={meanText}
-            onIconButtonClick={() => {
+            onClick={() => {
               filterMean();
             }}
             onChange={(event) => {

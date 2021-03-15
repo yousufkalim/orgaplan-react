@@ -26,6 +26,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const accessabilityPoints = [
+  { label: "Storage Area", value: "Storage Area" },
+  { label: "Delivery Area", value: "Delivery Area" },
+];
+
 export default function AddMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -45,6 +50,7 @@ export default function AddMean(props) {
   const [isExterior, setIsExterior] = useState(false);
   const classes = useStyles();
 
+  const [accessabilityPoint, setAccessabilityPoint] = useState("");
   const [DeliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
@@ -99,14 +105,12 @@ export default function AddMean(props) {
   ]);
 
   const getData = async () => {
-    console.log(JSON.stringify(store, null, 2));
     try {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
         token: store.token,
       });
       if (response.success) {
-        console.log(JSON.stringify(response, null, 2));
         if (response.data.site_delivery_areas !== null) {
           const temp = [];
           response.data.site_delivery_areas.map((item, index) =>
@@ -165,7 +169,7 @@ export default function AddMean(props) {
   };
 
   function handleChange(name, value) {
-    //alert(JSON.stringify(value, null, 2));
+    alert(JSON.stringify(value, null, 2));
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
@@ -185,33 +189,18 @@ export default function AddMean(props) {
       var formdata = new FormData();
 
       let locations = [];
-      if (isExterior) {
-        let loc = {
-          locationType: "EXTERIOR",
-          buildingId: buildings[selectedBuildingIndex]._id,
-        };
-
-        locations.push(loc);
-      } else {
-        let loc = {
-          locationType: "LEVEL",
-          buildingId: buildings[selectedBuildingIndex]._id,
-          levelID: levels[selectedDropdownIndex]._id,
-        };
-        locations.push(loc);
-      }
 
       deliveryAndStorageLocations.forEach((item) => {
-        if (item.type === "STORAGEAREA") {
+        if (item.type === accessabilityPoints[0].value) {
           let loc = {
-            locationType: item.type,
+            locationType: "STORAGEAREA",
             storageArea: item.id,
           };
           locations.push(loc);
         }
-        if (item.type === "DELIVERYAREA") {
+        if (item.type === accessabilityPoints[1].value) {
           let loc = {
-            locationType: item.type,
+            locationType: "DELIVERYAREA",
             deliveryArea: item.id,
           };
           locations.push(loc);
@@ -219,32 +208,28 @@ export default function AddMean(props) {
       });
 
       let availabilities = {
-        availability: {
-          start: startDate,
-          end: endDate,
-        },
+        start: startDate,
+        end: endDate,
       };
 
       // TEST DATA , CALENDAR NOT MADE YET
 
       const sampleDateOne = new Date("05/20/2021");
       const sampleDateTwo = new Date("05/28/2021");
-      const unavailabilities = {
-        unavailability: [
-          {
-            date: sampleDateOne,
-            reason: "Public Holiday",
-            startingHour: new Date().getTime(),
-            endingHour: new Date().getTime(),
-          },
-          {
-            date: sampleDateTwo,
-            reason: "Maintenance",
-            startingHour: new Date().getTime(),
-            endingHour: new Date().getTime(),
-          },
-        ],
-      };
+      const unavailabilities = [
+        {
+          date: sampleDateOne,
+          reason: "Public Holiday",
+          startingHour: new Date().getTime(),
+          endingHour: new Date().getTime(),
+        },
+        {
+          date: sampleDateTwo,
+          reason: "Maintenance",
+          startingHour: new Date().getTime(),
+          endingHour: new Date().getTime(),
+        },
+      ];
 
       formdata.append("name", name);
       formdata.append("color", color);
@@ -266,9 +251,83 @@ export default function AddMean(props) {
         },
         body: formdata,
       });
+      console.log(JSON.stringify(response, null, 2));
 
       if (response.success) {
         alert(JSON.stringify(response, null, 2));
+        setLoading(false);
+      } else {
+        setLoading(false);
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(response.message, "error"),
+          ),
+        );
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getDeliveryArea = async () => {
+    try {
+      setLoading(true);
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/6008169bedbb7816d40b197d`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        setLevels(response.data);
+        if (response.data !== null && response.data.length > 0) {
+          const temp = [];
+          response.data.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
+
+          setDropdownDeliveryAreas(temp);
+        }
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getStorageArea = async () => {
+    try {
+      setLoading(true);
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/6008169bedbb7816d40b197d`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        setLevels(response.data);
+        if (response.data !== null && response.data.length > 0) {
+          const temp = [];
+          response.data.map((item, index) =>
+            temp.push({ label: item.name, value: item.name }),
+          );
+
+          setDropdownStorageAreas(temp);
+        }
         setLoading(false);
       } else {
         setLoading(false);
@@ -326,62 +385,7 @@ export default function AddMean(props) {
 
       <Form.Row>
         <Heading primary="ADD A MEAN" />
-        <CustomButtonModal
-          name="addresses"
-          values={addresses}
-          title="LOCALISATION"
-          leftValue={selectedDropdownBuilding}
-          rightValue={selectedDropdownLevel}
-          leftDropdownValues={dropdownBuildings}
-          rightDropdownValues={dropdownLevels}
-          leftDropdwonPlaceholder={"Select Building"}
-          rightDropdownPlaceholder={"Select Level"}
-          disabled={disableDropdpwn}
-          leftDropdwonValueChange={(event) => {
-            const index = event.target.selectedIndex - 1;
-            if (index !== -1) {
-              const item = event.target.value;
 
-              setSelectedBuildingIndex(index);
-              setSelectedDropdownBuilding(item);
-              // Reset Levels
-              setSelectedLevelIndex(0);
-              setSelectedDropdownLevel("");
-              setDropdownLevels([]);
-              if (buildings[index].buildingType === "EXTERIOR") {
-                setDisableDropdown(true);
-                setIsExterior(true);
-              } else {
-                setIsExterior(false);
-                setDisableDropdown(false);
-                getLevels(buildings[index]._id);
-              }
-            } else {
-              setSelectedBuildingIndex(0);
-              setSelectedDropdownBuilding("");
-              // Reset Levels
-              setSelectedLevelIndex(0);
-              setSelectedDropdownLevel("");
-              setDropdownLevels([]);
-            }
-          }}
-          rightDropdwonValueChange={(event) => {
-            const index = event.target.selectedIndex - 1;
-            if (index !== -1) {
-              const item = event.target.value;
-              setSelectedLevelIndex(index);
-              setSelectedDropdownLevel(item);
-            } else {
-              setSelectedLevelIndex(0);
-              setSelectedDropdownLevel("");
-            }
-          }}
-          // error={addresses}
-          //    style={GLOBALS.Styles.inputWidth}
-          style={{ width: "250px", marginRight: "240px" }}
-          placeholder="Enter site addresses"
-          onChange={(values) => handleChange("addresses", values)}
-        />
         {/* <Button
                 fullWidth={false}
                 component={NavLink}
@@ -462,7 +466,6 @@ export default function AddMean(props) {
                 style={GLOBALS.Styles.inputWidth}
                 values={image}
                 onChange={(values) => {
-                  console.log("IMAGE", JSON.stringify(values, null, 2));
                   handleChange("image", values);
                 }}
               />
@@ -474,46 +477,88 @@ export default function AddMean(props) {
             <Form.Row noMargin width="65%">
               <CustomInputModal
                 name="location"
-                values={location}
-                leftValue={selectedDropdownArea}
-                rightValue={selectedDropdownStorageArea}
-                leftId={deliveryAreaId}
-                rightId={storageAreaId}
+                values={accessabilityPoints}
+                leftValue={accessabilityPoint}
+                rightValue={
+                  accessabilityPoint === accessabilityPoints[0].value
+                    ? selectedDropdownStorageArea
+                    : selectedDropdownArea
+                }
+                leftId={accessabilityPoint}
+                rightId={
+                  accessabilityPoint === accessabilityPoints[0].value
+                    ? storageAreaId
+                    : deliveryAreaId
+                }
                 chipValues={(values) => {
                   console.log(JSON.stringify(values, null, 2));
                   setDeliveryAndStorageLocations(values);
                 }}
-                leftDropdownValues={dropdownDeliveryAreas}
-                leftDropdwonPlaceholder={"Select Delivery Area"}
-                rightDropdownPlaceholder={"Select Storage Area"}
+                leftDropdownValues={accessabilityPoints}
+                leftDropdwonPlaceholder={"Select Location Type"}
+                rightDropdownPlaceholder={"Select Location"}
                 leftDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
                   if (index !== -1) {
                     const item = event.target.value;
-                    seltSelectedSiteDeliveryAreaIndex(index);
-                    setSelectedDropdownArea(item);
-                    setDeilveryAreaId(DeliveryAreas[index]._id);
-                    // filterMean();
+                    setAccessabilityPoint(item);
+                    if (item === accessabilityPoints[0].value) {
+                      getStorageArea();
+                    }
+                    if (item === accessabilityPoints[1].value) {
+                      getDeliveryArea();
+                    } else {
+                      seltSelectedSiteDeliveryAreaIndex(0);
+                      setSelectedDropdownArea("");
+                      setDeilveryAreaId("");
+
+                      setSelectedStorageAreaIndex(0);
+                      setSelectedDropdownStorageArea("");
+                      setStorageAreaId("");
+                    }
                   } else {
-                    seltSelectedSiteDeliveryAreaIndex(null);
+                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                     setDeilveryAreaId("");
-                    // filterMean();
+
+                    setSelectedStorageAreaIndex(0);
+                    setSelectedDropdownStorageArea("");
+                    setStorageAreaId("");
                   }
                 }}
-                rightDropdownValues={dropdownStorageAreas}
+                rightDropdownValues={
+                  accessabilityPoint === accessabilityPoints[0].value
+                    ? dropdownStorageAreas
+                    : dropdownDeliveryAreas
+                }
                 // error={addresses}
                 style={GLOBALS.Styles.inputWidth}
                 rightDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
                   if (index !== -1) {
                     const item = event.target.value;
-                    setStorageAreaId(storageAreas[index]._id);
-                    setSelectedStorageAreaIndex(index);
-                    setSelectedDropdownStorageArea(item);
+                    if (accessabilityPoints[0].value === accessabilityPoint) {
+                      setStorageAreaId(storageAreas[index]._id);
+                      setSelectedStorageAreaIndex(index);
+                      setSelectedDropdownStorageArea(item);
+                    } else {
+                      setSelectedStorageAreaIndex(0);
+                      setSelectedDropdownStorageArea("");
+                    }
+
+                    if (accessabilityPoints[1].value === accessabilityPoint) {
+                      setDeilveryAreaId(DeliveryAreas[index]._id);
+                      seltSelectedSiteDeliveryAreaIndex(index);
+                      setSelectedDropdownArea(item);
+                    } else {
+                      seltSelectedSiteDeliveryAreaIndex(0);
+                      setSelectedDropdownArea("");
+                    }
                   } else {
                     setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
+                    seltSelectedSiteDeliveryAreaIndex(0);
+                    setSelectedDropdownArea("");
                   }
                 }}
               />
@@ -559,7 +604,6 @@ export default function AddMean(props) {
                 style={GLOBALS.Styles.inputWidth}
                 values={techSheet}
                 onChange={(values) => {
-                  console.log("TECH", JSON.stringify(values, null, 2));
                   handleChange("techSheet", values);
                 }}
               />
@@ -616,7 +660,6 @@ export default function AddMean(props) {
                 placeholder="Informations complémentaires"
                 name="addInfo"
                 onChange={({ target: { name, value } }) => {
-                  console.log("add, info", value);
                   handleChange(name, value);
                 }}
                 value={addInfo}
@@ -627,12 +670,11 @@ export default function AddMean(props) {
           <Form.Row>
             <Form.ButtonContainer style={{ width: "80%" }}>
               <Button
-                type="submit"
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
-                onClick={() => {
-                  createMean();
+                onClick={async () => {
+                  await createMean();
                 }}
                 // loading={formik.isSubmitting}
                 // disabled={
