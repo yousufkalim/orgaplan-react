@@ -51,7 +51,7 @@ export default function UserList(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
-
+  const adminStore = useSelector((state) => state.admin);
   const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,7 @@ export default function UserList(props) {
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/6008169bedbb7816d40b197d/${props.location.id}`,
+        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.location.id}`,
         token: store.token,
       });
       console.log(JSON.stringify(response.data.users, null, 2));
