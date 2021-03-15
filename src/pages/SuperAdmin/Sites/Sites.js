@@ -99,6 +99,7 @@ export default function Sites(props) {
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
+        fetchData();
         setLoading(false);
       }
     } catch (err) {
