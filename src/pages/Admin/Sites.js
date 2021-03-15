@@ -17,6 +17,7 @@ import OutlinedCapsuledButton from "../../components/OutlinedCapsuledButton";
 import Logo from "../../assets/icons/Logo.svg";
 import SiteImage from "../../assets/images/Site.png";
 import { ReactComponent as Pencil } from "../../assets/icons/Pencil.svg";
+import { ReactComponent as PlusCircle } from "../../assets/icons/PlusCircle.svg";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -48,10 +49,34 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: "repeat(auto-fit, minmax(300px, 300px))",
   },
   image: {
-    width: 290,
+    width: 260,
     height: 175,
     backgroundSize: "contain",
     borderRadius: theme.shape.borderRadius,
+  },
+  // Add Site Card
+  addSiteCardImageContainer: {
+    position: "relative",
+  },
+  addSiteCardImage: {
+    width: 260,
+    height: 175,
+    opacity: 0.5,
+    backgroundSize: "contain",
+    borderRadius: theme.shape.borderRadius,
+  },
+  addSitePlusContainer: {
+    zIndex: 10,
+    width: "100%",
+    height: "100%",
+    display: "grid",
+    position: "absolute",
+    placeItems: "center",
+  },
+  addSitePlus: {
+    width: "80%",
+    height: "80%",
+    color: theme.palette.grey[100],
   },
   // Profile Card
   profile: {
@@ -83,12 +108,12 @@ function generatePhone(phone) {
   return new_value;
 }
 
-function SiteCard({ site, onClick }) {
+function SiteCard({ site, role, onClick }) {
   const classes = useStyles();
   return (
     <Card onClick={onClick} padding="20px">
       <Form.Row noMargin justifyContent="center">
-        <SmallText primary={site.name} bold textAlign="center" noWrap />
+        <SmallText primary={site.name} bold noWrap />
       </Form.Row>
       <Form.Row>
         <img
@@ -98,13 +123,36 @@ function SiteCard({ site, onClick }) {
         />
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <SmallText primary={`Rôle: ${site.role}`} noMargin />
+        <SmallText primary={`Rôle: ${role}`} noMargin />
+      </Form.Row>
+    </Card>
+  );
+}
+function SiteAddCard({ onClick }) {
+  const classes = useStyles();
+  return (
+    <Card padding="20px" onClick={onClick}>
+      <Form.Row noMargin justifyContent="center">
+        <SmallText primary="Créer un nouveau projet" bold noWrap />
+      </Form.Row>
+      <Form.Row className={classes.addSiteCardImageContainer}>
+        <img
+          src={SiteImage}
+          alt={`create-site`}
+          className={classes.addSiteCardImage}
+        />
+        <div className={classes.addSitePlusContainer}>
+          <PlusCircle className={classes.addSitePlus} />
+        </div>
+      </Form.Row>
+      <Form.Row justifyContent="center" noMargin>
+        <SmallText primary={""} noMargin />
       </Form.Row>
     </Card>
   );
 }
 
-function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
+function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
   const classes = useStyles();
   return (
     <Card disableHeight>
@@ -114,11 +162,16 @@ function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
         </IconButton>
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <img src={SiteImage} className={classes.avatar} alt="avatar" />
+        <img
+          alt="avatar"
+          className={classes.avatar}
+          src={user.image ? GLOBALS.Constants.BASE_URL + user.image : SiteImage}
+        />
       </Form.Row>
       <Form.Row justifyContent="center">
         <SubHeading bold primary={`${user.firstName} ${user.lastName}`} />
       </Form.Row>
+      <Form.Item />
       <Form.Column>
         <SmallText bold primary="ADRESSE E-MAIL :" noMargin />
         <SmallText primary={user.email} />
@@ -129,7 +182,7 @@ function ProfileCard({ user, onClick, onPasswordChange, onLogout }) {
       </Form.Column>
       <Form.Column>
         <SmallText bold primary="ENTREPRISE :" noMargin />
-        <SmallText primary={user?.company?.name} />
+        <SmallText primary={company?.name} />
       </Form.Column>
       <Form.Row></Form.Row>
       <Form.Row justifyContent="center">
@@ -151,6 +204,7 @@ export default function Sites(props) {
   const store = useSelector((state) => state.auth);
 
   const [items, setItems] = useState([]);
+  const [company, setCompany] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -160,43 +214,14 @@ export default function Sites(props) {
 
   async function fetchData() {
     try {
-      console.log("store", store);
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.SITES_BY_ADMIN}/${store.user._id}`,
-      // });
-      // setItems(result.data.items);
-      setItems([
-        {
-          _id: 1,
-          name: "Project Louviere",
-          role: "Admin",
-        },
-        {
-          _id: 2,
-          name: "Hôpital de la Tourelle",
-          role: "Entreprise",
-        },
-        {
-          _id: 3,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 4,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 5,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-        {
-          _id: 6,
-          name: "Terrain Olympique du Maine",
-          role: "Entreprise",
-        },
-      ]);
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_USER_SITES}/${store.user._id}`,
+      });
+      const adminCompany = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
+      });
+      setCompany(adminCompany.data);
+      setItems(result.data.sites);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -210,8 +235,13 @@ export default function Sites(props) {
   return (
     <Form.Row className={classes.page} noMargin>
       <div className={classes.root}>
-        <Form.Row margin="0 0 20px 0">
+        <Form.Row
+          margin="0 0 20px 0"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
+          <SmallText primary="Go To Home Page" to="/" underline noMargin />
         </Form.Row>
         <Heading primary="BIENVENUE SUR ORGAPLAN ! " noWrap noMargin />
         <SmallText
@@ -225,11 +255,20 @@ export default function Sites(props) {
             <div className={classes.sitesGrid}>
               {items.map((site) => (
                 <SiteCard
-                  site={site}
-                  key={site._id}
-                  onClick={() => console.log("id", site._id)}
+                  role={site.role}
+                  site={site.siteId}
+                  key={site.siteId._id}
+                  onClick={() => {
+                    if (window.confirm("Are you sure?")) {
+                      dispatch(Actions.admin.set_site(site));
+                    }
+                  }}
                 />
               ))}
+              {company.type === "CLIENTPERSITE" &&
+                company.adminIds.some(
+                  (admin) => admin._id === store.user._id,
+                ) && <SiteAddCard onClick={() => console.log("asdf")} />}
             </div>
           )}
         </div>
@@ -237,9 +276,10 @@ export default function Sites(props) {
       <div className={classes.profile}>
         <ProfileCard
           user={store.user}
+          company={company}
           onClick={() => console.log("onClick")}
-          onPasswordChange={() => console.log("onPasswordChange")}
           onLogout={() => dispatch(Actions.auth.do_logout())}
+          onPasswordChange={() => console.log("onPasswordChange")}
         />
       </div>
     </Form.Row>

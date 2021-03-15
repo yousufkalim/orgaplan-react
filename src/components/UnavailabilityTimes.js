@@ -77,23 +77,12 @@ export default function MultiAdderInputModal(props) {
   };
   const deleteUnavailability = (id) => {
     let deleteArray = [];
-    let i = 0;
-    unavailabilityDates.map((key, index) => {
-      if (index !== id) {
-        deleteArray[i] = key;
-      }
-      i++;
-    });
+    unavailabilityDates.map(
+      (key, index) => index !== id && (deleteArray[index] = key),
+    );
     setUnavailabilityDates(deleteArray);
-    console.log(deleteArray);
   };
 
-  // const handleDelete = (chipToDelete) => () => {
-  //   const newValues = props.values.filter(
-  //     (chip) => chip.key !== chipToDelete.key,
-  //   );
-  //   props.onChange(newValues);
-  // };
   const handledayOff = (event) => {
     setDayOff(event.target.checked);
 
@@ -202,17 +191,6 @@ export default function MultiAdderInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <>
-            {/* <ul className={classes.chips}>
-              {props.values.map((data) => (
-                <li key={data.key}>
-                  <Chip
-                    label={data.label}
-                    className={classes.chip}
-                    onDelete={handleDelete(data)}
-                  />
-                </li>
-              ))}
-            </ul> */}
             <Form.Form>
               <Form.Row>
                 <Form.Row noMargin>
@@ -294,9 +272,8 @@ export default function MultiAdderInputModal(props) {
                 </Form.Row>
               </Form.Row>
             </Form.Form>
-
             <table className="table">
-              {unavailabilityDates.length > 0 ? (
+              {unavailabilityDates.length > 0 && (
                 <>
                   <tr>
                     <th>Date</th>
@@ -327,8 +304,6 @@ export default function MultiAdderInputModal(props) {
                     );
                   })}
                 </>
-              ) : (
-                ""
               )}
             </table>
           </>
