@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import Fab from "@material-ui/core/Fab";
 import List from "@material-ui/core/List";
+import { useDispatch } from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 import ListItem from "@material-ui/core/ListItem";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
+import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
@@ -136,6 +139,7 @@ const userItems = [
 export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(true);
 
@@ -196,6 +200,16 @@ export default function AdminHeader(props) {
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
+            <ListItem
+              button
+              key={"logout"}
+              onClick={() => dispatch(Actions.auth.do_logout())}
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                {<ExitToAppIcon />}
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} />
+            </ListItem>
           </List>
         </div>
       </Drawer>
