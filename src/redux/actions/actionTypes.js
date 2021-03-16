@@ -13,5 +13,8 @@ export const CHECK_LOGIN = "CHECK_LOGIN";
 
 // Admin
 export const SET_SITE = "SET_SITE";
+export const SET_COMPANY = "SET_COMPANY";
 
+// Extra
+export const RESET_STATE = "RESET_STATE";
 export const POST_DATA = "POST_DATA";

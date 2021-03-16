@@ -123,11 +123,12 @@ function SiteCard({ site, role, onClick }) {
         />
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <SmallText primary={`Rôle: ${role}`} noMargin />
+        <SmallText primary={`Rôle: ${role}`} />
       </Form.Row>
     </Card>
   );
 }
+
 function SiteAddCard({ onClick }) {
   const classes = useStyles();
   return (
@@ -146,7 +147,7 @@ function SiteAddCard({ onClick }) {
         </div>
       </Form.Row>
       <Form.Row justifyContent="center" noMargin>
-        <SmallText primary={""} noMargin />
+        <SmallText primary={""} />
       </Form.Row>
     </Card>
   );
@@ -221,6 +222,7 @@ export default function Sites(props) {
       const adminCompany = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
       });
+      dispatch(Actions.admin.set_company(adminCompany.data));
       setCompany(adminCompany.data);
       setItems(result.data.sites);
       setLoading(false);
@@ -267,7 +269,7 @@ export default function Sites(props) {
                   }}
                 />
               ))}
-              {company.type === "CLIENTPERSITE" &&
+              {company.type === "MASTERCLIENT" &&
                 company.adminIds.some(
                   (admin) => admin._id === store.user._id,
                 ) && <SiteAddCard onClick={() => console.log("asdf")} />}

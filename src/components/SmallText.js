@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-export default function SmallText({ className, bold, ...props }) {
+export default function SmallText({ className, bold, noMargin, ...props }) {
   const useStyles = makeStyles((theme) => ({
     text: {
       textDecoration: "none",
       fontWeight: bold ? "bold" : "normal",
-      marginBottom: props.noMargin ? 0 : 10,
+      marginBottom: noMargin ? 0 : 10,
       paddingBottom: props.underline ? 3 : 0,
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.primary.contrastText,

@@ -95,10 +95,6 @@ export default function Login(props) {
                 primary={GLOBALS.I18n.t("forgotPassword")}
                 to="/password-forgot"
               />
-              <SmallText
-                primary={GLOBALS.I18n.t("dontHaveAccount")}
-                to="/register"
-              />
             </Form.Row>
           </Form.Form>
         )}

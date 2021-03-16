@@ -47,7 +47,7 @@ export default function AddInvoice(props) {
   }, []);
 
   useEffect(() => {
-    clientId && fetchSitesByClient();
+    clientId && clientId !== "ALL" && fetchSitesByClient();
     setSiteId("");
     // eslint-disable-next-line
   }, [clientId]);
@@ -177,6 +177,7 @@ export default function AddInvoice(props) {
                 value={endDate}
                 // error={endDate}
                 placeholder="End date"
+                disabled={!startDate}
                 min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>

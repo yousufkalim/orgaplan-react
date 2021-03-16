@@ -10,6 +10,8 @@ const endpoints = {
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
+  REQUEST_PASSWORD_RESET: BASE_URL_V1 + "auth/request-password-reset",
+  RESET_PASSWORD: BASE_URL_V1 + "auth/reset-password",
 
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
@@ -58,7 +60,6 @@ const endpoints = {
   GET_DELIVERY_AREA_BY_SITE_ID:
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
-  CREATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
 

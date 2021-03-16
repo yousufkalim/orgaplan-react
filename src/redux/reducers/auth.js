@@ -11,6 +11,15 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.RESET_STATE:
+      return storeUtility.updateObject(state, {
+        loading: false,
+        auth: false,
+        user: "",
+        token: "",
+        error: null,
+      });
+
     case actionTypes.SET_LOADING:
       return storeUtility.updateObject(state, {
         error: null,

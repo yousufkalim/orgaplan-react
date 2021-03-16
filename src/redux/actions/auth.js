@@ -2,6 +2,7 @@ import * as actionTypes from "./actionTypes";
 
 import GLOBALS from "../../globals";
 import * as Notistack from "./notistack";
+import * as Admin from "./admin";
 
 // Sync
 export const set_loading = (loading) => ({
@@ -40,6 +41,11 @@ export const set_user = (user) => ({
 });
 
 // Async
+export const do_logout = () => async (dispatch) => {
+  dispatch(Admin.reset_state());
+  dispatch(set_logout());
+};
+
 export const do_login = (email, password) => async (dispatch) => {
   try {
     dispatch(set_loading(true));
