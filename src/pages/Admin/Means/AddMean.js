@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 import GLOBALS from "../../../globals";
@@ -14,7 +13,6 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
-import CustomButtonModal from "../../../components/CustomButtonModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +32,6 @@ const accessabilityPoints = [
 export default function AddMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
-  const [addresses] = useState([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [color, setColor] = useState("");
@@ -46,8 +43,6 @@ export default function AddMean(props) {
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [loading, setLoading] = useState(true);
-  const [disableDropdpwn, setDisableDropdown] = useState(false);
-  const [isExterior, setIsExterior] = useState(false);
   const classes = useStyles();
 
   const [accessabilityPoint, setAccessabilityPoint] = useState("");
@@ -79,13 +74,10 @@ export default function AddMean(props) {
 
   const [buildings, setBuidings] = useState([]);
   const [dropdownBuildings, setDropdownBuildings] = useState([]);
-  const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
-  const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
+  const [selectedBuildingIndex] = useState(null);
 
   const [levels, setLevels] = useState([]);
-  const [dropdownLevels, setDropdownLevels] = useState([]);
-  const [selectedDropdownLevel, setSelectedDropdownLevel] = useState("");
-  const [selectedDropdownIndex, setSelectedLevelIndex] = useState(null);
+  const [selectedDropdownIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -169,7 +161,6 @@ export default function AddMean(props) {
   };
 
   function handleChange(name, value) {
-    alert(JSON.stringify(value, null, 2));
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
@@ -184,7 +175,7 @@ export default function AddMean(props) {
 
   const createMean = async () => {
     try {
-      // setLoading(true);
+      setLoading(true);
 
       var formdata = new FormData();
 
@@ -343,39 +334,39 @@ export default function AddMean(props) {
     }
   };
 
-  const getLevels = async (buidlingId) => {
-    try {
-      setLoading(true);
+  // const getLevels = async (buidlingId) => {
+  //   try {
+  //     setLoading(true);
 
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
-        token: store.token,
-      });
+  //     const response = await GLOBALS.API({
+  //       uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
+  //       token: store.token,
+  //     });
 
-      if (response.success) {
-        setLevels(response.data);
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-          response.data.map((item, index) =>
-            temp.push({ label: item.name, value: item.name }),
-          );
+  //     if (response.success) {
+  //       setLevels(response.data);
+  //       if (response.data !== null && response.data.length > 0) {
+  //         const temp = [];
+  //         response.data.map((item, index) =>
+  //           temp.push({ label: item.name, value: item.name }),
+  //         );
 
-          setDropdownLevels(temp);
-        }
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
+  //         setDropdownLevels(temp);
+  //       }
+  //       setLoading(false);
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setLoading(false);
+  //     dispatch(
+  //       Actions.notistack.enqueueSnackbar(
+  //         Actions.notistack.snackbar(err.message, "error"),
+  //       ),
+  //     );
+  //   }
+  // };
 
   return (
     <div className={classes.root}>
@@ -400,15 +391,6 @@ export default function AddMean(props) {
                 }}
               /> */}
       </Form.Row>
-      {loading && ""}
-      {levels && ""}
-      {selectedDropdownIndex && ""}
-      {meanTypes && ""}
-      {selectedBuildingIndex && ""}
-      {DeliveryAreas && ""}
-      {selectedSiteDeliveryAreadIndex && ""}
-      {storageAreas && ""}
-      {selectedStorageAreaIndex && ""}
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
@@ -416,22 +398,20 @@ export default function AddMean(props) {
             <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
               <FormInput
                 name="name"
-                error
-                style={GLOBALS.Styles.inputWidth}
+                value={name}
                 placeholder="name"
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={name}
-                validateSchema={Yup.string().required()}
               />
               <FormSelect
                 placeholder="Type"
                 name="type"
                 style={GLOBALS.Styles.inputWidth}
+                values={dropdownMeanTypes}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
-
                   if (index !== -1) {
                     const item = event.target.value;
                     setSelectedMeanTypeIndex(index);
@@ -441,7 +421,6 @@ export default function AddMean(props) {
                     setSelectedMeanType("");
                   }
                 }}
-                values={dropdownMeanTypes}
               />
               <FormSelect
                 placeholder="color"
@@ -595,7 +574,6 @@ export default function AddMean(props) {
               />
             </Form.Row>
           </Form.Row>
-
           <Form.Row>
             <FormLabel bold primary="FICHE TECHNIQUE : " />
             <Form.Row noMargin width="65%">
@@ -609,7 +587,6 @@ export default function AddMean(props) {
               />
             </Form.Row>
           </Form.Row>
-
           <Form.Row>
             <FormLabel bold primary="INDISPONIBILITES: " />
             <Form.Row noMargin width="65%">

@@ -11,6 +11,7 @@ import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
+import Loader from "../../../components/Loader";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import Pagination from "../../../components/Pagination";
@@ -235,7 +236,11 @@ export default function Admins(props) {
           />
         </Form.Row>
         <div className={classes.content}>
-          <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
+          {loading ? (
+            <Loader.Progress />
+          ) : (
+            <Table headers={GLOBALS.Data.admins.headings} rows={rows} />
+          )}
           {!loading && data.totalItems > 10 && (
             <Pagination
               page={page}

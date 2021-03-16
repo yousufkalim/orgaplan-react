@@ -66,8 +66,10 @@ export default function AddClient(props) {
       setContractStartDate("");
       setContractEndDate("");
       setContractType(value);
-    } else if (name === "contractStartDate") setContractStartDate(value);
-    else if (name === "contractEndDate") setContractEndDate(value);
+    } else if (name === "contractStartDate") {
+      setContractEndDate("");
+      setContractStartDate(value);
+    } else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "notificationPriorToDays")

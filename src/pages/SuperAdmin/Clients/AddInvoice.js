@@ -96,8 +96,10 @@ export default function AddInvoice(props) {
 
   const handleChange = (name, value) => {
     if (name === "clientId") setClientId(value);
-    else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
+    else if (name === "startDate") {
+      setEndDate("");
+      setStartDate(value);
+    } else if (name === "endDate") setEndDate(value);
     else if (name === "siteId") setSiteId(value);
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);

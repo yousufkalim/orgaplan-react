@@ -67,8 +67,10 @@ export default function AddSiteStep2(props) {
   }, []);
 
   function handleChange(name, value) {
-    if (name === "start") setStart(value);
-    else if (name === "end") setEnd(value);
+    if (name === "start") {
+      setEnd("");
+      setStart(value);
+    } else if (name === "end") setEnd(value);
     else if (name === "openingHours") {
       setUpdate((st) => !st);
       setOpeningHours(value);

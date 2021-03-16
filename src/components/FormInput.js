@@ -133,7 +133,7 @@ export default function Input(props) {
             const event = {
               target: {
                 name: props.name,
-                value: e.format("YYYY-MM-DD"),
+                value: e && e.format("YYYY-MM-DD"),
               },
             };
             props.onChange(event);

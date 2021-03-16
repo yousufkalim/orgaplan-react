@@ -28,7 +28,7 @@ export default function Main() {
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (
-        store.user.role === "ADMIN" ? (
+        store.user.role === "SUPERADMIN" ? (
           <SuperAdmin />
         ) : (
           <User />
