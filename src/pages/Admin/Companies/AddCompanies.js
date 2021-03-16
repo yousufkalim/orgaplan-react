@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
 import MultiAdderInput from "../../../components/MultiAdderInput";
-
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -18,6 +17,7 @@ import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import { InputSharp } from "@material-ui/icons";
+import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,12 +33,9 @@ const useStyles = makeStyles((theme) => ({
   radioLabel: {
     marginLeft: "7px",
     color: "#7E7878",
-    marginRight: "50px"
-
+    marginRight: "50px",
   },
-  radioBtn: {
-
-  }
+  radioBtn: {},
 }));
 
 const addClientYup = Yup.object().shape({
@@ -67,6 +64,9 @@ const addClientYup = Yup.object().shape({
 export default function AddCompanies(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
+
+  console.log(adminStore.site.siteId._id);
 
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
@@ -88,7 +88,6 @@ export default function AddCompanies(props) {
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
   const [addInfo, setAddInfo] = useState("");
-
 
   // const [startDate, setStartDate] = useState("");
   // const [startDateError, setStartDateError] = useState("");
@@ -126,7 +125,6 @@ export default function AddCompanies(props) {
         Authorization: store.token,
       },
       body: formdata,
-     
     });
     formik.setSubmitting(false);
     props.history.push("/clients");
@@ -171,7 +169,7 @@ export default function AddCompanies(props) {
         setContractError(false);
       }
     }
-    
+
     if (e.target.name === "email") {
       setEmail(e.target.value);
       var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -189,30 +187,28 @@ export default function AddCompanies(props) {
         setPhoneError(false);
       }
     }
-   
-    if(e.target.name === "images"){
+
+    if (e.target.name === "images") {
       setImages(e.target.value);
     }
-    if(e.target.name === "trades"){
+    if (e.target.name === "trades") {
       setTrades(e.target.value);
     }
-  
+
     if (e.target.name === "addInfo") {
       setAddInfo(e.target.value);
     }
-   
   };
 
   const handleChange = (name, value) => {
     if (name === "trades") {
-     if(value !== ""){
-      setUpdate((st) => !st);
-      setTrades(value);
-      console.log("trades", trades);
+      if (value !== "") {
+        setUpdate((st) => !st);
+        setTrades(value);
+        console.log("trades", trades);
+      }
     }
-     }
-  }
-
+  };
 
   const submitHandler = (e) => {
     var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -273,7 +269,7 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
-console.log("type ==> ",companyType);
+  console.log("type ==> ", companyType);
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -325,13 +321,11 @@ console.log("type ==> ",companyType);
                 }
                 // onChange={inputChange}
                 // onChange={(values) =>
-                
-                   
+
                 //      ( {type: "text",
                 //       name: "trades",
                 //       value: values})
-                   
-               
+
                 // }
               />
             </Form.Row>
@@ -342,25 +336,31 @@ console.log("type ==> ",companyType);
               <div>
                 <div>
                   <input
-                  className={classes.radioBtn}
+                    className={classes.radioBtn}
                     type="radio"
                     onChange={(e) => setCompanyType("generalcontractor")}
                     id="generalcontractor"
                     name="companyType"
                     value="generalcontractor"
                   />
-                  <label for="generalcontractor" className={classes.radioLabel}>General Contractor</label>
+                  <label for="generalcontractor" className={classes.radioLabel}>
+                    General Contractor
+                  </label>
                   <input
-                  className={classes.radioBtn}
+                    className={classes.radioBtn}
                     type="radio"
-                   
                     id="subcontractor"
                     name="companyType"
-                    onChange={(e) => {setCompanyType("subcontractor"); console.log(companyType)}}
+                    onChange={(e) => {
+                      setCompanyType("subcontractor");
+                      console.log(companyType);
+                    }}
                     value="subcontractor"
                     defaultChecked
                   />
-                  <label for="subcontractor" className={classes.radioLabel}>Sub contractor</label>
+                  <label for="subcontractor" className={classes.radioLabel}>
+                    Sub contractor
+                  </label>
                 </div>
                 {companyTypeError === true && (
                   <div className={classes.error}>Please select company</div>
@@ -389,7 +389,12 @@ console.log("type ==> ",companyType);
                   disabled={companyType === "generalcontractor" ? true : false}
                   id="contract"
                   type={contract}
-                  style={{ width: "40%", height: "45px", color: "#8B8989", padding: '0px 10px' }}
+                  style={{
+                    width: "40%",
+                    height: "45px",
+                    color: "#8B8989",
+                    padding: "0px 10px",
+                  }}
                   onChange={inputChange}
                 >
                   <option value="">List</option>
@@ -406,24 +411,27 @@ console.log("type ==> ",companyType);
           <Form.Row>
             <FormLabel bold primary="TRADES : " />
             <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
-            <MultiAdderInput
-              name="trades"
-              values={trades}
-              validateError="Please enter trades"
-              placeholder="Trades"
-              style={{width: "40%"}}
-              // disabled={contractType !== "MASTERCLIENT"}
-              onChange={(values) => handleChange("trades", values)}
-              validate={(text) => {
-                if(text !== ""){
-                  return false;
-                }
-                else{
-                  return true;
-                }
-              }}
-            />
-           
+              <CustomInputModal
+                name="trades"
+                values={[]}
+                value={""}
+                placeholder="Select Trades"
+                chipValues={(values) => {
+                  // setSiteParams(values);
+                }}
+                onChange={(event) => {
+                  // const index = event.target.selectedIndex - 1;
+                  // if (index !== -1) {
+                  //   const item = event.target.value;
+                  //   setSiteId(sites[index].siteId._id);
+                  //   setSelectedSiteIndex(index);
+                  //   setSelectedSite(item);
+                  // } else {
+                  //   setSelectedSiteIndex(0);
+                  //   setSelectedSite("");
+                  // }
+                }}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -492,7 +500,7 @@ console.log("type ==> ",companyType);
             <Form.Row width="55%">
               <FormInput
                 name="website"
-                style={{width: '50%'}}
+                style={{ width: "50%" }}
                 placeholder="http://"
                 onChange={(e) => setWebsite(e.target.value)}
                 value={website}
@@ -502,15 +510,15 @@ console.log("type ==> ",companyType);
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
             <Form.Row width="55%">
-            <FormInput
-              textArea
-              rows={3}
-              style={{width: '90%'}}
-              onChange={(e) => setAddInfo(e.target.value)}
-              placeholder="Informations complémentaires"
-              name="addInfo"
-              value={addInfo}
-            />
+              <FormInput
+                textArea
+                rows={3}
+                style={{ width: "90%" }}
+                onChange={(e) => setAddInfo(e.target.value)}
+                placeholder="Informations complémentaires"
+                name="addInfo"
+                value={addInfo}
+              />
             </Form.Row>
           </Form.Row>
 
@@ -525,8 +533,9 @@ console.log("type ==> ",companyType);
                 name === "" ||
                 color === "" ||
                 companyType === "" ||
-                contract === "" ?
-                true : false
+                contract === ""
+                  ? true
+                  : false
               }
             />
           </Form.ButtonContainer>

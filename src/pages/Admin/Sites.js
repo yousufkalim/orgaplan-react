@@ -218,6 +218,7 @@ export default function Sites(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_USER_SITES}/${store.user._id}`,
       });
+      console.log(JSON.stringify(store.user.company, null, 2));
       const adminCompany = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
       });
@@ -263,7 +264,8 @@ export default function Sites(props) {
                   onClick={() => {
                     if (window.confirm("Are you sure?")) {
                       dispatch(Actions.admin.set_site(site));
-                    }
+                    } else
+                      console.log(JSON.stringify(site.siteId._id, null, 2));
                   }}
                 />
               ))}
