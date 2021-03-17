@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -28,6 +29,43 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
 }));
+
+// const addClientYup = Yup.object().shape({
+//   logo: Yup.array().min(1, "Required").required("Required"),
+//   name: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   lastName: Yup.string()
+//     // .test("len", "Must be less than 30 characters", (val) => val.length <= 30)
+//     .required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   // .test(
+//   // "len",
+//   // "Must be less than 300 characters",
+//   // (val) => val.length <= 300,
+//   //)
+//   notificationPriorToDays: Yup.number().test("positive", "Invalid", (val) => {
+//     console.log(val);
+//     return false;
+//   }),
+//   notificationTo: Yup.array(),
+// });
 
 export default function AddClient(props) {
   const classes = useStyles();
@@ -62,11 +100,8 @@ export default function AddClient(props) {
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "contractType") {
-      setContractStartDate("");
-      setContractEndDate("");
-      setContractType(value);
-    } else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractType") setContractType(value);
+    else if (name === "contractStartDate") setContractStartDate(value);
     else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);

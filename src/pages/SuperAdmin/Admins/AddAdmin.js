@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -24,6 +25,21 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
 }));
+
+// const addAdminYup = Yup.object().shape({
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   firstName: Yup.string().required("Required"),
+//   lastName: Yup.string().required("Required"),
+//   image: Yup.array().min(1, "Required").required("Required"),
+//   companyId: Yup.string().required("Required"),
+// });
 
 export default function AddAdmin(props) {
   const classes = useStyles();
@@ -52,10 +68,16 @@ export default function AddAdmin(props) {
         uri: `${GLOBALS.Constants.COMPANY}`,
       });
 
-      const itemsArray = result.data.items.map((item) => ({
-        value: item._id,
-        label: item.name,
-      }));
+      const itemsArray = [];
+      result.data.items.map((item) => {
+        if (!item.adminId) {
+          itemsArray.push({
+            value: item._id,
+            label: item.name,
+          });
+        }
+        return true;
+      });
 
       setCompanies(itemsArray);
       setLoading(false);

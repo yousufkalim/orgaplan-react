@@ -1081,9 +1081,10 @@ const Calender = () => {
           step={60}
           timeslots={1}
           // onSelectEvent={handlePopoverShow}
-         onSelectEvent={bookingSlot}
+          onSelectEvent={bookingSlot}
           onSelecting={false}
           onSelectSlot={AddEvent}
+          // onSelectSlot={AddAvailability}
           startAccessor="start"
           endAccessor="end"
           style={{

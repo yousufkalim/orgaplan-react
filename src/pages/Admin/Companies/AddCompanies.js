@@ -169,7 +169,6 @@ export default function AddCompanies(props) {
         setContractError(false);
       }
     }
-
     if (e.target.name === "email") {
       setEmail(e.target.value);
       var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;

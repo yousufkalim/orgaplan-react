@@ -9,7 +9,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
+// import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
@@ -96,6 +98,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const userItems = [
+  // {
+  //   name: "Home",
+  //   path: ["/", "/home"],
+  //   icon: <HomeIcon />,
+  // },
   {
     name: "Calender",
     path: "/calender",
@@ -131,13 +138,23 @@ const userItems = [
     path: "/pic-interactive",
     icon: <Pic />,
   },
+  // {
+  //   name: "Logs",
+  //   path: "/logs",
+  //   icon: <Logs />,
+  // },
+  // {
+  //   name: "List of Admins",
+  //   path: "/admins",
+  //   icon: <Admins />,
+  // },
 ];
 
 export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleDrawer = () => {
     setOpen((st) => !st);
@@ -196,6 +213,16 @@ export default function AdminHeader(props) {
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
+            {/* <ListItem
+              button
+              key={"logout"}
+              onClick={() => dispatch(Actions.auth.do_logout())}
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                {<ExitToAppIcon />}
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} />
+            </ListItem> */}
           </List>
         </div>
       </Drawer>

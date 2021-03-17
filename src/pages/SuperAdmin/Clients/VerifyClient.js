@@ -398,7 +398,7 @@ export default function VerifyClient(props) {
                       "days",
                     ) <= 0)) ||
                 additionalInfo.length > 300 ||
-                (phone && String(phone).length !== 9) ||
+                (phone && phone.length !== 10) ||
                 Number(notificationPriorToDays) < 0
               }
             />

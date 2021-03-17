@@ -182,7 +182,7 @@ export default function AddSiteStep3(props) {
   // Rendering
   const buildingRows = buildings.map((building) => [
     building.name,
-    building.name === "Exterior" ? "-" : building.levels.length,
+    building.name === "Exterior" ? 0 : building.levels.length,
     <Form.Row style={{ justifyContent: "center" }}>
       <SmallButton
         text="Modify"
@@ -233,9 +233,10 @@ export default function AddSiteStep3(props) {
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
-                  file &&
                   file.size <= 1000000 &&
-                  file.type === "application/pdf"
+                  (file.type === "image/png" ||
+                    file.type === "image/jpg" ||
+                    file.type === "image/jpeg")
                 ) {
                   onAddLevelImage(level._id, file, index);
                   e.target.value = "";
@@ -243,7 +244,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of type: PDF",
+                        "Max size can be 10MB of types: PNG, JPEG, JPG",
                         "error",
                       ),
                     ),
@@ -286,9 +287,10 @@ export default function AddSiteStep3(props) {
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
-                  file &&
                   file.size <= 1000000 &&
-                  file.type === "application/pdf"
+                  (file.type === "image/png" ||
+                    file.type === "image/jpg" ||
+                    file.type === "image/jpeg")
                 ) {
                   onAddLevelImage(level._id, file, index);
                   e.target.value = "";
@@ -296,7 +298,7 @@ export default function AddSiteStep3(props) {
                   dispatch(
                     Actions.notistack.enqueueSnackbar(
                       Actions.notistack.snackbar(
-                        "Max size can be 10MB of type: PDF",
+                        "Max size can be 10MB of types: PNG, JPEG, JPG",
                         "error",
                       ),
                     ),
@@ -345,7 +347,7 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Building Name" />
+                <FormLabel disableMargin bold primary="Building Name" />
               </Form.Row>
               <FormInput
                 name="buildingName"
@@ -388,7 +390,7 @@ export default function AddSiteStep3(props) {
               <Form.Form>
                 <Form.Row alignItems="center">
                   <Form.Row noMargin>
-                    <FormLabel noMargin bold primary="Level Number" />
+                    <FormLabel disableMargin bold primary="Level Number" />
                   </Form.Row>
                   {activeBuilding && (
                     <FormSelect
@@ -421,7 +423,7 @@ export default function AddSiteStep3(props) {
               <Divider />
               <FormLabel
                 bold
-                noMargin
+                disableMargin
                 primary={`Building: ${activeBuilding.name}`}
               />
               <Divider />

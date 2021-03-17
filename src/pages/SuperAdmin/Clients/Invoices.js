@@ -50,16 +50,14 @@ export default function Invoices(props) {
   }, [page, client]);
 
   useEffect(() => {
-    props.match.params.clientId
-      ? setClient(props.match.params.clientId)
-      : setClient("ALL");
+    props.match.params.clientId && setClient(props.match.params.clientId);
     // eslint-disable-next-line
   }, [client]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.INVOICES}/?page=${page}&clientId=${client}`,
+        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${client}?page=${page}`,
       });
       const clients = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
@@ -100,12 +98,7 @@ export default function Invoices(props) {
     }
   }
 
-  let clientsArray = [
-    {
-      value: "ALL",
-      label: "ALL",
-    },
-  ];
+  let clientsArray = [];
   clients.map((client) =>
     clientsArray.push({
       value: client._id,
@@ -121,7 +114,7 @@ export default function Invoices(props) {
     item.amount,
     item.description,
     <>
-      <IconButton component={NavLink} to={`/clients/edit-invoice/${item._id}`}>
+      <IconButton>
         <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <IconButton onClick={() => onDelete(item._id)}>
@@ -141,10 +134,7 @@ export default function Invoices(props) {
           fullWidth={false}
           component={NavLink}
           text="CREATE AN INVOICE"
-          to={{
-            pathname: "/clients/add-invoice",
-            clientId: client,
-          }}
+          to="/clients/add-invoice"
         />
       </Form.Row>
       <Form.Row noMargin>

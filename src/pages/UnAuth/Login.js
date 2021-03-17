@@ -7,6 +7,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import PersonIcon from "@material-ui/icons/Person";
 
 import GLOBALS from "../../globals";
+import Header from "./UnAuthHeader";
 import Form from "../../components/Form";
 import Actions from "../../redux/actions";
 import Input from "../../components/Input";
@@ -44,65 +45,62 @@ export default function Login(props) {
   };
 
   return (
-    <div className={classes.root}>
-      <Heading primary={GLOBALS.I18n.t("loginHeaderPrimary")} />
-      <Formik
-        initialValues={{
-          // email: "talha28.falcon@gmail.com",
-          // password: "shutdown12",
-          email: "yousaf.falcon321@gmail.com",
-          password: "1",
-        }}
-        validationSchema={loginYup}
-        onSubmit={onSubmit}
-      >
-        {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
-          <Form.Form onSubmit={handleSubmit} maxWidth="350px">
-            <Form.Item>
-              <Input
-                type="email"
-                name="email"
-                onBlur={handleBlur}
-                value={values.email}
-                error={errors.email}
-                onChange={handleChange}
-                startAdornment={<PersonIcon />}
-                placeholder={GLOBALS.I18n.t("emailPlaceholder")}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Input
-                type="password"
-                name="password"
-                onBlur={handleBlur}
-                value={values.password}
-                onChange={handleChange}
-                error={errors.password}
-                startAdornment={<LockIcon />}
-                placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
-              />
-            </Form.Item>
-            <Form.ButtonContainer>
-              <Button
-                type="submit"
-                loading={store.loading}
-                disabled={store.loading}
-                text={GLOBALS.I18n.t("login")}
-              />
-            </Form.ButtonContainer>
-            <Form.Row>
-              <SmallText
-                primary={GLOBALS.I18n.t("forgotPassword")}
-                to="/password-forgot"
-              />
-              <SmallText
-                primary={GLOBALS.I18n.t("dontHaveAccount")}
-                to="/register"
-              />
-            </Form.Row>
-          </Form.Form>
-        )}
-      </Formik>
-    </div>
+    <Header>
+      <div className={classes.root}>
+        <Heading primary={GLOBALS.I18n.t("loginHeaderPrimary")} />
+        <Formik
+          initialValues={{ email: "yousaf.falcon321@gmail.com", password: "1" }}
+          validationSchema={loginYup}
+          onSubmit={onSubmit}
+        >
+          {({ values, errors, handleChange, handleBlur, handleSubmit }) => (
+            <Form.Form onSubmit={handleSubmit} maxWidth="350px">
+              <Form.Item>
+                <Input
+                  type="email"
+                  name="email"
+                  onBlur={handleBlur}
+                  value={values.email}
+                  error={errors.email}
+                  onChange={handleChange}
+                  startAdornment={<PersonIcon />}
+                  placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Input
+                  type="password"
+                  name="password"
+                  onBlur={handleBlur}
+                  value={values.password}
+                  onChange={handleChange}
+                  error={errors.password}
+                  startAdornment={<LockIcon />}
+                  placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
+                />
+              </Form.Item>
+              <Form.ButtonContainer>
+                <Button
+                  type="submit"
+                  loading={store.loading}
+                  disabled={store.loading}
+                  text={GLOBALS.I18n.t("login")}
+                />
+              </Form.ButtonContainer>
+              <Form.Row>
+                <SmallText
+                  primary={GLOBALS.I18n.t("forgotPassword")}
+                  to="/password-forgot"
+                />
+                <SmallText
+                  primary={GLOBALS.I18n.t("dontHaveAccount")}
+                  to="/register"
+                />
+              </Form.Row>
+            </Form.Form>
+          )}
+        </Formik>
+      </div>
+    </Header>
   );
 }

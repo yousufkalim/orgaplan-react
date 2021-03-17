@@ -24,6 +24,16 @@ const endpoints = {
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
   DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",
   INVOICE: BASE_URL_V1 + "superadmin/invoices/get",
+
+  // SUPERADMIN
+  ADMINS: BASE_URL_V1 + "superadmin/admins",
+  ADMINS_DELETE: BASE_URL_V1 + "superadmin/admins/delete",
+  BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
+  BUILDINGS_BY_SITE: BASE_URL_V1 + "superadmin/buildings/site",
+  COMPANY: BASE_URL_V1 + "superadmin/companies",
+  CLIENTS: BASE_URL_V1 + "superadmin/clients",
+  CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
+  DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",
   INVOICES_BY_CLIENT: BASE_URL_V1 + "superadmin/invoices/client",
   INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
@@ -37,6 +47,7 @@ const endpoints = {
   SITE_ARCHIVE: BASE_URL_V1 + "superadmin/sites/archive",
   SITES_BY_ADMIN: BASE_URL_V1 + "superadmin/sites/admin",
   SITES_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
+  SITE_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
   SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
   ZACS: BASE_URL_V1 + "superadmin/zacs",
@@ -45,6 +56,15 @@ const endpoints = {
   // ADMIN
   CREATE_MEAN: BASE_URL_V1 + "mean",
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
+  GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
+  GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
+  FILTER_MEANS: BASE_URL_V1 + "mean/filter",
+  GET_EXTERIOR_MEANS: BASE_URL_V1 + "mean/get_exterior_means",
+  GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
+  GET_STORAGE_AREA_BY_LEVEL_ID:
+    BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
+
+  // ADMIN
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",

@@ -5,7 +5,6 @@ import Clients from "./Clients";
 import Invoices from "./Invoices";
 import AddClient from "./AddClient";
 import AddInvoice from "./AddInvoice";
-import EditInvoice from "./EditInvoice";
 import VerifyClient from "./VerifyClient";
 
 export default function Index(props) {
@@ -25,17 +24,12 @@ export default function Index(props) {
       <Route
         exact
         component={Invoices}
-        path={props.match.path + "/invoices/:clientId?"}
+        path={props.match.path + "/invoices/:clientId"}
       />
       <Route
         exact
         component={AddInvoice}
         path={props.match.path + "/add-invoice"}
-      />
-      <Route
-        exact
-        component={EditInvoice}
-        path={props.match.path + "/edit-invoice/:id"}
       />
       <Redirect from="*" to={props.match.path + "/"} />
     </Switch>

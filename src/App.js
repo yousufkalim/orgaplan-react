@@ -40,9 +40,6 @@ const theme = createMuiTheme({
     grey: {
       100: "#707070",
     },
-    custom: {
-      disabled: "#707070",
-    },
   },
   shape: {
     borderRadius: 10,

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+// import * as Yup from "yup";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 
@@ -9,6 +10,12 @@ import Button from "./Button";
 import FormInput from "./FormInput";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
+
+// const addAddressesYup = Yup.object().shape({
+//   street: Yup.string().required("Required"),
+//   city: Yup.string().required("Required"),
+//   postal: Yup.string().required("Required"),
+// });
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
@@ -136,9 +143,9 @@ export default function MultiAdderInputModal(props) {
             <Form.Row>
               <FormInput
                 name="street"
+                placeholder="Street"
                 value={street}
                 // error={street}
-                placeholder="Street"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -147,13 +154,12 @@ export default function MultiAdderInputModal(props) {
             <Form.Row>
               <FormInput
                 name="city"
+                placeholder="City (text only)"
                 value={city}
                 // error={city}
-                placeholder="City (text only)"
-                onChange={({ target: { name, value } }) => {
-                  (/^[A-Za-z]+$/.test(value) || value === "") &&
-                    handleChange(name, value);
-                }}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
@@ -162,7 +168,7 @@ export default function MultiAdderInputModal(props) {
                 name="postal"
                 value={postal}
                 // error={postal}
-                placeholder="Postal (5 digits only)"
+                placeholder="Postal (5 digits only"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
