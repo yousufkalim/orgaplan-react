@@ -42,25 +42,25 @@ const useStyles = makeStyles((theme) => ({
 //   companyId: Yup.string().required("Required"),
 // });
 
-export default function Organigramme() {
+export default function Organigramme(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
   const [open, setOpen] = useState(false);
   const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
-
   const [selectedItem] = useState("");
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName] = useState("");
+  const [organigramme, setOrganigrammes] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -76,7 +76,10 @@ export default function Organigramme() {
       const companies = await GLOBALS.API({
         uri: `${GLOBALS.Constants.COMPANY}`,
       });
-
+       const oranigramme = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
+       });
+      console.log('organigramme list', oranigramme);
       const companiesArray = [];
       companies.data.items.map((item) => {
         if (!item.adminId) {
@@ -87,8 +90,29 @@ export default function Organigramme() {
         }
         return true;
       });
+      if(oranigramme.success) {
+          setOrganigrammes(oranigramme.data)
+              let temp = [];
 
-      setItems(admins.data.items);
+    oranigramme.data.map((item, index) => {
+          let data = [];
+          data[0] = item.firstName;
+          data[1] = item.lastName;
+          data[2] = item.company;
+          data[3] = item.role;
+          data[4] = item.phone;
+          data[5] = item.email;
+
+          return temp.push(data);
+        });
+      setItems(temp);
+
+      }
+
+
+
+
+      // setItems(admins.data.items);
       setCompanies(companiesArray);
       setLoading(false);
     } catch (err) {
@@ -144,12 +168,43 @@ export default function Organigramme() {
     }
   };
 
-  const rows = GLOBALS.Data.oranigramme.items.map((item) => {
+
+
+  
+  // const rows = items.map((item, index) => {
+  //   return [
+  //     ...item,
+  //     <div>
+  //       <NavLink
+  //         to={{
+  //           pathname: "/means/edit-mean",
+  //           mean: means[index],
+  //         }}
+  //         style={{ color: "#959491 !important", textDecoration: "none" }}
+  //       >
+  //         <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
+  //       </NavLink>
+
+ 
+   
+  //     </div>,
+  //   ]; 
+  // });
+
+   
+  const rows = items.map((item, index) => {
     return [
+      
       <img src={Images.avatar} alt="Organigramme" style={{ width: 50, height: 50 }} />,
       ...item,
     ];
   });
+
+ function editHandler (e, data )  {
+ 
+      console.log('called', data);
+  
+  }
 
   const modalHandler = (btn) => {
     setOpen(btn);
@@ -160,7 +215,9 @@ export default function Organigramme() {
         <Form.Row alignItems="center" className="pr-3">
           <Heading primary="ORGANNIGRAMME" noWrap />
           <div>
+
             <Form.Row alignItems="center" noMargin>
+
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -168,7 +225,10 @@ export default function Organigramme() {
                 style={{ marginLeft: "20px" }}
                 to={"/organigramme/add-contact"}
               />
+
             </Form.Row>
+
+
           </div>
         </Form.Row>
         <Form.Row noMargin>
@@ -198,11 +258,22 @@ export default function Organigramme() {
           </Form.Row>
         </Form.Row>
         <div className={classes.content}>
-          <Table
+          <Table 
             headers={GLOBALS.Data.oranigramme.headings}
             rows={rows}
-            modalHandler={modalHandler}
+            onClick={ (e)=> { 
+              props.history.push({ 
+               pathname: "/organigramme/edit-contact",
+               data: organigramme[e],
+              })
+            console.log(props)
+             return editHandler(e, organigramme[e])
+            }  } 
+           // modalHandler={modalHandler}  //working
           />
+
+
+
         </div>
       </div>
       <Modal
