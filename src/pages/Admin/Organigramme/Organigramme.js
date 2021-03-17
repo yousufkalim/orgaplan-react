@@ -27,6 +27,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
+  unSelectedFilter: {
+    backgroundColor: "#fff !important",
+    border: "1px solid #707070 !important",
+    textColor: "#7E7878 !important",
+
+  },
+  selectedFilter: {
+    backgroundColor: "#140772 !important",
+  }
+  
 }));
 
 // const updateAdminYup = Yup.object().shape({
@@ -60,52 +70,70 @@ export default function Organigramme(props) {
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName] = useState("");
-  const [organigramme, setOrganigrammes] = useState([]);
+  const [organigramme, setOrganigrammes] = useState([]);  
+  const [completeOrganigramme, setCompleteOrganigrammes] = useState([]);
+  let [selectedFilter, setSelectedFilter] = useState("");
+  let [selectedClass, setSelectedClass] = useState("");
+  let [selectedClasss, setSelectedClasss] = useState("");
 
   useEffect(() => {
+   
     fetchData();
 
     // eslint-disable-next-line
   }, []);
+   useEffect(() => {
+   
+    getOrganigramme(selectedFilter);
+
+    // eslint-disable-next-line
+  }, [selectedFilter]);
 
   async function fetchData() {
     try {
-      const admins = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
-      });
-      const companies = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.COMPANY}`,
-      });
+      //  setSelectedClass(classes.selectedFilter);
+      //  setSelectedClasss(classes.unSelectedFilter);
+      // const admins = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
+      // });
+      // const companies = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.COMPANY}`,
+      // });
        const oranigramme = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
        });
       console.log('organigramme list', oranigramme);
-      const companiesArray = [];
-      companies.data.items.map((item) => {
-        if (!item.adminId) {
-          companiesArray.push({
-            value: item._id,
-            label: item.name,
-          });
-        }
-        return true;
-      });
-      if(oranigramme.success) {
-          setOrganigrammes(oranigramme.data)
-              let temp = [];
+      // const companiesArray = [];
+      // companies.data.items.map((item) => {
+      //   if (!item.adminId) {
+      //     companiesArray.push({
+      //       value: item._id,
+      //       label: item.name,
+      //     });
+      //   }
+      //   return true;
+      // });
+      if(oranigramme.success) { //working
+        
+        setCompleteOrganigrammes(oranigramme.data)
+        setOrganigrammes(oranigramme.data)
+        setSelectedFilter('SITE')
+        // getOrganigramme('SITE');
 
-    oranigramme.data.map((item, index) => {
-          let data = [];
-          data[0] = item.firstName;
-          data[1] = item.lastName;
-          data[2] = item.company;
-          data[3] = item.role;
-          data[4] = item.phone;
-          data[5] = item.email;
+    //           let temp = [];
 
-          return temp.push(data);
-        });
-      setItems(temp);
+    // oranigramme.data.map((item, index) => {
+    //       let data = [];
+    //       data[0] = item.firstName;
+    //       data[1] = item.lastName;
+    //       data[2] = item.company;
+    //       data[3] = item.role;
+    //       data[4] = item.phone;
+    //       data[5] = item.email;
+
+    //       return temp.push(data);
+    //     });
+    //   setItems(temp);
 
       }
 
@@ -113,7 +141,7 @@ export default function Organigramme(props) {
 
 
       // setItems(admins.data.items);
-      setCompanies(companiesArray);
+      // setCompanies(companiesArray);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -171,25 +199,7 @@ export default function Organigramme(props) {
 
 
   
-  // const rows = items.map((item, index) => {
-  //   return [
-  //     ...item,
-  //     <div>
-  //       <NavLink
-  //         to={{
-  //           pathname: "/means/edit-mean",
-  //           mean: means[index],
-  //         }}
-  //         style={{ color: "#959491 !important", textDecoration: "none" }}
-  //       >
-  //         <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
-  //       </NavLink>
 
- 
-   
-  //     </div>,
-  //   ]; 
-  // });
 
    
   const rows = items.map((item, index) => {
@@ -199,6 +209,33 @@ export default function Organigramme(props) {
       ...item,
     ];
   });
+
+   function getOrganigramme (value)  {
+     setSelectedFilter(value)
+    // if(value === 'SITE') {
+    //   setSelectedClass(classes.selectedFilter);
+    //   setSelectedClasss(classes.unSelectedFilter);
+    // } else if (value === 'LOGISTICS') {
+    //   setSelectedClasss(classes.selectedFilter);
+    //   setSelectedClass(classes.unSelectedFilter);
+    // }
+
+    let filterData =  completeOrganigramme.filter(x=> x.type === value)
+    setOrganigrammes(filterData)
+    let temp = [];
+    filterData.map((item, index) => {
+    let data = [];
+    data[0] = item.firstName;
+    data[1] = item.lastName;
+    data[2] = item.company;
+    data[3] = item.role;
+    data[4] = item.phone;
+    data[5] = item.email;
+    return temp.push(data);
+    });
+      setItems(temp);
+  
+  }
 
  function editHandler (e, data )  {
  
@@ -215,9 +252,7 @@ export default function Organigramme(props) {
         <Form.Row alignItems="center" className="pr-3">
           <Heading primary="ORGANNIGRAMME" noWrap />
           <div>
-
             <Form.Row alignItems="center" noMargin>
-
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -225,35 +260,33 @@ export default function Organigramme(props) {
                 style={{ marginLeft: "20px" }}
                 to={"/organigramme/add-contact"}
               />
-
             </Form.Row>
-
-
           </div>
         </Form.Row>
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <Button
+              // className={selectedClass}
               fullWidth={false}
-              component={NavLink}
               text="SITE ORGANIGAMME"
               style={{
                 marginLeft: "20px",
-                backgroundColor: "#140772",
+                backgroundColor: selectedFilter === "LOGISTICS"? "#fff" : "#140772",
               }}
-              to={"/"}
+               textColor = {selectedFilter === 'LOGISTICS' ? '#7E7878' : ''}
+              onClick={()=> getOrganigramme('SITE') }
             />
             <Button
+              // className={selectedClasss}
               fullWidth={false}
-              component={NavLink}
               text="LOGISTIC ORGANIGAMME"
               style={{
                 marginLeft: "20px",
-                backgroundColor: "#fff",
-                border: "1px solid #707070",
+                backgroundColor: selectedFilter === "SITE"? "#fff" : "#140772",
               }}
-              textColor="#7E7878"
-              to={"/"}
+               textColor = {selectedFilter === 'SITE' ? '#7E7878' : ''}
+              onClick={()=> getOrganigramme('LOGISTICS') }
+
             />
           </Form.Row>
         </Form.Row>

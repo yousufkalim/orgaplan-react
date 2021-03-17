@@ -73,6 +73,9 @@ const endpoints = {
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
 
   GET_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/site",
+  DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
   POST_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme",
+  PUT_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/update",
+
 };
 export default endpoints;
