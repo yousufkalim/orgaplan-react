@@ -80,8 +80,8 @@ export default function UserList(props) {
       });
       console.log(JSON.stringify(response.data.users, null, 2));
       if (response.success) {
-        setCompanyName(response.data.name);
-        setUsers(response.data.users);
+        setCompanyName(response.data.companies[0].companyId.name);
+        setUsers(response.data.companies[0].users);
         setLoading(false);
       } else {
         setLoading(false);
