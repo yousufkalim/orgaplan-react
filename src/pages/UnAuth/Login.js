@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -275,8 +276,10 @@ export default function Login(props) {
   return (
     <>
       <div className="login-container">
-        <div className=" left-login-container">
-          <img src={Images.logo} alt="OrgaPlan" />
+        <div className="left-login-container">
+          <Link to="/">
+            <img src={Images.logo} alt="OrgaPlan" className="hero-logo" />
+          </Link>
         </div>
         <Formik
           initialValues={{

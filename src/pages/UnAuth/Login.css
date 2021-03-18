@@ -10,6 +10,10 @@
   margin-top: 20px;
 }
 
+.hero-logo {
+  width: 80px;
+}
+
 .left-login-container {
   background: url("../../assets/images/login-2.png") #dbb208;
   background-size: cover;
@@ -22,7 +26,6 @@
 }
 .left-login-container img {
   margin: 1rem;
-  width: 10%;
 }
 .right-login-container {
   width: 100%;

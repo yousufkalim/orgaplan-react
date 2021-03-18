@@ -37,7 +37,7 @@ export default function Input(props) {
       borderWidth: 1,
       display: "flex",
       overflow: "hidden",
-      textAlign: "center",
+      textAlign: props.textAlign ? props.textAlign : "center",
       padding: "14px 12px",
       borderStyle: "solid",
       flexDirection: "row",
@@ -53,7 +53,7 @@ export default function Input(props) {
       border: 0,
       outline: 0,
       color: color,
-      width: "100%",
+      width: props.width ? props.width : "100%",
       resize: "none",
       borderWidth: 1,
       display: "flex",
@@ -105,10 +105,12 @@ export default function Input(props) {
       {props.textArea ? (
         <textarea
           name={props.name}
-          rows={props.rows}
           value={props.value}
           onBlur={props.onBlur}
+          rows={props.rows || 5}
+          cols={props.cols || 5}
           onFocus={props.onFocus}
+          required={props.required}
           onChange={props.onChange}
           disabled={props.disabled}
           readOnly={props.readOnly}
@@ -124,6 +126,7 @@ export default function Input(props) {
           min={props.min}
           name={props.name}
           showToday={false}
+          required={props.required}
           value={props.value ? moment(props.value) : 0}
           format="DD-MM-YYYY"
           style={datepickerStyle}
@@ -149,6 +152,7 @@ export default function Input(props) {
           onFocus={props.onFocus}
           className={classes.input}
           onChange={props.onChange}
+          required={props.required}
           disabled={props.disabled}
           placeholder={props.placeholder}
         />

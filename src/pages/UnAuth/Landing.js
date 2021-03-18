@@ -1,29 +1,69 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Formik } from "formik";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { Alert } from "antd";
 import Button from "@material-ui/core/Button";
-import { Images } from "../../assets/Assets";
+
 import "./Landing.css";
+import GLOBALS from "../../globals";
+import { Images } from "../../assets/Assets";
+import FormInput from "../../components/FormInput";
+import CustomButton from "../../components/Button";
 
 export default function LandingPage() {
   const store = useSelector((state) => state.auth);
+
+  const [quoteMessage, setQuoteMessage] = useState("");
+  const [quoteMessageType, setQuoteMessageType] = useState("success");
+
+  async function onQuoteSubmit(values, { setSubmitting }) {
+    try {
+      const formdata = JSON.stringify({
+        name: values.company,
+        city: values.city,
+        firstName: values.name,
+        lastName: "",
+        phone: values.phone,
+        email: values.email,
+        contractType: "CLIENTPERSITE",
+        description: values.message,
+      });
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.QUOTE,
+        body: formdata,
+      });
+      setQuoteMessageType("success");
+      setQuoteMessage(
+        "Your request has been received. You will be contacted soon.",
+      );
+      setSubmitting(false);
+    } catch (err) {
+      setQuoteMessageType("error");
+      setSubmitting(false);
+      setQuoteMessage(err.message);
+    }
+  }
+
   return (
     <div className="land-container">
       <div className="hero">
         <div className="d-flex justify-content-between p-1">
           <nav className="d-flex justify-content-between align-self-start pt-3 w-50">
-            <a href="https://www.google.com">
+            <Link to="/">
               <img src={Images.logo} className="hero-logo" alt="logo" />
-            </a>
-            <a href="https://www.google.com" className="text-white">
+            </Link>
+            <Link to="/" className="text-white">
               Fonctionnalites
-            </a>
-            <a href="https://www.google.com" className="text-white">
+            </Link>
+            <Link to="/" className="text-white">
               S'inscrire
-            </a>
-            <a href="https://www.google.com" className="text-white">
+            </Link>
+            <Link to="/" className="text-white">
               Nous contacter
-            </a>
+            </Link>
           </nav>
           <div className="text-center text-black-50">
             {store.auth && (
@@ -34,7 +74,9 @@ export default function LandingPage() {
               />
             )}
             {store.auth ? (
-              <p>Thiery Martin</p>
+              <p>
+                {store.auth.user.firstName + " " + store.auth.user.lastName}
+              </p>
             ) : (
               <Button component={Link} to="/login" style={{ color: "#fff" }}>
                 Login
@@ -114,20 +156,91 @@ export default function LandingPage() {
               <img src={Images.landPeople} alt="People Contacting Us" />
             </div>
             <div className="col-6">
-              <form>
-                <input type="text" placeholder="Nom de l’entreprise" />
-                <input type="text" placeholder="Ville" />
-                <input type="text" placeholder="Prénom et Nom du contact" />
-                <input type="text" placeholder="Téléphone" />
-                <input type="text" placeholder="Adresse e-mail" />
-                <textarea
-                  name="comment"
-                  placeholder="Message"
-                  cols="30"
-                  rows="10"
-                ></textarea>
-                <button>Envoyer</button>
-              </form>
+              <Formik
+                initialValues={{
+                  company: "",
+                  city: "",
+                  name: "",
+                  phone: "",
+                  email: "",
+                  contractType: "",
+                  message: "",
+                }}
+                onSubmit={onQuoteSubmit}
+              >
+                {({
+                  errors,
+                  values,
+                  handleChange,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    {quoteMessage && (
+                      <div style={{ margin: "0 16px", maxWidth: 415 }}>
+                        <Alert message={quoteMessage} type={quoteMessageType} />
+                      </div>
+                    )}
+                    <FormInput
+                      type="text"
+                      name="company"
+                      textAlign="left"
+                      error={errors.company}
+                      value={values.company}
+                      placeholder="Nom de l’entreprise"
+                      onChange={handleChange}
+                    />
+                    <FormInput
+                      type="text"
+                      name="city"
+                      textAlign="left"
+                      value={values.city}
+                      placeholder="Ville"
+                      onChange={handleChange}
+                    />
+                    <FormInput
+                      type="text"
+                      name="name"
+                      textAlign="left"
+                      value={values.name}
+                      placeholder="Prénom et Nom du contact"
+                      onChange={handleChange}
+                    />
+                    <FormInput
+                      type="number"
+                      name="phone"
+                      textAlign="left"
+                      value={values.phone}
+                      placeholder="Téléphone"
+                      onChange={handleChange}
+                    />
+                    <FormInput
+                      type="email"
+                      name="email"
+                      textAlign="left"
+                      value={values.email}
+                      placeholder="Adresse e-mail"
+                      onChange={handleChange}
+                    />
+                    <FormInput
+                      textArea
+                      width={"100"}
+                      name="message"
+                      textAlign="left"
+                      value={values.message}
+                      placeholder="Message"
+                      onChange={handleChange}
+                    />
+                    <CustomButton
+                      type="submit"
+                      fullWidth={false}
+                      loading={isSubmitting}
+                      disabled={isSubmitting}
+                      text={GLOBALS.I18n.t("submit")}
+                    />
+                  </form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>
