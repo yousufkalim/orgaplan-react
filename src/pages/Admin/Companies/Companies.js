@@ -77,7 +77,6 @@ export default function Companies(props) {
 
   const getData = async () => {
     try {
-      console.log(adminStore.site.siteId._id);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
         token: store.token,
