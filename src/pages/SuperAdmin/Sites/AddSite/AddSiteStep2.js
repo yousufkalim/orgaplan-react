@@ -249,7 +249,7 @@ export default function AddSiteStep2(props) {
                 unavailabilityDates={unavailabilityDates}
                 setUnavailabilityDates={setUnavailabilityDates}
                 startRange={start}
-                endRange={end}
+                endRange={moment(end).add(1, "days")}
                 onChange={(values) =>
                   handleChange("unavailabilityDates", values)
                 }

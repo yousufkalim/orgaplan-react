@@ -262,11 +262,9 @@ export default function MultiAdderInputModal(props) {
                     value={date}
                     placeholder="Date"
                     style={GLOBALS.Styles.inputWidth}
-                    min={moment().format("YYYY-MM-DD")}
+                    max={endRange}
+                    min={startRange}
                     onChange={getDate}
-                    // onChange={({ target: { name, value } }) =>
-                    //   setDate(name, value)
-                    // }
                   />
 
                   <FormControlLabel
