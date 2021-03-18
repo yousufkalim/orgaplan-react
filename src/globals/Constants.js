@@ -67,6 +67,7 @@ const endpoints = {
 
   GET_ADD_USER: BASE_URL_V1 + "users/add_user",
   GET_USER_COMPANY: BASE_URL_V1 + "users/get_user_company",
+  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/add_company",
 
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
 

@@ -49,6 +49,7 @@ const Means = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
 
@@ -103,7 +104,7 @@ const Means = () => {
   const getMeans = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       if (response.success) {
@@ -162,7 +163,10 @@ const Means = () => {
         if (response.data.site_companies != null) {
           const temp = [];
           response.data.site_companies.map((item, index) => {
-            return temp.push({ label: item.name, value: item.name });
+            return temp.push({
+              label: item.companyId.name,
+              value: item.companyId.name,
+            });
           });
           setCompany(response.data.site_companies);
           setDropdownCompany(temp);
@@ -213,7 +217,7 @@ const Means = () => {
       setLoading(true);
 
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_EXTERIOR_MEANS}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_EXTERIOR_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
 
@@ -328,7 +332,7 @@ const Means = () => {
   const filterMean = async () => {
     try {
       setLoading(true);
-      const params = { siteId: "6008169bedbb7816d40b197d" };
+      const params = { siteId: adminStore.site.siteId._id };
       if (meanText.length !== 0) params["name"] = meanText;
       if (selectedDropdownArea.length !== 0)
         params["deliveryArea"] =
@@ -338,7 +342,7 @@ const Means = () => {
           storageAreas[selectedDropdownStorageAreaIndex]._id;
 
       if (selectedCompany.length !== 0)
-        params["company"] = company[selectedCompanyIndex]._id;
+        params["company"] = company[selectedCompanyIndex].companyId._id;
 
       if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
       if (selectedStatus.length !== 0)

@@ -34,6 +34,7 @@ const accessabilityPoints = [
 export default function EditMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [color, setColor] = useState("");

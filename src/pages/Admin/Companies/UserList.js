@@ -78,10 +78,10 @@ export default function UserList(props) {
         uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.location.id}`,
         token: store.token,
       });
-      console.log(JSON.stringify(response.data.users, null, 2));
+      //console.log(JSON.stringify(response.data[0].usersArray, null, 2));
       if (response.success) {
-        setCompanyName(response.data.companies[0].companyId.name);
-        setUsers(response.data.companies[0].users);
+        setCompanyName(response.data[0].company.name);
+        setUsers(response.data[0].usersArray);
         setLoading(false);
       } else {
         setLoading(false);
@@ -143,7 +143,7 @@ export default function UserList(props) {
   };
   const rows = users.map((item) => {
     console.log(JSON.stringify(item, null, 2));
-    const user = item.userId;
+    const user = item;
     return [
       user.firstName + " " + user.lastName,
       companyName,

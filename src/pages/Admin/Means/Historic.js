@@ -39,7 +39,7 @@ const Historic = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
-
+  const adminStore = useSelector((state) => state.admin);
   const [isLoading, setLoading] = useState(true);
   const [history, setHistory] = useState([]);
 
@@ -64,11 +64,11 @@ const Historic = (props) => {
   const filterBooking = async () => {
     try {
       setLoading(true);
-      const params = { siteId: "6008169bedbb7816d40b197d" };
+      const params = { siteId: adminStore.site.siteId._id };
       if (selectedMean.length !== 0)
         params["meanId"] = means[selectedMeanIndex]._id;
       if (selectedCompany.length !== 0)
-        params["companyId"] = companies[selectedCompanyIndex]._id;
+        params["companyId"] = companies[selectedCompanyIndex].companyId._id;
 
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_BOOKING}`,
@@ -97,13 +97,13 @@ const Historic = (props) => {
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
 
       if (response.success) {
         setHistory(response.data.history);
-        setCompanies(response.data.site_companies.companies);
+        setCompanies(response.data.site_companies);
         if (response.data.site_means != null) {
           setMeans(response.data.site_means);
           let selectedMeanIndex = 0;
@@ -121,8 +121,11 @@ const Historic = (props) => {
 
           setSelectedMeanIndex(selectedMeanIndex);
 
-          response.data.site_companies.companies.map((item, index) => {
-            return companyTemp.push({ label: item.name, value: item.name });
+          response.data.site_companies.map((item, index) => {
+            return companyTemp.push({
+              label: item.companyId.name,
+              value: item.companyId.name,
+            });
           });
           setDropdownCompanies(companyTemp);
         }
