@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 // import * as Yup from "yup";
@@ -11,6 +13,9 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import Modal from "../../../components/Modal";
+import Table from "../../../components/Table";
+
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
@@ -42,10 +47,12 @@ const useStyles = makeStyles((theme) => ({
 // });
 
 export default function EditContact(props) {
+  const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const [open, setOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [dropdownType, setDropdownType] = useState([]);
@@ -63,6 +70,7 @@ export default function EditContact(props) {
     // eslint-disable-next-line
   }, []);
 
+
   const setValues = () => {
     console.log( 'data', props.location.data);
     const contactInfo = props.location.data;
@@ -73,50 +81,11 @@ export default function EditContact(props) {
     setFirstName(contactInfo.firstName);
     setLastName(contactInfo.lastName);
         let fileClone = [{ uri: contactInfo.image }];
-    setImage(fileClone);
+    // setImage(fileClone);
 
     setCompany(contactInfo.company);
     setRole(contactInfo.role);
 
-    // const mean = props.location.mean;
-    // setName(mean.name);
-    // let fileClone = [{ uri: mean.image }];
-    // setImage(fileClone);
-    // setSelectedMeanType(mean.meanType);
-    // let meanTypeIndex = 0;
-    // dropdownMeanTypes.forEach((item, index) => {
-    //   if (item.value === mean.meanType) meanTypeIndex = index;
-    // });
-
-    // setSelectedMeanTypeIndex(meanTypeIndex);
-
-    // setColor(mean.color);
-
-    // setStartDate(moment(mean.availability.start).format("MM/DD/yyyy"));
-    // setEndDate(moment(mean.availability.end).format("MM/DD/yyyy"));
-    // setRate(mean.pricePerHour);
-    // setAddInfo(mean.additionalInfo);
-    // const locationTemp = [];
-    // mean.location.forEach((item, index) => {
-    //   let loc = { key: "", label: "", id: "", type: "" };
-
-    //   if (item.locationType === "STORAGEAREA") {
-    //     loc.key = item.storageArea._id;
-    //     loc.label = item.storageArea.name;
-    //     loc.id = item.storageArea._id;
-    //     loc.type = accessabilityPoints[0].value;
-    //     locationTemp.push(loc);
-    //   }
-    //   if (item.locationType === "DELIVERYAREA") {
-    //     loc.key = item.deliveryArea._id;
-    //     loc.label = item.deliveryArea.name;
-    //     loc.id = item.deliveryArea._id;
-    //     loc.type = accessabilityPoints[1].value;
-    //     locationTemp.push(loc);
-    //   }
-    // });
-    // setDeliveryAndStorageLocations(locationTemp);
-    // console.log(JSON.stringify(locationTemp, null, 2));
 
   };
 
@@ -125,33 +94,14 @@ export default function EditContact(props) {
 
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.COMPANY}`,
-      // });
-        console.log(props.location)
-        const typeArray = [
+         const typeArray = [
         { value: 'Logistic ', label: 'Logistic'}, 
         { value: 'Site ', label: 'Site'}
       ];
 
       setDropdownType(typeArray);
-
-      // const itemsArray = [];
-      // result.data.items.map((item) => {
-      //   if (!item.adminId) {
-      //     itemsArray.push({
-      //       value: item._id,
-      //       label: item.name,
-      //     });
-      //   }
-      //   return true;
-      // });
-
-      // setCompanies(itemsArray);
       await setValues();
-
       setLoading(false);
-
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -171,6 +121,29 @@ export default function EditContact(props) {
     else if (name === "role") setRole(value);
   };
 
+  async function onDelete() {
+    try {
+      if (window.confirm("Are you sure, you want to delete this?")) {
+        setLoading(true);
+        console.log(store.token)
+        await GLOBALS.API({
+          method: "DELETE",
+          uri: GLOBALS.Constants.DELETE_SITE_ORGANIGRAMMES + "/" + props.location.data._id,
+          token: store.token,
+        });
+        props.history.goBack();
+
+      }
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -187,15 +160,15 @@ export default function EditContact(props) {
       formdata.append("role", role);
 
       await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
+        method: "PUT",
+        uri: GLOBALS.Constants.PUT_SITE_ORGANIGRAMMES + "/" + props.location.data._id,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
       setLoading(false);
-      props.history.push("/admins");
+      props.history.goBack();
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -204,13 +177,15 @@ export default function EditContact(props) {
       );
     }
   };
-
+ const modalHandler = (btn) => {
+    setOpen(btn);
+  };
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CONTACT" />
+      <Heading primary="EDIT A CONTACT" />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
@@ -293,7 +268,7 @@ export default function EditContact(props) {
                                     {image}
 
               <FormMultipleUpload
-                name="image"
+                name="profile"
                 // error={image}
 
                 values={image}
@@ -316,17 +291,7 @@ export default function EditContact(props) {
                   handleChange(name, value)
                 }
               />
-              {/* <FormSelect
-                name="company"
-                value={company}
-                // error={companyId}
-                values={companies}
-                placeholder="Entreprise"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              /> */}
+      
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -342,17 +307,7 @@ export default function EditContact(props) {
                   handleChange(name, value)
                 }
               />
-              {/* <FormSelect
-                name="companyId"
-                value={companyId}
-                // error={companyId}
-                values={companies}
-                placeholder="Rôle"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              /> */}
+         
             </Form.Row>
           </Form.Row>
           <Form.ButtonContainer>
@@ -372,8 +327,21 @@ export default function EditContact(props) {
               }
             />
           </Form.ButtonContainer>
+            
+ 
+    <Button
+        text="DELETE"
+        minWidth={200}
+        fullWidth={false}
+        color={theme.palette.error.main}
+                  onClick={onDelete}
+                  loading={loading}
+                  disabled={loading}
+                />
+
         </Form.Form>
       </div>
+
     </div>
   );
 }
