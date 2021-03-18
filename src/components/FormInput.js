@@ -1,5 +1,8 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { DatePicker } from "antd";
+import moment from "moment";
+import "./custom.css";
 
 export default function Input(props) {
   const theme = useTheme();
@@ -75,6 +78,28 @@ export default function Input(props) {
   }));
   const classes = useStyles();
 
+  const datepickerStyle = {
+    border: 0,
+    outline: 0,
+    height: 45,
+    color: color,
+    width: "100%",
+    borderWidth: 1,
+    display: "flex",
+    overflow: "hidden",
+    textAlign: "center",
+    padding: "14px 12px",
+    borderStyle: "solid",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: white,
+    borderColor: borderColor,
+    transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
+    "&::placeholder": {
+      color: color,
+    },
+  };
+
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       {props.textArea ? (
@@ -93,27 +118,27 @@ export default function Input(props) {
           placeholder={props.placeholder}
         />
       ) : props.type === "date" ? (
-        <input
-          type="text"
+        <DatePicker
+          size={"large"}
           max={props.max}
           min={props.min}
-          step={props.step}
           name={props.name}
-          value={props.value}
-          className={classes.input}
-          onChange={props.onChange}
+          showToday={false}
+          value={props.value ? moment(props.value) : 0}
+          format="DD-MM-YYYY"
+          style={datepickerStyle}
           disabled={props.disabled}
           placeholder={props.placeholder}
-          onFocus={(e) => {
-            e.target.type = "date";
-            props.focus && props.onFocus(e);
+          onChange={(e) => {
+            const event = {
+              target: {
+                name: props.name,
+                value: e && e.format("YYYY-MM-DD"),
+              },
+            };
+            props.onChange(event);
           }}
-          onBlur={(e) => {
-            if (e.target.value === "") {
-              e.target.type = "text";
-            }
-            props.onBlur && props.onBlur(e);
-          }}
+          disabledDate={(d) => !d || d.isBefore(props.min)}
         />
       ) : (
         <input

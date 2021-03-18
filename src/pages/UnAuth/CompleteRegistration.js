@@ -61,12 +61,8 @@ export default function Login(props) {
       setExpired(false);
       fetchData();
     } catch (err) {
+      setLoading(false);
       setExpired(true);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
     }
   }
 

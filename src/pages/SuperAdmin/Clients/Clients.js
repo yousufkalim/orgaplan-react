@@ -11,6 +11,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Modal from "../../../components/Modal";
+import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
@@ -76,11 +77,13 @@ export default function Clients(props) {
 
   async function fetchData() {
     try {
+      setLoading(true)
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
       setItems(result.data.items);
       setData(result.data);
+      setModal(false);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -91,7 +94,7 @@ export default function Clients(props) {
     }
   }
 
-  const handleChange = (name, value) => {
+  function handleChange(name, value) {
     if (name === "logo") {
       setUpdate((st) => !st);
       setLogo(value);
@@ -100,13 +103,16 @@ export default function Clients(props) {
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
-    else if (name === "contractType") setContractType(value);
-    else if (name === "contractStartDate") setContractStartDate(value);
+    else if (name === "contractType") {
+      setContractStartDate("");
+      setContractEndDate("");
+      setContractType(value);
+    } else if (name === "contractStartDate") setContractStartDate(value);
     else if (name === "contractEndDate") setContractEndDate(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "monthlyCost") setMonthlyCost(value);
-  };
+  }
 
   function modifyClick(item, contract) {
     setSelectedItem(item);
@@ -115,12 +121,11 @@ export default function Clients(props) {
       uri: GLOBALS.Constants.BASE_URL + item.companyId.logo,
     });
     setColor(item.companyId.color);
-    console.log(item.companyId.incharge);
     if (item.companyId.incharge) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
       setEmail(item.companyId.incharge.email || "");
-      setPhone(item.companyId.incharge.phone || "");
+      setPhone(`0${item.companyId.incharge.phone}` || "");
     }
     setContractType(contract.contractType);
     if (contract.contractType === "MASTERCLIENT") {
@@ -170,6 +175,7 @@ export default function Clients(props) {
       setItems(itemsArray);
       setModal(false);
       setLoading(false);
+      resetForm();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -191,8 +197,9 @@ export default function Clients(props) {
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
-        setModal(false);
-        setLoading(false);
+        fetchData();
+        // setModal(false);
+        // setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -204,17 +211,36 @@ export default function Clients(props) {
     }
   }
 
+  function resetForm() {
+    setLogo([]);
+    setColor("green");
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setContractType("CLIENTPERSITE");
+    setContractStartDate("");
+    setContractEndDate("");
+    setFunctionality("DELIVERY");
+    setAdditionalInfo("");
+    setMonthlyCost("0");
+  }
+
   const rows = [];
   items.map((item) => {
     if (item.companyId.quoteVerified) {
-      item.contractsIds.map((contract) => {
+      item.contractIds.map((contract) => {
         rows.push([
           item.companyId.name,
           item.companyId.incharge
             ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
             : "",
-          item.companyId.incharge ? item.companyId.incharge.phone : "",
-          0,
+          item.companyId.incharge
+            ? item.companyId.incharge.phone
+              ? `0${item.companyId.incharge.phone}`
+              : ""
+            : "",
+          item.sites,
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractStartDate).format("DD/MM/YY")
             : "-",
@@ -251,8 +277,10 @@ export default function Clients(props) {
         item.companyId.incharge.firstName +
           " " +
           item.companyId.incharge.lastName,
-        item.companyId.incharge.phone,
-        0,
+        item.companyId.incharge.phone
+          ? `0${item.companyId.incharge.phone}`
+          : "",
+        item.sites,
         "-",
         "-",
         "Requested",
@@ -282,7 +310,7 @@ export default function Clients(props) {
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
-                disableMargin
+                noMargin
                 primary={data && `Total : ${data.totalItems} Clients`}
                 bold
               />
@@ -305,13 +333,17 @@ export default function Clients(props) {
           />
         </Form.Row>
         <div className={classes.content}>
-          <Table
-            rows={rows}
-            onClick={(index) =>
-              props.history.push(`/sites/${items[index]._id}`)
-            }
-            headers={GLOBALS.Data.clients.headings}
-          />
+          {loading ? (
+            <Loader.Progress />
+          ) : (
+            <Table
+              rows={rows}
+              onClick={(index) =>
+                props.history.push(`/sites/${items[index]._id}`)
+              }
+              headers={GLOBALS.Data.clients.headings}
+            />
+          )}
           {!loading && data.totalItems > 10 && (
             <Pagination
               page={page}
@@ -327,7 +359,10 @@ export default function Clients(props) {
       <Modal
         title="EDIT CLIENT"
         open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        onClose={() => {
+          setModal((st) => !st);
+          resetForm();
+        }}
         body={
           <Form.Form onSubmit={onUpdate}>
             <Form.Row justifyContent="center">
@@ -474,7 +509,7 @@ export default function Clients(props) {
                   // error={monthlyCost}
                   style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 />
-                <SmallText primary="€/month" />
+                <SmallText primary="€/month" noMargin />
               </Form.Row>
             </Form.Row>
             <Form.Row>
@@ -508,11 +543,13 @@ export default function Clients(props) {
                           moment(contractStartDate),
                           "days",
                         ) <= 0)) ||
-                    firstName.length > 30 ||
-                    lastName.length > 30 ||
-                    (phone.length > 0 &&
-                      (!phone.startsWith("0") || phone.length !== 10)) ||
-                    additionalInfo.length > 300 ||
+                    (firstName && firstName.length > 30) ||
+                    (lastName && lastName.length) > 30 ||
+                    (phone &&
+                      String(phone).length > 0 &&
+                      (!String(phone).startsWith("0") ||
+                        String(phone).length !== 10)) ||
+                    (additionalInfo && additionalInfo.length > 300) ||
                     Number(monthlyCost) < 0
                   }
                 />

@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -26,25 +25,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const addInvoiceYup = Yup.object().shape({
-//   clientId: Yup.string().required("Required"),
-//   startDate: Yup.string().required("Required"),
-//   endDate: Yup.string().required("Required"),
-//   siteId: Yup.string().required("Required"),
-//   amount: Yup.number().min(1, "Must have a value").required("Required"),
-//   description: Yup.string().optional(),
-// });
-
 export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(false);
-  const [clients, setClients] = useState([]);
   const [sites, setSites] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const [clientId, setClientId] = useState("");
+  const [clientId, setClientId] = useState(props.location.clientId);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");
@@ -57,7 +47,8 @@ export default function AddInvoice(props) {
   }, []);
 
   useEffect(() => {
-    clientId && fetchSitesByClient();
+    clientId && clientId !== "ALL" && fetchSitesByClient();
+    setSiteId("");
     // eslint-disable-next-line
   }, [clientId]);
 
@@ -105,8 +96,10 @@ export default function AddInvoice(props) {
 
   const handleChange = (name, value) => {
     if (name === "clientId") setClientId(value);
-    else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
+    else if (name === "startDate") {
+      setEndDate("");
+      setStartDate(value);
+    } else if (name === "endDate") setEndDate(value);
     else if (name === "siteId") setSiteId(value);
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
@@ -186,6 +179,7 @@ export default function AddInvoice(props) {
                 value={endDate}
                 // error={endDate}
                 placeholder="End date"
+                disabled={!startDate}
                 min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>

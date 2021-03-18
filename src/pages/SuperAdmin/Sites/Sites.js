@@ -10,6 +10,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
+import Loader from "../../../components/Loader";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
@@ -99,6 +100,7 @@ export default function Sites(props) {
         });
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
+        fetchData();
         setLoading(false);
       }
     } catch (err) {
@@ -136,7 +138,7 @@ export default function Sites(props) {
     />,
     item.name,
     item.zacId ? item.zacId.name : "N/A",
-    `${item.adminId.userId.firstName} ${item.adminId.userId.lastName}`,
+    `${item.adminId.firstName} ${item.adminId.lastName}`,
     item.status,
     <Form.Row alignItems="center" justifyContent="center">
       <IconButton
@@ -164,7 +166,7 @@ export default function Sites(props) {
         <div>
           <Form.Row alignItems="center" noMargin>
             <SubHeading
-              disableMargin
+              noMargin
               primary={data && `Total : ${data.totalItems} Sites`}
               bold
             />
@@ -217,7 +219,11 @@ export default function Sites(props) {
         </NavLink>
       </Form.Row>
       <div className={classes.content}>
-        <Table headers={GLOBALS.Data.sites.headings} rows={rows} />
+        {loading ? (
+          <Loader.Progress />
+        ) : (
+          <Table headers={GLOBALS.Data.sites.headings} rows={rows} />
+        )}
         {!loading && data.totalItems > 10 && (
           <Pagination
             page={page}

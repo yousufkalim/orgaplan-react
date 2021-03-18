@@ -4,14 +4,14 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export default function SubHeading({
   className,
-  disableMargin,
+  noMargin,
   bold,
   topPadding,
   ...props
 }) {
   const useStyles = makeStyles((theme) => ({
     subHeading: {
-      marginBottom: disableMargin ? 0 : 10,
+      marginBottom: noMargin ? 0 : 10,
       paddingTop: topPadding && 20,
       fontSize: theme.typography.pxToRem(18),
       color: theme.palette.primary.contrastText,

@@ -98,7 +98,7 @@ const Incidents = () => {
         <div>
           <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
             <SubHeading
-              disableMargin
+              noMargin
               topPadding
               style={{ color: "#F80303" }}
               primary="TOTAL : 5 RE-INVOICING

@@ -67,8 +67,10 @@ export default function AddSiteStep2(props) {
   }, []);
 
   function handleChange(name, value) {
-    if (name === "start") setStart(value);
-    else if (name === "end") setEnd(value);
+    if (name === "start") {
+      setEnd("");
+      setStart(value);
+    } else if (name === "end") setEnd(value);
     else if (name === "openingHours") {
       setUpdate((st) => !st);
       setOpeningHours(value);
@@ -258,10 +260,19 @@ export default function AddSiteStep2(props) {
           alignItems="center"
           justifyContent="flex-start"
         >
+          {/* <UnavailabilityTimes
+            name="unavailabilityDates"
+            values={unavailabilityDates}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => handleChange("unavailabilityDates", values)}
+          /> */}
+
           <UnavailabilityTimes
             name="unavailabilityDates"
             values={unavailabilityDates}
             style={GLOBALS.Styles.inputWidth}
+            unavailabilityDates={unavailabilityDates}
+            setUnavailabilityDates={setUnavailabilityDates}
             onChange={(values) => handleChange("unavailabilityDates", values)}
           />
         </Form.Row>

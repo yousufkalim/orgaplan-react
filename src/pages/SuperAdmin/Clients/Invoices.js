@@ -10,6 +10,7 @@ import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
+import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
@@ -50,14 +51,16 @@ export default function Invoices(props) {
   }, [page, client]);
 
   useEffect(() => {
-    props.match.params.clientId && setClient(props.match.params.clientId);
+    props.match.params.clientId
+      ? setClient(props.match.params.clientId)
+      : setClient("ALL");
     // eslint-disable-next-line
   }, [client]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.INVOICES_BY_CLIENT}/${client}?page=${page}`,
+        uri: `${GLOBALS.Constants.INVOICES}/?page=${page}&clientId=${client}`,
       });
       const clients = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
@@ -98,7 +101,12 @@ export default function Invoices(props) {
     }
   }
 
-  let clientsArray = [];
+  let clientsArray = [
+    {
+      value: "ALL",
+      label: "ALL",
+    },
+  ];
   clients.map((client) =>
     clientsArray.push({
       value: client._id,
@@ -114,7 +122,7 @@ export default function Invoices(props) {
     item.amount,
     item.description,
     <>
-      <IconButton>
+      <IconButton component={NavLink} to={`/clients/edit-invoice/${item._id}`}>
         <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <IconButton onClick={() => onDelete(item._id)}>
@@ -134,7 +142,10 @@ export default function Invoices(props) {
           fullWidth={false}
           component={NavLink}
           text="CREATE AN INVOICE"
-          to="/clients/add-invoice"
+          to={{
+            pathname: "/clients/add-invoice",
+            clientId: client,
+          }}
         />
       </Form.Row>
       <Form.Row noMargin>
@@ -150,7 +161,11 @@ export default function Invoices(props) {
         />
       </Form.Row>
       <div className={classes.content}>
-        <Table headers={GLOBALS.Data.invoices.headings} rows={rows} />
+        {loading ? (
+          <Loader.Progress />
+        ) : (
+          <Table headers={GLOBALS.Data.invoices.headings} rows={rows} />
+        )}
         {!loading && data.totalItems > 10 && (
           <Pagination
             page={page}

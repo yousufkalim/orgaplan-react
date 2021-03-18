@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     width: "100vw",
     height: "calc(100vh - 64px)",
+    backgroundColor: "#fff",
   },
   toolBar: {
     margin: 0,

@@ -6,22 +6,23 @@ import Drawer from "@material-ui/core/Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 import ListItem from "@material-ui/core/ListItem";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-// import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-// import Actions from "../../redux/actions";
+import GLOBALS from "../../globals";
+import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
+import SiteImage from "../../assets/images/Site.png";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
 import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
-import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
+// import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
 import { ReactComponent as Incidents } from "../../assets/icons/incidents.svg";
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
-
-import { Images } from "../../assets/Assets.js";
 
 const drawerWidth = 240;
 
@@ -95,33 +96,25 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: "#454545",
   },
+  siteImage: {
+    width: 200,
+    height: 125,
+    backgroundSize: "contain",
+    borderRadius: theme.shape.borderRadius,
+  },
+  avatarImg: {
+    width: 60,
+    height: 60,
+    borderRadius: "100%",
+    backgroundSize: "contain",
+  },
 }));
 
 const userItems = [
-  // {
-  //   name: "Home",
-  //   path: ["/", "/home"],
-  //   icon: <HomeIcon />,
-  // },
   {
     name: "Calender",
-    path: "/calender",
+    path: ["/", "/calendar"],
     icon: <Calender />,
-  },
-  {
-    name: "Companies",
-    path: "/companies",
-    icon: <Companies />,
-  },
-  {
-    name: "Incidents",
-    path: "/incidents",
-    icon: <Incidents />,
-  },
-  {
-    name: "Invoices",
-    path: "/invoices",
-    icon: <Invoices />,
   },
   {
     name: "Means",
@@ -129,32 +122,40 @@ const userItems = [
     icon: <Means />,
   },
   {
-    name: "Organigramme",
-    path: "/organigramme",
-    icon: <Organigramme />,
-  },
-  {
     name: "P.I.C intéractif",
     path: "/pic-interactive",
     icon: <Pic />,
   },
+  {
+    name: "Incidents",
+    path: "/incidents",
+    icon: <Incidents />,
+  },
   // {
-  //   name: "Logs",
-  //   path: "/logs",
-  //   icon: <Logs />,
+  //   name: "Invoices",
+  //   path: "/invoices",
+  //   icon: <Invoices />,
   // },
-  // {
-  //   name: "List of Admins",
-  //   path: "/admins",
-  //   icon: <Admins />,
-  // },
+  {
+    name: "Companies",
+    path: "/companies",
+    icon: <Companies />,
+  },
+  {
+    name: "Organigramme",
+    path: "/organigramme",
+    icon: <Organigramme />,
+  },
 ];
 
 export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const storeAuth = useSelector((state) => state.auth);
+  const storeAdmin = useSelector((state) => state.admin);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleDrawer = () => {
     setOpen((st) => !st);
@@ -184,9 +185,17 @@ export default function AdminHeader(props) {
                 marginBottom: "5px",
               }}
             >
-              Hôpital de la Tourelle
+              {storeAdmin.site.siteId.name}
             </div>
-            <img src={Images.site} alt="img" />
+            <img
+              src={
+                storeAdmin.site?.siteId?.logo
+                  ? GLOBALS.Constants.BASE_URL + storeAdmin.site?.siteId?.logo
+                  : SiteImage
+              }
+              alt="siteImage"
+              className={classes.siteImage}
+            />
           </div>
           <List>
             {userItems.map((item) => (
@@ -213,7 +222,7 @@ export default function AdminHeader(props) {
                 <ListItemText primary={item.name} />
               </ListItem>
             ))}
-            {/* <ListItem
+            <ListItem
               button
               key={"logout"}
               onClick={() => dispatch(Actions.auth.do_logout())}
@@ -222,7 +231,7 @@ export default function AdminHeader(props) {
                 {<ExitToAppIcon />}
               </ListItemIcon>
               <ListItemText primary={"Logout"} />
-            </ListItem> */}
+            </ListItem>
           </List>
         </div>
       </Drawer>
@@ -242,11 +251,18 @@ export default function AdminHeader(props) {
             <MenuIcon color="primary" />
           </Fab>
           <div className={classes.profileImage}>
-            <img src={Images.profile2} alt="Profile" />
-            <div>Thierry Marles</div>
+            <img
+              src={
+                storeAuth.user.image
+                  ? GLOBALS.Constants.BASE_URL + storeAuth.user.image
+                  : SiteImage
+              }
+              alt="adminProfile"
+              className={classes.avatarImg}
+            />
+            <div>{`${storeAuth.user.firstName} ${storeAuth.user.lastName}`}</div>
           </div>
         </div>
-
         {props.children}
       </main>
     </div>
