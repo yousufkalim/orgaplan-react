@@ -9,10 +9,12 @@ import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
+import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
+import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +99,7 @@ export default function ZACS(props) {
   return (
     <div className={classes.root}>
       <Form.Row>
-        <Heading primary="ZACS LIST" />
+        <Heading primary="ZACS LIST" noMargin />
         <Button
           fullWidth={false}
           component={NavLink}
@@ -106,7 +108,11 @@ export default function ZACS(props) {
         />
       </Form.Row>
       <div className={classes.content}>
-        <Table headers={GLOBALS.Data.zacs.headings} rows={rows} />
+        {loading ? (
+          <Loader.Progress />
+        ) : (
+          <Table headers={GLOBALS.Data.zacs.headings} rows={rows} />
+        )}
         {!loading && data.totalItems > 10 && (
           <Pagination
             page={page}

@@ -98,7 +98,7 @@ export default function FormMultipleUpload(props) {
         ? newValues.push({ key: newValues.length, file: file, uri: uri })
         : (newValues[0] = { key: newValues.length, file: file, uri: uri });
       props.onChange(newValues);
-      document.getElementById(`fileinput`).value = "";
+      document.getElementById(`fileinput-${props.name}`).value = "";
       setUpdate((st) => !st);
     } else {
       dispatch(
@@ -125,7 +125,7 @@ export default function FormMultipleUpload(props) {
           <div className={classes.container}>
             <div
               onClick={() => {
-                document.getElementById(`fileinput`).click();
+                document.getElementById(`fileinput-${props.name}`).click();
               }}
             >
               <Plus style={{ width: 20, height: 20 }} />
@@ -133,7 +133,7 @@ export default function FormMultipleUpload(props) {
             <input
               hidden
               type="file"
-              id={`fileinput`}
+              id={`fileinput-${props.name}`}
               onChange={onAdd}
               onBlur={props.onBlur}
             />

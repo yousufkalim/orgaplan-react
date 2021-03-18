@@ -8,6 +8,7 @@ import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
+import Loader from "../../../components/Loader";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
 import SmallButton from "../../../components/SmallButton";
@@ -158,7 +159,11 @@ export default function ArchivedSites(props) {
         />
       </Form.Column>
       <div className={classes.content}>
-        <Table headers={GLOBALS.Data.archivedSites.headings} rows={rows} />
+        {loading ? (
+          <Loader.Progress />
+        ) : (
+          <Table headers={GLOBALS.Data.archivedSites.headings} rows={rows} />
+        )}
         {!loading && data.totalItems > 10 && (
           <Pagination
             page={page}

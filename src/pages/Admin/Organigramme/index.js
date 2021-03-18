@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Organigramme from "./Organigramme";
 import AddContact from "./AddContact";
+import EditContact from "./EditContact";
 
 export default function Index(props) {
   return (
@@ -11,6 +12,11 @@ export default function Index(props) {
         exact
         path={props.match.path + "/add-contact"}
         component={AddContact}
+      />
+        <Route
+        exact
+        path={props.match.path + "/edit-contact"}
+        component={EditContact}
       />
       {/* <Route exact path={props.match.path + "/zacs"} component={ZACs} /> */}
       {/* <Route exact path={props.match.path + "/add-mean"} component={AddMean} /> */}

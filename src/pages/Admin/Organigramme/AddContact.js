@@ -45,16 +45,18 @@ export default function AddContact(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
 
   const [loading, setLoading] = useState(false);
-  const [companies, setCompanies] = useState([]);
-
+  const [dropdownType, setDropdownType] = useState([]);
+  const [type, setType] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState([]);
-  const [companyId, setCompanyId] = useState("");
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -63,22 +65,29 @@ export default function AddContact(props) {
 
   async function fetchData() {
     try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.COMPANY}`,
-      });
+      // const result = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.COMPANY}`,
+      // });
 
-      const itemsArray = [];
-      result.data.items.map((item) => {
-        if (!item.adminId) {
-          itemsArray.push({
-            value: item._id,
-            label: item.name,
-          });
-        }
-        return true;
-      });
+        const typeArray = [
+        { value: 'LOGISTICS', label: 'LOGISTICS'}, 
+        { value: 'SITE', label: 'SITE'}
+      ];
 
-      setCompanies(itemsArray);
+      setDropdownType(typeArray);
+
+      // const itemsArray = [];
+      // result.data.items.map((item) => {
+      //   if (!item.adminId) {
+      //     itemsArray.push({
+      //       value: item._id,
+      //       label: item.name,
+      //     });
+      //   }
+      //   return true;
+      // });
+
+      // setCompanies(itemsArray);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -95,7 +104,8 @@ export default function AddContact(props) {
     else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
+    else if (name === "company") setCompany(value);
+    else if (name === "role") setRole(value);
   };
 
   const onSubmit = async (e) => {
@@ -103,23 +113,28 @@ export default function AddContact(props) {
       e.preventDefault();
       setLoading(true);
       var formdata = new FormData();
+      console.log(' adminStore.site.siteId._id',  adminStore.site.siteId._id)
       formdata.append("email", email);
       formdata.append("phone", phone);
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("image", image[0].file);
-      formdata.append("companyId", companyId);
+      formdata.append("company", company);
+      formdata.append("siteId", adminStore.site.siteId._id);
+      formdata.append("type", type);
+      formdata.append("role", role);
 
       await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.ADMINS,
+        uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
       setLoading(false);
-      props.history.push("/admins");
+      props.history.goBack();
+      // props.history.push("/admins");
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -141,15 +156,25 @@ export default function AddContact(props) {
             <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
             <Form.Row noMargin width="48%">
               <FormSelect
-                name="companyId"
-                value={companyId}
+                name="type"
+                value={type}
                 // error={companyId}
-                values={companies}
-                placeholder="Logistique"
+                values={dropdownType}
+                placeholder="Type"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                   onChange={(e) => {
+                  const index = e.target.selectedIndex - 1;
+                  console.log('index', index);
+                  if (index !== -1) {
+                    const item = e.target.value;
+
+                    console.log(item)
+                    setType(item);
+                  } else {
+
+                    setType("");
+                  }
+                }}
               />
             </Form.Row>
           </Form.Row>
@@ -157,8 +182,8 @@ export default function AddContact(props) {
             <FormLabel bold primary="CONTACT INFO : " />
             <Form.Row noMargin width="48%">
               <FormInput
-                name="firstName"
-                value={firstName}
+                name="email"
+                value={email}
                 // error={firstName}
                 placeholder="Adresse e-mail"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
@@ -167,8 +192,8 @@ export default function AddContact(props) {
                 }
               />
               <FormInput
-                name="lastName"
-                value={lastName}
+                name="phone"
+                value={phone}
                 // error={lastName}
                 placeholder="Téléphone"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
@@ -213,9 +238,20 @@ export default function AddContact(props) {
           <Form.Row>
             <FormLabel bold primary="COMPANY: " />
             <Form.Row noMargin width="48%">
-              <FormSelect
-                name="companyId"
-                value={companyId}
+              
+             <FormInput
+                name="company"
+                value={company}
+                // error={lastName}
+                placeholder="Enterprise"
+                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+              {/* <FormSelect
+                name="company"
+                value={company}
                 // error={companyId}
                 values={companies}
                 placeholder="Entreprise"
@@ -223,13 +259,23 @@ export default function AddContact(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-              />
+              /> */}
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Rôle: " />
             <Form.Row noMargin width="48%">
-              <FormSelect
+                <FormInput
+                name="role"
+                value={role}
+                // error={lastName}
+                placeholder="Role"
+                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+              {/* <FormSelect
                 name="companyId"
                 value={companyId}
                 // error={companyId}
@@ -239,7 +285,7 @@ export default function AddContact(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-              />
+              /> */}
             </Form.Row>
           </Form.Row>
           <Form.ButtonContainer>
@@ -251,12 +297,12 @@ export default function AddContact(props) {
               loading={loading}
               disabled={
                 loading ||
+                !type||
                 !email ||
                 !phone ||
                 !firstName ||
                 !lastName ||
-                image.length === 0 ||
-                !companyId
+                image.length === 0 
               }
             />
           </Form.ButtonContainer>

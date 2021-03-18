@@ -19,7 +19,7 @@ import SiteImage from "../../assets/images/Site.png";
 import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
 import { ReactComponent as Means } from "../../assets/icons/means.svg";
 import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
-import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
+// import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
 import { ReactComponent as Incidents } from "../../assets/icons/incidents.svg";
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
@@ -131,11 +131,11 @@ const userItems = [
     path: "/incidents",
     icon: <Incidents />,
   },
-  {
-    name: "Invoices",
-    path: "/invoices",
-    icon: <Invoices />,
-  },
+  // {
+  //   name: "Invoices",
+  //   path: "/invoices",
+  //   icon: <Invoices />,
+  // },
   {
     name: "Companies",
     path: "/companies",

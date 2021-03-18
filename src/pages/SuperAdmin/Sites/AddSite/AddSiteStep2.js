@@ -52,13 +52,14 @@ export default function AddSiteStep2(props) {
   const [notificationTo, setNotificationTo] = useState([]);
 
   function handleChange(name, value) {
-    if (name === "start") setStart(value);
-    else if (name === "end") setEnd(value);
+    if (name === "start") {
+      setEnd("");
+      setStart(value);
+    } else if (name === "end") setEnd(value);
     else if (name === "openingHours") {
       setUpdate((st) => !st);
       setOpeningHours(value);
     } else if (name === "unavailabilityDates") {
-      console.log(value);
       setUpdate((st) => !st);
       setUnavailabilityDates(value);
     } else if (name === "additionalInfo") setAdditionalInfo(value);
