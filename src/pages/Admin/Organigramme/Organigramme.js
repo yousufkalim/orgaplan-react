@@ -27,15 +27,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
-  unSelectedFilter: {
-    backgroundColor: "#fff !important",
-    border: "1px solid #707070 !important",
-    textColor: "#7E7878 !important",
-
-  },
-  selectedFilter: {
-    backgroundColor: "#140772 !important",
-  }
   
 }));
 
@@ -72,9 +63,8 @@ export default function Organigramme(props) {
   const [companyName] = useState("");
   const [organigramme, setOrganigrammes] = useState([]);  
   const [completeOrganigramme, setCompleteOrganigrammes] = useState([]);
-  let [selectedFilter, setSelectedFilter] = useState("");
-  let [selectedClass, setSelectedClass] = useState("");
-  let [selectedClasss, setSelectedClasss] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+
 
   useEffect(() => {
    
@@ -99,6 +89,7 @@ export default function Organigramme(props) {
       // const companies = await GLOBALS.API({
       //   uri: `${GLOBALS.Constants.COMPANY}`,
       // });
+      console.log(store.token)
        const oranigramme = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
        });
@@ -171,7 +162,6 @@ export default function Organigramme(props) {
       formdata.append("companyId", companyId);
       formdata.append("userId", selectedItem._id);
       image.file && formdata.append("image", image.file);
-
       const result = await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.ADMINS,
@@ -195,42 +185,38 @@ export default function Organigramme(props) {
       );
     }
   };
-
-
-
-  
-
-
-   
+   //working
   const rows = items.map((item, index) => {
     return [
       
-      <img src={Images.avatar} alt="Organigramme" style={{ width: 50, height: 50 }} />,
-      ...item,
+      <img
+      src={item[0] ? GLOBALS.Constants.BASE_URL + item[0] : null}
+      alt="Organigramme"
+      style={{ width: 50, height: 50 }}
+    />,
+      item[1]? item[1] : null,
+      item[2]? item[2] : null,
+      item[3]? item[3] : null,
+      item[4]? item[4] : null,
+      item[5]? item[5] : null,
+      item[6]? item[6] : null
     ];
   });
 
    function getOrganigramme (value)  {
      setSelectedFilter(value)
-    // if(value === 'SITE') {
-    //   setSelectedClass(classes.selectedFilter);
-    //   setSelectedClasss(classes.unSelectedFilter);
-    // } else if (value === 'LOGISTICS') {
-    //   setSelectedClasss(classes.selectedFilter);
-    //   setSelectedClass(classes.unSelectedFilter);
-    // }
-
     let filterData =  completeOrganigramme.filter(x=> x.type === value)
     setOrganigrammes(filterData)
     let temp = [];
     filterData.map((item, index) => {
     let data = [];
-    data[0] = item.firstName;
-    data[1] = item.lastName;
-    data[2] = item.company;
-    data[3] = item.role;
-    data[4] = item.phone;
-    data[5] = item.email;
+    data[0] = item.image;
+    data[1] = item.firstName;
+    data[2] = item.lastName;
+    data[3] = item.company;
+    data[4] = item.role;
+    data[5] = item.phone;
+    data[6] = item.email;
     return temp.push(data);
     });
       setItems(temp);
