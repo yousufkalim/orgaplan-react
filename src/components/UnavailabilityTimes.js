@@ -188,10 +188,16 @@ export default function MultiAdderInputModal(props) {
               break;
             } else {
               console.log("greater or less");
-              if (localdayOff === false) {
-                addvalue = 1;
-              } else {
+              if (moment(localdate).isSame(date) && localdayOff === true) {
                 break;
+              } else if (
+                moment(localdate).isSame(date) &&
+                dayOff === true &&
+                localdayOff === false
+              ) {
+                break;
+              } else {
+                addvalue = 1;
               }
             }
           } else {
