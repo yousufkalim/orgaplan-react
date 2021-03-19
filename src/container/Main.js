@@ -24,6 +24,8 @@ export default function Main() {
 
   return (
     <>
+      <SuperAdmin />
+      {/* 
       {store.loading && <Loader.AbsoluteLinear />}
       {loading ? (
         <Loader.CenterProgress />
@@ -35,7 +37,7 @@ export default function Main() {
         )
       ) : (
         <UnAuth />
-      )}
+      )} */}
     </>
   );
 }

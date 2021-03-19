@@ -141,7 +141,9 @@ export default function Input(props) {
             };
             props.onChange(event);
           }}
-          disabledDate={(d) => !d || d.isBefore(props.min)}
+          disabledDate={(d) =>
+            !d || d.isBefore(props.min) || (props.max && d.isAfter(props.max))
+          }
         />
       ) : (
         <input

@@ -4,3 +4,6 @@
 .ant-picker-input input::placeholder {
   color: #7e7878;
 }
+.ant-picker-dropdown {
+  z-index: 1400 !important;
+}
