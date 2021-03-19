@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
+
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -55,9 +56,68 @@ const useStyles = makeStyles(() => ({
 export default function AddIncidents(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
 
   const [name, setName] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [dropdownLocationType, setDropdownLocationType] = useState([]);
+  const [location, setLocations] = useState([]);
+  const [selectedLocationType, setselectedLocationType] = useState("");
+
+  const [companyId, setCompanyId] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const [nameError, setNameError] = useState(""); //working
+
+  const [comapnyError, setComapnyError] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [timeError, setTimeError] = useState("");
+
+    useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+   useEffect(() => {
+    fetchLocationDataOnTypeChange();
+    // eslint-disable-next-line
+  }, [selectedLocationType]);
+
+ const fetchData = async () => {
+   const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
+        token: store.token,
+
+       });
+      
+    console.log(response)
+    
+    if(response.success) {
+      console.log(response.data.site_companies)
+      if(response.data.site_companies) {
+        const temp = [];
+          response.data.site_companies.map((item, index) => {
+            console.log(item)
+            return temp.push({ label: item.companyId.name, value: item.companyId._id });
+          });
+          setDropdownCompanies(temp);
+
+        console.log(dropdownCompanies)
+
+      }
+
+        if (response.data.locationTypes) {
+          setLocations(response.data.locationTypes);
+          const temp = [];
+          response.data.locationTypes.map((item, index) => {
+            return temp.push({ label: item, value: item });
+          });
+          setDropdownLocationType(temp);
+        }
+
+    }
+ }
+
 
 
   const onSubmit = async (values) => {
@@ -78,8 +138,6 @@ export default function AddIncidents(props) {
     formdata.append("additionalInfo", values.additionalInfo);
     formdata.append("notificationPriorToDays", values.notificationPriorToDays);
     formdata.append("notificationTo", JSON.stringify(notificationTo));
-    alert(store.token)
-    console.log(store.token)
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.CLIENTS,
@@ -92,6 +150,7 @@ export default function AddIncidents(props) {
     props.history.push("/clients");
   };
    const nameChange = (e) => {
+     console.log(e.target.value)
     if (e.target.name === "name") {
       setName(e.target.value);
       if (e.target.name === "" || name === null) {
@@ -100,51 +159,93 @@ export default function AddIncidents(props) {
         setNameError(false);
       }
     }
-    // if (e.target.name === "types") {
-    //   setTypes(e.target.value);
-    //   if (e.target.value === "" || e.target.value === null) {
-    //     setTypeError(true);
-    //   } else {
-    //     setTypeError(false);
-    //   }
-    // }
-    // if (e.target.name === "color") {
-    //   setColor(e.target.value);
-    //   if (e.target.value === "" || e.target.value === null) {
-    //     setColorError(true);
-    //   } else {
-    //     setColorError(false);
-    //   }
-    // }
-  //  if(e.target.name === "rate"){
-  //    setRate(e.target.value);
-  //   //  if(e.target.value === "" || e.target.value === null){
-  //   //    setRateError(true);
-  //   //  }
-  //   //  else{
-  //   //    setRateError(false);
-  //   //  }
-  //  }
-  //  if(e.target.name === "addInfo"){
-  //    setAddInfo(e.target.value);
-  //    if(e.target.value.length >= 300){
-  //      setAddInfoError(true);
-  //    }
-  //    else{
-  //      setAddInfoError(false);
-  //    }
-  //  }
-    // if(e.target.name === "types"){
-    //   setTypes(e.target.value);
-    //   if( types === ""){
-    //     setTypeError(true)
-    //   }
-    //   else{
-    //     setTypeError(false);
-    //   }
-    // }
+    if (e.target.name === "company") {
+      setCompanyId(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setComapnyError(true);
+      } else {
+        setComapnyError(false);
+      }
+    }
+        if (e.target.name === "date") {
+      setDate(e.target.value);
+      // console.log(date)
+      if (e.target.value === "" || e.target.value === null) {
+        setDateError(true);
+      } else {
+        setDateError(false);
+      }
+    }
+        if (e.target.name === "time") { 
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "location") {
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "additionalInfo") { //working
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "time") { //working
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+
+
+
   };
 
+  const fetchLocationDataOnTypeChange = async () => {
+    if(selectedLocationType === 'STORAGEAREA') {
+        const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if(response.success) {
+        
+      }
+      console.log(response)
+    }
+    if(selectedLocationType === 'DELIVERYAREA') {
+        const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if(response.success) {
+        //  const temp = [];
+        //   response.data.map((item, index) => {
+        //     return temp.push({ label: item, value: item });
+        //   });
+        //   setDropdownLocationType(temp);
+      }
+      console.log(response);
+    }
+  }
+  const locationTypeChange = (e)=> {
+     setselectedLocationType(e.target.value);
+  }
   const submitHandler = (e) => {
     e.preventDefault();
     if (name === "" || name === null) {
@@ -202,19 +303,11 @@ export default function AddIncidents(props) {
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder="Nom de I'enterprise"
-                name="color"
+                name="comapnyId"
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
+                onChange={nameChange}
                 // value={formik.values.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={dropdownCompanies}
               />
               <span
                 style={{
@@ -234,53 +327,37 @@ export default function AddIncidents(props) {
                 type="date"
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
-                name="contractStartDate"
-                // onChange={formik.handleChange}
-                // value={formik.values.contractStartDate}
+                name="date" 
+                onChange={nameChange}
                 // error={formik.errors.contractStartDate}
               />
-              <FormSelect
+              <FormInput
                 placeholder="TIME"
-                name="color"
+                type="time"
+                name="time"
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
+                onChange={nameChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+               
               />
-            </Form.Row>
+            </Form.Row> 
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION : " />
-            <Form.Row noMargin width="48%">
+            <Form.Row noMargin width="48%"> 
               <FormSelect
-                placeholder="Type of location"
+                placeholder="Type of location" //working
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
+                 onChange={locationTypeChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={dropdownLocationType}
               />
               <FormSelect
                 placeholder="LOCATION"
-                name="color"
+                name="location"
                 style={GLOBALS.Styles.inputWidth}
                 // onChange={formik.handleChange}
                 // value={formik.values.color}
@@ -303,7 +380,7 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-              // onChange={formik.handleChange}
+                onChange={nameChange}
               placeholder="Information complementaires"
               name="additionalInfo"
               // value={formik.values.additionalInfo}
@@ -334,20 +411,15 @@ export default function AddIncidents(props) {
           <Form.Row>
             <FormLabel bold primary="BILLABLE* : " />
             <FormSelect
-              placeholder="Non"
+              placeholder="Select"
               name="color"
               style={GLOBALS.Styles.inputWidth}
               // onChange={formik.handleChange}
               // value={formik.values.color}
               // error={formik.errors.color}
               values={[
-                { value: "green", label: "Green" },
-                { value: "Yellow", label: "Yellow" },
-                { value: "Red", label: "Red" },
-                { value: "Blue", label: "Blue" },
-                { value: "Orange", label: "Orange" },
-                { value: "Purple", label: "Purple" },
-                { value: "Magenta", label: "Magenta" },
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
               ]}
             />
           </Form.Row>
