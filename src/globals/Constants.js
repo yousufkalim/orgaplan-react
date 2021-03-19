@@ -80,5 +80,7 @@ const endpoints = {
   GET_SITE_INCIDENT: BASE_URL_V1 + "incidents/admin",
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
   POST_ADD_SITE_INCIDENTS: BASE_URL_V1 + "incidents",
+  GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
+
 };
 export default endpoints;
