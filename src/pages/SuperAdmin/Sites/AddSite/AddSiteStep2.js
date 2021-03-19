@@ -185,7 +185,6 @@ export default function AddSiteStep2(props) {
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
-        {console.log(unavailabilityDates)}
         <FormLabel bold primary="SITE DATES* : " />
         <Form.Row width="48%" noMargin>
           <FormInput
@@ -232,24 +231,36 @@ export default function AddSiteStep2(props) {
           />
         </Form.Row>
       </Form.Row>
-      <Form.Row>
-        <FormLabel bold primary="UNAVAILABILITY TIME :" />
-        <Form.Row
-          noMargin
-          width="48%"
-          alignItems="center"
-          justifyContent="flex-start"
-        >
-          <UnavailabilityTimes
-            name="unavailabilityDates"
-            values={unavailabilityDates}
-            style={GLOBALS.Styles.inputWidth}
-            unavailabilityDates={unavailabilityDates}
-            setUnavailabilityDates={setUnavailabilityDates}
-            onChange={(values) => handleChange("unavailabilityDates", values)}
-          />
-        </Form.Row>
-      </Form.Row>
+
+      {start !== "" && end !== "" ? (
+        <>
+          <Form.Row>
+            <FormLabel bold primary="UNAVAILABILITY TIME :" />
+            <Form.Row
+              noMargin
+              width="48%"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
+              <UnavailabilityTimes
+                name="unavailabilityDates"
+                values={unavailabilityDates}
+                style={GLOBALS.Styles.inputWidth}
+                unavailabilityDates={unavailabilityDates}
+                setUnavailabilityDates={setUnavailabilityDates}
+                startRange={start}
+                endRange={moment(end).add(1, "days")}
+                onChange={(values) =>
+                  handleChange("unavailabilityDates", values)
+                }
+              />
+            </Form.Row>
+          </Form.Row>
+        </>
+      ) : (
+        ""
+      )}
+
       <Form.Row>
         <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
         <FormInput

@@ -13,8 +13,6 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
-import Modal from "../../../components/Modal";
-import Table from "../../../components/Table";
 
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -31,31 +29,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const addAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   image: Yup.array().min(1, "Required").required("Required"),
-//   companyId: Yup.string().required("Required"),
-// });
-
 export default function EditContact(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [open, setOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [dropdownType, setDropdownType] = useState([]);
   const [type, setType] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -70,9 +51,7 @@ export default function EditContact(props) {
     // eslint-disable-next-line
   }, []);
 
-
   const setValues = () => {
-    console.log( 'data', props.location.data);
     const contactInfo = props.location.data;
 
     setType(contactInfo.type);
@@ -80,28 +59,23 @@ export default function EditContact(props) {
     setPhone(contactInfo.phone);
     setFirstName(contactInfo.firstName);
     setLastName(contactInfo.lastName);
-        // let fileClone = [{ uri: contactInfo.image }];
-                setImage([{ key: 0, file: undefined, uri:  contactInfo.image  }]);
+    // let fileClone = [{ uri: contactInfo.image }];
+    setImage([{ key: 0, file: undefined, uri: contactInfo.image }]);
 
     // setImage(fileClone);
 
     setCompany(contactInfo.company);
     setRole(contactInfo.role);
-
-
   };
-
-
-
 
   async function fetchData() {
     try {
-         const typeArray = [
-        { value: 'Logistic ', label: 'Logistic'}, 
-        { value: 'Site ', label: 'Site'}
-      ];
+      // const typeArray = [
+      //   { value: "Logistic ", label: "Logistic" },
+      //   { value: "Site ", label: "Site" },
+      // ];
 
-      setDropdownType(typeArray);
+      // setDropdownType(typeArray);
       await setValues();
       setLoading(false);
     } catch (err) {
@@ -127,14 +101,16 @@ export default function EditContact(props) {
     try {
       if (window.confirm("Are you sure, you want to delete this?")) {
         setLoading(true);
-        console.log(store.token)
+        console.log(store.token);
         await GLOBALS.API({
           method: "DELETE",
-          uri: GLOBALS.Constants.DELETE_SITE_ORGANIGRAMMES + "/" + props.location.data._id,
+          uri:
+            GLOBALS.Constants.DELETE_SITE_ORGANIGRAMMES +
+            "/" +
+            props.location.data._id,
           token: store.token,
         });
         props.history.goBack();
-
       }
     } catch (err) {
       setLoading(false);
@@ -163,7 +139,10 @@ export default function EditContact(props) {
 
       await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.PUT_SITE_ORGANIGRAMMES + "/" + props.location.data._id,
+        uri:
+          GLOBALS.Constants.PUT_SITE_ORGANIGRAMMES +
+          "/" +
+          props.location.data._id,
         headers: {
           Authorization: store.token,
         },
@@ -179,9 +158,7 @@ export default function EditContact(props) {
       );
     }
   };
- const modalHandler = (btn) => {
-    setOpen(btn);
-  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -198,21 +175,20 @@ export default function EditContact(props) {
                 value={type}
                 // error={companyId}
                 values={[
-                    { value: 'LOGISTICS', label: 'LOGISTICS'}, 
-                    { value: 'SITE', label: 'SITE'}
-                    ]}
+                  { value: "LOGISTICS", label: "LOGISTICS" },
+                  { value: "SITE", label: "SITE" },
+                ]}
                 placeholder="Type"
                 style={GLOBALS.Styles.inputWidth}
-                   onChange={(e) => {
+                onChange={(e) => {
                   const index = e.target.selectedIndex - 1;
-                  console.log('index', index);
+                  console.log("index", index);
                   if (index !== -1) {
                     const item = e.target.value;
 
-                    console.log(item)
+                    console.log(item);
                     setType(item);
                   } else {
-
                     setType("");
                   }
                 }}
@@ -267,11 +243,9 @@ export default function EditContact(props) {
                   handleChange(name, value)
                 }
               />
-
               <FormMultipleUpload
                 name="profile"
                 // error={image}
-
                 values={image}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("profile", values)}
@@ -281,8 +255,7 @@ export default function EditContact(props) {
           <Form.Row>
             <FormLabel bold primary="COMPANY: " />
             <Form.Row noMargin width="48%">
-              
-             <FormInput
+              <FormInput
                 name="company"
                 value={company}
                 // error={lastName}
@@ -292,13 +265,12 @@ export default function EditContact(props) {
                   handleChange(name, value)
                 }
               />
-      
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Rôle: " />
             <Form.Row noMargin width="48%">
-                <FormInput
+              <FormInput
                 name="role"
                 value={role}
                 // error={lastName}
@@ -308,7 +280,6 @@ export default function EditContact(props) {
                   handleChange(name, value)
                 }
               />
-         
             </Form.Row>
           </Form.Row>
           <Form.ButtonContainer>
@@ -319,30 +290,22 @@ export default function EditContact(props) {
               fullWidth={false}
               loading={loading}
               disabled={
-                loading ||
-                !type||
-                !email ||
-                !phone ||
-                !firstName ||
-                !lastName 
+                loading || !type || !email || !phone || !firstName || !lastName
               }
             />
           </Form.ButtonContainer>
-            
- 
-    <Button
-        text="DELETE"
-        minWidth={200}
-        fullWidth={false}
-        color={theme.palette.error.main}
-                  onClick={onDelete}
-                  loading={loading}
-                  disabled={loading}
-                />
 
+          <Button
+            text="DELETE"
+            minWidth={200}
+            fullWidth={false}
+            color={theme.palette.error.main}
+            onClick={onDelete}
+            loading={loading}
+            disabled={loading}
+          />
         </Form.Form>
       </div>
-
     </div>
   );
 }

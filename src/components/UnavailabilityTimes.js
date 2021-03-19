@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
+import GLOBALS from "../globals";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
 import Input from "./Input";
@@ -10,10 +11,12 @@ import Modal from "./Modal";
 import Button from "./Button";
 import FormLabel from "./FormLabel";
 import FormSelect from "./FormSelect";
+import FormInput from "./FormInput";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Actions from "../redux/actions";
-
+import { FreeBreakfastOutlined } from "@material-ui/icons";
+import "./custom.css";
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "relative",
@@ -42,7 +45,13 @@ const addUnavailabilityYup = Yup.object().shape({
 });
 
 export default function MultiAdderInputModal(props) {
-  const { unavailabilityDates, setUnavailabilityDates } = props;
+  const {
+    unavailabilityDates,
+    setUnavailabilityDates,
+    startRange,
+    endRange,
+  } = props;
+
   const dispatch = useDispatch();
   const theme = useTheme();
 
@@ -78,11 +87,10 @@ export default function MultiAdderInputModal(props) {
   const deleteUnavailability = (id) => {
     let deleteArray = [];
     unavailabilityDates.map(
-      (key, index) => index !== id && (deleteArray[index] = key),
+      (key, index) => index !== id && deleteArray.push(key),
     );
     setUnavailabilityDates(deleteArray);
   };
-
   const handledayOff = (event) => {
     setDayOff(event.target.checked);
 
@@ -134,8 +142,10 @@ export default function MultiAdderInputModal(props) {
   ];
 
   const unavailabilityDatesHandal = () => {
-    let newDate = new Date();
-    let formDate = new Date(date);
+    let loop_date1;
+    let loop_date2;
+    let date1, date2;
+    let addvalue = 1;
     const newarray = {
       date: date,
       startHour: time.start,
@@ -143,33 +153,82 @@ export default function MultiAdderInputModal(props) {
       dayOff: dayOff,
       reason: reason,
     };
-    if (
-      (parseInt(time.start) < parseInt(time.end) ||
-        (time.start === "0" && time.end === "0")) &&
-      newDate.getDate() <= formDate.getDate() &&
-      newDate.getMonth() + 1 <= formDate.getMonth() + 1 &&
-      newDate.getFullYear() <= formDate.getFullYear() &&
-      date !== ""
-    ) {
-      setUnavailabilityDates((prevState) => [...prevState, newarray]);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Added Successfully", "success"),
-        ),
-      );
-      // set value are all value empty
-      setDate("");
-      setReason("");
-      setTime({
-        start: "0",
-        end: "23",
-      });
-      setDayOff(false);
-      // set value are all value empty
+    date1 = moment(date).format("MM-DD-YYYY HH:mm:ss");
+    date1 = moment(date1).set("hour", parseInt(time.start));
+    date2 = moment(date).format("MM-DD-YYYY HH:mm:ss");
+    date2 = moment(date2).set("hour", parseInt(time.end));
+    if (moment(date).isBetween(startRange, endRange, null, "[]")) {
+      if (
+        parseInt(time.start) < parseInt(time.end) ||
+        (time.start === "0" && time.end === "0")
+      ) {
+        for (let i = 0; i < unavailabilityDates.length; i++) {
+          addvalue = 0;
+          let localdate = unavailabilityDates[i].date;
+          let localstart = unavailabilityDates[i].startHour;
+          let localend = unavailabilityDates[i].endHour;
+          let localdayOff = unavailabilityDates[i].dayOff;
+
+          loop_date1 = moment(localdate).format("MM-DD-YYYY HH:mm:ss");
+          loop_date1 = moment(loop_date1).set("hour", parseInt(localstart));
+          loop_date2 = moment(localdate).format("MM-DD-YYYY HH:mm:ss");
+          loop_date2 = moment(loop_date2).set("hour", parseInt(localend));
+
+          if (
+            (moment(date1).isBefore(loop_date1) &&
+              moment(date2).isBefore(loop_date2)) ||
+            (moment(date1).isAfter(loop_date1) &&
+              moment(date2).isAfter(loop_date2))
+          ) {
+            if (
+              moment(date2).isBetween(loop_date1, loop_date2) ||
+              moment(date1).isBetween(loop_date1, loop_date2)
+            ) {
+              console.log("is between time");
+              break;
+            } else {
+              console.log("greater or less");
+              if (localdayOff === false) {
+                addvalue = 1;
+              } else {
+                break;
+              }
+            }
+          } else {
+            console.log("greate or less no valid");
+            addvalue = 0;
+            break;
+          }
+        }
+        if (addvalue) {
+          setUnavailabilityDates((prevState) => [...prevState, newarray]);
+          // set value are all value empty
+          setDate("");
+          setReason("");
+          setTime({ start: "0", end: "23" });
+          setDayOff(false);
+          // set value are all value empty
+        } else {
+          dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar("This time is not available", "error"),
+            ),
+          );
+        }
+      } else {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Please select a Vaild time ", "error"),
+          ),
+        );
+      }
     } else {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Invalid", "error"),
+          Actions.notistack.snackbar(
+            "Please select a Date b/w Start and End Date ",
+            "error",
+          ),
         ),
       );
     }
@@ -197,13 +256,17 @@ export default function MultiAdderInputModal(props) {
                   <FormLabel disableMargin bold primary="Date:" />
                 </Form.Row>
                 <Form.Row noMargin>
-                  <Input
-                    name="date"
+                  <FormInput
                     type="date"
+                    name="date"
                     value={date}
-                    className={classes.input}
+                    placeholder="Date"
+                    style={GLOBALS.Styles.inputWidth}
+                    max={endRange}
+                    min={startRange}
                     onChange={getDate}
                   />
+
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -228,7 +291,7 @@ export default function MultiAdderInputModal(props) {
                     name="start"
                     value={time.start}
                     onChange={getTime}
-                    style={{ "margin-right": "5px" }}
+                    style={{ marginRight: "5px" }}
                   />
 
                   <FormSelect
@@ -275,34 +338,41 @@ export default function MultiAdderInputModal(props) {
             <table className="table">
               {unavailabilityDates.length > 0 && (
                 <>
-                  <tr>
-                    <th>Date</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Reason</th>
-                    <th>Action</th>
-                  </tr>
-                  {unavailabilityDates.map((key, index) => {
-                    return (
-                      <tr key={index}>
-                        <td> {moment(key.date).format("YYYY-MM-DD")} </td>
-                        <td>{key.startHour}</td>
-                        <td>{key.endHour}</td>
-                        <td>{key.reason}</td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              deleteUnavailability(index);
-                            }}
-                            className="btn btn-danger"
-                            style={{ "font-size": "13px", padding: "0px 12px" }}
-                          >
-                            X
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Reason</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {unavailabilityDates.map((key, index) => {
+                      return (
+                        <tr key={index}>
+                          <td> {moment(key.date).format("DD-MM-YYYY")} </td>
+                          <td>{key.startHour}</td>
+                          <td>{key.endHour}</td>
+                          <td>{key.reason}</td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                deleteUnavailability(index);
+                              }}
+                              className="btn btn-danger"
+                              style={{
+                                fontSize: "13px",
+                                padding: "0px 12px",
+                              }}
+                            >
+                              X
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
                 </>
               )}
             </table>

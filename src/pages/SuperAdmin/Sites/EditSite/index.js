@@ -88,6 +88,7 @@ export default function EditSite(props) {
           reason: key.reason,
           startHour: key.startHour,
         });
+        return true;
       });
       const notificationToArray = response.notificationTo.map(
         (notification, index) => ({

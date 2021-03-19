@@ -32,6 +32,7 @@ const endpoints = {
   LEVELS: BASE_URL_V1 + "superadmin/levels",
   LEVEL_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
   LEVELS_BUILDING: BASE_URL_V1 + "superadmin/levels/building",
+  QUOTE: BASE_URL_V1 + "superadmin/quotes",
   QUOTE_VERIFY: BASE_URL_V1 + "superadmin/quotes/verify",
   SITES: BASE_URL_V1 + "superadmin/sites",
   SITE_GET: BASE_URL_V1 + "superadmin/sites/get",
@@ -79,7 +80,5 @@ const endpoints = {
 
   GET_SITE_INCIDENT: BASE_URL_V1 + "incidents/admin",
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
-
-
 };
 export default endpoints;
