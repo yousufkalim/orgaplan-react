@@ -5,7 +5,6 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-import { Images } from "../../../assets/Assets";
 
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
@@ -27,30 +26,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
-  unSelectedFilter: {
-    backgroundColor: "#fff !important",
-    border: "1px solid #707070 !important",
-    textColor: "#7E7878 !important",
-
-  },
-  selectedFilter: {
-    backgroundColor: "#140772 !important",
-  }
-  
 }));
-
-// const updateAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   image: Yup.object().optional(""),
-//   companyId: Yup.string().required("Required"),
-// });
 
 export default function Organigramme(props) {
   const theme = useTheme();
@@ -59,10 +35,9 @@ export default function Organigramme(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
   const [open, setOpen] = useState(false);
-  const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [companies, setCompanies] = useState([]);
+  const [companies] = useState([]);
   const [selectedItem] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -70,22 +45,16 @@ export default function Organigramme(props) {
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName] = useState("");
-  const [organigramme, setOrganigrammes] = useState([]);  
+  const [organigramme, setOrganigrammes] = useState([]);
   const [completeOrganigramme, setCompleteOrganigrammes] = useState([]);
-  let [selectedFilter, setSelectedFilter] = useState("");
-  let [selectedClass, setSelectedClass] = useState("");
-  let [selectedClasss, setSelectedClasss] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
 
   useEffect(() => {
-   
     fetchData();
-
     // eslint-disable-next-line
   }, []);
-   useEffect(() => {
-   
+  useEffect(() => {
     getOrganigramme(selectedFilter);
-
     // eslint-disable-next-line
   }, [selectedFilter]);
 
@@ -99,49 +68,16 @@ export default function Organigramme(props) {
       // const companies = await GLOBALS.API({
       //   uri: `${GLOBALS.Constants.COMPANY}`,
       // });
-       const oranigramme = await GLOBALS.API({
+      console.log(store.token);
+      const oranigramme = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
-       });
-      console.log('organigramme list', oranigramme);
-      // const companiesArray = [];
-      // companies.data.items.map((item) => {
-      //   if (!item.adminId) {
-      //     companiesArray.push({
-      //       value: item._id,
-      //       label: item.name,
-      //     });
-      //   }
-      //   return true;
-      // });
-      if(oranigramme.success) { //working
-        
-        setCompleteOrganigrammes(oranigramme.data)
-        setOrganigrammes(oranigramme.data)
-        setSelectedFilter('SITE')
-        // getOrganigramme('SITE');
-
-    //           let temp = [];
-
-    // oranigramme.data.map((item, index) => {
-    //       let data = [];
-    //       data[0] = item.firstName;
-    //       data[1] = item.lastName;
-    //       data[2] = item.company;
-    //       data[3] = item.role;
-    //       data[4] = item.phone;
-    //       data[5] = item.email;
-
-    //       return temp.push(data);
-    //     });
-    //   setItems(temp);
-
+      });
+      if (oranigramme.success) {
+        setCompleteOrganigrammes(oranigramme.data);
+        setOrganigrammes(oranigramme.data);
+        setSelectedFilter("SITE");
       }
 
-
-
-
-      // setItems(admins.data.items);
-      // setCompanies(companiesArray);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -171,7 +107,6 @@ export default function Organigramme(props) {
       formdata.append("companyId", companyId);
       formdata.append("userId", selectedItem._id);
       image.file && formdata.append("image", image.file);
-
       const result = await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.ADMINS,
@@ -185,7 +120,6 @@ export default function Organigramme(props) {
       );
       setItems(itemsArray);
       setLoading(false);
-      
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -195,52 +129,44 @@ export default function Organigramme(props) {
       );
     }
   };
-
-
-
-  
-
-
-   
+  //working
   const rows = items.map((item, index) => {
     return [
-      
-      <img src={Images.avatar} alt="Organigramme" style={{ width: 50, height: 50 }} />,
-      ...item,
+      <img
+        src={item[0] ? GLOBALS.Constants.BASE_URL + item[0] : null}
+        alt="Organigramme"
+        style={{ width: 50, height: 50 }}
+      />,
+      item[1] ? item[1] : null,
+      item[2] ? item[2] : null,
+      item[3] ? item[3] : null,
+      item[4] ? item[4] : null,
+      item[5] ? item[5] : null,
+      item[6] ? item[6] : null,
     ];
   });
 
-   function getOrganigramme (value)  {
-     setSelectedFilter(value)
-    // if(value === 'SITE') {
-    //   setSelectedClass(classes.selectedFilter);
-    //   setSelectedClasss(classes.unSelectedFilter);
-    // } else if (value === 'LOGISTICS') {
-    //   setSelectedClasss(classes.selectedFilter);
-    //   setSelectedClass(classes.unSelectedFilter);
-    // }
-
-    let filterData =  completeOrganigramme.filter(x=> x.type === value)
-    setOrganigrammes(filterData)
+  function getOrganigramme(value) {
+    setSelectedFilter(value);
+    let filterData = completeOrganigramme.filter((x) => x.type === value);
+    setOrganigrammes(filterData);
     let temp = [];
     filterData.map((item, index) => {
-    let data = [];
-    data[0] = item.firstName;
-    data[1] = item.lastName;
-    data[2] = item.company;
-    data[3] = item.role;
-    data[4] = item.phone;
-    data[5] = item.email;
-    return temp.push(data);
+      let data = [];
+      data[0] = item.image;
+      data[1] = item.firstName;
+      data[2] = item.lastName;
+      data[3] = item.company;
+      data[4] = item.role;
+      data[5] = item.phone;
+      data[6] = item.email;
+      return temp.push(data);
     });
-      setItems(temp);
-  
+    setItems(temp);
   }
 
- function editHandler (e, data )  {
- 
-      console.log('called', data);
-  
+  function editHandler(e, data) {
+    console.log("called", data);
   }
 
   const modalHandler = (btn) => {
@@ -266,47 +192,41 @@ export default function Organigramme(props) {
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <Button
-              // className={selectedClass}
               fullWidth={false}
               text="SITE ORGANIGAMME"
               style={{
                 marginLeft: "20px",
-                backgroundColor: selectedFilter === "LOGISTICS"? "#fff" : "#140772",
+                backgroundColor:
+                  selectedFilter === "LOGISTICS" ? "#fff" : "#140772",
               }}
-               textColor = {selectedFilter === 'LOGISTICS' ? '#7E7878' : ''}
-              onClick={()=> getOrganigramme('SITE') }
+              textColor={selectedFilter === "LOGISTICS" ? "#7E7878" : ""}
+              onClick={() => getOrganigramme("SITE")}
             />
             <Button
-              // className={selectedClasss}
               fullWidth={false}
               text="LOGISTIC ORGANIGAMME"
               style={{
                 marginLeft: "20px",
-                backgroundColor: selectedFilter === "SITE"? "#fff" : "#140772",
+                backgroundColor: selectedFilter === "SITE" ? "#fff" : "#140772",
               }}
-               textColor = {selectedFilter === 'SITE' ? '#7E7878' : ''}
-              onClick={()=> getOrganigramme('LOGISTICS') }
-
+              textColor={selectedFilter === "SITE" ? "#7E7878" : ""}
+              onClick={() => getOrganigramme("LOGISTICS")}
             />
           </Form.Row>
         </Form.Row>
         <div className={classes.content}>
-          <Table 
+          <Table
             headers={GLOBALS.Data.oranigramme.headings}
             rows={rows}
-            onClick={ (e)=> { 
-              props.history.push({ 
-               pathname: "/organigramme/edit-contact",
-               data: organigramme[e],
-              })
-            console.log(props)
-             return editHandler(e, organigramme[e])
-            }  } 
-           // modalHandler={modalHandler}  //working
+            onClick={(e) => {
+              props.history.push({
+                pathname: "/organigramme/edit-contact",
+                data: organigramme[e],
+              });
+              console.log(props);
+              return editHandler(e, organigramme[e]);
+            }}
           />
-
-
-
         </div>
       </div>
       <Modal

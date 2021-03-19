@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,46 +25,112 @@ const useStyles = makeStyles(() => ({
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
+   error: {
+    color: "red",
+  },
 }));
 
-const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
+// const addClientYup = Yup.object().shape({
+//   logo: Yup.array().min(1, "Required").required("Required"),
+//   name: Yup.string().required("Required"),
+//   color: Yup.string().required("Required"),
+//   firstName: Yup.string().required("Required"),
+//   lastName: Yup.string().required("Required"),
+//   email: Yup.string().required("Required"),
+//   phone: Yup.number()
+//     .test(
+//       "len",
+//       "Must be exactly 10 characters",
+//       (val) => val && val.toString().length === 10,
+//     )
+//     .required("Required"),
+//   contractType: Yup.string().required("Required"),
+//   contractStartDate: Yup.string().required("Required"),
+//   contractEndDate: Yup.string().required("Required"),
+//   functionality: Yup.string().required("Required"),
+//   additionalInfo: Yup.string(),
+//   notificationPriorToDays: Yup.number(),
+//   notificationTo: Yup.array(),
+// });
 
 export default function AddIncidents(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
+
+  const [name, setName] = useState("");
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [dropdownLocationType, setDropdownLocationType] = useState([]);
+  const [location, setLocations] = useState([]);
+  const [selectedLocationType, setselectedLocationType] = useState("");
+
+  const [companyId, setCompanyId] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const [nameError, setNameError] = useState(""); //working
+
+  const [comapnyError, setComapnyError] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [timeError, setTimeError] = useState("");
+
+    useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+   useEffect(() => {
+    fetchLocationDataOnTypeChange();
+    // eslint-disable-next-line
+  }, [selectedLocationType]);
+
+ const fetchData = async () => {
+   const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
+        token: store.token,
+
+       });
+      
+    console.log(response)
+    
+    if(response.success) {
+      console.log(response.data.site_companies)
+      if(response.data.site_companies) {
+        const temp = [];
+          response.data.site_companies.map((item, index) => {
+            console.log(item)
+            return temp.push({ label: item.companyId.name, value: item.companyId._id });
+          });
+          setDropdownCompanies(temp);
+
+        console.log(dropdownCompanies)
+
+      }
+
+        if (response.data.locationTypes) {
+          setLocations(response.data.locationTypes);
+          const temp = [];
+          response.data.locationTypes.map((item, index) => {
+            return temp.push({ label: item, value: item });
+          });
+          setDropdownLocationType(temp);
+        }
+
+    }
+ }
+
+
 
   const onSubmit = async (values) => {
-    const notificationTo = values.notificationTo.map((item) => item.label);
+  const notificationTo = values.notificationTo.map((item) => item.label);
 
-    var formdata = new FormData();
-    formdata.append("logo", values.logo[0].file);
-    formdata.append("name", values.name);
-    formdata.append("color", values.color);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
+  var formdata = new FormData();
+  formdata.append("logo", values.logo[0].file);
+  formdata.append("name", values.name);
+  formdata.append("color", values.color);
+  formdata.append("firstName", values.firstName);
+  formdata.append("lastName", values.lastName);
+  formdata.append("email", values.email);
+  formdata.append("phone", values.phone);
     formdata.append("contractType", values.contractType);
     formdata.append("contractStartDate", values.contractStartDate);
     formdata.append("contractEndDate", values.contractEndDate);
@@ -71,7 +138,6 @@ export default function AddIncidents(props) {
     formdata.append("additionalInfo", values.additionalInfo);
     formdata.append("notificationPriorToDays", values.notificationPriorToDays);
     formdata.append("notificationTo", JSON.stringify(notificationTo));
-
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.CLIENTS,
@@ -80,33 +146,136 @@ export default function AddIncidents(props) {
       },
       body: formdata,
     });
-    formik.setSubmitting(false);
+    // formik.setSubmitting(false);
     props.history.push("/clients");
   };
+   const nameChange = (e) => {
+     console.log(e.target.value)
+    if (e.target.name === "name") {
+      setName(e.target.value);
+      if (e.target.name === "" || name === null) {
+        setNameError(true);
+      } else {
+        setNameError(false);
+      }
+    }
+    if (e.target.name === "company") {
+      setCompanyId(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setComapnyError(true);
+      } else {
+        setComapnyError(false);
+      }
+    }
+        if (e.target.name === "date") {
+      setDate(e.target.value);
+      // console.log(date)
+      if (e.target.value === "" || e.target.value === null) {
+        setDateError(true);
+      } else {
+        setDateError(false);
+      }
+    }
+        if (e.target.name === "time") { 
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "location") {
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "additionalInfo") { //working
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
+       if (e.target.name === "time") { //working
+      setTime(e.target.value);
+      if (e.target.value === "" || e.target.value === null) {
+        setTimeError(true);
+      } else {
+        setTimeError(false);
+      }
+      
+    }
 
-  const formik = useFormik({
-    initialValues: {
-      logo: [],
-      name: "",
-      color: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    validationSchema: addClientYup,
-    onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
+
+
+  };
+
+  const fetchLocationDataOnTypeChange = async () => {
+    if(selectedLocationType === 'STORAGEAREA') {
+        const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if(response.success) {
+        
+      }
+      console.log(response)
+    }
+    if(selectedLocationType === 'DELIVERYAREA') {
+        const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if(response.success) {
+        //  const temp = [];
+        //   response.data.map((item, index) => {
+        //     return temp.push({ label: item, value: item });
+        //   });
+        //   setDropdownLocationType(temp);
+      }
+      console.log(response);
+    }
+  }
+  const locationTypeChange = (e)=> {
+     setselectedLocationType(e.target.value);
+  }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (name === "" || name === null) {
+      setNameError(true);
+    }
+    // if (types === "" || types === null) {
+    //   setTypeError(true);
+    // }
+    // if (color === "" || color === null) {
+    //   setColorError(true);
+    // }
+    // if (startDate === "" || startDate === undefined || startDate === null) {
+    //   setStartDateError(true);
+    //   setIsDateSelect(true);
+      
+    // } 
+    // if (endDate === "" || endDate === undefined || endDate === null) {
+    //   setEndDateError(true);
+    // } 
+    // if( rate === "" || rate === null){
+    //   setRateError(true);
+    // }
+    // if( name !== "" && types !== "" && color !== "" && startDate !== "" && endDate !== ""){
+    //   clearFileds();
+    // }
+    else {
+      // clearFileds();
+    }
+  };
+
 
   return (
     <div className={classes.root}>
@@ -115,37 +284,30 @@ export default function AddIncidents(props) {
       </IconButton>
       <Heading primary="CREATE AN INCIDENTS" />
       <div className={classes.content}>
-        <Form.Form onSubmit={formik.handleSubmit}>
+        <Form.Form onSubmit={submitHandler}>
           <Form.Row>
             <FormLabel bold primary="DESIGNATION* :" />
             <FormInput
               name="name"
               style={GLOBALS.Styles.inputWidth}
               placeholder="Name of incident"
-              onChange={formik.handleChange}
-              value={formik.values.name}
-              error={formik.errors.name}
+              onChange={nameChange}
+              value={name}
             />
+                {/* {nameError && (
+                  <div className={classes.error}>Please enter name</div>
+                )} */}
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="NAME OF COMPANY* :" />
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder="Nom de I'enterprise"
-                name="color"
+                name="comapnyId"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                onChange={nameChange}
+                // value={formik.values.color}
+                values={dropdownCompanies}
               />
               <span
                 style={{
@@ -165,57 +327,41 @@ export default function AddIncidents(props) {
                 type="date"
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
-                name="contractStartDate"
-                onChange={formik.handleChange}
-                value={formik.values.contractStartDate}
-                error={formik.errors.contractStartDate}
+                name="date" 
+                onChange={nameChange}
+                // error={formik.errors.contractStartDate}
               />
-              <FormSelect
+              <FormInput
                 placeholder="TIME"
-                name="color"
+                type="time"
+                name="time"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                onChange={nameChange}
+                // value={formik.values.color}
+                // error={formik.errors.color}
+               
               />
-            </Form.Row>
+            </Form.Row> 
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION : " />
-            <Form.Row noMargin width="48%">
+            <Form.Row noMargin width="48%"> 
               <FormSelect
-                placeholder="Type of location"
+                placeholder="Type of location" //working
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                 onChange={locationTypeChange}
+                // value={formik.values.color}
+                // error={formik.errors.color}
+                values={dropdownLocationType}
               />
               <FormSelect
                 placeholder="LOCATION"
-                name="color"
+                name="location"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={formik.handleChange}
-                value={formik.values.color}
-                error={formik.errors.color}
+                // onChange={formik.handleChange}
+                // value={formik.values.color}
+                // error={formik.errors.color}
                 values={[
                   { value: "green", label: "Green" },
                   { value: "Yellow", label: "Yellow" },
@@ -234,17 +380,17 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
+                onChange={nameChange}
               placeholder="Information complementaires"
               name="additionalInfo"
-              value={formik.values.additionalInfo}
-              error={formik.errors.additionalInfo}
+              // value={formik.values.additionalInfo}
+              // error={formik.errors.additionalInfo}
             />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="ADD PICTURES : " />
             <Form.Row noMargin width="48%">
-              <FormMultipleUpload
+              {/* <FormMultipleUpload
                 name="logo"
                 style={GLOBALS.Styles.inputWidth}
                 error={formik.errors.logo}
@@ -256,28 +402,24 @@ export default function AddIncidents(props) {
                       name: "logo",
                       value: values,
                     },
-                  })
+                  }
+                  )
                 }
-              />
+              /> */}
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="BILLABLE* : " />
             <FormSelect
-              placeholder="Non"
+              placeholder="Select"
               name="color"
               style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
-              value={formik.values.color}
-              error={formik.errors.color}
+              // onChange={formik.handleChange}
+              // value={formik.values.color}
+              // error={formik.errors.color}
               values={[
-                { value: "green", label: "Green" },
-                { value: "Yellow", label: "Yellow" },
-                { value: "Red", label: "Red" },
-                { value: "Blue", label: "Blue" },
-                { value: "Orange", label: "Orange" },
-                { value: "Purple", label: "Purple" },
-                { value: "Magenta", label: "Magenta" },
+                { value: "true", label: "Yes" },
+                { value: "false", label: "No" },
               ]}
             />
           </Form.Row>
@@ -301,11 +443,11 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-              onChange={formik.handleChange}
+              // onChange={formik.handleChange}
               placeholder="Ajouter un commentaire"
               name="additionalInfo"
-              value={formik.values.additionalInfo}
-              error={formik.errors.additionalInfo}
+              // value={formik.values.additionalInfo}
+              // error={formik.errors.additionalInfo}
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -314,8 +456,8 @@ export default function AddIncidents(props) {
               minWidth={200}
               text="VALIDER"
               fullWidth={false}
-              loading={formik.isSubmitting}
-              disabled={formik.isSubmitting}
+              // loading={formik.isSubmitting}
+              // disabled={formik.isSubmitting}
             />
           </Form.ButtonContainer>
         </Form.Form>

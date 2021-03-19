@@ -12,17 +12,12 @@ import Modal from "./Modal";
 import Button from "./Button";
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
-// const addAddressesYup = Yup.object().shape({
-//   street: Yup.string().required("Required"),
-//   city: Yup.string().required("Required"),
-//   postal: Yup.string().required("Required"),
-// });
-
 export default function CustomInputModal(props) {
   useEffect(() => {
-    if (props.chipDefaultValues != undefined)
+    if (props.chipDefaultValues !== undefined)
       setChipValues(props.chipDefaultValues);
-  });
+    // eslint-disable-next-line
+  }, []);
 
   const theme = useTheme();
 
@@ -104,18 +99,18 @@ export default function CustomInputModal(props) {
   async function onSubmit() {
     let leftValue = props.leftValue;
     let rightValue = props.rightValue;
-    let leftId = props.leftId;
+    // let leftId = props.leftId;
     let rightId = props.rightId;
     console.log(leftValue);
 
     let valuesTemp = [...chipValues];
     if (leftValue) {
-      const values = {
-        key: leftValue.length + Date.now().toString(),
-        label: leftValue,
-        id: leftId,
-        type: "DELIVERYAREA",
-      };
+      // const values = {
+      //   key: leftValue.length + Date.now().toString(),
+      //   label: leftValue,
+      //   id: leftId,
+      //   type: "DELIVERYAREA",
+      // };
       //  valuesTemp.push(values);
     }
     if (rightValue) {

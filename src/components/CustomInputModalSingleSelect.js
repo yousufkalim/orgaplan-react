@@ -20,9 +20,10 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function CustomInputModalSingleSelect(props) {
   useEffect(() => {
-    if (props.chipDefaultValues != undefined)
+    if (props.chipDefaultValues !== undefined)
       setChipValues(props.chipDefaultValues);
-  });
+    // eslint-disable-next-line
+  }, []);
 
   const theme = useTheme();
 
