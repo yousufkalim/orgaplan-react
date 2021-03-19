@@ -59,7 +59,6 @@ export default function EditContact(props) {
     setPhone(contactInfo.phone);
     setFirstName(contactInfo.firstName);
     setLastName(contactInfo.lastName);
-    // let fileClone = [{ uri: contactInfo.image }];
     setImage([{ key: 0, file: undefined, uri: contactInfo.image }]);
 
     // setImage(fileClone);
