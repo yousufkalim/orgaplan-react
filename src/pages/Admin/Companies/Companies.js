@@ -141,9 +141,9 @@ export default function Companies(props) {
     }
   };
 
-  const getParentComapnies = (connection) => {
-    if (connection.length > 0) {
-      const value = connection[0].childCompanyId
+  const getSubContractors = (subcontractors) => {
+    if (subcontractors && subcontractors.length > 0) {
+      const value = subcontractors
         .map((item, index) => {
           if (item.name != undefined) return item.name;
           return "N/A";
@@ -189,20 +189,26 @@ export default function Companies(props) {
   const rows = companies.map((item) => {
     return [
       <img src={Images.site} alt="Icon" />,
-      item.name,
-      getParentComapnies(item.connection),
+      item.companyId.name,
+      getSubContractors(item.subContractors),
       item.incharge != undefined
-        ? item.incharge.firstName + " " + item.incharge.lastName
+        ? item.companyId.incharge.firstName +
+          " " +
+          item.companyId.incharge.lastName
         : "N/A",
-      item.incharge != undefined ? item.incharge.phone : "N/A",
-      item.incharge != undefined ? item.incharge.email : "N/A",
+      item.companyId.incharge != undefined
+        ? item.companyId.incharge.phone
+        : "N/A",
+      item.companyId.incharge != undefined
+        ? item.companyId.incharge.email
+        : "N/A",
 
       <div>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
             to={{
               pathname: "/companies/user-list",
-              id: item._id,
+              id: item.companyId._id,
             }}
           >
             <img

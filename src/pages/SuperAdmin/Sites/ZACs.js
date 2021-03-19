@@ -14,7 +14,6 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {

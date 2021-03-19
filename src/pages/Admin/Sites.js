@@ -128,7 +128,6 @@ function SiteCard({ site, role, onClick }) {
     </Card>
   );
 }
-
 function SiteAddCard({ onClick }) {
   const classes = useStyles();
   return (

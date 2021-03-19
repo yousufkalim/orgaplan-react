@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,7 +18,9 @@ import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import { InputSharp } from "@material-ui/icons";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
-
+import Actions from "../../../redux/actions";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const addClientYup = Yup.object().shape({
-  logo: Yup.array().min(1, "Required").required("Required"),
+  images: Yup.array().min(1, "Required").required("Required"),
   name: Yup.string().required("Required"),
   color: Yup.string().required("Required"),
   firstName: Yup.string().required("Required"),
@@ -62,12 +64,11 @@ const addClientYup = Yup.object().shape({
 });
 
 export default function AddCompanies(props) {
+  const dispatch = useDispatch();
+
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
-  console.log(adminStore.site.siteId._id);
-
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [color, setColor] = useState("");
@@ -78,7 +79,6 @@ export default function AddCompanies(props) {
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
   const [typeError, setTypeError] = useState("");
-  const [trades, setTrades] = useState([]);
   const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -88,6 +88,66 @@ export default function AddCompanies(props) {
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
   const [addInfo, setAddInfo] = useState("");
+
+  const [companies, setCompanies] = useState([]);
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
+
+  const [trades, setTrades] = useState([]);
+  const [dropdownTrades, setDropdownTrades] = useState([]);
+  const [selectedTrade, setSelectedTrade] = useState("");
+  const [listOfTrades, setListOfTrades] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      //formik.setFieldValue("site", adminStore.site.siteId.name);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ADD_COMPANY}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if (response.success) {
+        setCompanies(response.data.site_companies);
+        setTrades(response.data.site_trades);
+        if (response.data.site_companies != null) {
+          const companyTemp = [];
+
+          response.data.site_companies.map((item, index) => {
+            return companyTemp.push({
+              label: item.companyId.name,
+              value: item.companyId.name,
+            });
+          });
+          setDropdownCompanies(companyTemp);
+        }
+
+        if (response.data.site_trades != null) {
+          const tradesTemp = [];
+
+          response.data.site_trades.map((item, index) => {
+            return tradesTemp.push({
+              label: item,
+              value: item,
+            });
+          });
+          setDropdownTrades(tradesTemp);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   // const [startDate, setStartDate] = useState("");
   // const [startDateError, setStartDateError] = useState("");
@@ -99,25 +159,42 @@ export default function AddCompanies(props) {
   // const [rate, setRate] = useState("");
   // const [rateError, setRateError] = useState("");
 
-  const onSubmit = async (values) => {
-    const notificationTo = values.notificationTo.map((item) => item.label);
+  const onSubmit = async () => {
+    // const notificationTo = values.notificationTo.map((item) => item.label);
+    const values = formik.values;
+    const isSubContractor = companyType === "subcontractor";
+    const parentCompanyId = companies[selectedCompanyIndex].companyId._id;
+
+    alert(
+      name +
+        " " +
+        phone +
+        " " +
+        fname +
+        " " +
+        lname +
+        " " +
+        website +
+        " " +
+        addInfo,
+    );
+    return;
 
     var formdata = new FormData();
-    formdata.append("logo", values.logo[0].file);
-    formdata.append("name", values.name);
+    formdata.append("logo", values.images[0].file);
+    formdata.append("name", name);
     formdata.append("color", values.color);
     formdata.append("firstName", values.firstName);
     formdata.append("lastName", values.lastName);
     formdata.append("email", values.email);
     formdata.append("phone", values.phone);
-    formdata.append("contractType", values.contractType);
-    formdata.append("contractStartDate", values.contractStartDate);
-    formdata.append("contractEndDate", values.contractEndDate);
-    formdata.append("functionality", values.functionality);
-    formdata.append("additionalInfo", values.additionalInfo);
-    formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    formdata.append("notificationTo", JSON.stringify(notificationTo));
-
+    // formdata.append("contractType", values.contractType);
+    //formdata.append("contractStartDate", values.contractStartDate);
+    //formdata.append("contractEndDate", values.contractEndDate);
+    //formdata.append("functionality", values.functionality);
+    //formdata.append("additionalInfo", values.additionalInfo);
+    //formdata.append("notificationPriorToDays", values.notificationPriorToDays);
+    // formdata.append("notificationTo", JSON.stringify(notificationTo));
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.CLIENTS,
@@ -169,7 +246,6 @@ export default function AddCompanies(props) {
         setContractError(false);
       }
     }
-
     if (e.target.name === "email") {
       setEmail(e.target.value);
       var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -248,7 +324,7 @@ export default function AddCompanies(props) {
   };
   const formik = useFormik({
     initialValues: {
-      logo: [],
+      images: [],
       name: "",
       color: "",
       firstName: "",
@@ -264,7 +340,7 @@ export default function AddCompanies(props) {
       notificationTo: [],
     },
     validationSchema: addClientYup,
-    onSubmit,
+    //    onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
     validateOnMount: false,
@@ -282,12 +358,36 @@ export default function AddCompanies(props) {
             <FormLabel bold primary="IDENTITY* :" />
             <Form.Row width="55%" style={{ gap: "20px" }}>
               <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="name"
-                  onChange={inputChange}
-                  style={{ width: "100%" }}
-                  placeholder="Company name"
-                  value={name}
+                <Autocomplete
+                  id="free-solo-demo"
+                  freeSolo
+                  style={{
+                    ...GLOBALS.Styles.inputWidth,
+                    marginRight: "10px",
+                  }}
+                  onSelect={(event) => {
+                    companies.forEach((item, index) => {
+                      if (item.companyId.name === event.target.value) {
+                        setName(item.companyId.name);
+                      }
+                    });
+                  }}
+                  options={companies.map((option) => {
+                    if (option.companyId.name != undefined)
+                      return option.companyId.name;
+                  })}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Email"
+                      margin="normal"
+                      variant="outlined"
+                      name="name"
+                      value={formik.values.email}
+                      error={formik.errors.email}
+                      onChange={formik.handleChange}
+                    />
+                  )}
                 />
                 {nameError && (
                   <div className={classes.error}>Please enter name</div>
@@ -308,8 +408,7 @@ export default function AddCompanies(props) {
               <FormMultipleUpload
                 name="images"
                 style={GLOBALS.Styles.inputWidth}
-                multiple
-                values={images}
+                values={formik.values.images}
                 onChange={(values) =>
                   inputChange({
                     target: {
@@ -366,25 +465,35 @@ export default function AddCompanies(props) {
                   <div className={classes.error}>Please select company</div>
                 )}
               </div>
-
-              {/* <RadioButton
-                name="contractType"
-                style={{width: '80%'}}
-                value={formik.values.contractType}
-                error={formik.errors.contractType}
-                onChange={formik.handleChange}
-                items={[
-                  { value: "GENERALCONTRACTOR", label: "General Contractor" },
-                  { value: "Subcontractor", label: "Subcontract" },
-                ]}
-              /> */}
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="GENERAL CONTRACTOR : " />
             <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
               <div style={{ width: "100%", height: "100%" }}>
-                <select
+                <FormSelect
+                  placeholder="Company"
+                  values={dropdownCompanies}
+                  value={selectedCompany}
+                  disabled={companyType === "generalcontractor" ? true : false}
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex - 1;
+
+                    if (index !== -1) {
+                      const item = event.target.value;
+
+                      setSelectedCompanyIndex(index);
+
+                      setSelectedCompany(item);
+                    } else {
+                      setSelectedCompanyIndex(null);
+
+                      setSelectedCompany("");
+                    }
+                  }}
+                  style={{ marginRight: "20px", maxWidth: 250 }}
+                />
+                {/* <select
                   name="contract"
                   disabled={companyType === "generalcontractor" ? true : false}
                   id="contract"
@@ -397,11 +506,8 @@ export default function AddCompanies(props) {
                   }}
                   onChange={inputChange}
                 >
-                  <option value="">List</option>
-                  <option value="Yellow">Yellow</option>
-                  <option value="Red">Red</option>
-                  <option value="Blue">Blue</option>
-                </select>
+                
+                </select> */}
                 {contractError === true && (
                   <div className={classes.error}>Please select contract</div>
                 )}
@@ -413,23 +519,28 @@ export default function AddCompanies(props) {
             <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
               <CustomInputModal
                 name="trades"
-                values={[]}
-                value={""}
+                values={dropdownTrades}
+                value={selectedTrade}
                 placeholder="Select Trades"
                 chipValues={(values) => {
+                  const valuesTemp = [];
+                  values.forEach((item, index) => {
+                    valuesTemp.push(item.label);
+                  });
+                  setListOfTrades(valuesTemp);
+                  console.log(JSON.stringify(valuesTemp, null, 2));
+
                   // setSiteParams(values);
                 }}
                 onChange={(event) => {
-                  // const index = event.target.selectedIndex - 1;
-                  // if (index !== -1) {
-                  //   const item = event.target.value;
-                  //   setSiteId(sites[index].siteId._id);
-                  //   setSelectedSiteIndex(index);
-                  //   setSelectedSite(item);
-                  // } else {
-                  //   setSelectedSiteIndex(0);
-                  //   setSelectedSite("");
-                  // }
+                  const index = event.target.selectedIndex - 1;
+                  if (index !== -1) {
+                    const item = event.target.value;
+
+                    setSelectedTrade(item);
+                  } else {
+                    setSelectedTrade("");
+                  }
                 }}
               />
             </Form.Row>
@@ -524,19 +635,14 @@ export default function AddCompanies(props) {
 
           <Form.ButtonContainer>
             <Button
-              type="submit"
               minWidth={200}
               text="VALIDATE"
+              onClick={() => {
+                onSubmit();
+              }}
               fullWidth={false}
               // loading={formik.isSubmitting}
-              disabled={
-                name === "" ||
-                color === "" ||
-                companyType === "" ||
-                contract === ""
-                  ? true
-                  : false
-              }
+              disabled={name === "" || color === "" || companyType === ""}
             />
           </Form.ButtonContainer>
         </Form.Form>

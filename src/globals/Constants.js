@@ -10,8 +10,6 @@ const endpoints = {
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
-  REQUEST_PASSWORD_RESET: BASE_URL_V1 + "auth/request-password-reset",
-  RESET_PASSWORD: BASE_URL_V1 + "auth/reset-password",
 
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
@@ -32,6 +30,7 @@ const endpoints = {
   LEVELS: BASE_URL_V1 + "superadmin/levels",
   LEVEL_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
   LEVELS_BUILDING: BASE_URL_V1 + "superadmin/levels/building",
+  QUOTE: BASE_URL_V1 + "superadmin/quotes",
   QUOTE_VERIFY: BASE_URL_V1 + "superadmin/quotes/verify",
   SITES: BASE_URL_V1 + "superadmin/sites",
   SITE_GET: BASE_URL_V1 + "superadmin/sites/get",
@@ -69,6 +68,7 @@ const endpoints = {
 
   GET_ADD_USER: BASE_URL_V1 + "users/add_user",
   GET_USER_COMPANY: BASE_URL_V1 + "users/get_user_company",
+  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/add_company",
 
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
 
@@ -80,7 +80,5 @@ const endpoints = {
   GET_SITE_INCIDENT: BASE_URL_V1 + "incidents/admin",
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
   POST_ADD_SITE_INCIDENTS: BASE_URL_V1 + "incidents",
-
-
 };
 export default endpoints;
