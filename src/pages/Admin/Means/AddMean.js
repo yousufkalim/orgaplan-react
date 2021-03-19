@@ -32,6 +32,7 @@ const accessabilityPoints = [
 export default function AddMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [color, setColor] = useState("");
@@ -99,7 +100,7 @@ export default function AddMean(props) {
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       if (response.success) {
@@ -228,7 +229,7 @@ export default function AddMean(props) {
       formdata.append("sheet", image[0].file);
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-      formdata.append("siteId", "6008169bedbb7816d40b197d");
+      formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("meanType", selectedMeanType);
       formdata.append("location", JSON.stringify(locations));
       formdata.append("availability", JSON.stringify(availabilities));
@@ -245,7 +246,6 @@ export default function AddMean(props) {
       console.log(JSON.stringify(response, null, 2));
 
       if (response.success) {
-        alert(JSON.stringify(response, null, 2));
         setLoading(false);
       } else {
         setLoading(false);
@@ -271,7 +271,7 @@ export default function AddMean(props) {
       setLoading(true);
 
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
 
@@ -305,7 +305,7 @@ export default function AddMean(props) {
       setLoading(true);
 
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
 
