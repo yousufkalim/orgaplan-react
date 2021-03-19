@@ -58,6 +58,14 @@ export default function AddContact(props) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
 
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+
+
+
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -99,10 +107,40 @@ export default function AddContact(props) {
   }
 
   const handleChange = (name, value) => {
-    if (name === "email") setEmail(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
+    if (name === "email") {
+      setEmail(value);
+      if(value === "" || name===null) {
+        setEmailError(true);
+
+      } else {
+        setEmailError(false);
+
+      }
+    } 
+    else if (name === "phone") {
+       setPhone(value);
+        if (value === "" || name === null) {
+          setPhoneError(true);
+        } else {
+          setPhoneError(false);
+        }
+    } 
+    else if (name === "firstName") {
+       setFirstName(value);
+        if (value === "" || name === null) {
+          setFirstNameError(true);
+        } else {
+          setFirstNameError(false);
+        }
+    } 
+    else if (name === "lastName") {
+       setLastName(value);
+         if (value === "" || name === null) {
+           setLastNameError(true);
+         } else {
+           setLastNameError(false);
+         }
+    } 
     else if (name === "image") setImage(value);
     else if (name === "company") setCompany(value);
     else if (name === "role") setRole(value);
@@ -123,7 +161,7 @@ export default function AddContact(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("type", type);
       formdata.append("role", role);
-
+      
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
@@ -153,7 +191,7 @@ export default function AddContact(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
+            <FormLabel bold primary="TYPE OF ORGANIGRAMME*: " />
             <Form.Row noMargin width="48%">
               <FormSelect
                 name="type"
@@ -179,7 +217,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO : " />
+            <FormLabel bold primary="CONTACT INFO*: " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
@@ -204,7 +242,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY :  " />
+            <FormLabel bold primary="IDENTITY*:  " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
