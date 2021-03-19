@@ -5,6 +5,15 @@
   padding: 0;
   margin: 0;
 }
+
+.mg-top-20 {
+  margin-top: 20px;
+}
+
+.hero-logo {
+  width: 80px;
+}
+
 .left-login-container {
   background: url("../../assets/images/login-2.png") #dbb208;
   background-size: cover;
@@ -17,7 +26,6 @@
 }
 .left-login-container img {
   margin: 1rem;
-  width: 10%;
 }
 .right-login-container {
   width: 100%;
@@ -36,7 +44,6 @@
 
 .right-login-container div {
   width: 100%;
-  margin-top: 1rem;
 }
 .right-login-container .makeStyles-label-159,
 .right-login-container .makeStyles-label-87 {
@@ -45,7 +52,7 @@
 .right-login-container p {
   color: #b5b5b5;
 }
- .login-input {
+.login-input {
   display: block;
   background-color: #fff;
   border: 1px solid #d7d7d7;
@@ -55,8 +62,8 @@
   padding: 5px 10px;
   outline: none;
 }
- .login-input:active,
- .login-input:focus,
+.login-input:active,
+.login-input:focus,
 input:-internal-autofill-selected {
   background-color: #fff !important;
   border: 1px solid #d7d7d7;
