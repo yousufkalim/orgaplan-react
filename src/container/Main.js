@@ -24,20 +24,18 @@ export default function Main() {
 
   return (
     <>
-      <SuperAdmin />
-      {/* 
       {store.loading && <Loader.AbsoluteLinear />}
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (
-        store.user.role === "ADMIN" ? (
+        store.user.role === "SUPERADMIN" ? (
           <SuperAdmin />
         ) : (
           <User />
         )
       ) : (
         <UnAuth />
-      )} */}
+      )}
     </>
   );
 }

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddSite(props) {
   const classes = useStyles();
 
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
   const [step2SubmittedData, setStep2SubmittedData] = useState("");
