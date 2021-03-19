@@ -22,8 +22,9 @@ export default function CustomInputModalSingleSelect(props) {
   useEffect(() => {
     if (props.chipDefaultValues !== undefined)
       setChipValues(props.chipDefaultValues);
+
     // eslint-disable-next-line
-  }, []);
+  });
 
   const theme = useTheme();
 
@@ -107,12 +108,11 @@ export default function CustomInputModalSingleSelect(props) {
     let id = props.id;
 
     let valuesTemp = [...chipValues];
-
     if (valuesTemp) {
       const values = {
         key: value.length + Date.now().toString(),
         label: value,
-        id: id,
+        id: id != undefined ? id : Date.now().toString(),
       };
       valuesTemp.push(values);
       setChipValues(valuesTemp);
