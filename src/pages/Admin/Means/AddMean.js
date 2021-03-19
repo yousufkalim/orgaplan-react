@@ -246,7 +246,6 @@ export default function AddMean(props) {
       console.log(JSON.stringify(response, null, 2));
 
       if (response.success) {
-        alert(JSON.stringify(response, null, 2));
         setLoading(false);
       } else {
         setLoading(false);
