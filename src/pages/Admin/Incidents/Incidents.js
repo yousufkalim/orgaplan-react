@@ -52,6 +52,12 @@ const Incidents = (props) => {
   const [incidents, setIncidents] = useState([]);
   const [completeIncidents, setCompleteIncidents] = useState([]);
   const [items, setItems] = useState([]);
+  const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
+  const [siteStorageArea, setSiteStorageArea] = useState([]);
+  const [siteComapny, setSiteComapny] = useState([]);
+  const [siteBuilding, setSiteBuilding] = useState([]);   
+  const [status, setStatus] = useState([]);
+  const [type, setType] = useState([]);
 
   // const [page, setPage] = useState("");
   const adminStore = useSelector((state) => state.admin);
@@ -66,13 +72,29 @@ const Incidents = (props) => {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
-      console.log(result);
+      console.log(result.data);
       if (result.success) {
         setIncidents(result.data.incidents);
         setCompleteIncidents(result.data.incidents);
 
-        console.log(result.data.incidents);
-        getIncidentsfiltered(result.data.incidents);
+        if (result.data.incidents) getIncidentsfiltered(result.data.incidents);
+        if (result.data.site_delivery_areas) {
+            getDeliveryArea(result.data.site_delivery_areas);
+        }  if (result.data.site_storage_areas) {
+          getStorageArea(result.data.site_storage_areas);
+        }
+        if (result.data.type) {
+          getType(result.data.type);
+        }
+        if (result.data.status) {
+          getStatus(result.data.status);
+        }
+         if (result.data.site_companies) {
+           getCompanies(result.data.site_companies);
+        }
+        
+        
+
       }
       // setLoading(false);
     } catch (err) {
@@ -83,10 +105,66 @@ const Incidents = (props) => {
       );
     }
   }
+
+    function getCompanies(data) {
+      console.log(data);
+      let temp = [];
+      data.map((item, index) => {
+        return temp.push({
+          label: item.companyId.name,
+          value: item.companyId._id,
+        });
+      });
+      setSiteComapny(temp);
+    }
+  function getStatus(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item,
+        value: item,
+      });
+    });
+    setStatus(temp);
+  }
+
+  function getStorageArea(data){
+        let temp = [];
+        data.map((item, index) => {
+          return temp.push({
+            label: item.name,
+            value: item._id,
+          });
+        });
+        setSiteStorageArea(temp);
+  }
+
+  function getType(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item,
+        value: item,
+      });
+    });
+    setType(temp);
+  }
+
+  function getDeliveryArea(data) {
+    let temp = [];
+    data.map((item, index) => {
+        return temp.push({
+          label: item.name,
+          value: item._id,
+        });
+    })
+    setSiteDeliveryArea(temp);
+  }
+
+
   function getIncidentsfiltered(data) {
     let temp = [];
     data.map((item, index) => {
-      console.log(item);
       let data = [];
       data[0] = item?.date;
       data[1] = item?.type;
@@ -100,7 +178,6 @@ const Incidents = (props) => {
 
       return temp.push(data);
     });
-    console.log(temp);
     setItems(temp);
   }
 
@@ -166,15 +243,7 @@ const Incidents = (props) => {
           /> */}
           <FormSelect
             placeholder="Delivery area"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteDeliveryArea}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
@@ -205,28 +274,12 @@ const Incidents = (props) => {
           />
           <FormSelect
             placeholder="Storage area"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteStorageArea}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Type"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={type}
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
@@ -239,15 +292,7 @@ const Incidents = (props) => {
         <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteComapny}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
 
@@ -269,15 +314,7 @@ const Incidents = (props) => {
           />
           <FormSelect
             placeholder="Status"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={status}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput

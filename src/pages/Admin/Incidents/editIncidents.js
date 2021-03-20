@@ -30,28 +30,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-// const addClientYup = Yup.object().shape({
-//   logo: Yup.array().min(1, "Required").required("Required"),
-//   name: Yup.string().required("Required"),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   notificationPriorToDays: Yup.number(),
-//   notificationTo: Yup.array(),
-// });
+
 
 export default function AddIncidents(props) {
   const classes = useStyles();
@@ -73,7 +52,7 @@ export default function AddIncidents(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
 
-  const [isBillable, seIsBillable] = useState(false);
+  const [isBillable, setBillable] = useState(false);
   const [price, setPrice] = useState("");
   const [comment, setComment] = useState("");
   const [selctedLocationObject, setselctedLocationObject] = useState("");
@@ -102,11 +81,9 @@ export default function AddIncidents(props) {
     console.log(response);
 
     if (response.success) {
-      console.log(response.data.site_companies);
       if (response.data.site_companies) {
         const temp = [];
         response.data.site_companies.map((item, index) => {
-          console.log(item);
           return temp.push({
             label: item.companyId.name,
             value: item.companyId._id,
@@ -130,11 +107,13 @@ export default function AddIncidents(props) {
   };
 
   const setValues = () => {
-        const incident = props.location.data;
+    const incident = props?.location?.data;
     setName(incident.name);
-    setCompanyId(incident.companyId._id);
-
-    console.log(props.location.data);
+    setCompanyId(incident?.companyId?._id);
+    setDate(incident?.date);
+    setBillable(incident?.isBillable);
+    setPrice(incident?.price);
+    console.log(props.location?.data);
 
     // setType(contactInfo.type);
     // setEmail(contactInfo.email);
@@ -243,8 +222,8 @@ export default function AddIncidents(props) {
       //   setTimeError(false);
       // }
     }
-    if (e.target.name === "seIsBillable") {
-      seIsBillable(e.target.value);
+    if (e.target.name === "setBillable") {
+      setBillable(e.target.value);
       // if (e.target.value === "" || e.target.value === null) {
       //   setTimeError(true);
       // } else {
@@ -337,7 +316,7 @@ export default function AddIncidents(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="CREATE AN INCIDENTS" />
+      <Heading primary="EDIT AN INCIDENTS" />
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
@@ -361,7 +340,7 @@ export default function AddIncidents(props) {
                 name="comapnyId"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
-                // value={formik.values.color}
+                value={companyId}
                 values={dropdownCompanies}
               />
               <span
@@ -384,14 +363,16 @@ export default function AddIncidents(props) {
                 placeholder="Date"
                 name="date"
                 onChange={nameChange}
+                value="{date}"
                 // error={formik.errors.contractStartDate}
               />
               <FormInput
                 placeholder="TIME"
-                type="time"
+                type="number"
                 name="time"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
+                value="time"
                 // value={formik.values.color}
                 // error={formik.errors.color}
               />
@@ -416,6 +397,7 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
+                value=""
                 values={dropdownLocation}
               />
             </Form.Row>
@@ -452,9 +434,7 @@ export default function AddIncidents(props) {
               name="billable"
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
-              // onChange={formik.handleChange}
-              // value={formik.values.color}
-              // error={formik.errors.color}
+              value={isBillable}
               values={[
                 { value: "true", label: "Yes" },
                 { value: "false", label: "No" },
@@ -469,6 +449,7 @@ export default function AddIncidents(props) {
                   type="number"
                   name="price"
                   onChange={nameChange}
+                  value={price}
 
                   // error={penaltyforLateDelivery}
                 />
@@ -484,6 +465,7 @@ export default function AddIncidents(props) {
               rows={3}
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
+              value={comment}
               placeholder="Ajouter un commentaire"
               name="comment"
             />
