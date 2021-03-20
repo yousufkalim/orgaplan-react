@@ -20,13 +20,9 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   text-align: center;
-}
-
-.showPopover .popoverfooter .action {
-  cursor: pointer;
 }
 
 .starttime .MuiFormControl-root,
@@ -84,11 +80,11 @@
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: unset;
-  flex-wrap: unset;
+      flex-wrap: unset;
   -webkit-box-orient: initial;
   -webkit-box-direction: initial;
-  -ms-flex-direction: initial;
-  flex-direction: initial;
+      -ms-flex-direction: initial;
+          flex-direction: initial;
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
@@ -107,6 +103,11 @@
 .statusColor .validate .MuiButtonBase-root,
 .statusColor .validate .MuiButtonBase-root:hover {
   background-color: #008000;
+}
+
+.statusColor .availability .MuiButtonBase-root,
+.statusColor .availability .MuiButtonBase-root:hover {
+  background-color: blue;
 }
 
 .statusColor .MuiTypography-body1 {
@@ -134,8 +135,15 @@
   margin-top: 0px;
 }
 
+.Custom_weekdays .PrivateSwitchBase-root-1 {
+  padding: 1px;
+}
+
+.close :hover {
+  color: red;
+}
+
 .Custom_weekdays .MuiButtonBase-root {
   padding: 0px !important;
 }
-
 /*# sourceMappingURL=custom.css.map */
