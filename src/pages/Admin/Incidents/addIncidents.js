@@ -11,6 +11,8 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import Input from "../../../components/Input";
+
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -336,7 +338,7 @@ export default function AddIncidents(props) {
               onChange={nameChange}
               value={name}
             />
-                {/* {nameError && (
+            {/* {nameError && (
                   <div className={classes.error}>Please enter name</div>
                 )} */}
           </Form.Row>
@@ -369,30 +371,34 @@ export default function AddIncidents(props) {
                 type="date"
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
-                name="date" 
+                name="date"
                 onChange={nameChange}
                 // error={formik.errors.contractStartDate}
               />
-              <FormInput
-                placeholder="TIME"
-                type="time"
-                name="time"
+              {/* <Input
+                type="date"
                 style={GLOBALS.Styles.inputWidth}
+                placeholder="Date"
+                name="date"
                 onChange={nameChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
-               
+              ></Input> */}
+              <FormInput
+                type="number"
+                style={GLOBALS.Styles.inputWidth}
+                placeholder="Time in Hours"
+                name="time"
+                onChange={nameChange}
               />
-            </Form.Row> 
+            </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION : " />
-            <Form.Row noMargin width="48%"> 
+            <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="Type of location" 
+                placeholder="Type of location"
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                 onChange={locationTypeChange}
+                onChange={locationTypeChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
                 values={dropdownLocationType}
@@ -414,7 +420,7 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
+              onChange={nameChange}
               placeholder="Information complementaires"
               name="description"
               // value={formik.values.additionalInfo} //working
@@ -424,7 +430,7 @@ export default function AddIncidents(props) {
           <Form.Row>
             <FormLabel bold primary="ADD PICTURES : " />
             <Form.Row noMargin width="48%">
-          {/* <FormMultipleUpload
+              {/* <FormMultipleUpload
                 name="profile"
                 // error={image}
                 values={image}
@@ -439,8 +445,7 @@ export default function AddIncidents(props) {
               placeholder="Select"
               name="billable"
               style={GLOBALS.Styles.inputWidth}
-                 onChange={nameChange}
-
+              onChange={nameChange}
               // onChange={formik.handleChange}
               // value={formik.values.color}
               // error={formik.errors.color}
@@ -457,7 +462,7 @@ export default function AddIncidents(props) {
                 <FormInput
                   type="number"
                   name="price"
-                                  onChange={nameChange}
+                  onChange={nameChange}
 
                   // error={penaltyforLateDelivery}
                 />
@@ -475,7 +480,6 @@ export default function AddIncidents(props) {
               onChange={nameChange}
               placeholder="Ajouter un commentaire"
               name="comment"
-
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -484,7 +488,6 @@ export default function AddIncidents(props) {
               minWidth={200}
               text="VALIDER"
               fullWidth={false}
-
             />
           </Form.ButtonContainer>
         </Form.Form>
