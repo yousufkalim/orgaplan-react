@@ -88,7 +88,7 @@ export default function AddCompanies(props) {
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
   const [addInfo, setAddInfo] = useState("");
-
+  const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -102,7 +102,9 @@ export default function AddCompanies(props) {
   useEffect(() => {
     getData();
   }, []);
-
+  useEffect(() => {
+    getCompanyAutoFill();
+  }, [companyId]);
   const getData = async () => {
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
@@ -149,6 +151,100 @@ export default function AddCompanies(props) {
     }
   };
 
+  const getCompanyAutoFill = async () => {
+    try {
+      //formik.setFieldValue("site", adminStore.site.siteId.name);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_COMPANY_AUTOFILL}/${adminStore.site.siteId._id}/${companyId}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data.site_companies.length != 0) {
+          const company = response.data.site_companies[0].companyId;
+          const trades = response.data.site_companies[0].trades;
+          if (company.incharge != undefined) {
+            const incharge = company.incharge;
+            setFname(incharge.firstName);
+            setLname(incharge.lastName);
+            setEmail(incharge.email);
+            setPhone(incharge.phone);
+          } else {
+            setFname("");
+            setLname("");
+            setEmail("");
+            setPhone("");
+          }
+          if (company.website != undefined) setWebsite(company.website);
+          else setWebsite("");
+          if (company.description != undefined) setAddInfo(company.description);
+          else setAddInfo("");
+          if (trades != undefined) {
+            const tradesTemp = [];
+            trades.forEach((item, index) => {
+              tradesTemp.push({ key: item, label: item });
+            });
+            setListOfTrades(tradesTemp);
+          }
+        }
+        await getGeneralContractor();
+      } else {
+      }
+
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getGeneralContractor = async () => {
+    try {
+      //formik.setFieldValue("site", adminStore.site.siteId.name);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_GENERAL_CONTRACTOR}/${adminStore.site.siteId._id}/${companyId}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data.companies.length === 0) {
+          setCompanyType("generalcontractor");
+          setSelectedCompany("");
+          setSelectedCompanyIndex(null);
+        } else {
+          setCompanyType("subcontractor");
+          const company = response.data.companies[0].companyId;
+          let companyIndex = null;
+          let companyValue = null;
+          companies.forEach((item, index) => {
+            if (item.companyId._id === company._id) {
+              companyIndex = index;
+              companyValue = item.companyId.name;
+            }
+          });
+          if (companyIndex != null && companyValue != null) {
+            setSelectedCompany(companyValue);
+            setSelectedCompanyIndex(companyIndex);
+          } else {
+            setSelectedCompany("");
+            setSelectedCompanyIndex(null);
+          }
+        }
+        console.log(JSON.stringify(response, null, 2));
+      } else {
+      }
+
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   // const [startDate, setStartDate] = useState("");
   // const [startDateError, setStartDateError] = useState("");
   // const [isDateSelect, setIsDateSelect] = useState("");
@@ -165,29 +261,37 @@ export default function AddCompanies(props) {
     const isSubContractor = companyType === "subcontractor";
     const parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
-    alert(
-      name +
-        " " +
-        phone +
-        " " +
-        fname +
-        " " +
-        lname +
-        " " +
-        website +
-        " " +
-        addInfo,
-    );
-    return;
+    const trades = [];
+
+    listOfTrades.forEach((item, index) => {
+      trades.push(item.label);
+    });
 
     var formdata = new FormData();
     formdata.append("logo", values.images[0].file);
+
     formdata.append("name", name);
-    formdata.append("color", values.color);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
+    formdata.append("color", color);
+    formdata.append("website", website);
+    formdata.append("description", addInfo);
+    formdata.append("trades", JSON.stringify(trades));
+    formdata.append("siteId", adminStore.site.siteId._id);
+    if (isSubContractor) formdata.append("parentCompanyId", parentCompanyId);
+    if (
+      fname.length !== 0 &&
+      lname.length !== 0 &&
+      email.length !== 0 &&
+      phone.length !== 0
+    ) {
+      const incharge = {
+        firstName: fname,
+        lastName: lname,
+        email: email,
+        phone: phone,
+      };
+      formdata.append("incharge", JSON.stringify(incharge));
+    }
+
     // formdata.append("contractType", values.contractType);
     //formdata.append("contractStartDate", values.contractStartDate);
     //formdata.append("contractEndDate", values.contractEndDate);
@@ -195,9 +299,11 @@ export default function AddCompanies(props) {
     //formdata.append("additionalInfo", values.additionalInfo);
     //formdata.append("notificationPriorToDays", values.notificationPriorToDays);
     // formdata.append("notificationTo", JSON.stringify(notificationTo));
+
     await GLOBALS.API({
       method: "POST",
-      uri: GLOBALS.Constants.CLIENTS,
+
+      uri: GLOBALS.Constants.CREATE_COMPANY,
       headers: {
         Authorization: store.token,
       },
@@ -224,16 +330,7 @@ export default function AddCompanies(props) {
         setColorError(false);
       }
     }
-    // if (e.target.name === "companyType") {
-    //   console.log(e.target.value);
-    //   setCompanyType(e.target.value);
-    //   console.log("company type", companyType);
-    //   if (e.target.value === "" || e.target.value === null) {
-    //     setCompanyTypeError(true);
-    //   } else {
-    //     setCompanyTypeError(false);
-    //   }
-    // }
+
     if (e.target.name === "contract") {
       setContract(e.target.value);
       if (
@@ -281,7 +378,6 @@ export default function AddCompanies(props) {
       if (value !== "") {
         setUpdate((st) => !st);
         setTrades(value);
-        console.log("trades", trades);
       }
     }
   };
@@ -319,7 +415,6 @@ export default function AddCompanies(props) {
         setPhoneError(false);
       }
     } else {
-      console.log("contarct submit", companyType);
     }
   };
   const formik = useFormik({
@@ -345,7 +440,6 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
-  console.log("type ==> ", companyType);
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -366,11 +460,15 @@ export default function AddCompanies(props) {
                     marginRight: "10px",
                   }}
                   onSelect={(event) => {
+                    let companyId = "";
                     companies.forEach((item, index) => {
                       if (item.companyId.name === event.target.value) {
+                        companyId = item.companyId._id;
+
                         setName(item.companyId.name);
                       }
                     });
+                    if (companyId.length != 0) setCompanyId(companyId);
                   }}
                   options={companies.map((option) => {
                     if (option.companyId.name != undefined)
@@ -383,9 +481,13 @@ export default function AddCompanies(props) {
                       margin="normal"
                       variant="outlined"
                       name="name"
+                      onChange={(event) => {
+                        console.log(event);
+                        setName(event.target.value);
+                        formik.setFieldValue("email", event.target.value);
+                      }}
                       value={formik.values.email}
                       error={formik.errors.email}
-                      onChange={formik.handleChange}
                     />
                   )}
                 />
@@ -452,7 +554,6 @@ export default function AddCompanies(props) {
                     name="companyType"
                     onChange={(e) => {
                       setCompanyType("subcontractor");
-                      console.log(companyType);
                     }}
                     value="subcontractor"
                     defaultChecked
@@ -522,13 +623,13 @@ export default function AddCompanies(props) {
                 values={dropdownTrades}
                 value={selectedTrade}
                 placeholder="Select Trades"
+                chipDefaultValues={listOfTrades}
                 chipValues={(values) => {
                   const valuesTemp = [];
                   values.forEach((item, index) => {
-                    valuesTemp.push(item.label);
+                    valuesTemp.push(item);
                   });
                   setListOfTrades(valuesTemp);
-                  console.log(JSON.stringify(valuesTemp, null, 2));
 
                   // setSiteParams(values);
                 }}
