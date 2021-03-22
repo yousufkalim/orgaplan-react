@@ -13,6 +13,7 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
+import ColorPicker from "../../../components/ColorPcker";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ export default function AddMean(props) {
   const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
   const [location, setLocation] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -162,7 +163,9 @@ export default function AddMean(props) {
   };
 
   function handleChange(name, value) {
-    if (name === "name") setName(value);
+    if (name === "name") {
+      setName(value);
+    }
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
     else if (name === "image") setImage(value);
@@ -367,6 +370,10 @@ export default function AddMean(props) {
   //     );
   //   }
   // };
+  const handleChangecolor = (color) => {
+    setColor(color.hex )
+    console.log("color is", color.hex);
+  };
 
   return (
     <div className={classes.root}>
@@ -400,7 +407,7 @@ export default function AddMean(props) {
                 name="name"
                 value={name}
                 placeholder="name"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "25%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -408,7 +415,7 @@ export default function AddMean(props) {
               <FormSelect
                 placeholder="Type"
                 name="type"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "25%"}}
                 values={dropdownMeanTypes}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
@@ -422,9 +429,12 @@ export default function AddMean(props) {
                   }
                 }}
               />
-              <FormSelect
+              <div style={{ width: "25%" }}>
+                <ColorPicker color={color} handleChange={handleChangecolor} />
+              </div>
+              {/* <FormSelect
                 placeholder="color"
-                name="color"
+                name="color"  
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -439,10 +449,10 @@ export default function AddMean(props) {
                   { value: "Purple", label: "Purple" },
                   { value: "Magenta", label: "Magenta" },
                 ]}
-              />
+              /> */}
               <FormMultipleUpload
                 name="image"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "25%"}}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
@@ -545,7 +555,7 @@ export default function AddMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="DISPONIBILITE :" />
+            <FormLabel bold primary="AVAILAIBILITIES :" />
             <Form.Row
               noMargin
               width="65%"
@@ -555,7 +565,7 @@ export default function AddMean(props) {
               <FormInput
                 type="date"
                 style={{ width: "300px" }}
-                placeholder={`Date de début`}
+                placeholder={`Start date`}
                 name="startDate"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -564,7 +574,7 @@ export default function AddMean(props) {
               />
               <FormInput
                 type="date"
-                placeholder="Date de fin"
+                placeholder="End date"
                 style={{ width: "300px" }}
                 name="endDate"
                 onChange={({ target: { name, value } }) =>
@@ -575,7 +585,7 @@ export default function AddMean(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="FICHE TECHNIQUE : " />
+            <FormLabel bold primary="TECHNICAL SHEET :" />
             <Form.Row noMargin width="65%">
               <FormMultipleUpload
                 name="techSheet"
@@ -588,7 +598,7 @@ export default function AddMean(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="INDISPONIBILITES: " />
+            <FormLabel bold primary="UNAVAILABILITIES" />
             <Form.Row noMargin width="65%">
               <div
                 // name="availability"
@@ -611,6 +621,24 @@ export default function AddMean(props) {
           </Form.Row>
 
           <Form.Row alignItems="flex-start">
+          <FormLabel bold primary="HOURLY RATE :" />
+            <Form.Row noMargin width="65%">
+              <div style={{ width: "30%", height: "100%", position: "relative" }}>
+                <FormInput
+            
+                  type="number"
+                  name="rate"
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                  value={rate}
+                />
+               <span style={{position: "absolute", top: "25%", right: "5%"}}>€</span>
+              </div>
+             
+            </Form.Row>
+          </Form.Row>
+          {/* <Form.Row alignItems="flex-start">
             <FormLabel bold primary="TARIF HORAIRE : " />
             <Form.Row noMargin width="65%">
               <FormInput
@@ -625,17 +653,21 @@ export default function AddMean(props) {
                 value={rate}
               />
             </Form.Row>
-          </Form.Row>
+          </Form.Row> */}
+
+          
 
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
+            <FormLabel bold primary="ADDITIONAL INFORMATION :" />
             <Form.Row noMargin width="65%">
               <FormInput
                 textArea
                 rows={3}
-                style={{ width: "600px" }}
+                maxLength="300"
+                style={{ width: "100%" }}
                 placeholder="Informations complémentaires"
                 name="addInfo"
+                className="means-addinfo"
                 onChange={({ target: { name, value } }) => {
                   handleChange(name, value);
                 }}
@@ -654,13 +686,14 @@ export default function AddMean(props) {
                   await createMean();
                 }}
                 // loading={formik.isSubmitting}
-                // disabled={
-                //   !name ||
-                //   location.length === 0 ||
-                //   !type ||
-                //   !color ||
-                //   !startDate
-                // }
+                disabled={
+                  !name ||
+                  !selectedMeanType ||
+                  !color ||
+                  !startDate ||
+                  !selectedDropdownArea ||
+                  !selectedDropdownStorageArea
+                }
               />
             </Form.ButtonContainer>
           </Form.Row>

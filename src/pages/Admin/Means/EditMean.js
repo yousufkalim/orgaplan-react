@@ -14,7 +14,10 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
+import CustomButtonModal from "../../../components/CustomButtonModal";
 import moment from "moment";
+import ColorPicker from "../../../components/ColorPcker";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -44,6 +47,7 @@ export default function EditMean(props) {
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [loading, setLoading] = useState(true);
+  const [disableDropdpwn, setDisableDropdown] = useState(false);
   const classes = useStyles();
 
   const [accessabilityPoint, setAccessabilityPoint] = useState("");
@@ -75,10 +79,13 @@ export default function EditMean(props) {
 
   const [buildings, setBuidings] = useState([]);
   const [dropdownBuildings, setDropdownBuildings] = useState([]);
+  const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
   const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
 
   const [levels, setLevels] = useState([]);
-  const [selectedDropdownIndex] = useState(null);
+  const [dropdownLevels, setDropdownLevels] = useState([]);
+  const [selectedDropdownLevel, setSelectedDropdownLevel] = useState("");
+  const [selectedDropdownIndex, setSelectedLevelIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -146,7 +153,7 @@ export default function EditMean(props) {
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
         token: store.token,
       });
       if (response.success) {
@@ -253,8 +260,8 @@ export default function EditMean(props) {
 
       // TEST DATA , CALENDAR NOT MADE YET
 
-      // const sampleDateOne = new Date("05/20/2021");
-      // const sampleDateTwo = new Date("05/28/2021");
+      const sampleDateOne = new Date("05/20/2021");
+      const sampleDateTwo = new Date("05/28/2021");
       // const unavailabilities = [
       //   {
       //     date: sampleDateOne,
@@ -272,13 +279,13 @@ export default function EditMean(props) {
 
       formdata.append("name", name);
       formdata.append("color", color);
-      if (image.length !== 0 && image[0].file !== undefined)
+      if (image.length != 0 && image[0].file != undefined)
         formdata.append("image", image[0].file);
-      if (image.length !== 0 && image[0].file !== undefined)
+      if (image.length != 0 && image[0].file != undefined)
         formdata.append("sheet", image[0].file);
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-      formdata.append("siteId", adminStore.site.siteId._id);
+      formdata.append("siteId", "6008169bedbb7816d40b197d");
       formdata.append("meanType", selectedMeanType);
       formdata.append("location", JSON.stringify(locations));
       formdata.append("availability", JSON.stringify(availabilities));
@@ -382,6 +389,12 @@ export default function EditMean(props) {
     }
   };
 
+  const handleChangecolor = (color) => {
+    setColor(color.hex )
+    console.log("color is", color.hex);
+  };
+
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -421,20 +434,20 @@ export default function EditMean(props) {
             <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
               <FormInput
                 name="name"
-                error
-                style={GLOBALS.Styles.inputWidth}
+              
+                style={{width: "25%"}}
                 placeholder="name"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
                 value={name}
-                validateSchema={Yup.string().required()}
+                
               />
               <FormSelect
                 placeholder="Type"
                 name="type"
                 value={selectedMeanType}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "25%"}}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
 
@@ -449,27 +462,13 @@ export default function EditMean(props) {
                 }}
                 values={dropdownMeanTypes}
               />
-              <FormSelect
-                placeholder="color"
-                name="color"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
+              <div style={{ width: "25%" }}>
+                <ColorPicker color={color} handleChange={handleChangecolor} />
+              </div>
+
               <FormMultipleUpload
                 name="image"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "25%"}}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
@@ -572,7 +571,7 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="DISPONIBILITE :" />
+            <FormLabel bold primary="AVAILAIBILITIES :" />
             <Form.Row
               noMargin
               width="65%"
@@ -582,7 +581,7 @@ export default function EditMean(props) {
               <FormInput
                 type="date"
                 style={{ width: "300px" }}
-                placeholder={`Date de début`}
+                placeholder={`Start date`}
                 name="startDate"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -591,7 +590,7 @@ export default function EditMean(props) {
               />
               <FormInput
                 type="date"
-                placeholder="Date de fin"
+                placeholder="End date"
                 style={{ width: "300px" }}
                 name="endDate"
                 onChange={({ target: { name, value } }) =>
@@ -603,7 +602,7 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="FICHE TECHNIQUE : " />
+            <FormLabel bold primary="TECHNICAL SHEET :" />
             <Form.Row noMargin width="65%">
               <FormMultipleUpload
                 name="techSheet"
@@ -617,7 +616,7 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="INDISPONIBILITES: " />
+            <FormLabel bold primary="UNAVAILABILITIES" />
             <Form.Row noMargin width="65%">
               <div
                 // name="availability"
@@ -640,31 +639,35 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="TARIF HORAIRE : " />
+          <FormLabel bold primary="HOURLY RATE :" />
             <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={1}
-                style={{ width: "300px", textAlign: "right" }}
-                placeholder="€"
-                name="rate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={rate}
-              />
+              <div style={{ width: "30%", height: "100%", position: "relative" }}>
+                <FormInput
+            
+                  type="number"
+                  name="rate"
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                  value={rate}
+                />
+               <span style={{position: "absolute", top: "25%", right: "5%"}}>€</span>
+              </div>
+             
             </Form.Row>
           </Form.Row>
 
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
+            <FormLabel bold primary="ADDITIONAL INFORMATION :" />
             <Form.Row noMargin width="65%">
               <FormInput
                 textArea
                 rows={3}
-                style={{ width: "600px" }}
+                maxLength="300"
+                style={{ width: "100%" }}
                 placeholder="Informations complémentaires"
                 name="addInfo"
+                className="means-addinfo"
                 onChange={({ target: { name, value } }) => {
                   handleChange(name, value);
                 }}
@@ -683,13 +686,14 @@ export default function EditMean(props) {
                   await updateMean();
                 }}
                 // loading={formik.isSubmitting}
-                // disabled={
-                //   !name ||
-                //   location.length === 0 ||
-                //   !type ||
-                //   !color ||
-                //   !startDate
-                // }
+                disabled={
+                  !name ||
+                  !selectedMeanType ||
+                  !color ||
+                  !startDate ||
+                  !selectedDropdownArea ||
+                  !selectedDropdownStorageArea
+                }
               />
             </Form.ButtonContainer>
           </Form.Row>
