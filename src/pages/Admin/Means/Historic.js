@@ -55,10 +55,12 @@ const Historic = (props) => {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     filterBooking();
+    // eslint-disable-next-line
   }, [selectedMeanIndex, selectedCompanyIndex]);
 
   const filterBooking = async () => {

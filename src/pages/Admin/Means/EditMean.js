@@ -14,7 +14,6 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
-import CustomButtonModal from "../../../components/CustomButtonModal";
 import moment from "moment";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +44,6 @@ export default function EditMean(props) {
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [loading, setLoading] = useState(true);
-  const [disableDropdpwn, setDisableDropdown] = useState(false);
   const classes = useStyles();
 
   const [accessabilityPoint, setAccessabilityPoint] = useState("");
@@ -77,13 +75,10 @@ export default function EditMean(props) {
 
   const [buildings, setBuidings] = useState([]);
   const [dropdownBuildings, setDropdownBuildings] = useState([]);
-  const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
   const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
 
   const [levels, setLevels] = useState([]);
-  const [dropdownLevels, setDropdownLevels] = useState([]);
-  const [selectedDropdownLevel, setSelectedDropdownLevel] = useState("");
-  const [selectedDropdownIndex, setSelectedLevelIndex] = useState(null);
+  const [selectedDropdownIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -151,7 +146,7 @@ export default function EditMean(props) {
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/6008169bedbb7816d40b197d`,
+        uri: `${GLOBALS.Constants.GET_ADD_MEAN}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       if (response.success) {
@@ -258,8 +253,8 @@ export default function EditMean(props) {
 
       // TEST DATA , CALENDAR NOT MADE YET
 
-      const sampleDateOne = new Date("05/20/2021");
-      const sampleDateTwo = new Date("05/28/2021");
+      // const sampleDateOne = new Date("05/20/2021");
+      // const sampleDateTwo = new Date("05/28/2021");
       // const unavailabilities = [
       //   {
       //     date: sampleDateOne,
@@ -277,13 +272,13 @@ export default function EditMean(props) {
 
       formdata.append("name", name);
       formdata.append("color", color);
-      if (image.length != 0 && image[0].file != undefined)
+      if (image.length !== 0 && image[0].file !== undefined)
         formdata.append("image", image[0].file);
-      if (image.length != 0 && image[0].file != undefined)
+      if (image.length !== 0 && image[0].file !== undefined)
         formdata.append("sheet", image[0].file);
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-      formdata.append("siteId", "6008169bedbb7816d40b197d");
+      formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("meanType", selectedMeanType);
       formdata.append("location", JSON.stringify(locations));
       formdata.append("availability", JSON.stringify(availabilities));

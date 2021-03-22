@@ -110,7 +110,7 @@ const Means = () => {
       if (response.success) {
         setMeans(response.data.means);
 
-        if (response.data.means != null) {
+        if (response.data.means !== null) {
           let temp = [];
           response.data.means.map((item, index) => {
             let data = [];
@@ -118,32 +118,29 @@ const Means = () => {
             data[1] = item.status;
             data[2] = item.meanType;
 
-            {
-              data[3] = item.location
-                .map((innerItem, index) => {
-                  if (
-                    innerItem.locationType != undefined &&
-                    innerItem.locationType === "STORAGEAREA"
-                  ) {
-                    console.log(innerItem.locationType);
-                    return innerItem.storageArea.name;
-                  }
-                  return "";
-                })
-                .toString()
-                .replace(/,/g, " ");
-              data[4] = item.location
-                .map((innerItem, index) => {
-                  if (
-                    innerItem.locationType != undefined &&
-                    innerItem.locationType === "DELIVERYAREA"
-                  )
-                    return innerItem.deliveryArea.name;
-                  return "";
-                })
-                .toString()
-                .replace(/,/g, " ");
-            }
+            data[3] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType !== undefined &&
+                  innerItem.locationType === "STORAGEAREA"
+                ) {
+                  return innerItem.storageArea.name;
+                }
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
+            data[4] = item.location
+              .map((innerItem, index) => {
+                if (
+                  innerItem.locationType !== undefined &&
+                  innerItem.locationType === "DELIVERYAREA"
+                )
+                  return innerItem.deliveryArea.name;
+                return "";
+              })
+              .toString()
+              .replace(/,/g, " ");
             temp.push(data);
             return true;
           });
@@ -151,7 +148,7 @@ const Means = () => {
           setItems(temp);
         }
 
-        if (response.data.site_delivery_areas != null) {
+        if (response.data.site_delivery_areas !== null) {
           const temp = [];
           response.data.site_delivery_areas.map((item, index) => {
             return temp.push({ label: item.name, value: item.name });
@@ -160,7 +157,7 @@ const Means = () => {
           setDropdownDeliveryAreas(temp);
         }
 
-        if (response.data.site_companies != null) {
+        if (response.data.site_companies !== null) {
           const temp = [];
           response.data.site_companies.map((item, index) => {
             return temp.push({
@@ -172,7 +169,7 @@ const Means = () => {
           setDropdownCompany(temp);
         }
 
-        if (response.data.site_locations != null) {
+        if (response.data.site_locations !== null) {
           setLocations(response.data.site_locations);
           const temp = [];
           response.data.site_locations.map((item, index) => {
@@ -181,7 +178,7 @@ const Means = () => {
           setDropdownLocations(temp);
         }
 
-        if (response.data.mean_types != null) {
+        if (response.data.mean_types !== null) {
           setTypes(response.data.mean_types);
           const temp = [];
           response.data.mean_types.map((item, index) => {
@@ -190,7 +187,7 @@ const Means = () => {
           setDropdownTypes(temp);
         }
 
-        if (response.data.mean_status != null) {
+        if (response.data.mean_status !== null) {
           setStatus(response.data.mean_status);
           const temp = [];
           response.data.mean_status.map((item, index) => {
@@ -223,12 +220,11 @@ const Means = () => {
 
       if (response.success) {
         const tempStorageAreas = [];
-        if (response.data != null && response.data.length > 0) {
+        if (response.data !== null && response.data.length > 0) {
           const temp = [];
 
           response.data.map((item, index) => {
             item.location.map((innerItem, innerIndex) => {
-              console.log(JSON.stringify(innerItem, null, 2));
               if (innerItem.locationType === "STORAGEAREA") {
                 tempStorageAreas.push(innerItem);
                 return temp.push({
@@ -236,8 +232,9 @@ const Means = () => {
                   value: innerItem.storageArea.name,
                 });
               }
+              return true;
             });
-
+            return true;
             //
           });
           setStorageAreas(tempStorageAreas);
@@ -270,7 +267,7 @@ const Means = () => {
 
       if (response.success) {
         setLevels(response.data);
-        if (response.data != null && response.data.length > 0) {
+        if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) => {
             return temp.push({ label: item.name, value: item.name });
@@ -366,32 +363,29 @@ const Means = () => {
           data[0] = item.name;
           data[1] = item.status;
           data[2] = item.meanType;
-          {
-            data[3] = item.location
-              .map((innerItem, index) => {
-                if (
-                  innerItem.locationType != undefined &&
-                  innerItem.locationType === "STORAGEAREA"
-                ) {
-                  console.log(innerItem.locationType);
-                  return innerItem.storageArea.name;
-                }
-                return "";
-              })
-              .toString()
-              .replace(/,/g, " ");
-            data[4] = item.location
-              .map((innerItem, index) => {
-                if (
-                  innerItem.locationType != undefined &&
-                  innerItem.locationType === "DELIVERYAREA"
-                )
-                  return innerItem.deliveryArea.name;
-                return "";
-              })
-              .toString()
-              .replace(/,/g, " ");
-          }
+          data[3] = item.location
+            .map((innerItem, index) => {
+              if (
+                innerItem.locationType !== undefined &&
+                innerItem.locationType === "STORAGEAREA"
+              ) {
+                return innerItem.storageArea.name;
+              }
+              return "";
+            })
+            .toString()
+            .replace(/,/g, " ");
+          data[4] = item.location
+            .map((innerItem, index) => {
+              if (
+                innerItem.locationType !== undefined &&
+                innerItem.locationType === "DELIVERYAREA"
+              )
+                return innerItem.deliveryArea.name;
+              return "";
+            })
+            .toString()
+            .replace(/,/g, " ");
           return temp.push(data);
         });
         setItems(temp);
@@ -421,7 +415,7 @@ const Means = () => {
 
       if (response.success) {
         setStorageAreas(response.data);
-        if (response.data != null && response.data.length > 0) {
+        if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) => {
             return temp.push({ label: item.name, value: item.name });

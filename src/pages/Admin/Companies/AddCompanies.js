@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
-import MultiAdderInput from "../../../components/MultiAdderInput";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -16,11 +15,11 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import { InputSharp } from "@material-ui/icons";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -78,7 +77,6 @@ export default function AddCompanies(props) {
   const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
-  const [typeError, setTypeError] = useState("");
   const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -103,9 +101,11 @@ export default function AddCompanies(props) {
   useEffect(() => {
     getData();
   }, []);
+
   useEffect(() => {
     getCompanyAutoFill();
   }, [companyId]);
+
   const getData = async () => {
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
@@ -114,6 +114,7 @@ export default function AddCompanies(props) {
         token: store.token,
       });
       if (response.success) {
+        console.log("Response", JSON.stringify(response, null, 2));
         setCompanies(response.data.site_companies);
         setTrades(response.data.site_trades);
         if (response.data.site_companies != null) {
