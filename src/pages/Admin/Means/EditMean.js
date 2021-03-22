@@ -691,8 +691,7 @@ export default function EditMean(props) {
                   !selectedMeanType ||
                   !color ||
                   !startDate ||
-                  !selectedDropdownArea ||
-                  !selectedDropdownStorageArea
+                  !deliveryAndStorageLocations
                 }
               />
             </Form.ButtonContainer>
