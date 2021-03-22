@@ -98,6 +98,7 @@ export default function AddCompanies(props) {
   const [dropdownTrades, setDropdownTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState("");
   const [listOfTrades, setListOfTrades] = useState([]);
+  const [fieldsEnabled, setFieldsEnabled] = useState(true);
 
   useEffect(() => {
     getData();
@@ -152,6 +153,7 @@ export default function AddCompanies(props) {
   };
 
   const getCompanyAutoFill = async () => {
+    if (companyId.length === 0) return;
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
       const response = await GLOBALS.API({
@@ -174,6 +176,7 @@ export default function AddCompanies(props) {
             setEmail("");
             setPhone("");
           }
+          if (company.color != undefined) setColor(company.color);
           if (company.website != undefined) setWebsite(company.website);
           else setWebsite("");
           if (company.description != undefined) setAddInfo(company.description);
@@ -209,11 +212,13 @@ export default function AddCompanies(props) {
       });
       if (response.success) {
         if (response.data.companies.length === 0) {
-          setCompanyType("generalcontractor");
+          await setCompanyType("generalcontractor");
+
           setSelectedCompany("");
           setSelectedCompanyIndex(null);
         } else {
-          setCompanyType("subcontractor");
+          await setCompanyType("subcontractor");
+
           const company = response.data.companies[0].companyId;
           let companyIndex = null;
           let companyValue = null;
@@ -259,7 +264,13 @@ export default function AddCompanies(props) {
     // const notificationTo = values.notificationTo.map((item) => item.label);
     const values = formik.values;
     const isSubContractor = companyType === "subcontractor";
-    const parentCompanyId = companies[selectedCompanyIndex].companyId._id;
+    let parentCompanyId = undefined;
+    if (
+      companies.length != 0 &&
+      isSubContractor &&
+      companies[selectedCompanyIndex].companyId != undefined
+    )
+      parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
     const trades = [];
 
@@ -276,7 +287,12 @@ export default function AddCompanies(props) {
     formdata.append("description", addInfo);
     formdata.append("trades", JSON.stringify(trades));
     formdata.append("siteId", adminStore.site.siteId._id);
-    if (isSubContractor) formdata.append("parentCompanyId", parentCompanyId);
+
+    if (isSubContractor) {
+      if (parentCompanyId === undefined)
+        alert("You need to select a general contractor");
+      formdata.append("parentCompanyId", parentCompanyId);
+    }
     if (
       fname.length !== 0 &&
       lname.length !== 0 &&
@@ -292,15 +308,7 @@ export default function AddCompanies(props) {
       formdata.append("incharge", JSON.stringify(incharge));
     }
 
-    // formdata.append("contractType", values.contractType);
-    //formdata.append("contractStartDate", values.contractStartDate);
-    //formdata.append("contractEndDate", values.contractEndDate);
-    //formdata.append("functionality", values.functionality);
-    //formdata.append("additionalInfo", values.additionalInfo);
-    //formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    // formdata.append("notificationTo", JSON.stringify(notificationTo));
-
-    await GLOBALS.API({
+    const response = await GLOBALS.API({
       method: "POST",
 
       uri: GLOBALS.Constants.CREATE_COMPANY,
@@ -309,6 +317,14 @@ export default function AddCompanies(props) {
       },
       body: formdata,
     });
+    if (response.success) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(response.message, "success"),
+        ),
+      );
+    }
+
     formik.setSubmitting(false);
     props.history.push("/clients");
   };
@@ -455,20 +471,30 @@ export default function AddCompanies(props) {
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
+                  disabled={!fieldsEnabled}
                   style={{
                     ...GLOBALS.Styles.inputWidth,
                     marginRight: "10px",
                   }}
                   onSelect={(event) => {
                     let companyId = "";
+                    let logo = null;
                     companies.forEach((item, index) => {
                       if (item.companyId.name === event.target.value) {
                         companyId = item.companyId._id;
-
+                        logo = item.companyId.logo;
                         setName(item.companyId.name);
                       }
                     });
-                    if (companyId.length != 0) setCompanyId(companyId);
+
+                    //                  let fileClone = [{ uri: mean.image }];
+                    // setImage(fileClone);
+
+                    if (companyId.length != 0) {
+                      setCompanyId(companyId);
+                      setFieldsEnabled(false);
+                      formik.setFieldValue("images", [{ uri: logo }]);
+                    }
                   }}
                   options={companies.map((option) => {
                     if (option.companyId.name != undefined)
@@ -477,10 +503,11 @@ export default function AddCompanies(props) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Email"
+                      label="Name"
                       margin="normal"
                       variant="outlined"
                       name="name"
+                      disabled={!fieldsEnabled}
                       onChange={(event) => {
                         console.log(event);
                         setName(event.target.value);
@@ -509,6 +536,7 @@ export default function AddCompanies(props) {
               </div>
               <FormMultipleUpload
                 name="images"
+                enabled={!fieldsEnabled}
                 style={GLOBALS.Styles.inputWidth}
                 values={formik.values.images}
                 onChange={(values) =>
@@ -533,16 +561,33 @@ export default function AddCompanies(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
-              <div>
-                <div>
-                  <input
+            <Form.Row width="55%">
+              <RadioButton
+                name="contractType"
+                value={companyType}
+                // error={contractType}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  setCompanyType(value)
+                }
+                items={[
+                  {
+                    value: "generalcontractor",
+                    label: "General Contractor",
+                  },
+                  { value: "subcontractor", label: "Subcontractor" },
+                ]}
+              />
+
+              {/* <input
                     className={classes.radioBtn}
                     type="radio"
-                    onChange={(e) => setCompanyType("generalcontractor")}
+                    onChange={(e) => {
+                      setCompanyType("generalcontractor");
+                    }}
                     id="generalcontractor"
                     name="companyType"
-                    value="generalcontractor"
+                    value={companyType}
                   />
                   <label for="generalcontractor" className={classes.radioLabel}>
                     General Contractor
@@ -555,17 +600,15 @@ export default function AddCompanies(props) {
                     onChange={(e) => {
                       setCompanyType("subcontractor");
                     }}
-                    value="subcontractor"
+                    value={companyType}
                     defaultChecked
                   />
                   <label for="subcontractor" className={classes.radioLabel}>
                     Sub contractor
-                  </label>
-                </div>
-                {companyTypeError === true && (
-                  <div className={classes.error}>Please select company</div>
-                )}
-              </div>
+                  </label> */}
+              {companyTypeError === true && (
+                <div className={classes.error}>Please select company</div>
+              )}
             </Form.Row>
           </Form.Row>
           <Form.Row>
