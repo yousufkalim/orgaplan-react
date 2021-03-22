@@ -430,7 +430,7 @@ export default function EditMean(props) {
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY : " />
+            <FormLabel bold primary="IDENTITY * : " />
             <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
               <FormInput
                 name="name"
@@ -466,19 +466,25 @@ export default function EditMean(props) {
                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
 
-              <FormMultipleUpload
+             
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE :  " />
+            <Form.Row noMargin width="65%">
+            <FormMultipleUpload
                 name="image"
-                style={{width: "25%"}}
+                style={{width: "40%"}}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
                 }}
               />
             </Form.Row>
+            
           </Form.Row>
-
           <Form.Row>
-            <FormLabel bold primary="LOCATION :  " />
+            <FormLabel bold primary="LOCATION * :  " />
             <Form.Row noMargin width="65%">
               <CustomInputModal
                 name="location"
@@ -571,7 +577,7 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="AVAILAIBILITIES :" />
+            <FormLabel bold primary="AVAILAIBILITIES * :" />
             <Form.Row
               noMargin
               width="65%"
@@ -691,8 +697,7 @@ export default function EditMean(props) {
                   !selectedMeanType ||
                   !color ||
                   !startDate ||
-                  !selectedDropdownArea ||
-                  !selectedDropdownStorageArea
+                  !deliveryAndStorageLocations
                 }
               />
             </Form.ButtonContainer>

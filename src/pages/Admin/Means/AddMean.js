@@ -401,8 +401,8 @@ export default function AddMean(props) {
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY : " />
-            <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
+            <FormLabel bold primary="IDENTITY * : " />
+            <Form.Row noMargin width="65%" style={{ gap: "20px", justifyContent: "flex-start" }}>
               <FormInput
                 name="name"
                 value={name}
@@ -450,19 +450,25 @@ export default function AddMean(props) {
                   { value: "Magenta", label: "Magenta" },
                 ]}
               /> */}
-              <FormMultipleUpload
+              
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE :  " />
+            <Form.Row noMargin width="65%">
+            <FormMultipleUpload
                 name="image"
-                style={{width: "25%"}}
+                style={{width: "40%"}}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
                 }}
               />
             </Form.Row>
+            
           </Form.Row>
-
           <Form.Row>
-            <FormLabel bold primary="LOCATION :  " />
+            <FormLabel bold primary="LOCATION * :  " />
             <Form.Row noMargin width="65%">
               <CustomInputModal
                 name="location"
@@ -555,7 +561,7 @@ export default function AddMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="AVAILAIBILITIES :" />
+            <FormLabel bold primary="AVAILAIBILITIES * :" />
             <Form.Row
               noMargin
               width="65%"
@@ -691,8 +697,7 @@ export default function AddMean(props) {
                   !selectedMeanType ||
                   !color ||
                   !startDate ||
-                  !selectedDropdownArea ||
-                  !selectedDropdownStorageArea
+                  !deliveryAndStorageLocations
                 }
               />
             </Form.ButtonContainer>
