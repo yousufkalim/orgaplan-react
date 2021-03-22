@@ -458,7 +458,7 @@ export default function AddMean(props) {
             <Form.Row noMargin width="65%">
             <FormMultipleUpload
                 name="image"
-                style={{width: "25%"}}
+                style={{width: "40%"}}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
