@@ -11,6 +11,8 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import Input from "../../../components/Input";
+
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -61,12 +63,24 @@ export default function AddIncidents(props) {
   const [name, setName] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownLocationType, setDropdownLocationType] = useState([]);
+  const [dropdownLocation, setDropdownLocation] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState([]);
+
   const [location, setLocations] = useState([]);
   const [selectedLocationType, setselectedLocationType] = useState("");
 
   const [companyId, setCompanyId] = useState("");
+    const [description, setDescription] = useState("");
+
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+
+  const [isBillable, seIsBillable] = useState(false);
+  const [price, setPrice] = useState("");
+  const [comment, setComment] = useState("");
+  const [selctedLocationObject, setselctedLocationObject] = useState("");
+
+
 
   const [nameError, setNameError] = useState(""); //working
 
@@ -120,37 +134,37 @@ export default function AddIncidents(props) {
 
 
 
-  const onSubmit = async (values) => {
-  const notificationTo = values.notificationTo.map((item) => item.label);
+  const onFormSubmit = async () => {
+  // const notificationTo = values.notificationTo.map((item) => item.label);
 
   var formdata = new FormData();
-  formdata.append("logo", values.logo[0].file);
-  formdata.append("name", values.name);
-  formdata.append("color", values.color);
-  formdata.append("firstName", values.firstName);
-  formdata.append("lastName", values.lastName);
-  formdata.append("email", values.email);
-  formdata.append("phone", values.phone);
-    formdata.append("contractType", values.contractType);
-    formdata.append("contractStartDate", values.contractStartDate);
-    formdata.append("contractEndDate", values.contractEndDate);
-    formdata.append("functionality", values.functionality);
-    formdata.append("additionalInfo", values.additionalInfo);
-    formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    formdata.append("notificationTo", JSON.stringify(notificationTo));
-    await GLOBALS.API({
+  // formdata.append("photos", values.logo[0].file);
+  formdata.append("name", name);
+  formdata.append("date", date);
+
+  formdata.append("time", time);
+  formdata.append("description", description);
+  formdata.append("isBillable", isBillable);
+  formdata.append("price", price);
+  formdata.append("comment", comment);
+  formdata.append("location", JSON.stringify({"deliveryArea":"600952a9df49e51b42fab57b"}));
+  // formdata.append("type", );
+  formdata.append("companyId", companyId);
+  formdata.append("siteId", adminStore.site.siteId._id);
+    console.log(store.token)
+     await GLOBALS.API({
       method: "POST",
-      uri: GLOBALS.Constants.CLIENTS,
-      headers: {
-        Authorization: store.token,
-      },
+      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+     headers: {
+          Authorization: store.token,
+        },
       body: formdata,
     });
-    // formik.setSubmitting(false);
-    props.history.push("/clients");
+
+    props.history.push("/incidents");
   };
    const nameChange = (e) => {
-     console.log(e.target.value)
+     console.log(e.target.value, e.target.label )
     if (e.target.name === "name") {
       setName(e.target.value);
       if (e.target.name === "" || name === null) {
@@ -159,7 +173,7 @@ export default function AddIncidents(props) {
         setNameError(false);
       }
     }
-    if (e.target.name === "company") {
+    if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
       if (e.target.value === "" || e.target.value === null) {
         setComapnyError(true);
@@ -186,7 +200,16 @@ export default function AddIncidents(props) {
       
     }
        if (e.target.name === "location") {
-      setTime(e.target.value);
+      // setTime(e.target.value);
+      const selectedObject = dropdownLocation.filter(x => x.value === e.target.value)
+            console.log(selectedObject[0])
+       setSelectedLocation(selectedObject[0]);
+       const locationObject = {};
+       locationObject[0]=selectedLocationType;
+
+              locationObject[1]=e.target.value;
+              setselctedLocationObject(locationObject)
+
       if (e.target.value === "" || e.target.value === null) {
         setTimeError(true);
       } else {
@@ -194,23 +217,38 @@ export default function AddIncidents(props) {
       }
       
     }
-       if (e.target.name === "additionalInfo") { //working
-      setTime(e.target.value);
-      if (e.target.value === "" || e.target.value === null) {
-        setTimeError(true);
-      } else {
-        setTimeError(false);
-      }
+       if (e.target.name === "description") {
+      setDescription(e.target.value);
+      // if (e.target.value === "" || e.target.value === null) {
+      //   setTimeError(true);
+      // } else {
+      //   setTimeError(false);
+      // }
       
     }
-       if (e.target.name === "time") { //working
-      setTime(e.target.value);
-      if (e.target.value === "" || e.target.value === null) {
-        setTimeError(true);
-      } else {
-        setTimeError(false);
-      }
-      
+       if (e.target.name === "seIsBillable") { 
+       seIsBillable(e.target.value);
+      // if (e.target.value === "" || e.target.value === null) {
+      //   setTimeError(true);
+      // } else {
+      //   setTimeError(false);
+      // } 
+    }
+      if (e.target.name === "price") { 
+       setPrice(e.target.value);
+      // if (e.target.value === "" || e.target.value === null) {
+      //   setTimeError(true);
+      // } else {
+      //   setTimeError(false);
+      // } 
+    }
+      if (e.target.name === "comment") { //working
+       setComment(e.target.value);
+      // if (e.target.value === "" || e.target.value === null) {
+      //   setTimeError(true);
+      // } else {
+      //   setTimeError(false);
+      // } 
     }
 
 
@@ -234,11 +272,14 @@ export default function AddIncidents(props) {
         token: store.token,
       });
       if(response.success) {
-        //  const temp = [];
-        //   response.data.map((item, index) => {
-        //     return temp.push({ label: item, value: item });
-        //   });
-        //   setDropdownLocationType(temp);
+        if(response.data) {
+       const temp = [];
+          response.data.map((item, index) => {
+            return temp.push({ label: item.name, value: item._id });
+          });
+          setDropdownLocation(temp);
+        }
+      
       }
       console.log(response);
     }
@@ -273,7 +314,10 @@ export default function AddIncidents(props) {
     // }
     else {
       // clearFileds();
+      // submitIncident()
     }
+          onFormSubmit();
+
   };
 
 
@@ -294,7 +338,7 @@ export default function AddIncidents(props) {
               onChange={nameChange}
               value={name}
             />
-                {/* {nameError && (
+            {/* {nameError && (
                   <div className={classes.error}>Please enter name</div>
                 )} */}
           </Form.Row>
@@ -327,30 +371,34 @@ export default function AddIncidents(props) {
                 type="date"
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
-                name="date" 
+                name="date"
                 onChange={nameChange}
                 // error={formik.errors.contractStartDate}
               />
-              <FormInput
-                placeholder="TIME"
-                type="time"
-                name="time"
+              {/* <Input
+                type="date"
                 style={GLOBALS.Styles.inputWidth}
+                placeholder="Date"
+                name="date"
                 onChange={nameChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
-               
+              ></Input> */}
+              <FormInput
+                type="number"
+                style={GLOBALS.Styles.inputWidth}
+                placeholder="Time in Hours"
+                name="time"
+                onChange={nameChange}
               />
-            </Form.Row> 
+            </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION : " />
-            <Form.Row noMargin width="48%"> 
+            <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="Type of location" //working
+                placeholder="Type of location"
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                 onChange={locationTypeChange}
+                onChange={locationTypeChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
                 values={dropdownLocationType}
@@ -359,18 +407,10 @@ export default function AddIncidents(props) {
                 placeholder="LOCATION"
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
+                onChange={nameChange}
                 // value={formik.values.color}
                 // error={formik.errors.color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
+                values={dropdownLocation}
               />
             </Form.Row>
           </Form.Row>
@@ -380,10 +420,10 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
+              onChange={nameChange}
               placeholder="Information complementaires"
-              name="additionalInfo"
-              // value={formik.values.additionalInfo}
+              name="description"
+              // value={formik.values.additionalInfo} //working
               // error={formik.errors.additionalInfo}
             />
           </Form.Row>
@@ -391,20 +431,11 @@ export default function AddIncidents(props) {
             <FormLabel bold primary="ADD PICTURES : " />
             <Form.Row noMargin width="48%">
               {/* <FormMultipleUpload
-                name="logo"
+                name="profile"
+                // error={image}
+                values={image}
                 style={GLOBALS.Styles.inputWidth}
-                error={formik.errors.logo}
-                values={formik.values.logo}
-                onChange={(values) =>
-                  formik.handleChange({
-                    target: {
-                      type: "text",
-                      name: "logo",
-                      value: values,
-                    },
-                  }
-                  )
-                }
+                onChange={(values) => handleChange("profile", values)}
               /> */}
             </Form.Row>
           </Form.Row>
@@ -412,8 +443,9 @@ export default function AddIncidents(props) {
             <FormLabel bold primary="BILLABLE* : " />
             <FormSelect
               placeholder="Select"
-              name="color"
+              name="billable"
               style={GLOBALS.Styles.inputWidth}
+              onChange={nameChange}
               // onChange={formik.handleChange}
               // value={formik.values.color}
               // error={formik.errors.color}
@@ -429,7 +461,9 @@ export default function AddIncidents(props) {
               <Form.Row width="24%" noMargin alignItems="center">
                 <FormInput
                   type="number"
-                  name="penaltyforLateDelivery"
+                  name="price"
+                  onChange={nameChange}
+
                   // error={penaltyforLateDelivery}
                 />
                 <SmallText style={{ marginLeft: 10 }} primary="€" />
@@ -443,11 +477,9 @@ export default function AddIncidents(props) {
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
-              // onChange={formik.handleChange}
+              onChange={nameChange}
               placeholder="Ajouter un commentaire"
-              name="additionalInfo"
-              // value={formik.values.additionalInfo}
-              // error={formik.errors.additionalInfo}
+              name="comment"
             />
           </Form.Row>
           <Form.ButtonContainer>
@@ -456,8 +488,6 @@ export default function AddIncidents(props) {
               minWidth={200}
               text="VALIDER"
               fullWidth={false}
-              // loading={formik.isSubmitting}
-              // disabled={formik.isSubmitting}
             />
           </Form.ButtonContainer>
         </Form.Form>

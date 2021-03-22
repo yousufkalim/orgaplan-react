@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 // import * as Yup from "yup";
+import { useSelector } from "react-redux";
 
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -42,14 +43,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Incidents = () => {
+const Incidents = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   // const store = useSelector((state) => state.auth);
 
   // const [loading, setLoading] = useState(true);
-  // const [items, setItems] = useState([]);
+  const [incidents, setIncidents] = useState([]);
+  const [completeIncidents, setCompleteIncidents] = useState([]);
+  const [items, setItems] = useState([]);
+  const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
+  const [siteStorageArea, setSiteStorageArea] = useState([]);
+  const [siteComapny, setSiteComapny] = useState([]);
+  const [siteBuilding, setSiteBuilding] = useState([]);   
+  const [status, setStatus] = useState([]);
+  const [type, setType] = useState([]);
+
   // const [page, setPage] = useState("");
+  const adminStore = useSelector((state) => state.admin);
 
   useEffect(() => {
     fetchData();
@@ -58,10 +69,33 @@ const Incidents = () => {
 
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   // uri: `${GLOBALS.Constants.SITES}?page=${page}`,
-      // });
-      // setItems(result.data.items);
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
+      });
+      console.log(result.data);
+      if (result.success) {
+        setIncidents(result.data.incidents);
+        setCompleteIncidents(result.data.incidents);
+
+        if (result.data.incidents) getIncidentsfiltered(result.data.incidents);
+        if (result.data.site_delivery_areas) {
+            getDeliveryArea(result.data.site_delivery_areas);
+        }  if (result.data.site_storage_areas) {
+          getStorageArea(result.data.site_storage_areas);
+        }
+        if (result.data.type) {
+          getType(result.data.type);
+        }
+        if (result.data.status) {
+          getStatus(result.data.status);
+        }
+         if (result.data.site_companies) {
+           getCompanies(result.data.site_companies);
+        }
+        
+        
+
+      }
       // setLoading(false);
     } catch (err) {
       dispatch(
@@ -72,23 +106,93 @@ const Incidents = () => {
     }
   }
 
-  const rows = GLOBALS.Data.incidents.items.map((item) => [...item]);
+    function getCompanies(data) {
+      console.log(data);
+      let temp = [];
+      data.map((item, index) => {
+        return temp.push({
+          label: item.companyId.name,
+          value: item.companyId._id,
+        });
+      });
+      setSiteComapny(temp);
+    }
+  function getStatus(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item,
+        value: item,
+      });
+    });
+    setStatus(temp);
+  }
 
-  const formik = useFormik({
-    initialValues: {
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    // validationSchema: addClientYup,
-    // onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
+  function getStorageArea(data){
+        let temp = [];
+        data.map((item, index) => {
+          return temp.push({
+            label: item.name,
+            value: item._id,
+          });
+        });
+        setSiteStorageArea(temp);
+  }
+
+  function getType(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item,
+        value: item,
+      });
+    });
+    setType(temp);
+  }
+
+  function getDeliveryArea(data) {
+    let temp = [];
+    data.map((item, index) => {
+        return temp.push({
+          label: item.name,
+          value: item._id,
+        });
+    })
+    setSiteDeliveryArea(temp);
+  }
+
+
+  function getIncidentsfiltered(data) {
+    let temp = [];
+    data.map((item, index) => {
+      let data = [];
+      data[0] = item?.date;
+      data[1] = item?.type;
+      data[2] = item?.name;
+      data[3] = item.companyId?.name;
+      data[4] = item.companyId?.status;
+      data[5] = item.location?.deliveryArea?.name;
+      data[6] = item?.isBillable ? "Yes" : "No";
+      data[7] = item?.price;
+      data[8] = item?.isBillable ? "Yes" : "No";
+
+      return temp.push(data);
+    });
+    setItems(temp);
+  }
+
+  const rows = items.map((item, index) => {
+    return [
+      item[0] ? item[0] : "",
+      item[1] ? item[1] : " ",
+      item[2] ? item[2] : " ",
+      item[3] ? item[3] : " ",
+      item[4] ? item[4] : " ",
+      item[5] ? item[5] : " ",
+      item[6] ? item[6] : " ",
+      item[7] ? item[7] : " ",
+      item[8] ? item[8] : " ",
+    ];
   });
 
   return (
@@ -139,15 +243,7 @@ const Incidents = () => {
           /> */}
           <FormSelect
             placeholder="Delivery area"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteDeliveryArea}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
@@ -178,28 +274,12 @@ const Incidents = () => {
           />
           <FormSelect
             placeholder="Storage area"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteStorageArea}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Type"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={type}
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
@@ -212,15 +292,7 @@ const Incidents = () => {
         <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteComapny}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
 
@@ -229,28 +301,20 @@ const Incidents = () => {
             placeholder="Start date"
             name="startDate"
             icon
-            onChange={formik.handleChange}
+            // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
             type="date"
             placeholder="End date"
             name="endDate"
-            icon
-            onChange={formik.handleChange}
+            // icon
+            // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Status"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={status}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <SearchInput
@@ -260,7 +324,16 @@ const Incidents = () => {
         </Form.Row>
       </Form.Row>
       <div className={classes.content}>
-        <Table headers={GLOBALS.Data.incidents.headings} rows={rows} />
+        <Table
+          headers={GLOBALS.Data.incidents.headings}
+          rows={rows}
+          onClick={(e) => {
+            return props.history.push({
+              pathname: "/incidents/edit-incidents",
+              data: incidents[e],
+            });
+          }}
+        />
       </div>
     </div>
   );
