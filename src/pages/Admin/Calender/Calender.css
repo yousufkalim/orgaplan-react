@@ -1,0 +1,36 @@
+.calender-sidebar{
+    background-color: #F8F8F8;
+    padding: 10px 20px;
+}
+
+.calender-sidebar-heading{
+    font-size: 20px;
+    font-weight: bold;
+    color: #7E7878;
+}
+
+.react-datepicker-wrapper{
+    width: 100%;
+    margin-right: 20px;
+   
+}
+.react-datepicker-wrapper input{
+    height: 45px;
+    text-align: center;
+    width: 100%;
+    color: #7E7878;
+}
+.react-datepicker-popper{
+  z-index: 999999;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -45,6 +45,7 @@ const endpoints = {
 
   // ADMIN
   CREATE_MEAN: BASE_URL_V1 + "mean",
+
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
@@ -80,5 +81,8 @@ const endpoints = {
   GET_SITE_INCIDENT: BASE_URL_V1 + "incidents/admin",
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
   POST_ADD_SITE_INCIDENTS: BASE_URL_V1 + "incidents",
+  CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
 };
 export default endpoints;
