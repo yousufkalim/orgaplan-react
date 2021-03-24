@@ -133,6 +133,7 @@ export default function FormMultipleUpload(props) {
             </div>
             <input
               hidden
+              {...props}
               type="file"
               id={`fileinput-${props.name}`}
               onChange={onAdd}

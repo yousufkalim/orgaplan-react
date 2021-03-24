@@ -1,6 +1,8 @@
 import * as AuthActions from "./auth";
+
 import * as AdminActions from "./admin";
 import * as NotiActions from "./notistack";
+import * as MeanActions from "./means";
 
 const exportsObj = {
   notistack: {
@@ -22,6 +24,9 @@ const exportsObj = {
     set_site: AdminActions.set_site,
     set_company: AdminActions.set_company,
     reset_state: AdminActions.reset_state,
+  },
+  means: {
+    get_means: MeanActions.get_means,
   },
 };
 
