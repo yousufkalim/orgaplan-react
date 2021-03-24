@@ -65,7 +65,11 @@ export default function MultiAdderInputModal(props) {
   const handleChange = (name, value) => {
     if (name === "street") setStreet(value);
     else if (name === "city") setCity(value);
-    else if (name === "postal") setPostal(value);
+    else if (name === "postal") {
+      if(value.length <= 7){
+        setPostal(value)
+      }
+    };
   };
 
   async function onSubmit() {
@@ -137,6 +141,7 @@ export default function MultiAdderInputModal(props) {
               <FormInput
                 name="street"
                 value={street}
+                maxLength="80"
                 // error={street}
                 placeholder="Street"
                 onChange={({ target: { name, value } }) =>
@@ -148,6 +153,7 @@ export default function MultiAdderInputModal(props) {
               <FormInput
                 name="city"
                 value={city}
+                maxLength="30"
                 // error={city}
                 placeholder="City (text only)"
                 onChange={({ target: { name, value } }) => {
@@ -160,6 +166,8 @@ export default function MultiAdderInputModal(props) {
               <FormInput
                 type="number"
                 name="postal"
+                max="7"
+                maxLength={11}
                 value={postal}
                 // error={postal}
                 placeholder="Postal (5 digits only)"

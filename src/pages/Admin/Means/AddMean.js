@@ -561,7 +561,7 @@ export default function AddMean(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="AVAILAIBILITIES * :" />
+            <FormLabel bold primary="AVAILABILITIES * :" />
             <Form.Row
               noMargin
               width="65%"
