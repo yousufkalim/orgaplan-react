@@ -5,7 +5,6 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import myEventsList from "./components/events";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -46,7 +45,6 @@ let formats = {
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
-
   const meansData = useSelector((state) => state.means);
   // *****
 
@@ -1183,7 +1181,7 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "470px",
+                  height: "540px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let newStyle = {

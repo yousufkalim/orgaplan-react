@@ -437,7 +437,6 @@ const Means = () => {
     getMeans();
     // eslint-disable-next-line
   }, []);
-
   const rows = items.map((item, index) => {
     return [
       ...item,
@@ -514,17 +513,7 @@ const Means = () => {
                   width: "200px",
                 }}
               />
-              <Button
-                fullWidth={false}
-                component={NavLink}
-                text="Calandar"
-                to={"/means/calendar"}
-                style={{
-                  marginLeft: "20px",
-                  marginBottom: "7px",
-                  width: "200px",
-                }}
-              />
+
               <Button
                 fullWidth={false}
                 component={NavLink}
