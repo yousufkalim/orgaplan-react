@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
+  error: {
+    color: "red"
+  }
 }));
 
 export default function AddAdmin(props) {
@@ -40,6 +43,9 @@ export default function AddAdmin(props) {
   const [lastName, setLastName] = useState("");
   const [image, setImage] = useState([]);
   const [companyId, setCompanyId] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [mailformat] = useState("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/")
 
   useEffect(() => {
     fetchData();
@@ -69,8 +75,25 @@ export default function AddAdmin(props) {
   }
 
   const handleChange = (name, value) => {
-    if (name === "email") setEmail(value);
-    else if (name === "phone") setPhone(value);
+    if (name === "email") {
+      setEmail(value);
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!value.match(mailformat)) {
+        setEmailError(true);
+      } else {
+        setEmailError(false);
+      }
+    }
+    if (name === "phone") {
+      setPhone(value);
+      if (value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+      } else if (value.charAt(0) === "0" && value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
+      } else {
+        setPhoneError("");
+      }
+    }
     else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "image") {
@@ -89,7 +112,7 @@ export default function AddAdmin(props) {
       formdata.append("phone", phone);
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
-      formdata.append("image", image[0].file);
+      formdata.append("image", image[0]?.file);
       formdata.append("companyId", companyId);
 
       await GLOBALS.API({
@@ -122,27 +145,42 @@ export default function AddAdmin(props) {
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO*: " />
-            <Form.Row noMargin width="48%">
+            <Form.Row noMargin width="48%" style={{gap: "20px"}}>
+              <div style={{width: "50%"}}>
               <FormInput
                 name="email"
+                type="email"
                 placeholder="E-mail Address"
                 value={email}
                 // error={email}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
               />
+               {emailError === true && (
+                  <div className={classes.error}>Please enter valid email</div>
+                )}
+              </div>
+              <div style={{width: "50%"}}>
+
               <FormInput
                 name="phone"
                 value={phone}
+                type="number"
                 // error={phone}
                 placeholder="Phone Number"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
               />
+                {phoneError && (
+                  <div className={classes.error}>
+                    {phoneError}
+                  </div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           {update && ""}
@@ -204,12 +242,11 @@ export default function AddAdmin(props) {
               loading={loading}
               disabled={
                 loading ||
-                !email ||
-                !phone ||
-                phone.length !== 10 ||
+                emailError ||
+                
+                (!phone || phone.length !== 10 || phone.charAt(0) !== "0" )||
                 !firstName ||
                 !lastName ||
-                image.length === 0 ||
                 !companyId
               }
             />

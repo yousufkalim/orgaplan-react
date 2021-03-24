@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
+  error: {
+    color: "red"
+  }
 }));
 
 export default function Admins(props) {
@@ -58,6 +61,7 @@ export default function Admins(props) {
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -101,7 +105,16 @@ export default function Admins(props) {
   function handleChange(name, value) {
     if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
+    else if (name === "phone") {
+      setPhone(value);
+      if (value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+      } else if (value.charAt(0) === "0" && value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
+      } else {
+        setPhoneError("");
+      }
+    }
     else if (name === "image") {
       setUpdate((st) => !st);
       setImage(value);
@@ -259,6 +272,7 @@ export default function Admins(props) {
         onClose={() => {
           setModal((st) => !st);
           resetForm();
+          setPhoneError("");
         }}
         body={
           <Form.Form onSubmit={onUpdate}>
@@ -273,31 +287,38 @@ export default function Admins(props) {
               />
             </Form.Row>
             <Form.Row justifyContent="center">
+            <div style={{width: "50%"}}>
+
               <FormInput
                 name="firstName"
                 value={firstName}
                 // error={firstName}
                 placeholder="First Name"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
               />
+            </div>
             </Form.Row>
             <Form.Row justifyContent="center">
+            <div style={{width: "50%"}}>
+
               <FormInput
                 name="lastName"
                 value={lastName}
                 // error={lastName}
                 placeholder="Last Name"
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
               />
+            </div>
             </Form.Row>
             <Form.Row justifyContent="center">
-              <FormInput
+                <div style={{width: "50%"}}>
+                <FormInput
                 name="phone"
                 placeholder="Phone Number"
                 value={phone}
@@ -305,21 +326,30 @@ export default function Admins(props) {
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
               />
+               {phoneError && (
+                  <div className={classes.error}>
+                    {phoneError}
+                  </div>
+                )}
+                </div>
             </Form.Row>
             <Form.Row justifyContent="center">
+            <div style={{width: "50%"}}>
+
               <FormSelect
                 name="companyId"
                 value={companyId}
                 // error={companyId}
                 values={companies}
                 placeholder={companyName}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "100%"}}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
               />
+            </div>
             </Form.Row>
             <Form.Column alignItems="center">
               <Form.Row justifyContent="center">
@@ -344,7 +374,10 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={loading}
+                  disabled={loading ||  (!phone || phone.length !== 10 || phone.charAt(0) !== "0" )||
+                  !firstName ||
+                  !lastName ||
+                  !companyId}
                   loading={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}

@@ -266,6 +266,7 @@ export default function AddSiteStep2(props) {
         <FormInput
           textArea
           rows={3}
+          maxLength="300"
           name="additionalInfo"
           value={additionalInfo}
           style={GLOBALS.Styles.inputWidth}

@@ -365,6 +365,7 @@ export default function AddSiteStep3(props) {
               <FormInput
                 name="buildingName"
                 value={buildingName}
+                maxLength="30"
                 placeholder="Building Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
