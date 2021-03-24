@@ -381,12 +381,6 @@ export default function AddCompanies(props) {
       setPhone(e.target.value);
       if (e.target.value.charAt(0) !== "0") {
         setPhoneError("Telephone shoud starts with 0");
-        // if(e.target.value.length !== 10){
-        //   setPhoneError("Telephone must have 10 digits")
-        // }
-        // else{
-        //   setPhoneError("");
-        // }
       } else if (e.target.value.charAt(0) === "0" && e.target.value.length !== 10) {
         setPhoneError("Telephone must have 10 digits");
       } else {

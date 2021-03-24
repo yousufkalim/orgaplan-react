@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -22,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
+  },
+  error: {
+    color: "#FF0000",
   },
 }));
 
@@ -56,11 +60,14 @@ export default function AddContact(props) {
   const [image, setImage] = useState([]);
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  const [disabledBtn, setDisabledBtn] = useState(true);
 
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [companyError, setCompanyError] = useState("");
+  const [roleError, setRoleError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -105,64 +112,104 @@ export default function AddContact(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
-      if (value === "" || name === null) {
-        setEmailError(true);
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!value.match(mailformat)) {
+        setEmailError("Please enter valid format");
       } else {
-        setEmailError(false);
+        setEmailError("");
       }
     } else if (name === "phone") {
       setPhone(value);
-      if (value === "" || name === null) {
-        setPhoneError(true);
+      if (value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+        // if(value.length !== 10){
+        //   setPhoneError("Telephone must have 10 digits")
+        // }
+        // else{
+        //   setPhoneError("");
+        // }
+      } else if (value.charAt(0) === "0" && value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
       } else {
-        setPhoneError(false);
+        setPhoneError("");
       }
     } else if (name === "firstName") {
       setFirstName(value);
-      if (value === "" || name === null) {
-        setFirstNameError(true);
+      if (value.length > 30) {
+        setFirstNameError("Maximum chracters limit 30");
       } else {
-        setFirstNameError(false);
+        setFirstNameError("");
       }
     } else if (name === "lastName") {
       setLastName(value);
-      if (value === "" || name === null) {
-        setLastNameError(true);
+      if (value.length > 30) {
+        setLastNameError("Maximum chracters limit 30");
       } else {
-        setLastNameError(false);
+        setLastNameError("");
+      }
+    } else if (name === "company") {
+      setCompany(value);
+      if (value.length > 30) {
+        setCompanyError("Maximum chracters limit 30");
+      } else {
+        setCompanyError("");
+      }
+    } else if (name === "role") {
+      setRole(value);
+      if (value.length > 30) {
+        setRoleError("Maximum chracters limit 30");
+      } else {
+        setRoleError("");
       }
     } else if (name === "image") setImage(value);
     else if (name === "company") setCompany(value);
     else if (name === "role") setRole(value);
+    else if (dropdownType !== "") {
+      setDisabledBtn(false);
+    }
   };
 
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
-      setLoading(true);
-      var formdata = new FormData();
-      console.log(" adminStore.site.siteId._id", adminStore.site.siteId._id);
-      formdata.append("email", email);
-      formdata.append("phone", phone);
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
-      formdata.append("image", image[0].file);
-      formdata.append("company", company);
-      formdata.append("siteId", adminStore.site.siteId._id);
-      formdata.append("type", type);
-      formdata.append("role", role);
+      if (
+        emailError !== "" ||
+        phoneError !== "" ||
+        firstNameError !== "" ||
+        lastNameError !== "" ||
+        companyError !== "" ||
+        roleError !== ""
+      ) {
+        alert("something went wrong");
+      } else {
+        setLoading(true);
+        // console.log("dropwdown", type);
+        // alert("correct", type);
 
-      await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
-        headers: {
-          Authorization: store.token,
-        },
-        body: formdata,
-      });
-      setLoading(false);
-      props.history.goBack();
-      // props.history.push("/admins");
+        var formdata = new FormData();
+        console.log(" adminStore.site.siteId._id", adminStore.site.siteId._id);
+        formdata.append("email", email);
+        formdata.append("phone", phone);
+        formdata.append("firstName", firstName);
+        formdata.append("lastName", lastName);
+        formdata.append("image", image[0].file);
+        formdata.append("company", company);
+        formdata.append("siteId", adminStore.site.siteId._id);
+        formdata.append("type", type);
+        formdata.append("role", role);
+
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
+          headers: {
+            Authorization: store.token,
+          },
+          body: formdata,
+        });
+        setLoading(false);
+        props.history.goBack();
+        // props.history.push("/admins");
+      }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -182,7 +229,7 @@ export default function AddContact(props) {
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="TYPE OF ORGANIGRAMME*: " />
-            <Form.Row noMargin width="48%">
+            <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
                 value={type}
@@ -195,8 +242,6 @@ export default function AddContact(props) {
                   console.log("index", index);
                   if (index !== -1) {
                     const item = e.target.value;
-
-                    console.log(item);
                     setType(item);
                   } else {
                     setType("");
@@ -207,74 +252,110 @@ export default function AddContact(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO*: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="email"
-                value={email}
-                // error={firstName}
-                placeholder="Adresse e-mail"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                name="phone"
-                value={phone}
-                // error={lastName}
-                placeholder="Téléphone"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+            <Form.Row
+              noMargin
+              width="55%"
+              style={{ justifyContent: "flex-start", gap: "20px" }}
+            >
+              <div style={{ width: "45%" }}>
+                <FormInput
+                  name="email"
+                  value={email}
+                  // error={firstName}
+                  placeholder="Adresse e-mail"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {emailError !== "" && (
+                  <div className={classes.error}>{emailError}</div>
+                )}
+              </div>
+              <div style={{ width: "45%" }}>
+                <FormInput
+                  name="phone"
+                  value={phone}
+                  type="number"
+                  // error={lastName}
+                  placeholder="Téléphone"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {phoneError !== "" && (
+                  <div className={classes.error}>{phoneError}</div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IDENTITY*:  " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="firstName"
-                value={firstName}
-                // error={firstName}
-                placeholder="First Name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                name="lastName"
-                value={lastName}
-                // error={lastName}
-                placeholder="Last Name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormMultipleUpload
-                name="profile"
-                // error={image}
-                values={image}
-                style={GLOBALS.Styles.inputWidth}
-                onChange={(values) => handleChange("profile", values)}
-              />
+            <Form.Row
+              noMargin
+              width="55%"
+              style={{ justifyContent: "flex-start", gap: "10px" }}
+            >
+              <div style={{ width: "30%" }}>
+                <FormInput
+                  name="firstName"
+                  value={firstName}
+                  // error={firstName}
+                  placeholder="First Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {firstNameError !== "" && (
+                  <div className={classes.error}>{firstNameError}</div>
+                )}
+              </div>
+              <div style={{ width: "30%" }}>
+                <FormInput
+                  name="lastName"
+                  value={lastName}
+                  // error={lastName}
+                  placeholder="Last Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {lastNameError !== "" && (
+                  <div className={classes.error}>{lastNameError}</div>
+                )}
+              </div>
+              <div style={{ width: "30%" }}>
+                <FormMultipleUpload
+                  name="profile"
+                  // error={image}
+                  values={image}
+                  style={{ width: "100%" }}
+                  onChange={(values) => handleChange("profile", values)}
+                />
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="company"
-                value={company}
-                // error={lastName}
-                placeholder="Enterprise"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+            <Form.Row noMargin width="55%">
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="company"
+                  value={company}
+                  // error={lastName}
+                  placeholder="Enterprise"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {companyError !== "" && (
+                  <div className={classes.error}>{companyError}</div>
+                )}
+              </div>
               {/* <FormSelect
                 name="company"
                 value={company}
@@ -290,21 +371,23 @@ export default function AddContact(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Rôle: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="role"
-                value={role}
-                // error={lastName}
-                placeholder="Role"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              {emailError && ""}
-              {phoneError && ""}
-              {firstNameError && ""}
-              {lastNameError && ""}
+            <Form.Row noMargin width="55%">
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="role"
+                  value={role}
+                  // error={lastName}
+                  placeholder="Role"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {roleError !== "" && (
+                  <div className={classes.error}>{roleError}</div>
+                )}
+              </div>
+
               {/* <FormSelect
                 name="companyId"
                 value={companyId}
@@ -326,13 +409,7 @@ export default function AddContact(props) {
               fullWidth={false}
               loading={loading}
               disabled={
-                loading ||
-                !type ||
-                !email ||
-                !phone ||
-                !firstName ||
-                !lastName ||
-                image.length === 0
+                loading || !type || !email || !phone || !firstName || !lastName
               }
             />
           </Form.ButtonContainer>
