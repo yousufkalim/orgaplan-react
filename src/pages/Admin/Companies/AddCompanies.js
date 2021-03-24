@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Companies.css";
 import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,6 +20,8 @@ import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+import ColorPicker from "../../../components/ColorPcker";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,10 +73,10 @@ export default function AddCompanies(props) {
   const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#d71313");
   const [colorError, setColorError] = useState("");
   const [images, setImages] = useState([]);
-  const [companyType, setCompanyType] = useState("subcontractor");
+  const [companyType, setCompanyType] = useState("generalcontractor");
   const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
@@ -85,6 +88,7 @@ export default function AddCompanies(props) {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -263,7 +267,11 @@ export default function AddCompanies(props) {
 
   const onSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
-    const values = formik.values;
+    if(emailError || phoneError || websiteError ){
+      alert("something went wrong");
+    }
+    else{
+      const values = formik.values;
     const isSubContractor = companyType === "subcontractor";
     let parentCompanyId = undefined;
     if (
@@ -280,8 +288,7 @@ export default function AddCompanies(props) {
     });
 
     var formdata = new FormData();
-    formdata.append("logo", values.images[0].file);
-
+    formdata.append("logo", values.images[0]?.file);
     formdata.append("name", name);
     formdata.append("color", color);
     formdata.append("website", website);
@@ -328,6 +335,7 @@ export default function AddCompanies(props) {
 
     formik.setSubmitting(false);
     props.history.push("/clients");
+    }
   };
 
   const inputChange = (e) => {
@@ -362,7 +370,7 @@ export default function AddCompanies(props) {
     }
     if (e.target.name === "email") {
       setEmail(e.target.value);
-      var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!e.target.value.match(mailformat)) {
         setEmailError(true);
       } else {
@@ -371,10 +379,18 @@ export default function AddCompanies(props) {
     }
     if (e.target.name === "phone") {
       setPhone(e.target.value);
-      if (e.target.value.length !== 10) {
-        setPhoneError(true);
+      if (e.target.value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+        // if(e.target.value.length !== 10){
+        //   setPhoneError("Telephone must have 10 digits")
+        // }
+        // else{
+        //   setPhoneError("");
+        // }
+      } else if (e.target.value.charAt(0) === "0" && e.target.value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
       } else {
-        setPhoneError(false);
+        setPhoneError("");
       }
     }
 
@@ -388,6 +404,16 @@ export default function AddCompanies(props) {
     if (e.target.name === "addInfo") {
       setAddInfo(e.target.value);
     }
+    if(e.target.name === "website"){
+      setWebsite(e.target.value);
+      const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+      if(!e.target.value.match(web)){
+        setWebsiteError("Invalid Url")
+      }
+      else{
+        setWebsiteError("");
+      }
+    }
   };
 
   const handleChange = (name, value) => {
@@ -400,7 +426,7 @@ export default function AddCompanies(props) {
   };
 
   const submitHandler = (e) => {
-    var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     e.preventDefault();
     if (name === "" || name === null) {
       setNameError(true);
@@ -457,6 +483,12 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
+
+  const handleChangecolor = (color) => {
+    setColor(color.hex )
+    console.log("color is", color.hex);
+  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -466,17 +498,18 @@ export default function AddCompanies(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
+            <FormLabel bold primary="IDENTITY * :" />
+            <Form.Row width="55%" style={{ gap: "20px", justifyContent: "flex-start" }}>
               <div style={{ width: "35%", height: "100%" }}>
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
                   disabled={!fieldsEnabled}
                   style={{
-                    ...GLOBALS.Styles.inputWidth,
+                    width: "100%",
                     marginRight: "10px",
                   }}
+                  className="company-autocomplete"
                   onSelect={(event) => {
                     let companyId = "";
                     let logo = null;
@@ -508,6 +541,7 @@ export default function AddCompanies(props) {
                       margin="normal"
                       variant="outlined"
                       name="name"
+                      style={{width: "100%"}}
                       disabled={!fieldsEnabled}
                       onChange={(event) => {
                         console.log(event);
@@ -524,21 +558,19 @@ export default function AddCompanies(props) {
                 )}
               </div>
               <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="color"
-                  onChange={inputChange}
-                  style={{ width: "100%" }}
-                  placeholder="Color"
-                  value={color}
-                />
-                {colorError && (
-                  <div className={classes.error}>Please enter color</div>
-                )}
+                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
-              <FormMultipleUpload
+
+              
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE * :" />
+            <Form.Row width="55%">
+            <FormMultipleUpload
                 name="images"
                 enabled={!fieldsEnabled}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "60%"}}
                 values={formik.values.images}
                 onChange={(values) =>
                   inputChange({
@@ -549,14 +581,7 @@ export default function AddCompanies(props) {
                     },
                   })
                 }
-                // onChange={inputChange}
-                // onChange={(values) =>
-
-                //      ( {type: "text",
-                //       name: "trades",
-                //       value: values})
-
-                // }
+                
               />
             </Form.Row>
           </Form.Row>
@@ -567,7 +592,8 @@ export default function AddCompanies(props) {
                 name="contractType"
                 value={companyType}
                 // error={contractType}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "70%"}}
+                defaultValue={`generalcontractor`}
                 onChange={({ target: { name, value } }) =>
                   setCompanyType(value)
                 }
@@ -717,9 +743,9 @@ export default function AddCompanies(props) {
                   onChange={inputChange}
                   value={phone}
                 />
-                {phoneError === true && (
+                {phoneError && (
                   <div className={classes.error}>
-                    Telephone should be 10 digits
+                    {phoneError}
                   </div>
                 )}
               </div>
@@ -736,6 +762,7 @@ export default function AddCompanies(props) {
                   name="fname"
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="First Name"
+                  maxLength="30"
                   onChange={(e) => setFname(e.target.value)}
                   value={fname}
                 />
@@ -754,13 +781,22 @@ export default function AddCompanies(props) {
           <Form.Row>
             <FormLabel bold primary="Website : " />
             <Form.Row width="55%">
+              <div style={{width: "50%"}}>
               <FormInput
                 name="website"
-                style={{ width: "50%" }}
+                style={{ width: "100%" }}
                 placeholder="http://"
-                onChange={(e) => setWebsite(e.target.value)}
+                onChange={inputChange}
                 value={website}
               />
+              {
+                websiteError && (
+                  <div className={classes.error}>
+                  {websiteError}
+                </div>
+                )
+              }
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -769,6 +805,7 @@ export default function AddCompanies(props) {
               <FormInput
                 textArea
                 rows={3}
+                maxLength="300"
                 style={{ width: "90%" }}
                 onChange={(e) => setAddInfo(e.target.value)}
                 placeholder="Informations complémentaires"
@@ -787,7 +824,11 @@ export default function AddCompanies(props) {
               }}
               fullWidth={false}
               // loading={formik.isSubmitting}
-              disabled={name === "" || color === "" || companyType === ""}
+              disabled={
+                !name ||
+                !color ||
+                !companyType
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>
