@@ -54,7 +54,7 @@ class ColorPicker extends React.Component {
     const { color } = this.props;
     return (
       <div style={{ width: "100%" }}>
-        <div style={styles.swatch} onClick={this.handleClick}>
+        <div style={styles.swatch} onClick={!this.props.disableAlpha && this.handleClick}>
           <div style={{ padding: "5px", color: "rgb(139, 137, 137)" }}>
             Color
           </div>

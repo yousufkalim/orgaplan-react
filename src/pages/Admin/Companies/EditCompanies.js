@@ -21,6 +21,8 @@ import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+import ColorPicker from "../../../components/ColorPcker";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -87,6 +89,7 @@ export default function EditCompany(props) {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -362,21 +365,14 @@ export default function EditCompany(props) {
     }
     if (e.target.name === "email") {
       setEmail(e.target.value);
-      var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!e.target.value.match(mailformat)) {
         setEmailError(true);
       } else {
         setEmailError(false);
       }
     }
-    if (e.target.name === "phone") {
-      setPhone(e.target.value);
-      if (e.target.value.length !== 10) {
-        setPhoneError(true);
-      } else {
-        setPhoneError(false);
-      }
-    }
+    
 
     if (e.target.name === "images") {
       setImages(e.target.value);
@@ -457,6 +453,12 @@ export default function EditCompany(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
+
+  const handleChangecolor = (color) => {
+    setColor(color.hex )
+    console.log("color is", color.hex);
+  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -467,18 +469,19 @@ export default function EditCompany(props) {
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
             <FormLabel bold primary="IDENTITY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
+            <Form.Row width="55%" style={{ gap: "20px", justifyContent: "flex-start" }}>
               <div style={{ width: "35%", height: "100%" }}>
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
                   disabled={true}
                   defaultValue={name}
-                  value={name}
                   style={{
-                    ...GLOBALS.Styles.inputWidth,
+                    width: "100%",
                     marginRight: "10px",
                   }}
+                  value={name}
+                  className="company-autocomplete"
                   onSelect={(event) => {
                     let companyId = "";
                     let logo = null;
@@ -527,19 +530,17 @@ export default function EditCompany(props) {
                 )}
               </div>
               <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="color"
-                  onChange={inputChange}
-                  style={{ width: "100%" }}
-                  placeholder="Color"
-                  value={color}
-                />
-                {colorError && (
-                  <div className={classes.error}>Please enter color</div>
-                )}
+                 <ColorPicker disableAlpha="true" color={color} handleChange={handleChangecolor} />
               </div>
-              <FormMultipleUpload
+              
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE * :" />
+            <Form.Row width="55%">
+            <FormMultipleUpload
                 name="images"
+                disabled
                 enabled={!fieldsEnabled}
                 style={GLOBALS.Styles.inputWidth}
                 values={formik.values.images}
@@ -552,14 +553,6 @@ export default function EditCompany(props) {
                     },
                   })
                 }
-                // onChange={inputChange}
-                // onChange={(values) =>
-
-                //      ( {type: "text",
-                //       name: "trades",
-                //       value: values})
-
-                // }
               />
             </Form.Row>
           </Form.Row>
@@ -570,7 +563,7 @@ export default function EditCompany(props) {
                 name="contractType"
                 value={companyType}
                 // error={contractType}
-                style={GLOBALS.Styles.inputWidth}
+                style={{width: "70%"}}
                 onChange={({ target: { name, value } }) =>
                   setCompanyType(value)
                 }
@@ -638,6 +631,7 @@ export default function EditCompany(props) {
                 name="trades"
                 values={dropdownTrades}
                 value={selectedTrade}
+                disabled
                 placeholder="Select Trades"
                 chipDefaultValues={listOfTrades}
                 chipValues={(values) => {
@@ -686,6 +680,7 @@ export default function EditCompany(props) {
                   type="number"
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="Téléphone"
+                  disabled
                   onChange={inputChange}
                   value={phone}
                 />
@@ -706,6 +701,7 @@ export default function EditCompany(props) {
               <div style={{ width: "35%", height: "100%" }}>
                 <FormInput
                   name="fname"
+                  disabled
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="First Name"
                   onChange={(e) => setFname(e.target.value)}
@@ -715,6 +711,7 @@ export default function EditCompany(props) {
               <div style={{ width: "35%", height: "100%" }}>
                 <FormInput
                   name="lname"
+                  disabled
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="Last Name"
                   onChange={(e) => setLname(e.target.value)}
@@ -729,6 +726,7 @@ export default function EditCompany(props) {
               <FormInput
                 name="website"
                 style={{ width: "50%" }}
+                disabled
                 placeholder="http://"
                 onChange={(e) => setWebsite(e.target.value)}
                 value={website}

@@ -172,6 +172,7 @@ export default function CustomInputModalSingleSelect(props) {
             <Form.Row>
               <FormSelect
                 placeholder={props.placeholder}
+                {...props}
                 name="deliveryAreas"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(event) => {
