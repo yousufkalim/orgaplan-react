@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-
-import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
-
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -14,8 +10,12 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import RadioButton from "../../../components/RadioButton";
+import { TimePicker } from "antd";
+
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -51,13 +51,17 @@ export default function AddIncidents(props) {
 
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [status, setStatus] = useState("");
 
-  const [isBillable, setBillable] = useState(false);
+  const [isBillable, setIsBillable] = useState("");
   const [price, setPrice] = useState("");
+  const [type, setType] = useState("");
+
   const [comment, setComment] = useState("");
   const [selctedLocationObject, setselctedLocationObject] = useState("");
+  const [image, setImage] = useState([]);
 
-  const [nameError, setNameError] = useState(""); //working
+  const [nameError, setNameError] = useState(""); 
 
   const [comapnyError, setComapnyError] = useState("");
   const [dateError, setDateError] = useState("");
@@ -90,8 +94,6 @@ export default function AddIncidents(props) {
           });
         });
         setDropdownCompanies(temp);
-
-        console.log(dropdownCompanies);
       }
 
       if (response.data.locationTypes) {
@@ -109,10 +111,17 @@ export default function AddIncidents(props) {
   const setValues = () => {
     const incident = props?.location?.data;
     setName(incident.name);
-    setCompanyId(incident?.companyId?._id);
+    setCompanyId(incident?.companyId?._id); //working
     setDate(incident?.date);
-    setBillable(incident?.isBillable);
+     //setTime(incident?.time); // moment(item.date).format("MM/DD/yyyy"): ' '
+     
+    // setTime(moment(incident?.time).format("HH:mm:ss"));
+    // console.log(moment(incident?.time).format("HH:mm:ss"));
+    setIsBillable(incident?.isBillable);
     setPrice(incident?.price);
+    setType(incident?.type);
+    setStatus(incident?.status);
+    setDescription(incident?.description)
     console.log(props.location?.data);
 
     // setType(contactInfo.type);
@@ -126,7 +135,7 @@ export default function AddIncidents(props) {
 
     // setCompany(contactInfo.company);
     // setRole(contactInfo.role);
-  };
+  };;
 
   const onFormSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
@@ -135,23 +144,24 @@ export default function AddIncidents(props) {
     // formdata.append("photos", values.logo[0].file);
     formdata.append("name", name);
     formdata.append("date", date);
-
     formdata.append("time", time);
+    formdata.append("status", status);
     formdata.append("description", description);
     formdata.append("isBillable", isBillable);
     formdata.append("price", price);
+    formdata.append("type", type);
     formdata.append("comment", comment);
-    formdata.append(
-      "location",
-      JSON.stringify({ deliveryArea: "600952a9df49e51b42fab57b" }),
-    );
+    // formdata.append(
+    //   "location",
+    //   JSON.stringify({ deliveryArea: "600952a9df49e51b42fab57b" }),
+    // );
     // formdata.append("type", );
     formdata.append("companyId", companyId);
     formdata.append("siteId", adminStore.site.siteId._id);
     console.log(store.token);
     await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+      method: "PUT",
+      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS + "/" + props.location.data._id,
       headers: {
         Authorization: store.token,
       },
@@ -161,7 +171,6 @@ export default function AddIncidents(props) {
     props.history.push("/incidents");
   };
   const nameChange = (e) => {
-    console.log(e.target.value, e.target.label);
     if (e.target.name === "name") {
       setName(e.target.value);
       if (e.target.name === "" || name === null) {
@@ -216,36 +225,27 @@ export default function AddIncidents(props) {
     }
     if (e.target.name === "description") {
       setDescription(e.target.value);
-      // if (e.target.value === "" || e.target.value === null) {
-      //   setTimeError(true);
-      // } else {
-      //   setTimeError(false);
-      // }
+   
     }
-    if (e.target.name === "setBillable") {
-      setBillable(e.target.value);
-      // if (e.target.value === "" || e.target.value === null) {
-      //   setTimeError(true);
-      // } else {
-      //   setTimeError(false);
-      // }
+    if (e.target.name === "isBillable") {
+      setIsBillable(e.target.value);
+
     }
     if (e.target.name === "price") {
       setPrice(e.target.value);
-      // if (e.target.value === "" || e.target.value === null) {
-      //   setTimeError(true);
-      // } else {
-      //   setTimeError(false);
-      // }
+
     }
     if (e.target.name === "comment") {
-      //working
       setComment(e.target.value);
-      // if (e.target.value === "" || e.target.value === null) {
-      //   setTimeError(true);
-      // } else {
-      //   setTimeError(false);
-      // }
+    }
+    if (e.target.name === "profile") {
+      setImage(e.target.value);
+    }
+    if (e.target.name === "type") {
+      setType(e.target.value);
+    }
+    if (e.target.name === "status") {
+      setType(e.target.status);
     }
   };
 
@@ -256,6 +256,14 @@ export default function AddIncidents(props) {
         token: store.token,
       });
       if (response.success) {
+ const storageValue = [
+   {
+     label: response.data.name,
+     value: response.data._id,
+   },
+ ];
+
+ setDropdownLocation(storageValue);
       }
       console.log(response);
     }
@@ -310,7 +318,12 @@ export default function AddIncidents(props) {
     }
     onFormSubmit();
   };
-
+  const timeChange = (e) => {
+   // setTime(e?._d); 
+   setTime(moment(e?._d).format("HH:mm:ss"));
+    // moment(incident.time).format("HH:mm:ss");
+    // console.log(moment(e?._d).format("HH:mm:ss"));
+  };
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -320,17 +333,49 @@ export default function AddIncidents(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
+            <FormLabel bold primary="GENERAL :" />
+            <Form.Row noMargin width="48%">
+              <FormSelect
+                name="type"
+                id="bill"
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                //  onChange={(e) => {
+                //    seIsBillable(e.target.value);
+                //    console.log("billable is", isBillable);
+                //    isBillable === "No" && console.log("value");
+                //  }}
+                onChange={nameChange}
+                value={type}
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+              />
+              <RadioButton
+                onChange={nameChange}
+                name="status"
+                style={GLOBALS.Styles.inputWidth}
+                value={status}
+                items={[
+                  { value: "open", label: "Ouvert" },
+                  { value: "close", label: "Ferme" },
+                ]}
+              ></RadioButton>
+            </Form.Row>
+          </Form.Row>
+
+          <Form.Row>
             <FormLabel bold primary="DESIGNATION* :" />
             <FormInput
+              placeholder="Type"
               name="name"
               style={GLOBALS.Styles.inputWidth}
               placeholder="Name of incident"
               onChange={nameChange}
               value={name}
             />
-            {/* {nameError && (
-                  <div className={classes.error}>Please enter name</div>
-                )} */}
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="NAME OF COMPANY* :" />
@@ -363,18 +408,24 @@ export default function AddIncidents(props) {
                 placeholder="Date"
                 name="date"
                 onChange={nameChange}
-                value="{date}"
-                // error={formik.errors.contractStartDate}
+                value={date}
               />
-              <FormInput
+
+              {/* <FormInput
                 placeholder="TIME"
-                type="number"
+                type="time"
                 name="time"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
-                value="time"
-                // value={formik.values.color}
-                // error={formik.errors.color}
+                value={time}
+              /> */}
+              <TimePicker
+                name="time"
+                placeholder="Time"
+                style={{ width: "48%", height: "45px", color: "#8B8989" }}
+                onChange={timeChange}
+                value={time}
+                //  value={time}
               />
             </Form.Row>
           </Form.Row>
@@ -383,11 +434,9 @@ export default function AddIncidents(props) {
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder="Type of location"
-                name="color"
+                name="locationType"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={locationTypeChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
                 values={dropdownLocationType}
               />
               <FormSelect
@@ -395,10 +444,9 @@ export default function AddIncidents(props) {
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
                 value=""
                 values={dropdownLocation}
+                disabled={!selectedLocationType}
               />
             </Form.Row>
           </Form.Row>
@@ -407,39 +455,52 @@ export default function AddIncidents(props) {
             <FormInput
               textArea
               rows={3}
+              value={description}
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
               placeholder="Information complementaires"
               name="description"
-              // value={formik.values.additionalInfo} //working
-              // error={formik.errors.additionalInfo}
             />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="ADD PICTURES : " />
             <Form.Row noMargin width="48%">
-              {/* <FormMultipleUpload
+              <FormMultipleUpload
                 name="profile"
-                // error={image}
                 values={image}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={(values) => handleChange("profile", values)}
-              /> */}
+                onChange={nameChange}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="BILLABLE* : " />
-            <FormSelect
-              placeholder="Select"
-              name="billable"
-              style={GLOBALS.Styles.inputWidth}
-              onChange={nameChange}
-              value={isBillable}
-              values={[
-                { value: "true", label: "Yes" },
-                { value: "false", label: "No" },
-              ]}
-            />
+            <Form.Row width="48%">
+              <FormSelect
+                name="comapnyId"
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                onChange={(e) => {
+                  setIsBillable(e.target.value);
+                  if (isBillable === false) setPrice(0);
+                }}
+                value={isBillable}
+                values={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
+              {/* 
+              <select
+                name="bill"
+                id="bill"
+                // value={isBillable}
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                onChange={(e) => {
+                  setIsBillable(e.target.value);
+                  if (isBillable === false) setPrice(0);
+                }}
+              ></select> */}
+            </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="AMOUNT :" />
@@ -450,8 +511,7 @@ export default function AddIncidents(props) {
                   name="price"
                   onChange={nameChange}
                   value={price}
-
-                  // error={penaltyforLateDelivery}
+                  disabled={isBillable === "No"}
                 />
                 <SmallText style={{ marginLeft: 10 }} primary="€" />
               </Form.Row>
@@ -476,6 +536,7 @@ export default function AddIncidents(props) {
               minWidth={200}
               text="VALIDER"
               fullWidth={false}
+              disabled={!name || !date || !dropdownCompanies || !isBillable}
             />
           </Form.ButtonContainer>
         </Form.Form>
