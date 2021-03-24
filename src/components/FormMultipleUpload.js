@@ -125,7 +125,7 @@ export default function FormMultipleUpload(props) {
           <div className={classes.container}>
             <div
               onClick={() => {
-                if (props.enabled != undefined && props.enabled) return;
+                if (props.enabled !== undefined && props.enabled) return;
                 document.getElementById(`fileinput-${props.name}`).click();
               }}
             >

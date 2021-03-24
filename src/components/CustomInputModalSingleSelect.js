@@ -24,7 +24,7 @@ export default function CustomInputModalSingleSelect(props) {
       setChipValues(props.chipDefaultValues);
 
     // eslint-disable-next-line
-  });
+  }, []);
 
   const theme = useTheme();
 
@@ -112,7 +112,7 @@ export default function CustomInputModalSingleSelect(props) {
       const values = {
         key: value.length + Date.now().toString(),
         label: value,
-        id: id != undefined ? id : Date.now().toString(),
+        id: id !== undefined ? id : Date.now().toString(),
       };
       valuesTemp.push(values);
       setChipValues(valuesTemp);
