@@ -89,5 +89,7 @@ const endpoints = {
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
+
+  FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
 };
 export default endpoints;

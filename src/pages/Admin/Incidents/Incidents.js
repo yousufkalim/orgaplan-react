@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
 import { useFormik } from "formik";
+import moment from "moment";
 
 // import Actions from "../../../redux/actions";
 
@@ -54,12 +55,24 @@ const Incidents = (props) => {
   const [items, setItems] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
   const [siteStorageArea, setSiteStorageArea] = useState([]);
-  const [siteComapny, setSiteComapny] = useState([]);
-  const [siteBuilding, setSiteBuilding] = useState([]);   
+  const [siteComapny, setSiteComapny] = useState([]); // setselectedStatus
+  const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
+  // const [status, setStatus] = useState([]);
   const [type, setType] = useState([]);
+  const [tatalInvoices, seTatalInvoices] = useState([]);
+  const [tatalPrice, seTatalPrice] = useState([]);
+  const [selectedFilterType, setSelectedFilterType] = useState("");
+  const [nameText, setNameText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
+  const [selectedType, setSelectedType] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // const [page, setPage] = useState("");
+  const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
   useEffect(() => {
@@ -67,20 +80,28 @@ const Incidents = (props) => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    filterIncidents();
+    // eslint-disable-next-line
+  }, [nameText, companyId, selectedType, ]);
+
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
-      console.log(result.data);
       if (result.success) {
         setIncidents(result.data.incidents);
         setCompleteIncidents(result.data.incidents);
 
-        if (result.data.incidents) getIncidentsfiltered(result.data.incidents);
+        if (result.data.incidents) {
+          seTatalInvoices(result.data.incidents.length);
+          getIncidentsfiltered(result.data.incidents);
+        }
         if (result.data.site_delivery_areas) {
-            getDeliveryArea(result.data.site_delivery_areas);
-        }  if (result.data.site_storage_areas) {
+          getDeliveryArea(result.data.site_delivery_areas);
+        }
+        if (result.data.site_storage_areas) {
           getStorageArea(result.data.site_storage_areas);
         }
         if (result.data.type) {
@@ -89,12 +110,9 @@ const Incidents = (props) => {
         if (result.data.status) {
           getStatus(result.data.status);
         }
-         if (result.data.site_companies) {
-           getCompanies(result.data.site_companies);
+        if (result.data.site_companies) {
+          getCompanies(result.data.site_companies);
         }
-        
-        
-
       }
       // setLoading(false);
     } catch (err) {
@@ -106,17 +124,64 @@ const Incidents = (props) => {
     }
   }
 
-    function getCompanies(data) {
-      console.log(data);
-      let temp = [];
-      data.map((item, index) => {
-        return temp.push({
-          label: item.companyId.name,
-          value: item.companyId._id,
-        });
+  async function filterIncidents() {
+    try {
+      setLoading(true);
+      const params = { siteId: adminStore.site.siteId._id };
+      if (nameText.length !== 0) params["name"] = nameText;
+      // if (selectedDropdownArea.length !== 0)
+      //   params["deliveryArea"] =
+      //     siteDeliveryAreas[selectedSiteDeliveryAreadIndex]._id;
+      // if (selectedStorageArea.length !== 0)
+      //   params["storageArea"] =
+      //     storageAreas[selectedDropdownStorageAreaIndex]._id;
+
+      if (companyId.length !== 0) params["company"] = companyId;
+
+      if (selectedType.length !== 0) params["type"] = selectedType;
+      if (selectedStatus.length !== 0) params["status"] = selectedStatus;
+      // if (!isNaN(moment(formik.values.contractStartDate)))
+      //   params["startDate"] = formik.values.contractStartDate;
+      // if (!isNaN(moment(formik.values.contractEndDate)))
+      // params["endDate"] = formik.values.contractEndDate;
+
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.FILTER_INCIDENT}`,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify(params),
       });
-      setSiteComapny(temp);
+      console.log("response", response);
+      if (response.success) {
+        let temp = [];
+
+        getIncidentsfiltered(response.data);
+        // setItems(temp);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
+  }
+
+  function getCompanies(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item.companyId.name,
+        value: item.companyId._id,
+      });
+    });
+    setSiteComapny(temp);
+  }
   function getStatus(data) {
     let temp = [];
     data.map((item, index) => {
@@ -128,15 +193,15 @@ const Incidents = (props) => {
     setStatus(temp);
   }
 
-  function getStorageArea(data){
-        let temp = [];
-        data.map((item, index) => {
-          return temp.push({
-            label: item.name,
-            value: item._id,
-          });
-        });
-        setSiteStorageArea(temp);
+  function getStorageArea(data) {
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item.name,
+        value: item._id,
+      });
+    });
+    setSiteStorageArea(temp);
   }
 
   function getType(data) {
@@ -153,31 +218,33 @@ const Incidents = (props) => {
   function getDeliveryArea(data) {
     let temp = [];
     data.map((item, index) => {
-        return temp.push({
-          label: item.name,
-          value: item._id,
-        });
-    })
+      return temp.push({
+        label: item.name,
+        value: item._id,
+      });
+    });
     setSiteDeliveryArea(temp);
   }
 
-
   function getIncidentsfiltered(data) {
     let temp = [];
+    let total = 0;
+
     data.map((item, index) => {
+      total = total + item.price;
       let data = [];
-      data[0] = item?.date;
+      data[0] = item.date ? moment(item.date).format("MM/DD/yyyy") : " ";
       data[1] = item?.type;
       data[2] = item?.name;
       data[3] = item.companyId?.name;
-      data[4] = item.companyId?.status;
+      data[4] = item.status;
       data[5] = item.location?.deliveryArea?.name;
       data[6] = item?.isBillable ? "Yes" : "No";
       data[7] = item?.price;
       data[8] = item?.isBillable ? "Yes" : "No";
-
       return temp.push(data);
     });
+    seTatalPrice(total);
     setItems(temp);
   }
 
@@ -205,9 +272,8 @@ const Incidents = (props) => {
               noMargin
               topPadding
               style={{ color: "#F80303" }}
-              primary="TOTAL : 5 RE-INVOICING
-              345€ 
-"
+              primary={`TOTAL: ${tatalInvoices} RE-INVOICING
+              ${tatalPrice}€`}
               bold
             />
             <Form.Column style={{ width: "50%" }}>
@@ -248,28 +314,12 @@ const Incidents = (props) => {
           />
           <FormSelect
             placeholder="Location"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={siteDeliveryArea}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
             placeholder="Level"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
+            values={[]}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
@@ -279,8 +329,28 @@ const Incidents = (props) => {
           />
           <FormSelect
             placeholder="Type"
-            values={type}
+            values={[
+              { value: "INCIDENT", label: "Incident" },
+              { value: "MEAN", label: "Mean" },
+              { value: "DELAY", label: "Delay" },
+              { value: "UNEXPRECTED", label: "Unexp" },
+            ]}
             style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+              if (index !== -1) {
+                const item = event.target.value;
+                setSelectedTypeIndex(index);
+                setSelectedType(item);
+                // Reset Storage Means
+                //filterMean();
+              } else {
+                setSelectedTypeIndex(0);
+                setSelectedType("");
+                // Reset Storage Means
+                //filterMean();
+              }
+            }}
           />
         </Form.Row>
         {/* <NavLink className={classes.link} to="/sites/archives">
@@ -292,7 +362,11 @@ const Incidents = (props) => {
         <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
+            value={companyId} //working
             values={siteComapny}
+            onChange={(event) => {
+              setCompanyId(event.target.value);
+            }}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
 
@@ -301,6 +375,10 @@ const Incidents = (props) => {
             placeholder="Start date"
             name="startDate"
             icon
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+            }}
             // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
@@ -308,6 +386,10 @@ const Incidents = (props) => {
             type="date"
             placeholder="End date"
             name="endDate"
+            value={endDate}
+            onChange={(e) => {
+              setEndDate(e.target.value);
+            }}
             // icon
             // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -316,10 +398,16 @@ const Incidents = (props) => {
             placeholder="Status"
             values={status}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={(event) => {
+              setselectedStatus(event.target.value);
+            }}
           />
           <SearchInput
             placeholder="Designation"
             style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={(event) => {
+              setNameText(event.target.value);
+            }}
           />
         </Form.Row>
       </Form.Row>
