@@ -85,5 +85,7 @@ const endpoints = {
   CREATE_COMPANY: BASE_URL_V1 + "company",
   POST_ADD_SITE_INCIDENTS: BASE_URL_V1 + "incidents",
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
+
+  FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
 };
 export default endpoints;
