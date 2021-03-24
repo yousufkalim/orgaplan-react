@@ -18,6 +18,7 @@ import RadioButton from "../../../components/RadioButton";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import ColorPicker from "../../../components/ColorPcker";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +52,7 @@ export default function AddClient(props) {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
   const [notificationTo, setNotificationTo] = useState([]);
-
+  const [errors, setErrors] = useState({});
   const handleChange = (name, value) => {
     if (name === "logo") {
       setUpdate((st) => !st);
@@ -78,6 +79,63 @@ export default function AddClient(props) {
       setUpdate((st) => !st);
       setNotificationTo(value);
     }
+    // Validation
+
+    if (name === "name") {
+      console.log(value.length);
+
+      if (value !== "") setErrors({ nameError: "" });
+      if (value.length > 30)
+        setErrors({ nameError: "Max 30 characters are allowed" });
+    }
+    if (name === "firstName") {
+      console.log(value.length);
+
+      if (value !== "") setErrors({ firstNameError: "" });
+      if (value.length > 30)
+        setErrors({ firstNameError: "Max 30 characters are allowed" });
+    }
+    if (name === "lastName") {
+      if (value !== "") setErrors({ lastNameError: "" });
+      if (value.length > 30)
+        setErrors({ lastNameError: "Max 30 characters are allowed" });
+    }
+    if (name === "email") {
+      const regEx = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (value !== "") setErrors({ emailError: "" });
+      if (!value.match(regEx)) {
+        setErrors({ emailError: "* Please Enter Your Valid Email" });
+      }
+    }
+    if (name === "phone") {
+      if (value !== "") {
+        setErrors({
+          phoneError: "",
+        });
+      }
+      if (value.length > 10 || value.length < 10) {
+        setErrors({
+          phoneError: "* Phone Number must have exact 10 digits",
+        });
+      }
+      if (value[0] !== "0") {
+        setErrors({ phoneError: "* Phone Number must start with 0" });
+      }
+    }
+    if (name === "additionalInfo") {
+      if (value.length > 300) {
+        setErrors({
+          additionalInfoError: "Maximum 300 Characters are allowed",
+        });
+      } else {
+        setErrors({
+          additionalInfoError: "",
+        });
+      }
+    }
+  };
+  const handleChangecolor = (color) => {
+    setColor(color.hex);
   };
 
   const onSubmit = async (e) => {
@@ -135,6 +193,7 @@ export default function AddClient(props) {
             <FormInput
               name="name"
               value={name}
+              maxLength="30"
               // error={name}
               placeholder="Company name"
               style={GLOBALS.Styles.inputWidth}
@@ -142,6 +201,12 @@ export default function AddClient(props) {
                 handleChange(name, value)
               }
             />
+          </Form.Row>
+          <Form.Row noMargin width="48%" alignItems="right">
+            <FormLabel />
+            {errors["nameError"] && (
+              <div style={{ color: "red" }}>{errors["nameError"]}</div>
+            )}
           </Form.Row>
           {update && ""}
           <Form.Row>
@@ -154,24 +219,15 @@ export default function AddClient(props) {
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("logo", values)}
               />
-              <FormSelect
-                name="color"
-                value={color}
-                // error={color}
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
+              <div style={{ width: "45%" }}>
+                <ColorPicker
+                  color={color}
+                  handleChange={handleChangecolor}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -179,8 +235,9 @@ export default function AddClient(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
+                maxLength="30"
                 value={firstName}
-                // error={firstName}
+                error={errors["firstNameErrors"]}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -190,6 +247,7 @@ export default function AddClient(props) {
               <FormInput
                 name="lastName"
                 value={lastName}
+                maxLength="30"
                 // error={lastName}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
@@ -198,6 +256,18 @@ export default function AddClient(props) {
                 }
               />
             </Form.Row>
+          </Form.Row>
+          <Form.Row noMargin width="48%" alignItems="right">
+            <FormLabel />
+            {errors["firstNameError"] && (
+              <div style={{ color: "red" }}>{errors["firstNameError"]}</div>
+            )}
+          </Form.Row>
+          <Form.Row noMargin width="48%" alignItems="right">
+            <FormLabel />
+            {errors["lastNameError"] && (
+              <div style={{ color: "red" }}>{errors["lastNameError"]}</div>
+            )}
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="RESPONSIBLE CONTACT : " />
@@ -219,6 +289,7 @@ export default function AddClient(props) {
               <FormInput
                 name="phone"
                 value={phone}
+                maxLength="30"
                 // error={phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
@@ -227,6 +298,18 @@ export default function AddClient(props) {
                 }
               />
             </Form.Row>
+          </Form.Row>
+          <Form.Row noMargin width="48%" alignItems="right">
+            <FormLabel />
+            {errors["emailError"] && (
+              <div style={{ color: "red" }}>{errors["emailError"]}</div>
+            )}
+          </Form.Row>
+          <Form.Row noMargin width="100%" alignItems="right">
+            <FormLabel />
+            {errors["phoneError"] && (
+              <div style={{ color: "red" }}>{errors["phoneError"]}</div>
+            )}
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF CONTRACT* : " />
@@ -295,6 +378,7 @@ export default function AddClient(props) {
             <FormInput
               textArea
               rows={3}
+              maxLength="300"
               name="additionalInfo"
               value={additionalInfo}
               // error={additionalInfo}
@@ -304,6 +388,14 @@ export default function AddClient(props) {
                 handleChange(name, value)
               }
             />
+          </Form.Row>
+          <Form.Row noMargin width="48%" alignItems="right">
+            <FormLabel />
+            {errors["additionalInfoError"] && (
+              <div style={{ color: "red" }}>
+                {errors["additionalInfoError"]}
+              </div>
+            )}
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="NOTIFICATION : " />
@@ -347,6 +439,7 @@ export default function AddClient(props) {
               }}
             />
           </Form.Row>
+
           <Form.ButtonContainer>
             <Button
               type="submit"

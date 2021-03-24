@@ -150,6 +150,8 @@ export default function Input(props) {
           name={props.name}
           type={props.type}
           value={props.value}
+          maxLength={props.maxLength}
+          max={props.maxLength}
           onBlur={props.onBlur}
           onFocus={props.onFocus}
           className={classes.input}
