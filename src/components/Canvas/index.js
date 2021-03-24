@@ -23,6 +23,8 @@ class App extends Component {
     meanCheck: "",
     meanValue: "",
     meanFinish: false,
+    viewPortWidth: 0,
+    viewPortHeight: 0,
   };
 
   // LifeCycle Hooks
@@ -84,10 +86,10 @@ class App extends Component {
         url: uri,
       });
       var page = await _PDF_DOC.getPage(1);
+      var rotate = (page.rotate + 90) % 360;
 
-      console.log(page, "page");
-
-      var viewport = page.getViewport(1);
+      var viewport = page.getViewport(1, rotate);
+      console.log(viewport, "viewport");
 
       var render_context = {
         canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
@@ -383,8 +385,6 @@ class App extends Component {
     tempArr[0].opacity = 0.3;
   };
   handleConvaLineClick = (id) => {
-    this.props.onShapeClick();
-
     const { meanCheck } = this.state;
     if (meanCheck !== "Mean") {
       this.handleDisableShape(id);
@@ -393,7 +393,6 @@ class App extends Component {
     }
   };
   handleConvaCircleClick = (id) => {
-    this.props.onMeanClick();
     const { meanCheck } = this.state;
     if (meanCheck === "Mean") {
       this.handleDisableMean(id);
@@ -408,7 +407,6 @@ class App extends Component {
       let tempArr = shapes.filter((sp) => sp._id === id);
       this.props.onClick(id, tempArr);
       tempArr[0].color = "white";
-
       if (meanShapeId) {
         let tempArr2 = shapes.filter((sp) => sp._id === meanShapeId);
 
@@ -630,7 +628,6 @@ class App extends Component {
       handleConvaLineClick,
       handleConvaCircleClick,
     } = this;
-
     return (
       <>
         <Header
@@ -638,7 +635,7 @@ class App extends Component {
           handleElementChange={handleElementChange}
         />
         <div className="row">
-          <div className="col-lg-12 pt-4">
+          <div className="pt-4" style={{ width: "80%" }}>
             <ConvaExample
               onClick={handleConvaClick}
               onMouseMove={handleMouseMove}

@@ -9,7 +9,7 @@ export default function UnAuth() {
     <Switch>
       <Route exact path="/" component={Landing} />
       <Route exact path="/login" component={Login} />
-      <Redirect from="*" to="/" />
+      {/* <Redirect from="*" to="/" /> */}
     </Switch>
   );
 }

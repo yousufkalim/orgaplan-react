@@ -24,27 +24,20 @@ export default function Canvas({
   var flattenedPoints = points
     .concat(isFinished ? [] : curMousePos)
     .reduce((a, b) => a.concat(b), []);
+
   return (
     <>
       <Stage
-        width={window.innerWidth - 550}
+        width={800}
         height={550}
         onMouseDown={onClick}
         onMouseMove={onMouseMove}
       >
         <Layer>
           {image ? (
-            <Rectangle
-              fillPatternImage={image}
-              width={window.innerWidth - 550}
-              height={400}
-            />
+            <Rectangle fillPatternImage={image} width={800} height={400} />
           ) : (
-            <Rectangle
-              fill={"#ccc"}
-              width={window.innerWidth - 550}
-              height={400}
-            />
+            <Rectangle fill={"#ccc"} width={800} height={400} />
           )}
           <ConvaLine
             points={flattenedPoints}
