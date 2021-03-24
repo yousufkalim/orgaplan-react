@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
+import "./Companies.css";
 import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
-import MultiAdderInput from "../../../components/MultiAdderInput";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -16,11 +16,13 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import { InputSharp } from "@material-ui/icons";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+import ColorPicker from "../../../components/ColorPcker";
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -71,14 +73,13 @@ export default function AddCompanies(props) {
   const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#d71313");
   const [colorError, setColorError] = useState("");
   const [images, setImages] = useState([]);
-  const [companyType, setCompanyType] = useState("subcontractor");
+  const [companyType, setCompanyType] = useState("generalcontractor");
   const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
-  const [typeError, setTypeError] = useState("");
   const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -87,6 +88,7 @@ export default function AddCompanies(props) {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -98,13 +100,16 @@ export default function AddCompanies(props) {
   const [dropdownTrades, setDropdownTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState("");
   const [listOfTrades, setListOfTrades] = useState([]);
+  const [fieldsEnabled, setFieldsEnabled] = useState(true);
 
   useEffect(() => {
     getData();
   }, []);
+
   useEffect(() => {
     getCompanyAutoFill();
   }, [companyId]);
+
   const getData = async () => {
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
@@ -113,6 +118,7 @@ export default function AddCompanies(props) {
         token: store.token,
       });
       if (response.success) {
+        console.log("Response", JSON.stringify(response, null, 2));
         setCompanies(response.data.site_companies);
         setTrades(response.data.site_trades);
         if (response.data.site_companies != null) {
@@ -152,6 +158,7 @@ export default function AddCompanies(props) {
   };
 
   const getCompanyAutoFill = async () => {
+    if (companyId.length === 0) return;
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
       const response = await GLOBALS.API({
@@ -174,6 +181,7 @@ export default function AddCompanies(props) {
             setEmail("");
             setPhone("");
           }
+          if (company.color != undefined) setColor(company.color);
           if (company.website != undefined) setWebsite(company.website);
           else setWebsite("");
           if (company.description != undefined) setAddInfo(company.description);
@@ -209,11 +217,13 @@ export default function AddCompanies(props) {
       });
       if (response.success) {
         if (response.data.companies.length === 0) {
-          setCompanyType("generalcontractor");
+          await setCompanyType("generalcontractor");
+
           setSelectedCompany("");
           setSelectedCompanyIndex(null);
         } else {
-          setCompanyType("subcontractor");
+          await setCompanyType("subcontractor");
+
           const company = response.data.companies[0].companyId;
           let companyIndex = null;
           let companyValue = null;
@@ -257,9 +267,19 @@ export default function AddCompanies(props) {
 
   const onSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
-    const values = formik.values;
+    if(emailError || phoneError || websiteError ){
+      alert("something went wrong");
+    }
+    else{
+      const values = formik.values;
     const isSubContractor = companyType === "subcontractor";
-    const parentCompanyId = companies[selectedCompanyIndex].companyId._id;
+    let parentCompanyId = undefined;
+    if (
+      companies.length != 0 &&
+      isSubContractor &&
+      companies[selectedCompanyIndex].companyId != undefined
+    )
+      parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
     const trades = [];
 
@@ -268,15 +288,19 @@ export default function AddCompanies(props) {
     });
 
     var formdata = new FormData();
-    formdata.append("logo", values.images[0].file);
-
+    formdata.append("logo", values.images[0]?.file);
     formdata.append("name", name);
     formdata.append("color", color);
     formdata.append("website", website);
     formdata.append("description", addInfo);
     formdata.append("trades", JSON.stringify(trades));
     formdata.append("siteId", adminStore.site.siteId._id);
-    if (isSubContractor) formdata.append("parentCompanyId", parentCompanyId);
+
+    if (isSubContractor) {
+      if (parentCompanyId === undefined)
+        alert("You need to select a general contractor");
+      formdata.append("parentCompanyId", parentCompanyId);
+    }
     if (
       fname.length !== 0 &&
       lname.length !== 0 &&
@@ -292,15 +316,7 @@ export default function AddCompanies(props) {
       formdata.append("incharge", JSON.stringify(incharge));
     }
 
-    // formdata.append("contractType", values.contractType);
-    //formdata.append("contractStartDate", values.contractStartDate);
-    //formdata.append("contractEndDate", values.contractEndDate);
-    //formdata.append("functionality", values.functionality);
-    //formdata.append("additionalInfo", values.additionalInfo);
-    //formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    // formdata.append("notificationTo", JSON.stringify(notificationTo));
-
-    await GLOBALS.API({
+    const response = await GLOBALS.API({
       method: "POST",
 
       uri: GLOBALS.Constants.CREATE_COMPANY,
@@ -309,8 +325,17 @@ export default function AddCompanies(props) {
       },
       body: formdata,
     });
+    if (response.success) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(response.message, "success"),
+        ),
+      );
+    }
+
     formik.setSubmitting(false);
     props.history.push("/clients");
+    }
   };
 
   const inputChange = (e) => {
@@ -345,7 +370,7 @@ export default function AddCompanies(props) {
     }
     if (e.target.name === "email") {
       setEmail(e.target.value);
-      var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!e.target.value.match(mailformat)) {
         setEmailError(true);
       } else {
@@ -354,10 +379,18 @@ export default function AddCompanies(props) {
     }
     if (e.target.name === "phone") {
       setPhone(e.target.value);
-      if (e.target.value.length !== 10) {
-        setPhoneError(true);
+      if (e.target.value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+        // if(e.target.value.length !== 10){
+        //   setPhoneError("Telephone must have 10 digits")
+        // }
+        // else{
+        //   setPhoneError("");
+        // }
+      } else if (e.target.value.charAt(0) === "0" && e.target.value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
       } else {
-        setPhoneError(false);
+        setPhoneError("");
       }
     }
 
@@ -371,6 +404,16 @@ export default function AddCompanies(props) {
     if (e.target.name === "addInfo") {
       setAddInfo(e.target.value);
     }
+    if(e.target.name === "website"){
+      setWebsite(e.target.value);
+      const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+      if(!e.target.value.match(web)){
+        setWebsiteError("Invalid Url")
+      }
+      else{
+        setWebsiteError("");
+      }
+    }
   };
 
   const handleChange = (name, value) => {
@@ -383,7 +426,7 @@ export default function AddCompanies(props) {
   };
 
   const submitHandler = (e) => {
-    var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     e.preventDefault();
     if (name === "" || name === null) {
       setNameError(true);
@@ -440,6 +483,12 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
+
+  const handleChangecolor = (color) => {
+    setColor(color.hex )
+    console.log("color is", color.hex);
+  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -449,26 +498,37 @@ export default function AddCompanies(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
+            <FormLabel bold primary="IDENTITY * :" />
+            <Form.Row width="55%" style={{ gap: "20px", justifyContent: "flex-start" }}>
               <div style={{ width: "35%", height: "100%" }}>
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
+                  disabled={!fieldsEnabled}
                   style={{
-                    ...GLOBALS.Styles.inputWidth,
+                    width: "100%",
                     marginRight: "10px",
                   }}
+                  className="company-autocomplete"
                   onSelect={(event) => {
                     let companyId = "";
+                    let logo = null;
                     companies.forEach((item, index) => {
                       if (item.companyId.name === event.target.value) {
                         companyId = item.companyId._id;
-
+                        logo = item.companyId.logo;
                         setName(item.companyId.name);
                       }
                     });
-                    if (companyId.length != 0) setCompanyId(companyId);
+
+                    //                  let fileClone = [{ uri: mean.image }];
+                    // setImage(fileClone);
+
+                    if (companyId.length != 0) {
+                      setCompanyId(companyId);
+                      setFieldsEnabled(false);
+                      formik.setFieldValue("images", [{ uri: logo }]);
+                    }
                   }}
                   options={companies.map((option) => {
                     if (option.companyId.name != undefined)
@@ -477,10 +537,12 @@ export default function AddCompanies(props) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Email"
+                      label="Name"
                       margin="normal"
                       variant="outlined"
                       name="name"
+                      style={{width: "100%"}}
+                      disabled={!fieldsEnabled}
                       onChange={(event) => {
                         console.log(event);
                         setName(event.target.value);
@@ -496,20 +558,19 @@ export default function AddCompanies(props) {
                 )}
               </div>
               <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="color"
-                  onChange={inputChange}
-                  style={{ width: "100%" }}
-                  placeholder="Color"
-                  value={color}
-                />
-                {colorError && (
-                  <div className={classes.error}>Please enter color</div>
-                )}
+                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
-              <FormMultipleUpload
+
+              
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE * :" />
+            <Form.Row width="55%">
+            <FormMultipleUpload
                 name="images"
-                style={GLOBALS.Styles.inputWidth}
+                enabled={!fieldsEnabled}
+                style={{width: "60%"}}
                 values={formik.values.images}
                 onChange={(values) =>
                   inputChange({
@@ -520,29 +581,40 @@ export default function AddCompanies(props) {
                     },
                   })
                 }
-                // onChange={inputChange}
-                // onChange={(values) =>
-
-                //      ( {type: "text",
-                //       name: "trades",
-                //       value: values})
-
-                // }
+                
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
-              <div>
-                <div>
-                  <input
+            <Form.Row width="55%">
+              <RadioButton
+                name="contractType"
+                value={companyType}
+                // error={contractType}
+                style={{width: "70%"}}
+                defaultValue={`generalcontractor`}
+                onChange={({ target: { name, value } }) =>
+                  setCompanyType(value)
+                }
+                items={[
+                  {
+                    value: "generalcontractor",
+                    label: "General Contractor",
+                  },
+                  { value: "subcontractor", label: "Subcontractor" },
+                ]}
+              />
+
+              {/* <input
                     className={classes.radioBtn}
                     type="radio"
-                    onChange={(e) => setCompanyType("generalcontractor")}
+                    onChange={(e) => {
+                      setCompanyType("generalcontractor");
+                    }}
                     id="generalcontractor"
                     name="companyType"
-                    value="generalcontractor"
+                    value={companyType}
                   />
                   <label for="generalcontractor" className={classes.radioLabel}>
                     General Contractor
@@ -555,17 +627,15 @@ export default function AddCompanies(props) {
                     onChange={(e) => {
                       setCompanyType("subcontractor");
                     }}
-                    value="subcontractor"
+                    value={companyType}
                     defaultChecked
                   />
                   <label for="subcontractor" className={classes.radioLabel}>
                     Sub contractor
-                  </label>
-                </div>
-                {companyTypeError === true && (
-                  <div className={classes.error}>Please select company</div>
-                )}
-              </div>
+                  </label> */}
+              {companyTypeError === true && (
+                <div className={classes.error}>Please select company</div>
+              )}
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -673,9 +743,9 @@ export default function AddCompanies(props) {
                   onChange={inputChange}
                   value={phone}
                 />
-                {phoneError === true && (
+                {phoneError && (
                   <div className={classes.error}>
-                    Telephone should be 10 digits
+                    {phoneError}
                   </div>
                 )}
               </div>
@@ -692,6 +762,7 @@ export default function AddCompanies(props) {
                   name="fname"
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="First Name"
+                  maxLength="30"
                   onChange={(e) => setFname(e.target.value)}
                   value={fname}
                 />
@@ -710,13 +781,22 @@ export default function AddCompanies(props) {
           <Form.Row>
             <FormLabel bold primary="Website : " />
             <Form.Row width="55%">
+              <div style={{width: "50%"}}>
               <FormInput
                 name="website"
-                style={{ width: "50%" }}
+                style={{ width: "100%" }}
                 placeholder="http://"
-                onChange={(e) => setWebsite(e.target.value)}
+                onChange={inputChange}
                 value={website}
               />
+              {
+                websiteError && (
+                  <div className={classes.error}>
+                  {websiteError}
+                </div>
+                )
+              }
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -725,6 +805,7 @@ export default function AddCompanies(props) {
               <FormInput
                 textArea
                 rows={3}
+                maxLength="300"
                 style={{ width: "90%" }}
                 onChange={(e) => setAddInfo(e.target.value)}
                 placeholder="Informations complémentaires"
@@ -743,7 +824,11 @@ export default function AddCompanies(props) {
               }}
               fullWidth={false}
               // loading={formik.isSubmitting}
-              disabled={name === "" || color === "" || companyType === ""}
+              disabled={
+                !name ||
+                !color ||
+                !companyType
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

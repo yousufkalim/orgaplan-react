@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Calender.css";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
@@ -17,12 +17,17 @@ import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
-
+import {
+  get_means,
+  add_mean,
+  update_mean,
+  delete_mean,
+} from "../../../redux/actions/means";
+import { useSelector, useDispatch } from "react-redux";
 let view = {
   month: true,
   day: true,
   work_week: MyWorkWeek,
-  agenda: true,
 };
 
 const localizer = momentLocalizer(moment);
@@ -38,13 +43,18 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
-const Calender = () => {
+const Calender = (props) => {
+  // useSelecter ,useDispatchstates
+  const dispatch = useDispatch();
+
+  const meansData = useSelector((state) => state.means);
+  // *****
+
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
-  const [eventID] = useState("");
-  const [event] = useState("");
-  const [events, setEvents] = useState(myEventsList);
+  const [event, setEvent] = useState("");
+  const [events, setEvents] = useState("");
   const [show, setShow] = useState(false);
   let [startTime, setStartTime] = useState("");
   let [endTime, setEndTime] = useState("");
@@ -68,6 +78,7 @@ const Calender = () => {
   let [bookingstartTimeslice, setBookingstartTimeslice] = useState("");
   let [bookingendTimeslice, setBookingendTimeslice] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [eventID, seteventID] = useState("");
   const [cdate, setCdate] = useState("");
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
@@ -82,6 +93,34 @@ const Calender = () => {
   // const handleOverLapOpen = () => {
   //   setoverlapOpen(true);
   // };
+  // useEffect
+  useEffect(() => {
+    dispatch(get_means());
+  }, []);
+  useEffect(() => {
+    if (meansData.means) {
+      const tempmeanData = meansData.means.map((key, index) => {
+        return {
+          title: key.bookingReason,
+          companyId: key.companyId,
+          createdAt: key.createdAt,
+          start: new Date(key.startDate),
+          end: new Date(key.endDate),
+          endTime: key.endTime,
+          meanId: key.meanId,
+          siteId: key.siteId,
+          startTime: key.startTime,
+          updatedAt: key.updatedAt,
+          userId: key.userId,
+          _id: key._id,
+          color: "yellow",
+        };
+      });
+      setEvents(tempmeanData);
+    }
+  }, [meansData.means]);
+
+  // !!!!!!
   const handleClose = () => setShow(false);
   let work_week_obj = {
     Sunday: true,
@@ -236,6 +275,7 @@ const Calender = () => {
   //   }
   //   // Saturday End
   // };
+
   const updateEvent = () => {
     if (titleEdit !== "") {
       /* start time*/
@@ -266,18 +306,26 @@ const Calender = () => {
       endTimeEdit = endTimeEdit.replace(/,/g, "");
       endTimeEdit = new Date(endTimeEdit);
       /* End time*/
-
       let preDateTime = new Date();
       let milliseconds = Date.parse(preDateTime);
       milliseconds = milliseconds - 1 * 60 * 1000;
       preDateTime = new Date(milliseconds);
       if (startTimeEdit > preDateTime && startTimeEdit < endTimeEdit) {
-        const updateElement = events.filter((e) => e.id === eventID);
+        const updateElement = events.filter((e) => e._id === eventID);
         updateElement[0].title = titleEdit;
         updateElement[0].start = startTimeEdit;
         updateElement[0].end = endTimeEdit;
         updateElement[0].color = statusColorEdit;
         setEvents([...events, updateElement]);
+
+        var DbElement = {
+          bookingReason: updateElement[0].title,
+          startDate: updateElement[0].start,
+          endDate: updateElement[0].end,
+        };
+        dispatch(update_mean(DbElement, eventID));
+        dispatch(get_means());
+
         setTitleEdit("");
         setShowEdit(false);
       } else {
@@ -352,14 +400,21 @@ const Calender = () => {
       if (startTime > preDateTime && startTime < endTime) {
         if (overlap === "Enable") {
           setShow(false);
-          const newElement = {
-            id: uniqid,
+          var stateElement = {
             title: title,
             start: startTime,
             end: endTime,
             color: statusColor,
           };
-          setEvents([...events, newElement]);
+
+          var DbElement = {
+            bookingReason: title,
+            startDate: startTime,
+            endDate: endTime,
+          };
+          // setEvents([...events, stateElement]);
+          dispatch(add_mean(DbElement));
+          dispatch(get_means());
           setTitle("");
         } else if (
           overlap === "Disable" &&
@@ -373,14 +428,9 @@ const Calender = () => {
           }, 1000);
         } else {
           setShow(false);
-          const newElement = {
-            id: uniqid,
-            title: title,
-            start: startTime,
-            end: endTime,
-            color: statusColor,
-          };
-          setEvents([...events, newElement]);
+
+          setEvents([...events, stateElement]);
+          dispatch(add_mean(DbElement));
           setTitle("");
         }
       } else {
@@ -464,7 +514,6 @@ const Calender = () => {
           setTimeout(function () {
             setAlertBoxTime(false);
           }, 2000);
-          // console.log("disable time clicked");
         }
       } else {
         console.log("disable time clicked");
@@ -480,7 +529,8 @@ const Calender = () => {
     setpopoverShow(!popoverShow);
     setShowEdit(true);
     setAlertBoxTime(false);
-    const fill = events.filter((e) => e.id === eventID);
+    const fill = events.filter((e) => e._id === eventID);
+    console.log(fill);
     setTitleEdit(fill[0].title);
     let getstart = String(fill[0].start);
     let getend = String(fill[0].end);
@@ -492,21 +542,22 @@ const Calender = () => {
     getend = getend.slice(16, 21);
     setstarttimesliceEdit(getstart);
     setEndtimesliceEdit(getend);
-    // End slice a time
   };
   const handleDeleteEvent = () => {
-    const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill);
     setpopoverShow(!popoverShow);
+    const fill = events.filter((e) => e._id !== eventID);
+    setEvents(fill);
+
+    dispatch(delete_mean(eventID));
+    dispatch(get_means());
   };
-  // const handlePopoverShow = (event) => {
-  //   // admin code Start
-  //   seteventID(event.id);
-  //   const fill = events.filter((e) => e.id === event.id);
-  //   setEvent(fill[0]);
-  //   setpopoverShow(!popoverShow);
-  //   // admin code end
-  // };
+  const handlePopoverShow = (event) => {
+    seteventID(event._id);
+    const fill = events.filter((e) => e._id === event._id);
+    setEvent(fill[0]);
+    setpopoverShow(!popoverShow);
+    // admin code end
+  };
   const bookingSlot = (event) => {
     // booking Event
     setbookingslot(true);
@@ -1111,70 +1162,54 @@ const Calender = () => {
           </div>
         </div>
         <div className="d-flex px-2">
-          <div style={{ flexBasis: "75%" }}>
-            <Calendar
-              popup
-              selectable
-              formats={formats}
-              localizer={localizer}
-              events={events}
-              views={view}
-              step={60}
-              timeslots={1}
-              // onSelectEvent={handlePopoverShow}
-              onSelectEvent={bookingSlot}
-              onSelecting={false}
-              onSelectSlot={AddEvent}
-              // onSelectSlot={AddAvailability}
-              startAccessor="start"
-              endAccessor="end"
-              style={{
-                width: "100%",
+          <div style={{ flexBasis: "100%" }}>
+            {events ? (
+              <Calendar
+                popup
+                selectable
+                formats={formats}
+                localizer={localizer}
+                events={events}
+                views={view}
+                defaultView="work_week"
+                step={60}
+                timeslots={1}
+                onSelectEvent={handlePopoverShow}
+                // onSelectEvent={bookingSlot}
+                onSelecting={true}
+                onSelectSlot={AddEvent}
+                // onSelectSlot={AddAvailability}
+                startAccessor="start"
+                endAccessor="end"
+                style={{
+                  width: "98%",
+                  height: "470px",
+                }}
+                eventPropGetter={(events, start, end, isSelected) => {
+                  let newStyle = {
+                    backgroundColor: events["color"],
+                    color: "black",
+                    borderRadius: "0px",
+                    border: "none",
+                  };
 
-                height: "470px",
-              }}
-              eventPropGetter={(events, start, end, isSelected) => {
-                let newStyle = {
-                  backgroundColor: events["color"],
-                  color: "black",
-                  borderRadius: "0px",
-                  border: "none",
-                };
+                  if (events.isMine) {
+                    newStyle.backgroundColor = "lightgreen";
+                  }
 
-                if (events.isMine) {
-                  newStyle.backgroundColor = "lightgreen";
-                }
-
-                return {
-                  className: "",
-                  style: newStyle,
-                };
-              }}
-              messages={{
-                date: "Date",
-                time: "Time",
-                event: "Event",
-                allDay: "All Day",
-                week: "week",
-                work_week: "Work Week",
-                day: "Day",
-                month: "Month",
-                previous: "Previous",
-                next: "Next",
-                yesterday: "Yesterday",
-                tomorrow: "Tomorrow",
-                today: "Today",
-                agenda: "Agenda",
-                noEventsInRange: "There are no events in this range.",
-                showMore: function (e) {
-                  return "+" + e + " more";
-                },
-              }}
-              custom_week_days={days}
-              dayPropGetter={customDayPropGetter}
-            />
+                  return {
+                    className: "",
+                    style: newStyle,
+                  };
+                }}
+                custom_week_days={days}
+                dayPropGetter={customDayPropGetter}
+              />
+            ) : (
+              <h1>Loading.....</h1>
+            )}
           </div>
-          <div style={{ flexBasis: "25%", margin: "0 20px 0px 10px" }}>
+          {/* <div style={{ flexBasis: "25%", margin: "0 20px 0px 10px" }}>
             <div className="calender-sidebar pt-5">
               <div className="text-center w-100 calender-sidebar-heading pb-3">
                 BOOKING
@@ -1258,7 +1293,7 @@ const Calender = () => {
                 <div className="col-md-12">
                   <div className="description">
                     <div className="form-group ">
-                      {/* <label for="exampleFormControlTextarea1">Add message</label> */}
+                    <label for="exampleFormControlTextarea1">Add message</label>  
                       <textarea
                         className="form-control"
                         id="exampleFormControlTextarea1"
@@ -1286,14 +1321,14 @@ const Calender = () => {
                   Book
                 </button>
               </div>
-              {/* <Button variant="primary" onClick={saveBooking}>
+           <Button variant="primary" onClick={saveBooking}>
             Add Booking
           </Button>
           <Button variant="secondary" onClick={() => setbookingslot(false)}>
             Close
-          </Button> */}
+          </Button> 
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

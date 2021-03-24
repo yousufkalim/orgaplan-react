@@ -125,6 +125,7 @@ export default function FormMultipleUpload(props) {
           <div className={classes.container}>
             <div
               onClick={() => {
+                if (props.enabled !== undefined && props.enabled) return;
                 document.getElementById(`fileinput-${props.name}`).click();
               }}
             >
@@ -132,6 +133,7 @@ export default function FormMultipleUpload(props) {
             </div>
             <input
               hidden
+              {...props}
               type="file"
               id={`fileinput-${props.name}`}
               onChange={onAdd}
@@ -156,9 +158,14 @@ export default function FormMultipleUpload(props) {
                 }
                 alt="Natacha"
               />
-              <div onClick={handleDelete(value)} className={classes.imageCross}>
-                <ClearIcon fontSize="inherit" color="inherit" />
-              </div>
+              {props.enabled ? (
+                <div
+                  onClick={handleDelete(value)}
+                  className={classes.imageCross}
+                >
+                  <ClearIcon fontSize="inherit" color="inherit" />
+                </div>
+              ) : null}
             </div>
           </Grid>
         ))}

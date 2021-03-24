@@ -285,10 +285,10 @@ export default function Login(props) {
           initialValues={
             process.env.NODE_ENV === "development"
               ? {
-                  // email: "talha28.falcon@gmail.com",
-                  // password: "shutdown12",
-                  email: "yousaf.falcon321@gmail.com",
+                  email: "talha28.falcon@gmail.com",
                   password: "1",
+                  // email: "yousaf.falcon321@gmail.com",
+                  // password: "1",
                 }
               : {
                   email: "",
@@ -517,8 +517,8 @@ export default function Login(props) {
                 company: company,
                 email: email,
                 phone: phone,
-                firstName: lastName,
-                lastName: firstName,
+                firstName: firstName,
+                lastName: lastName,
                 password: "",
                 confirmPassword: "",
               }}
@@ -533,7 +533,6 @@ export default function Login(props) {
                 isSubmitting,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  {/* {setFieldValue("email", email)} */}
                   <div className="w-75 mx-auto my-2">
                     <input
                       type="text"

@@ -18,3 +18,7 @@ export const SET_COMPANY = "SET_COMPANY";
 // Extra
 export const RESET_STATE = "RESET_STATE";
 export const POST_DATA = "POST_DATA";
+export const GET_MEANS_DATA = "GET_MEANS_DATA";
+export const ADD_MEANS_DATA = "ADD_MEANS_DATA";
+export const UPDATE_MEANS_DATA = "UPDATE_MEANS_DATA";
+export const DELETE_MEANS_DATA = "DELETE_MEANS_DATA";
