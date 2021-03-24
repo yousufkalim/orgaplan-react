@@ -285,10 +285,10 @@ export default function Login(props) {
           initialValues={
             process.env.NODE_ENV === "development"
               ? {
-                  // email: "talha28.falcon@gmail.com",
-                  // password: "shutdown12",
-                  email: "yousaf.falcon321@gmail.com",
+                  email: "talha28.falcon@gmail.com",
                   password: "1",
+                  // email: "yousaf.falcon321@gmail.com",
+                  // password: "1",
                 }
               : {
                   email: "",

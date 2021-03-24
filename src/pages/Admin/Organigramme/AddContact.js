@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -63,9 +62,6 @@ export default function AddContact(props) {
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
 
-
-
-
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -77,9 +73,9 @@ export default function AddContact(props) {
       //   uri: `${GLOBALS.Constants.COMPANY}`,
       // });
 
-        const typeArray = [
-        { value: 'LOGISTICS', label: 'LOGISTICS'}, 
-        { value: 'SITE', label: 'SITE'}
+      const typeArray = [
+        { value: "LOGISTICS", label: "LOGISTICS" },
+        { value: "SITE", label: "SITE" },
       ];
 
       setDropdownType(typeArray);
@@ -109,39 +105,33 @@ export default function AddContact(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
-      if(value === "" || name===null) {
+      if (value === "" || name === null) {
         setEmailError(true);
-
       } else {
         setEmailError(false);
-
       }
-    } 
-    else if (name === "phone") {
-       setPhone(value);
-        if (value === "" || name === null) {
-          setPhoneError(true);
-        } else {
-          setPhoneError(false);
-        }
-    } 
-    else if (name === "firstName") {
-       setFirstName(value);
-        if (value === "" || name === null) {
-          setFirstNameError(true);
-        } else {
-          setFirstNameError(false);
-        }
-    } 
-    else if (name === "lastName") {
-       setLastName(value);
-         if (value === "" || name === null) {
-           setLastNameError(true);
-         } else {
-           setLastNameError(false);
-         }
-    } 
-    else if (name === "image") setImage(value);
+    } else if (name === "phone") {
+      setPhone(value);
+      if (value === "" || name === null) {
+        setPhoneError(true);
+      } else {
+        setPhoneError(false);
+      }
+    } else if (name === "firstName") {
+      setFirstName(value);
+      if (value === "" || name === null) {
+        setFirstNameError(true);
+      } else {
+        setFirstNameError(false);
+      }
+    } else if (name === "lastName") {
+      setLastName(value);
+      if (value === "" || name === null) {
+        setLastNameError(true);
+      } else {
+        setLastNameError(false);
+      }
+    } else if (name === "image") setImage(value);
     else if (name === "company") setCompany(value);
     else if (name === "role") setRole(value);
   };
@@ -151,7 +141,7 @@ export default function AddContact(props) {
       e.preventDefault();
       setLoading(true);
       var formdata = new FormData();
-      console.log(' adminStore.site.siteId._id',  adminStore.site.siteId._id)
+      console.log(" adminStore.site.siteId._id", adminStore.site.siteId._id);
       formdata.append("email", email);
       formdata.append("phone", phone);
       formdata.append("firstName", firstName);
@@ -161,7 +151,7 @@ export default function AddContact(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("type", type);
       formdata.append("role", role);
-      
+
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
@@ -200,16 +190,15 @@ export default function AddContact(props) {
                 values={dropdownType}
                 placeholder="Type"
                 style={GLOBALS.Styles.inputWidth}
-                   onChange={(e) => {
+                onChange={(e) => {
                   const index = e.target.selectedIndex - 1;
-                  console.log('index', index);
+                  console.log("index", index);
                   if (index !== -1) {
                     const item = e.target.value;
 
-                    console.log(item)
+                    console.log(item);
                     setType(item);
                   } else {
-
                     setType("");
                   }
                 }}
@@ -276,8 +265,7 @@ export default function AddContact(props) {
           <Form.Row>
             <FormLabel bold primary="COMPANY: " />
             <Form.Row noMargin width="48%">
-              
-             <FormInput
+              <FormInput
                 name="company"
                 value={company}
                 // error={lastName}
@@ -303,7 +291,7 @@ export default function AddContact(props) {
           <Form.Row>
             <FormLabel bold primary="Rôle: " />
             <Form.Row noMargin width="48%">
-                <FormInput
+              <FormInput
                 name="role"
                 value={role}
                 // error={lastName}
@@ -313,6 +301,10 @@ export default function AddContact(props) {
                   handleChange(name, value)
                 }
               />
+              {emailError && ""}
+              {phoneError && ""}
+              {firstNameError && ""}
+              {lastNameError && ""}
               {/* <FormSelect
                 name="companyId"
                 value={companyId}
@@ -335,12 +327,12 @@ export default function AddContact(props) {
               loading={loading}
               disabled={
                 loading ||
-                !type||
+                !type ||
                 !email ||
                 !phone ||
                 !firstName ||
                 !lastName ||
-                image.length === 0 
+                image.length === 0
               }
             />
           </Form.ButtonContainer>

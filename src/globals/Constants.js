@@ -80,9 +80,14 @@ const endpoints = {
 
   GET_SITE_INCIDENT: BASE_URL_V1 + "incidents/admin",
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
+  GET_COMPANY_AUTOFILL: BASE_URL_V1 + "company-sites/autofill",
+  GET_GENERAL_CONTRACTOR: BASE_URL_V1 + "company-sites/general-contractor",
+
+  CREATE_COMPANY: BASE_URL_V1 + "company",
   POST_ADD_SITE_INCIDENTS: BASE_URL_V1 + "incidents",
   CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 };
 export default endpoints;

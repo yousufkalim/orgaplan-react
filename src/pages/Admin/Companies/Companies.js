@@ -191,7 +191,7 @@ export default function Companies(props) {
       <img src={Images.site} alt="Icon" />,
       item.companyId.name,
       getSubContractors(item.subContractors),
-      item.incharge != undefined
+      item.companyId.incharge != undefined
         ? item.companyId.incharge.firstName +
           " " +
           item.companyId.incharge.lastName
@@ -219,7 +219,12 @@ export default function Companies(props) {
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <NavLink to="/companies/edit-companies">
+          <NavLink
+            to={{
+              pathname: "/companies/edit-companies",
+              id: item.companyId._id,
+            }}
+          >
             <Pencil style={{ width: 18, height: 15 }} />
           </NavLink>
         </IconButton>

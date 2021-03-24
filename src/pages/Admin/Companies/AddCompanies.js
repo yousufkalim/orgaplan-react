@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
-import MultiAdderInput from "../../../components/MultiAdderInput";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -16,11 +15,11 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import { InputSharp } from "@material-ui/icons";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -78,7 +77,6 @@ export default function AddCompanies(props) {
   const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
-  const [typeError, setTypeError] = useState("");
   const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -88,7 +86,7 @@ export default function AddCompanies(props) {
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
   const [addInfo, setAddInfo] = useState("");
-
+  const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -98,10 +96,15 @@ export default function AddCompanies(props) {
   const [dropdownTrades, setDropdownTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState("");
   const [listOfTrades, setListOfTrades] = useState([]);
+  const [fieldsEnabled, setFieldsEnabled] = useState(true);
 
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    getCompanyAutoFill();
+  }, [companyId]);
 
   const getData = async () => {
     try {
@@ -111,6 +114,7 @@ export default function AddCompanies(props) {
         token: store.token,
       });
       if (response.success) {
+        console.log("Response", JSON.stringify(response, null, 2));
         setCompanies(response.data.site_companies);
         setTrades(response.data.site_trades);
         if (response.data.site_companies != null) {
@@ -149,6 +153,104 @@ export default function AddCompanies(props) {
     }
   };
 
+  const getCompanyAutoFill = async () => {
+    if (companyId.length === 0) return;
+    try {
+      //formik.setFieldValue("site", adminStore.site.siteId.name);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_COMPANY_AUTOFILL}/${adminStore.site.siteId._id}/${companyId}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data.site_companies.length != 0) {
+          const company = response.data.site_companies[0].companyId;
+          const trades = response.data.site_companies[0].trades;
+          if (company.incharge != undefined) {
+            const incharge = company.incharge;
+            setFname(incharge.firstName);
+            setLname(incharge.lastName);
+            setEmail(incharge.email);
+            setPhone(incharge.phone);
+          } else {
+            setFname("");
+            setLname("");
+            setEmail("");
+            setPhone("");
+          }
+          if (company.color != undefined) setColor(company.color);
+          if (company.website != undefined) setWebsite(company.website);
+          else setWebsite("");
+          if (company.description != undefined) setAddInfo(company.description);
+          else setAddInfo("");
+          if (trades != undefined) {
+            const tradesTemp = [];
+            trades.forEach((item, index) => {
+              tradesTemp.push({ key: item, label: item });
+            });
+            setListOfTrades(tradesTemp);
+          }
+        }
+        await getGeneralContractor();
+      } else {
+      }
+
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getGeneralContractor = async () => {
+    try {
+      //formik.setFieldValue("site", adminStore.site.siteId.name);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_GENERAL_CONTRACTOR}/${adminStore.site.siteId._id}/${companyId}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data.companies.length === 0) {
+          await setCompanyType("generalcontractor");
+
+          setSelectedCompany("");
+          setSelectedCompanyIndex(null);
+        } else {
+          await setCompanyType("subcontractor");
+
+          const company = response.data.companies[0].companyId;
+          let companyIndex = null;
+          let companyValue = null;
+          companies.forEach((item, index) => {
+            if (item.companyId._id === company._id) {
+              companyIndex = index;
+              companyValue = item.companyId.name;
+            }
+          });
+          if (companyIndex != null && companyValue != null) {
+            setSelectedCompany(companyValue);
+            setSelectedCompanyIndex(companyIndex);
+          } else {
+            setSelectedCompany("");
+            setSelectedCompanyIndex(null);
+          }
+        }
+        console.log(JSON.stringify(response, null, 2));
+      } else {
+      }
+
+      //   setItems(response.data.items);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   // const [startDate, setStartDate] = useState("");
   // const [startDateError, setStartDateError] = useState("");
   // const [isDateSelect, setIsDateSelect] = useState("");
@@ -163,46 +265,67 @@ export default function AddCompanies(props) {
     // const notificationTo = values.notificationTo.map((item) => item.label);
     const values = formik.values;
     const isSubContractor = companyType === "subcontractor";
-    const parentCompanyId = companies[selectedCompanyIndex].companyId._id;
+    let parentCompanyId = undefined;
+    if (
+      companies.length != 0 &&
+      isSubContractor &&
+      companies[selectedCompanyIndex].companyId != undefined
+    )
+      parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
-    alert(
-      name +
-        " " +
-        phone +
-        " " +
-        fname +
-        " " +
-        lname +
-        " " +
-        website +
-        " " +
-        addInfo,
-    );
-    return;
+    const trades = [];
+
+    listOfTrades.forEach((item, index) => {
+      trades.push(item.label);
+    });
 
     var formdata = new FormData();
     formdata.append("logo", values.images[0].file);
+
     formdata.append("name", name);
-    formdata.append("color", values.color);
-    formdata.append("firstName", values.firstName);
-    formdata.append("lastName", values.lastName);
-    formdata.append("email", values.email);
-    formdata.append("phone", values.phone);
-    // formdata.append("contractType", values.contractType);
-    //formdata.append("contractStartDate", values.contractStartDate);
-    //formdata.append("contractEndDate", values.contractEndDate);
-    //formdata.append("functionality", values.functionality);
-    //formdata.append("additionalInfo", values.additionalInfo);
-    //formdata.append("notificationPriorToDays", values.notificationPriorToDays);
-    // formdata.append("notificationTo", JSON.stringify(notificationTo));
-    await GLOBALS.API({
+    formdata.append("color", color);
+    formdata.append("website", website);
+    formdata.append("description", addInfo);
+    formdata.append("trades", JSON.stringify(trades));
+    formdata.append("siteId", adminStore.site.siteId._id);
+
+    if (isSubContractor) {
+      if (parentCompanyId === undefined)
+        alert("You need to select a general contractor");
+      formdata.append("parentCompanyId", parentCompanyId);
+    }
+    if (
+      fname.length !== 0 &&
+      lname.length !== 0 &&
+      email.length !== 0 &&
+      phone.length !== 0
+    ) {
+      const incharge = {
+        firstName: fname,
+        lastName: lname,
+        email: email,
+        phone: phone,
+      };
+      formdata.append("incharge", JSON.stringify(incharge));
+    }
+
+    const response = await GLOBALS.API({
       method: "POST",
-      uri: GLOBALS.Constants.CLIENTS,
+
+      uri: GLOBALS.Constants.CREATE_COMPANY,
       headers: {
         Authorization: store.token,
       },
       body: formdata,
     });
+    if (response.success) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(response.message, "success"),
+        ),
+      );
+    }
+
     formik.setSubmitting(false);
     props.history.push("/clients");
   };
@@ -224,16 +347,7 @@ export default function AddCompanies(props) {
         setColorError(false);
       }
     }
-    // if (e.target.name === "companyType") {
-    //   console.log(e.target.value);
-    //   setCompanyType(e.target.value);
-    //   console.log("company type", companyType);
-    //   if (e.target.value === "" || e.target.value === null) {
-    //     setCompanyTypeError(true);
-    //   } else {
-    //     setCompanyTypeError(false);
-    //   }
-    // }
+
     if (e.target.name === "contract") {
       setContract(e.target.value);
       if (
@@ -281,7 +395,6 @@ export default function AddCompanies(props) {
       if (value !== "") {
         setUpdate((st) => !st);
         setTrades(value);
-        console.log("trades", trades);
       }
     }
   };
@@ -319,7 +432,6 @@ export default function AddCompanies(props) {
         setPhoneError(false);
       }
     } else {
-      console.log("contarct submit", companyType);
     }
   };
   const formik = useFormik({
@@ -345,7 +457,6 @@ export default function AddCompanies(props) {
     validateOnChange: false,
     validateOnMount: false,
   });
-  console.log("type ==> ", companyType);
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -361,16 +472,30 @@ export default function AddCompanies(props) {
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
+                  disabled={!fieldsEnabled}
                   style={{
                     ...GLOBALS.Styles.inputWidth,
                     marginRight: "10px",
                   }}
                   onSelect={(event) => {
+                    let companyId = "";
+                    let logo = null;
                     companies.forEach((item, index) => {
                       if (item.companyId.name === event.target.value) {
+                        companyId = item.companyId._id;
+                        logo = item.companyId.logo;
                         setName(item.companyId.name);
                       }
                     });
+
+                    //                  let fileClone = [{ uri: mean.image }];
+                    // setImage(fileClone);
+
+                    if (companyId.length != 0) {
+                      setCompanyId(companyId);
+                      setFieldsEnabled(false);
+                      formik.setFieldValue("images", [{ uri: logo }]);
+                    }
                   }}
                   options={companies.map((option) => {
                     if (option.companyId.name != undefined)
@@ -379,13 +504,18 @@ export default function AddCompanies(props) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Email"
+                      label="Name"
                       margin="normal"
                       variant="outlined"
                       name="name"
+                      disabled={!fieldsEnabled}
+                      onChange={(event) => {
+                        console.log(event);
+                        setName(event.target.value);
+                        formik.setFieldValue("email", event.target.value);
+                      }}
                       value={formik.values.email}
                       error={formik.errors.email}
-                      onChange={formik.handleChange}
                     />
                   )}
                 />
@@ -407,6 +537,7 @@ export default function AddCompanies(props) {
               </div>
               <FormMultipleUpload
                 name="images"
+                enabled={!fieldsEnabled}
                 style={GLOBALS.Styles.inputWidth}
                 values={formik.values.images}
                 onChange={(values) =>
@@ -431,16 +562,33 @@ export default function AddCompanies(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
-            <Form.Row width="55%" style={{ gap: "20px" }}>
-              <div>
-                <div>
-                  <input
+            <Form.Row width="55%">
+              <RadioButton
+                name="contractType"
+                value={companyType}
+                // error={contractType}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  setCompanyType(value)
+                }
+                items={[
+                  {
+                    value: "generalcontractor",
+                    label: "General Contractor",
+                  },
+                  { value: "subcontractor", label: "Subcontractor" },
+                ]}
+              />
+
+              {/* <input
                     className={classes.radioBtn}
                     type="radio"
-                    onChange={(e) => setCompanyType("generalcontractor")}
+                    onChange={(e) => {
+                      setCompanyType("generalcontractor");
+                    }}
                     id="generalcontractor"
                     name="companyType"
-                    value="generalcontractor"
+                    value={companyType}
                   />
                   <label for="generalcontractor" className={classes.radioLabel}>
                     General Contractor
@@ -452,19 +600,16 @@ export default function AddCompanies(props) {
                     name="companyType"
                     onChange={(e) => {
                       setCompanyType("subcontractor");
-                      console.log(companyType);
                     }}
-                    value="subcontractor"
+                    value={companyType}
                     defaultChecked
                   />
                   <label for="subcontractor" className={classes.radioLabel}>
                     Sub contractor
-                  </label>
-                </div>
-                {companyTypeError === true && (
-                  <div className={classes.error}>Please select company</div>
-                )}
-              </div>
+                  </label> */}
+              {companyTypeError === true && (
+                <div className={classes.error}>Please select company</div>
+              )}
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -522,13 +667,13 @@ export default function AddCompanies(props) {
                 values={dropdownTrades}
                 value={selectedTrade}
                 placeholder="Select Trades"
+                chipDefaultValues={listOfTrades}
                 chipValues={(values) => {
                   const valuesTemp = [];
                   values.forEach((item, index) => {
-                    valuesTemp.push(item.label);
+                    valuesTemp.push(item);
                   });
                   setListOfTrades(valuesTemp);
-                  console.log(JSON.stringify(valuesTemp, null, 2));
 
                   // setSiteParams(values);
                 }}
