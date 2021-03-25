@@ -35,9 +35,9 @@ export default function Canvas({
       >
         <Layer>
           {image ? (
-            <Rectangle fillPatternImage={image} width={800} height={400} />
+            <Rectangle fillPatternImage={image} width={800} height={550} />
           ) : (
-            <Rectangle fill={"#ccc"} width={800} height={400} />
+            <Rectangle fill={"#ccc"} width={800} height={550} />
           )}
           <ConvaLine
             points={flattenedPoints}
