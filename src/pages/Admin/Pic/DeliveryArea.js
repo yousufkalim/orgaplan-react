@@ -1,55 +1,23 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
-// import ReactFormValidation from "react-form-input-validation";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
-import Heading from "../../../components/Heading";
-import FormInput from "../../../components/CustomFormInput";
 import FormLabel from "../../../components/FormLabel";
-import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import FormInput from "../../../components/CustomFormInput";
 import CustomInputModal from "../../../components/CustomInputModal";
-import { Images } from "../../../assets/Assets";
+import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: GLOBALS.Styles.pagePadding,
-  },
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
 }));
 
-// const addClientYup = Yup.object().shape({
-//   logo: Yup.array().min(1, "Required").required("Required"),
-//   name: Yup.string().required("Required"),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   notificationPriorToDays: Yup.number(),
-//   notificationTo: Yup.array(),
-// });
-
 export default function DeliveryArea(props) {
-  // const [addresses] = useState([]);
+  const classes = useStyles();
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -62,8 +30,6 @@ export default function DeliveryArea(props) {
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
 
-  const classes = useStyles();
-  // let form = new ReactFormValidation(this, { locale: "en" });
   function handleChange(name, value) {
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
@@ -78,188 +44,161 @@ export default function DeliveryArea(props) {
   }
 
   return (
-    <div className={classes.root}>
-      <Form.Row>
-        <IconButton onClick={() => props.history.goBack()}>
-          <BackArrow style={{ width: 30, height: 30 }} />
-        </IconButton>
-        <div className="text-center pr-5">
-          <img src={Images.profile2} alt="imgs" />
-          <div>Thierry Marles</div>
-        </div>
-      </Form.Row>
-      <Form.Row>
-        <Heading primary="DELIVERY AREA" />
-        <Button
-          fullWidth={false}
-          text="EDIT THE SHAPE"
-          style={{ marginRight: "20px" }}
-          color={"#000"}
-          to={"/companies/add-user"}
-        />
-      </Form.Row>
-      <div className={classes.content}>
-        <Form.Form>
-          <Form.Row>
-            <FormLabel bold primary=" Name : " />
-            <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
-              <FormInput
-                name="name"
-                error
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Company name"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={name}
-                validateSchema={Yup.string().required()}
-              />
-
-              <FormMultipleUpload
-                name="image"
-                style={GLOBALS.Styles.inputWidth}
-                values={image}
-                onChange={(values) => handleChange("profile", values)}
-              />
-            </Form.Row>
+    <div className={classes.content}>
+      <Form.Form>
+        <Form.Row>
+          <FormLabel bold primary="Name : " />
+          <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
+            <FormInput
+              name="name"
+              error
+              style={GLOBALS.Styles.inputWidth}
+              placeholder="Company name"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={name}
+            />
+            <FormMultipleUpload
+              name="image"
+              style={GLOBALS.Styles.inputWidth}
+              values={image}
+              onChange={(values) => handleChange("profile", values)}
+            />
           </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="AVAILABILITY :" />
-            <Form.Row
-              noMargin
-              width="65%"
-              justifyContent="flex-start"
-              style={{ gap: "20px" }}
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="AVAILABILITY :" />
+          <Form.Row
+            noMargin
+            width="65%"
+            justifyContent="flex-start"
+            style={{ gap: "20px" }}
+          >
+            <FormInput
+              type="date"
+              style={{ width: "300px" }}
+              placeholder={`Date de début`}
+              name="startDate"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={startDate}
+            />
+            <FormInput
+              type="date"
+              placeholder="Date de fin"
+              style={{ width: "300px" }}
+              name="endDate"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={endDate}
+            />
+          </Form.Row>
+        </Form.Row>
+
+        <Form.Row>
+          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :  " />
+          <Form.Row noMargin width="65%">
+            <CustomInputModal
+              name="location"
+              values={location}
+              // error={addresses}
+              style={GLOBALS.Styles.inputWidth}
+              placeholder="Enter Delivery areas"
+              onChange={(values) => handleChange("addresses", values)}
+            />
+          </Form.Row>
+        </Form.Row>
+
+        <Form.Row>
+          <FormLabel bold primary="FICHE TECHNIQUE : " />
+          <Form.Row noMargin width="65%">
+            <FormMultipleUpload
+              name="techSheet"
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              values={techSheet}
+            />
+          </Form.Row>
+        </Form.Row>
+
+        <Form.Row>
+          <FormLabel bold primary="INDISPONIBILITES: " />
+          <Form.Row noMargin width="65%">
+            <div
+              // name="availability"
+
+              to={"/means/add-mean"}
+              style={{
+                marginLeft: "0px",
+                marginBottom: "7px",
+                width: "320px",
+                color: "#fff",
+                padding: "0.8rem 0",
+                borderRadius: "8px",
+                textAlign: "center",
+                backgroundColor: "#140772",
+              }}
             >
-              <FormInput
-                type="date"
-                style={{ width: "300px" }}
-                placeholder={`Date de début`}
-                name="startDate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={startDate}
-              />
-              <FormInput
-                type="date"
-                placeholder="Date de fin"
-                style={{ width: "300px" }}
-                name="endDate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={endDate}
-              />
-            </Form.Row>
+              SHOW UNAVAILABILITIES
+            </div>
           </Form.Row>
+        </Form.Row>
 
-          <Form.Row>
-            <FormLabel bold primary="ACCESSIBILITY ADDRESSES :  " />
-            <Form.Row noMargin width="65%">
-              <CustomInputModal
-                name="location"
-                values={location}
-                // error={addresses}
-                style={GLOBALS.Styles.inputWidth}
-                placeholder="Enter Delivery areas"
-                onChange={(values) => handleChange("addresses", values)}
-              />
-            </Form.Row>
+        <Form.Row alignItems="flex-start">
+          <FormLabel bold primary="TARIF HORAIRE : " />
+          <Form.Row noMargin width="65%">
+            <FormInput
+              textArea
+              rows={1}
+              style={{ width: "300px", textAlign: "right" }}
+              placeholder="€"
+              name="rate"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={rate}
+            />
           </Form.Row>
+        </Form.Row>
 
-          <Form.Row>
-            <FormLabel bold primary="FICHE TECHNIQUE : " />
-            <Form.Row noMargin width="65%">
-              <FormMultipleUpload
-                name="techSheet"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                values={techSheet}
-              />
-            </Form.Row>
+        <Form.Row alignItems="flex-start">
+          <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
+          <Form.Row noMargin width="65%">
+            <FormInput
+              textArea
+              rows={3}
+              style={{ width: "600px" }}
+              placeholder="Informations complémentaires"
+              name="addInfo"
+              onChange={({ target: { name, value } }) => {
+                console.log("add, info", value);
+                handleChange(name, value);
+              }}
+              value={addInfo}
+            />
           </Form.Row>
+        </Form.Row>
 
-          <Form.Row>
-            <FormLabel bold primary="INDISPONIBILITES: " />
-            <Form.Row noMargin width="65%">
-              <div
-                // name="availability"
-
-                to={"/means/add-mean"}
-                style={{
-                  marginLeft: "0px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  color: "#fff",
-                  padding: "0.8rem 0",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  backgroundColor: "#140772",
-                }}
-              >
-                SHOW UNAVAILABILITIES
-              </div>
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="TARIF HORAIRE : " />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={1}
-                style={{ width: "300px", textAlign: "right" }}
-                placeholder="€"
-                name="rate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={rate}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={3}
-                style={{ width: "600px" }}
-                placeholder="Informations complémentaires"
-                name="addInfo"
-                onChange={({ target: { name, value } }) => {
-                  console.log("add, info", value);
-                  handleChange(name, value);
-                }}
-                value={addInfo}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <Form.ButtonContainer style={{ width: "80%" }}>
-              <Button
-                type="submit"
-                minWidth={200}
-                text="VALIDATE"
-                fullWidth={false}
-                // loading={formik.isSubmitting}
-                disabled={
-                  !name ||
-                  location.length === 0 ||
-                  !type ||
-                  !color ||
-                  !startDate
-                }
-              />
-            </Form.ButtonContainer>
-          </Form.Row>
-        </Form.Form>
-      </div>
+        <Form.Row>
+          <Form.ButtonContainer style={{ width: "80%" }}>
+            <Button
+              type="submit"
+              minWidth={200}
+              text="VALIDATE"
+              fullWidth={false}
+              // loading={formik.isSubmitting}
+              disabled={
+                !name || location.length === 0 || !type || !color || !startDate
+              }
+            />
+          </Form.ButtonContainer>
+        </Form.Row>
+      </Form.Form>
     </div>
   );
 }

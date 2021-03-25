@@ -333,7 +333,7 @@ class App extends Component {
         return;
       }
     } else {
-      alert("Google");
+      alert("Select an element first");
     }
   };
 
