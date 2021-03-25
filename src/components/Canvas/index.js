@@ -1,0 +1,685 @@
+import React, { Component } from "react";
+import ConvaExample from "./ConvaExample";
+import Header from "./Components/Header";
+import Button from "../Button";
+
+class App extends Component {
+  state = {
+    points: [],
+    meanPoints: [],
+    shapes: [],
+    means: [],
+    curMousePos: [0, 0],
+    isMouseOverStartPoint: false,
+    isFinished: false,
+    image: null,
+    tempImage: "",
+    checkDisable: true,
+    meanDisable: true,
+    color: "black",
+    shapeId: "",
+    meanShapeId: "",
+    shapeName: "",
+    meanCheck: "",
+    meanValue: "",
+    meanFinish: false,
+    viewPortWidth: 0,
+    viewPortHeight: 0,
+  };
+
+  // LifeCycle Hooks
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.tempImage !== this.state.tempImage) {
+      this.showPdf(this.state.tempImage);
+    } else if (prevState.shapes !== this.state.shapes) {
+      this.props.onChange(this.state.shapes);
+    } else {
+      return null;
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.escFunction, false);
+    this.props.onChange(this.state.shapes);
+    this.setState({ shapes: this.props.shapes });
+    this.showPdf(this.state.tempPdf);
+  }
+
+  // ******************
+  // escape function
+  escFunction = (event) => {
+    if (event.keyCode === 27) {
+      const { shapes, color, shapeId, meanShapeId } = this.state;
+      if (shapeId) {
+        let tempArr = shapes.filter((sp) => sp._id === shapeId);
+        if (tempArr.length > 0) {
+          tempArr[0].color = color;
+          tempArr[0].opacity = 0.3;
+        } else {
+          return;
+        }
+      }
+      if (meanShapeId) {
+        let tempArr = shapes.filter((sp) => sp._id === meanShapeId);
+        if (tempArr.length > 0) {
+          tempArr[0].color = "black";
+        } else {
+          return;
+        }
+      }
+      this.setState({
+        shapeId: "",
+        checkDisable: true,
+        meanDisable: true,
+        meanShapeId: "",
+        points: [],
+      });
+      //Do whatever when esc is pressed
+    }
+  };
+  showPdf = async (uri) => {
+    const PDFJS = window.pdfjsLib;
+    try {
+      var _PDF_DOC = await PDFJS.getDocument({
+        url: uri,
+      });
+      var page = await _PDF_DOC.getPage(1);
+      var rotate = (page.rotate + 90) % 360;
+
+      var viewport = page.getViewport(1, rotate);
+      console.log(viewport, "viewport");
+
+      var render_context = {
+        canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
+        viewport: viewport,
+      };
+      await page.render(render_context);
+      var canvas = document.getElementById("pdf-canvas");
+      var img = canvas.toDataURL("image/png");
+
+      let catImage2 = new Image();
+      this.setState({ image2: img });
+      catImage2.src = img;
+      catImage2.onload = () => {
+        this.setState({ image: catImage2 });
+      };
+      canvas.display = "none";
+    } catch (error) {
+      console.log(error, error.message);
+    }
+  };
+  handleUpdateMean = () => {
+    const { meanValue, meanShapeId } = this.state;
+    if (meanShapeId) {
+      let catImage = new Image();
+      catImage.src = meanValue;
+      catImage.onload = () => {
+        this.setState({ image2: catImage });
+      };
+      let tempArr = this.state.shapes.filter(
+        (sp) => sp._id === this.state.meanShapeId,
+      );
+      tempArr[0].image = catImage;
+      catImage.onload = () => {
+        this.setState({
+          shapes: this.state.shapes,
+          checkDisable: true,
+          meanDisable: true,
+        });
+      };
+    } else {
+      alert("please first select a shape");
+    }
+  };
+  handleDisableShape = (id) => {
+    const { shapes, shapeId, color } = this.state;
+    if (shapes.length > 0) {
+      let tempArr = shapes.filter((sp) => sp._id === id);
+      this.props.onClick(id, tempArr);
+      tempArr[0].color = "white";
+      tempArr[0].opacity = 0.9;
+      this.setState({
+        shapeName: tempArr[0].name,
+      });
+      if (shapeId) {
+        let tempArr2 = shapes.filter((sp) => sp._id === shapeId);
+
+        if (shapeId !== id) {
+          tempArr2[0].color = color;
+        } else {
+          tempArr[0].color = "white";
+        }
+      }
+    }
+    this.setState({ checkDisable: false, shapeId: id });
+  };
+  handleDeleteShape = () => {
+    const { shapes, shapeId } = this.state;
+    if (shapeId) {
+      let tempArr = shapes.filter((sp) => sp._id !== shapeId);
+      this.setState({ shapes: tempArr, checkDisable: true, shapeId: "" });
+    } else {
+      alert("Please first select shape");
+    }
+  };
+  handleDeleteMean = () => {
+    const { shapes, meanShapeId } = this.state;
+    if (meanShapeId) {
+      let tempArr = shapes.filter((sp) => sp._id !== meanShapeId);
+      this.setState({
+        shapes: tempArr,
+        checkDisable: true,
+        meanShapeId: "",
+        meanDisable: true,
+      });
+    } else {
+      alert("Please first select shape");
+    }
+  };
+  handleUpdateShape = () => {
+    const { shapes, color, shapeId, shapeName } = this.state;
+    if (shapeId) {
+      let tempArr = shapes.filter((sp) => sp._id === shapeId);
+      tempArr[0].color = color;
+      tempArr[0].name = shapeName;
+      this.setState({ shapes: shapes, checkDisable: true, shapeName: "" });
+    } else {
+      alert("Please first select shape");
+    }
+  };
+  getMousePos = (stage) => {
+    return [stage.getPointerPosition().x, stage.getPointerPosition().y];
+  };
+  handleNameChange = (e) => {
+    this.setState({ shapeName: e.target.value });
+  };
+  handleElementChange = (e) => {
+    if (e.target.value === "Mean") {
+      this.setState({
+        meanCheck: e.target.value,
+        points: [],
+        checkDisable: true,
+        meanDisable: true,
+      });
+    } else {
+      this.setState({
+        meanCheck: e.target.value,
+        checkDisable: true,
+        points: [],
+
+        meanDisable: true,
+      });
+    }
+  };
+
+  handleConvaClick = (event) => {
+    const {
+      state: {
+        points,
+        isMouseOverStartPoint,
+        isFinished,
+        shapes,
+        color,
+        meanCheck,
+        meanFinish,
+        meanPoints,
+      },
+      getMousePos,
+    } = this;
+    if (meanCheck !== "") {
+      const stage = event.target.getStage();
+      const pointer = stage.getPointerPosition();
+      const mousePos = getMousePos(stage);
+      var finishDisable;
+      let checkMean = false;
+
+      if (shapes.length > 0) {
+        var flat = event.target.attrs.points;
+        if (flat !== undefined && event.target.attrs.closed === true) {
+          if (flat.length === 6) {
+            finishDisable = this.isInsideTriangle(flat, pointer.x, pointer.y);
+          } else if (flat.length === 8) {
+            finishDisable = this.isInsideRectangle(flat, pointer.x, pointer.y);
+          } else if (flat.length === 10) {
+            finishDisable = this.isInsidePentagon(flat, pointer.x, pointer.y);
+          } else if (flat.length === 12) {
+            finishDisable = this.isInsideHexagon(flat, pointer.x, pointer.y);
+          }
+        }
+        if (event.target.attrs.meanFinish === false) {
+          checkMean = true;
+        } else if (event.target.attrs.meanFinish === true) {
+          checkMean = true;
+        } else if (
+          event.target.attrs.fillPatternImage &&
+          this.state.meanShapeId &&
+          event.target.attrs.meanFinish === false
+        ) {
+          checkMean = true;
+        } else {
+          checkMean = false;
+        }
+        // s********************************
+        // s********************************
+      }
+      if (finishDisable !== true && checkMean !== true) {
+        if (meanCheck === "Mean") {
+          if (meanFinish === false) {
+            let rand = Math.floor(Math.random() * 100);
+
+            this.setState({
+              shapes: [
+                ...shapes,
+                {
+                  _id: rand,
+                  type: meanCheck,
+                  color: color,
+                  opacity: 0.3,
+
+                  points: [...meanPoints, mousePos],
+                },
+              ],
+            });
+            this.setState(
+              {
+                meanFinish: true,
+              },
+              () => {
+                this.setState({
+                  meanFinish: false,
+                });
+              },
+            );
+          }
+        } else {
+          let rand = Math.floor(Math.random() * 100);
+
+          if (isMouseOverStartPoint && points.length >= 3) {
+            this.setState({
+              shapes: [
+                ...shapes,
+                {
+                  _id: rand,
+                  type: meanCheck,
+                  color: color,
+                  opacity: 0.3,
+                  points,
+                },
+              ],
+            });
+            this.setState({
+              isFinished: true,
+            });
+            this.setState({
+              points: [],
+            });
+          } else if (points.length >= 6) {
+            alert("You only can make upto hexagon shape");
+            return;
+          } else {
+            this.setState({
+              points: [...points, mousePos],
+            });
+            if (isFinished) {
+              this.setState({
+                isFinished: false,
+              });
+            }
+          }
+        }
+      } else {
+        return;
+      }
+    } else {
+      alert("Google");
+    }
+  };
+
+  handleMouseMove = (event) => {
+    const { getMousePos } = this;
+    const stage = event.target.getStage();
+    const mousePos = getMousePos(stage);
+
+    this.setState({
+      curMousePos: mousePos,
+    });
+  };
+  handleMouseOverStartPoint = (event) => {
+    if (this.state.isFinished || this.state.points.length < 3) return;
+    event.target.scale({ x: 2, y: 2 });
+    this.setState({
+      isMouseOverStartPoint: true,
+    });
+  };
+  handleMouseOutStartPoint = (event) => {
+    event.target.scale({ x: 1, y: 1 });
+    this.setState({
+      isMouseOverStartPoint: false,
+    });
+  };
+
+  handleColorChange = (e) => {
+    this.setState({ color: e.target.value });
+  };
+  handleMeansChange = (e) => {
+    this.setState({
+      meanValue: e.target.value,
+    });
+  };
+  handlePdfChange = (e) => {
+    if (e.target.files.length) {
+      let file = e.target.files[0];
+      const uri = URL.createObjectURL(file);
+
+      this.setState({ tempImage: uri });
+    }
+  };
+  handleConvaLineMouseOver = (id) => {
+    let tempArr = this.state.shapes.filter((sp) => sp._id === id);
+    tempArr[0].opacity = 0.9;
+  };
+  handleConvaLineMouseOut = (id) => {
+    let tempArr = this.state.shapes.filter((sp) => sp._id === id);
+    tempArr[0].opacity = 0.3;
+  };
+  handleConvaLineClick = (id) => {
+    const { meanCheck } = this.state;
+    if (meanCheck !== "Mean") {
+      this.handleDisableShape(id);
+    } else {
+      alert("Please Check Building first to update Building");
+    }
+  };
+  handleConvaCircleClick = (id) => {
+    const { meanCheck } = this.state;
+    if (meanCheck === "Mean") {
+      this.handleDisableMean(id);
+    } else {
+      alert("Please Check Mean first to update Mean");
+    }
+  };
+
+  handleDisableMean = (id) => {
+    const { shapes, meanShapeId } = this.state;
+    if (shapes.length > 0) {
+      let tempArr = shapes.filter((sp) => sp._id === id);
+      this.props.onClick(id, tempArr);
+      tempArr[0].color = "white";
+      if (meanShapeId) {
+        let tempArr2 = shapes.filter((sp) => sp._id === meanShapeId);
+
+        if (meanShapeId !== id) {
+          tempArr2[0].color = "black";
+        } else {
+          tempArr[0].color = "white";
+        }
+      }
+    }
+    this.setState({
+      meanDisable: false,
+      meanShapeId: id,
+    });
+  };
+
+  AreaOfTriangle = (x1, y1, x2, y2, x3, y3) => {
+    return Math.abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2);
+  };
+  isInsidePentagon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let tempA = A1 + A2 + A3 + A4 + A5;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+    // console.log(diff, "diff");
+    // console.log(tempCheck, "tempCheck");
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsideHexagon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x6 = arr[10];
+    let y6 = arr[11];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5) +
+      AreaOfTriangle(x4, y4, x6, y6, x5, y5);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let A6 = AreaOfTriangle(x, y, x4, y4, x6, y6);
+
+    let tempA = A1 + A2 + A3 + A4 + A5 + A6;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsideRectangle = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+    /* Check if sum of A1, A2 and A3 is same as A */
+    let tempA = A1 + A2 + A3 + A4;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsideTriangle = (arr, p1, p2) => {
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A = AreaOfTriangle(x1, y1, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x1, y1, x, y, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x1, y1, x2, y2, x, y);
+    /* Check if sum of A1, A2 and A3 is same as A */
+    return A === A1 + A2 + A3;
+  };
+
+  render() {
+    const {
+      state: {
+        points,
+        isFinished,
+        curMousePos,
+        image,
+        shapes,
+        meanCheck,
+        means,
+        meanFinish,
+      },
+      handleConvaClick,
+      handleMouseMove,
+      handleMouseOverStartPoint,
+      handleMouseOutStartPoint,
+      handleElementChange,
+      handleConvaLineMouseOver,
+      handleConvaLineMouseOut,
+      handleConvaLineClick,
+      handleConvaCircleClick,
+    } = this;
+    return (
+      <>
+        <Header
+          meanCheck={meanCheck}
+          handleElementChange={handleElementChange}
+        />
+        <div className="row">
+          <div className="pt-4" style={{ width: "80%" }}>
+            <ConvaExample
+              onClick={handleConvaClick}
+              onMouseMove={handleMouseMove}
+              onMouseOverStartPoint={handleMouseOverStartPoint}
+              onMouseOutStartPoint={handleMouseOutStartPoint}
+              handleConvaLineMouseOver={handleConvaLineMouseOver}
+              handleConvaLineMouseOut={handleConvaLineMouseOut}
+              handleConvaLineClick={handleConvaLineClick}
+              handleConvaCircleClick={handleConvaCircleClick}
+              // states start
+              image={image}
+              curMousePos={curMousePos}
+              isFinished={isFinished}
+              points={points}
+              shapes={shapes}
+              means={means}
+              meanFinish={meanFinish}
+            />
+          </div>
+        </div>
+        <div className="pt-2">
+          <Button
+            fullWidth={false}
+            text="Upload PDF"
+            onClick={() =>
+              document.getElementById("upload-canvas-pdf-button").click()
+            }
+          />
+          <input
+            hidden
+            type="file"
+            accept="application/pdf"
+            id="upload-canvas-pdf-button"
+            onChange={this.handlePdfChange}
+          />
+        </div>
+        <canvas
+          id="pdf-canvas"
+          width="400"
+          height="440"
+          style={{ display: "none" }}
+        ></canvas>
+      </>
+    );
+  }
+}
+export default App;

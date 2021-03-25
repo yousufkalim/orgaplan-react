@@ -68,7 +68,6 @@ export default function Organigramme(props) {
       // const companies = await GLOBALS.API({
       //   uri: `${GLOBALS.Constants.COMPANY}`,
       // });
-      console.log(store.token);
       const oranigramme = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
       });
@@ -77,7 +76,6 @@ export default function Organigramme(props) {
         setOrganigrammes(oranigramme.data);
         setSelectedFilter("SITE");
       }
-
       setLoading(false);
     } catch (err) {
       dispatch(

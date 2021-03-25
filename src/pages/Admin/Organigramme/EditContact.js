@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
+  error: {
+    color: "#FF0000",
+  },
 }));
 
 export default function EditContact(props) {
@@ -45,6 +48,13 @@ export default function EditContact(props) {
   const [image, setImage] = useState([]);
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [companyError, setCompanyError] = useState("");
+  const [roleError, setRoleError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -87,14 +97,71 @@ export default function EditContact(props) {
   }
 
   const handleChange = (name, value) => {
-    if (name === "email") setEmail(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "image") setImage(value);
+    if (name === "email") {
+      setEmail(value);
+      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!value.match(mailformat)) {
+        setEmailError("Please enter valid format");
+      } else {
+        setEmailError("");
+      }
+    } else if (name === "phone") {
+      setPhone(value);
+      if (value.charAt(0) !== "0") {
+        setPhoneError("Telephone shoud starts with 0");
+        // if(value.length !== 10){
+        //   setPhoneError("Telephone must have 10 digits")
+        // }
+        // else{
+        //   setPhoneError("");
+        // }
+      } else if (value.charAt(0) === "0" && value.length !== 10) {
+        setPhoneError("Telephone must have 10 digits");
+      } else {
+        setPhoneError("");
+      }
+    } else if (name === "firstName") {
+      setFirstName(value);
+      if (value.length > 30) {
+        setFirstNameError("Maximum chracters limit 30");
+      } else {
+        setFirstNameError("");
+      }
+    } else if (name === "lastName") {
+      setLastName(value);
+      if (value.length > 30) {
+        setLastNameError("Maximum chracters limit 30");
+      } else {
+        setLastNameError("");
+      }
+    } else if (name === "company") {
+      setCompany(value);
+      if (value.length > 30) {
+        setCompanyError("Maximum chracters limit 30");
+      } else {
+        setCompanyError("");
+      }
+    } else if (name === "role") {
+      setRole(value);
+      if (value.length > 30) {
+        setRoleError("Maximum chracters limit 30");
+      } else {
+        setRoleError("");
+      }
+    } else if (name === "image") setImage(value);
     else if (name === "company") setCompany(value);
     else if (name === "role") setRole(value);
   };
+
+  // const handleChange = (name, value) => {
+  //   if (name === "email") setEmail(value);
+  //   else if (name === "phone") setPhone(value);
+  //   else if (name === "firstName") setFirstName(value);
+  //   else if (name === "lastName") setLastName(value);
+  //   else if (name === "image") setImage(value);
+  //   else if (name === "company") setCompany(value);
+  //   else if (name === "role") setRole(value);
+  // };
 
   async function onDelete() {
     try {
@@ -122,33 +189,45 @@ export default function EditContact(props) {
   }
 
   const onSubmit = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
-      setLoading(true);
-      var formdata = new FormData();
-      formdata.append("email", email);
-      formdata.append("phone", phone);
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
-      formdata.append("image", image[0].file);
-      formdata.append("company", company);
-      formdata.append("siteId", adminStore.site.siteId._id);
-      formdata.append("type", type);
-      formdata.append("role", role);
+      if (
+        emailError !== "" ||
+        phoneError !== "" ||
+        firstNameError !== "" ||
+        lastNameError !== "" ||
+        companyError !== "" ||
+        roleError !== ""
+      ) {
+        alert("something went wrong");
+      } else {
+        e.preventDefault();
+        setLoading(true);
+        var formdata = new FormData();
+        formdata.append("email", email);
+        formdata.append("phone", phone);
+        formdata.append("firstName", firstName);
+        formdata.append("lastName", lastName);
+        formdata.append("image", image[0].file);
+        formdata.append("company", company);
+        formdata.append("siteId", adminStore.site.siteId._id);
+        formdata.append("type", type);
+        formdata.append("role", role);
 
-      await GLOBALS.API({
-        method: "PUT",
-        uri:
-          GLOBALS.Constants.PUT_SITE_ORGANIGRAMMES +
-          "/" +
-          props.location.data._id,
-        headers: {
-          Authorization: store.token,
-        },
-        body: formdata,
-      });
-      setLoading(false);
-      props.history.goBack();
+        await GLOBALS.API({
+          method: "PUT",
+          uri:
+            GLOBALS.Constants.PUT_SITE_ORGANIGRAMMES +
+            "/" +
+            props.location.data._id,
+          headers: {
+            Authorization: store.token,
+          },
+          body: formdata,
+        });
+        setLoading(false);
+        props.history.goBack();
+      }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -168,7 +247,7 @@ export default function EditContact(props) {
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
-            <Form.Row noMargin width="48%">
+            <Form.Row noMargin width="55%">
               <FormSelect
                 name="type" //working
                 value={type}
@@ -196,89 +275,130 @@ export default function EditContact(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO : " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="email"
-                value={email}
-                // error={firstName}
-                placeholder="Adresse e-mail"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                name="phone"
-                value={phone}
-                // error={lastName}
-                placeholder="Téléphone"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+            <Form.Row
+              noMargin
+              width="55%"
+              style={{ justifyContent: "flex-start", gap: "20px" }}
+            >
+              <div style={{ width: "45%" }}>
+                <FormInput
+                  name="email"
+                  value={email}
+                  // error={firstName}
+                  placeholder="Adresse e-mail"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {emailError !== "" && (
+                  <div className={classes.error}>{emailError}</div>
+                )}
+              </div>
+              <div style={{ width: "45%" }}>
+                <FormInput
+                  name="phone"
+                  value={phone}
+                  type="number"
+                  // error={lastName}
+                  placeholder="Téléphone"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {phoneError !== "" && (
+                  <div className={classes.error}>{phoneError}</div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IDENTITY :  " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="firstName"
-                value={firstName}
-                // error={firstName}
-                placeholder="First Name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormInput
-                name="lastName"
-                value={lastName}
-                // error={lastName}
-                placeholder="Last Name"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-              <FormMultipleUpload
-                name="profile"
-                // error={image}
-                values={image}
-                style={GLOBALS.Styles.inputWidth}
-                onChange={(values) => handleChange("profile", values)}
-              />
+            <Form.Row
+              noMargin
+              width="55%"
+              style={{ justifyContent: "flex-start", gap: "10px" }}
+            >
+              <div style={{ width: "30%" }}>
+                <FormInput
+                  name="firstName"
+                  value={firstName}
+                  // error={firstName}
+                  placeholder="First Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {firstNameError !== "" && (
+                  <div className={classes.error}>{firstNameError}</div>
+                )}
+              </div>
+              <div style={{ width: "30%" }}>
+                <FormInput
+                  name="lastName"
+                  value={lastName}
+                  // error={lastName}
+                  placeholder="Last Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {lastNameError !== "" && (
+                  <div className={classes.error}>{lastNameError}</div>
+                )}
+              </div>
+              <div style={{ width: "30%" }}>
+                <FormMultipleUpload
+                  name="profile"
+                  // error={image}
+                  values={image}
+                  style={{ width: "100%" }}
+                  onChange={(values) => handleChange("profile", values)}
+                />
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="COMPANY: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="company"
-                value={company}
-                // error={lastName}
-                placeholder="Enterprise"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+            <Form.Row noMargin width="55%">
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="company"
+                  value={company}
+                  // error={lastName}
+                  placeholder="Enterprise"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {companyError !== "" && (
+                  <div className={classes.error}>{companyError}</div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Rôle: " />
-            <Form.Row noMargin width="48%">
-              <FormInput
-                name="role"
-                value={role}
-                // error={lastName}
-                placeholder="Role"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+            <Form.Row noMargin width="55%">
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="role"
+                  value={role}
+                  // error={lastName}
+                  placeholder="Role"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {roleError !== "" && (
+                  <div className={classes.error}>{roleError}</div>
+                )}
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.ButtonContainer>
