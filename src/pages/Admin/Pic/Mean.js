@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import IconButton from "@material-ui/core/IconButton";
 import Actions from "../../../redux/actions";
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
-import Heading from "../../../components/Heading";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import FormInput from "../../../components/CustomFormInput";
 import CustomInputModal from "../../../components/CustomInputModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,10 +32,8 @@ export default function AddMean(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
   const [name, setName] = useState("");
-  const [type, setType] = useState("");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
-  const [location, setLocation] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
@@ -51,10 +46,6 @@ export default function AddMean(props) {
   const [DeliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-  const [
-    selectedSiteDeliveryAreadIndex,
-    seltSelectedSiteDeliveryAreaIndex,
-  ] = useState(null);
 
   const [storageAreas, setStorageAreas] = useState([]);
   const [dropdownStorageAreas, setDropdownStorageAreas] = useState([]);
@@ -62,9 +53,6 @@ export default function AddMean(props) {
     selectedDropdownStorageArea,
     setSelectedDropdownStorageArea,
   ] = useState("");
-  const [selectedStorageAreaIndex, setSelectedStorageAreaIndex] = useState(
-    null,
-  );
 
   const [deliveryAreaId, setDeilveryAreaId] = useState("");
   const [storageAreaId, setStorageAreaId] = useState("");
@@ -73,13 +61,6 @@ export default function AddMean(props) {
     deliveryAndStorageLocations,
     setDeliveryAndStorageLocations,
   ] = useState([]);
-
-  const [buildings, setBuidings] = useState([]);
-  const [dropdownBuildings, setDropdownBuildings] = useState([]);
-  const [selectedBuildingIndex] = useState(null);
-
-  const [levels, setLevels] = useState([]);
-  const [selectedDropdownIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -128,8 +109,6 @@ export default function AddMean(props) {
           response.data.site_buildings.map((item, index) =>
             temp.push({ label: item.name, value: item.name }),
           );
-          setBuidings(response.data.site_buildings);
-          setDropdownBuildings(temp);
         }
 
         if (response.data.mean_types !== null) {
@@ -140,18 +119,8 @@ export default function AddMean(props) {
           setMeanTypes(response.data.mean_types);
           setDropdownMeanTypes(temp);
         }
-        // if (response.data.mean_types !== null) {
-        //   setTypes(response.data.mean_types);
-        //   const temp = [];
-        //   response.data.mean_types.map((item, index) => {
-        //     temp.push({ label: item, value: item });
-        //   });
-        //   setDropdownTypes(temp);
-        // }
       } else {
       }
-
-      //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -165,10 +134,8 @@ export default function AddMean(props) {
   function handleChange(name, value) {
     if (name === "name") {
       setName(value);
-    } else if (name === "type") setType(value);
-    else if (name === "color") setColor(value);
+    } else if (name === "color") setColor(value);
     else if (name === "image") setImage(value);
-    else if (name === "location") setLocation(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "techSheet") setTechSheet(value);
@@ -245,18 +212,17 @@ export default function AddMean(props) {
         },
         body: formdata,
       });
-      console.log(JSON.stringify(response, null, 2));
 
-      if (response.success) {
-        setLoading(false);
-      } else {
-        setLoading(false);
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(response.message, "error"),
-          ),
-        );
-      }
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde]._id = response.data._id;
+      propShapes[inde].name = name;
+      propShape._id = response.data._id;
+      props.setShapes(propShapes);
+      props.setShape(propShape);
+
+      props.setModal(false);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -278,7 +244,6 @@ export default function AddMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -312,7 +277,6 @@ export default function AddMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -336,375 +300,266 @@ export default function AddMean(props) {
     }
   };
 
-  // const getLevels = async (buidlingId) => {
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
-  //       token: store.token,
-  //     });
-
-  //     if (response.success) {
-  //       setLevels(response.data);
-  //       if (response.data !== null && response.data.length > 0) {
-  //         const temp = [];
-  //         response.data.map((item, index) =>
-  //           temp.push({ label: item.name, value: item.name }),
-  //         );
-
-  //         setDropdownLevels(temp);
-  //       }
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // };
   const handleChangecolor = (color) => {
     setColor(color.hex);
-    console.log("color is", color.hex);
   };
 
   return (
-    <div className={classes.root}>
-      <IconButton onClick={() => props.history.goBack()}>
-        <BackArrow style={{ width: 30, height: 30 }} />
-      </IconButton>
-
-      <Form.Row>
-        <Heading primary="ADD A MEAN" />
-
-        {/* <Button
-                fullWidth={false}
-                component={NavLink}
-                text="LOCALISATION"
-                to={"/means/add-mean"}
-                style={{
-                  marginRight: "100px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  textAlign: "center",
-                  backgroundColor: "#140772"
-                }}
-              /> */}
-      </Form.Row>
-      <div className={classes.content}>
-        <Form.Form>
-          <Form.Row>
-            <FormLabel bold primary="IDENTITY * : " />
-            <Form.Row
-              noMargin
-              width="65%"
-              style={{ gap: "20px", justifyContent: "flex-start" }}
-            >
-              <FormInput
-                name="name"
-                value={name}
-                placeholder="name"
-                style={{ width: "25%" }}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+    <div className={classes.content}>
+      <Form.Form>
+        <Form.Row>
+          <FormLabel bold primary="IDENTITY * : " />
+          <Form.Row
+            noMargin
+            width="65%"
+            style={{ gap: "20px", justifyContent: "flex-start" }}
+          >
+            <FormInput
+              name="name"
+              value={name}
+              placeholder="name"
+              style={{ width: "25%" }}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+            />
+            <FormSelect
+              placeholder="Type"
+              name="type"
+              style={{ width: "25%" }}
+              values={dropdownMeanTypes}
+              onChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  const item = event.target.value;
+                  setSelectedMeanTypeIndex(index);
+                  setSelectedMeanType(item);
+                } else {
+                  setSelectedMeanTypeIndex(null);
+                  setSelectedMeanType("");
                 }
-              />
-              <FormSelect
-                placeholder="Type"
-                name="type"
-                style={{ width: "25%" }}
-                values={dropdownMeanTypes}
-                onChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-                    setSelectedMeanTypeIndex(index);
-                    setSelectedMeanType(item);
-                  } else {
-                    setSelectedMeanTypeIndex(null);
-                    setSelectedMeanType("");
+              }}
+            />
+            <div style={{ width: "25%" }}>
+              <ColorPicker color={color} handleChange={handleChangecolor} />
+            </div>
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="IMAGE :  " />
+          <Form.Row noMargin width="65%">
+            <FormMultipleUpload
+              name="image"
+              style={{ width: "40%" }}
+              values={image}
+              onChange={(values) => {
+                handleChange("image", values);
+              }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="LOCATION * :  " />
+          <Form.Row noMargin width="65%">
+            <CustomInputModal
+              name="location"
+              values={accessabilityPoints}
+              leftValue={accessabilityPoint}
+              rightValue={
+                accessabilityPoint === accessabilityPoints[0].value
+                  ? selectedDropdownStorageArea
+                  : selectedDropdownArea
+              }
+              leftId={accessabilityPoint}
+              rightId={
+                accessabilityPoint === accessabilityPoints[0].value
+                  ? storageAreaId
+                  : deliveryAreaId
+              }
+              chipValues={(values) => {
+                console.log(JSON.stringify(values, null, 2));
+                setDeliveryAndStorageLocations(values);
+              }}
+              leftDropdownValues={accessabilityPoints}
+              leftDropdwonPlaceholder={"Select Location Type"}
+              rightDropdownPlaceholder={"Select Location"}
+              leftDropdwonValueChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  const item = event.target.value;
+                  setAccessabilityPoint(item);
+                  if (item === accessabilityPoints[0].value) {
+                    getStorageArea();
                   }
-                }}
-              />
-              <div style={{ width: "25%" }}>
-                <ColorPicker color={color} handleChange={handleChangecolor} />
-              </div>
-              {/* <FormSelect
-                placeholder="color"
-                name="color"  
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              /> */}
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="IMAGE :  " />
-            <Form.Row noMargin width="65%">
-              <FormMultipleUpload
-                name="image"
-                style={{ width: "40%" }}
-                values={image}
-                onChange={(values) => {
-                  handleChange("image", values);
-                }}
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="LOCATION * :  " />
-            <Form.Row noMargin width="65%">
-              <CustomInputModal
-                name="location"
-                values={accessabilityPoints}
-                leftValue={accessabilityPoint}
-                rightValue={
-                  accessabilityPoint === accessabilityPoints[0].value
-                    ? selectedDropdownStorageArea
-                    : selectedDropdownArea
-                }
-                leftId={accessabilityPoint}
-                rightId={
-                  accessabilityPoint === accessabilityPoints[0].value
-                    ? storageAreaId
-                    : deliveryAreaId
-                }
-                chipValues={(values) => {
-                  console.log(JSON.stringify(values, null, 2));
-                  setDeliveryAndStorageLocations(values);
-                }}
-                leftDropdownValues={accessabilityPoints}
-                leftDropdwonPlaceholder={"Select Location Type"}
-                rightDropdownPlaceholder={"Select Location"}
-                leftDropdwonValueChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-                    setAccessabilityPoint(item);
-                    if (item === accessabilityPoints[0].value) {
-                      getStorageArea();
-                    }
-                    if (item === accessabilityPoints[1].value) {
-                      getDeliveryArea();
-                    } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
-                      setSelectedDropdownArea("");
-                      setDeilveryAreaId("");
-
-                      setSelectedStorageAreaIndex(0);
-                      setSelectedDropdownStorageArea("");
-                      setStorageAreaId("");
-                    }
+                  if (item === accessabilityPoints[1].value) {
+                    getDeliveryArea();
                   } else {
-                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                     setDeilveryAreaId("");
 
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
                     setStorageAreaId("");
                   }
-                }}
-                rightDropdownValues={
-                  accessabilityPoint === accessabilityPoints[0].value
-                    ? dropdownStorageAreas
-                    : dropdownDeliveryAreas
-                }
-                // error={addresses}
-                style={GLOBALS.Styles.inputWidth}
-                rightDropdwonValueChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-                    if (accessabilityPoints[0].value === accessabilityPoint) {
-                      setStorageAreaId(storageAreas[index]._id);
-                      setSelectedStorageAreaIndex(index);
-                      setSelectedDropdownStorageArea(item);
-                    } else {
-                      setSelectedStorageAreaIndex(0);
-                      setSelectedDropdownStorageArea("");
-                    }
+                } else {
+                  setSelectedDropdownArea("");
+                  setDeilveryAreaId("");
 
-                    if (accessabilityPoints[1].value === accessabilityPoint) {
-                      setDeilveryAreaId(DeliveryAreas[index]._id);
-                      seltSelectedSiteDeliveryAreaIndex(index);
-                      setSelectedDropdownArea(item);
-                    } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
-                      setSelectedDropdownArea("");
-                    }
+                  setSelectedDropdownStorageArea("");
+                  setStorageAreaId("");
+                }
+              }}
+              rightDropdownValues={
+                accessabilityPoint === accessabilityPoints[0].value
+                  ? dropdownStorageAreas
+                  : dropdownDeliveryAreas
+              }
+              style={GLOBALS.Styles.inputWidth}
+              rightDropdwonValueChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  const item = event.target.value;
+                  if (accessabilityPoints[0].value === accessabilityPoint) {
+                    setStorageAreaId(storageAreas[index]._id);
+                    setSelectedDropdownStorageArea(item);
                   } else {
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
-                    seltSelectedSiteDeliveryAreaIndex(0);
+                  }
+
+                  if (accessabilityPoints[1].value === accessabilityPoint) {
+                    setDeilveryAreaId(DeliveryAreas[index]._id);
+                    setSelectedDropdownArea(item);
+                  } else {
                     setSelectedDropdownArea("");
                   }
-                }}
-              />
-            </Form.Row>
+                } else {
+                  setSelectedDropdownStorageArea("");
+                  setSelectedDropdownArea("");
+                }
+              }}
+            />
           </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary="AVAILABILITIES * :" />
-            <Form.Row
-              noMargin
-              width="65%"
-              justifyContent="flex-start"
-              style={{ gap: "20px" }}
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="AVAILABILITIES * :" />
+          <Form.Row
+            noMargin
+            width="65%"
+            justifyContent="flex-start"
+            style={{ gap: "20px" }}
+          >
+            <FormInput
+              type="date"
+              style={{ width: "300px" }}
+              placeholder={`Start date`}
+              name="startDate"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={startDate}
+            />
+            <FormInput
+              type="date"
+              placeholder="End date"
+              style={{ width: "300px" }}
+              name="endDate"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+              value={endDate}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="TECHNICAL SHEET :" />
+          <Form.Row noMargin width="65%">
+            <FormMultipleUpload
+              name="techSheet"
+              style={GLOBALS.Styles.inputWidth}
+              values={techSheet}
+              onChange={(values) => {
+                handleChange("techSheet", values);
+              }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="UNAVAILABILITIES" />
+          <Form.Row noMargin width="65%">
+            <div
+              to={"/means/add-mean"}
+              style={{
+                marginLeft: "0px",
+                marginBottom: "7px",
+                width: "320px",
+                color: "#fff",
+                padding: "0.8rem 0",
+                borderRadius: "8px",
+                textAlign: "center",
+                backgroundColor: "#140772",
+              }}
             >
+              SHOW UNAVAILABILITIES
+            </div>
+          </Form.Row>
+        </Form.Row>
+        <Form.Row alignItems="flex-start">
+          <FormLabel bold primary="HOURLY RATE :" />
+          <Form.Row noMargin width="65%">
+            <div style={{ width: "30%", height: "100%", position: "relative" }}>
               <FormInput
-                type="date"
-                style={{ width: "300px" }}
-                placeholder={`Start date`}
-                name="startDate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={startDate}
-              />
-              <FormInput
-                type="date"
-                placeholder="End date"
-                style={{ width: "300px" }}
-                name="endDate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={endDate}
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="TECHNICAL SHEET :" />
-            <Form.Row noMargin width="65%">
-              <FormMultipleUpload
-                name="techSheet"
-                style={GLOBALS.Styles.inputWidth}
-                values={techSheet}
-                onChange={(values) => {
-                  handleChange("techSheet", values);
-                }}
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="UNAVAILABILITIES" />
-            <Form.Row noMargin width="65%">
-              <div
-                // name="availability"
-
-                to={"/means/add-mean"}
-                style={{
-                  marginLeft: "0px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  color: "#fff",
-                  padding: "0.8rem 0",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  backgroundColor: "#140772",
-                }}
-              >
-                SHOW UNAVAILABILITIES
-              </div>
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="HOURLY RATE :" />
-            <Form.Row noMargin width="65%">
-              <div
-                style={{ width: "30%", height: "100%", position: "relative" }}
-              >
-                <FormInput
-                  type="number"
-                  name="rate"
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
-                  value={rate}
-                />
-                <span style={{ position: "absolute", top: "25%", right: "5%" }}>
-                  €
-                </span>
-              </div>
-            </Form.Row>
-          </Form.Row>
-          {/* <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="TARIF HORAIRE : " />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={1}
-                style={{ width: "300px", textAlign: "right" }}
-                placeholder="€"
+                type="number"
                 name="rate"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
                 value={rate}
               />
-            </Form.Row>
-          </Form.Row> */}
-
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONAL INFORMATION :" />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={3}
-                maxLength="300"
-                style={{ width: "100%" }}
-                placeholder="Informations complémentaires"
-                name="addInfo"
-                className="means-addinfo"
-                onChange={({ target: { name, value } }) => {
-                  handleChange(name, value);
-                }}
-                value={addInfo}
-              />
-            </Form.Row>
+              <span style={{ position: "absolute", top: "25%", right: "5%" }}>
+                €
+              </span>
+            </div>
           </Form.Row>
-          {type && ""}
-          <Form.Row>
-            <Form.ButtonContainer style={{ width: "80%" }}>
-              <Button
-                minWidth={200}
-                text="VALIDATE"
-                fullWidth={false}
-                onClick={async () => {
-                  await createMean();
-                }}
-                // loading={formik.isSubmitting}
-                disabled={
-                  !name ||
-                  !selectedMeanType ||
-                  !color ||
-                  !startDate ||
-                  !deliveryAndStorageLocations
-                }
-              />
-            </Form.ButtonContainer>
+        </Form.Row>
+        <Form.Row alignItems="flex-start">
+          <FormLabel bold primary="ADDITIONAL INFORMATION :" />
+          <Form.Row noMargin width="65%">
+            <FormInput
+              textArea
+              rows={3}
+              maxLength="300"
+              style={{ width: "100%" }}
+              placeholder="Informations complémentaires"
+              name="addInfo"
+              className="means-addinfo"
+              onChange={({ target: { name, value } }) => {
+                handleChange(name, value);
+              }}
+              value={addInfo}
+            />
           </Form.Row>
-        </Form.Form>
-      </div>
+        </Form.Row>
+        <Form.Row>
+          <Form.ButtonContainer style={{ width: "80%" }}>
+            <Button
+              minWidth={200}
+              text="VALIDATE"
+              loading={loading}
+              fullWidth={false}
+              onClick={async () => {
+                await createMean();
+              }}
+              disabled={
+                loading ||
+                !name ||
+                !selectedMeanType ||
+                !color ||
+                !startDate ||
+                !deliveryAndStorageLocations
+              }
+            />
+          </Form.ButtonContainer>
+        </Form.Row>
+      </Form.Form>
     </div>
   );
 }

@@ -70,7 +70,7 @@ const Modal = (props) => {
       fullScreen
       open={props.open}
       onClose={props.onClose}
-      // TransitionComponent={Transition}
+      TransitionComponent={Transition}
     >
       <div className={classes.root}>
         <div className={classes.headerContainer}>

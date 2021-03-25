@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
@@ -7,7 +7,6 @@ import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
-import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import FormLabel from "../../../components/FormLabel";
@@ -48,7 +47,6 @@ const levelNumberList = [
   { value: 9, label: 9 },
   { value: 10, label: 10 },
 ];
-
 export default function AddSiteStep3(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -56,23 +54,12 @@ export default function AddSiteStep3(props) {
   const store = useSelector((state) => state.auth);
   const storeAdmin = useSelector((state) => state.admin);
 
-  const [siteId, setSiteId] = useState();
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [levelModal, setLevelModal] = useState(false);
-  const [buildingModal, setBuildingModal] = useState(false);
-
-  const [buildings, setBuildings] = useState([]);
-  const [activeBuilding, setActiveBuilding] = useState("");
-
-  const [buildingName, setBuildingName] = useState("");
 
   const [levelNumber, setLevelNumber] = useState("");
-
-  useEffect(() => {
-      console.log(storeAdmin)
-    // eslint-disable-next-line
-  }, [props]);
+  const [buildingName, setBuildingName] = useState("");
+  const [activeBuilding, setActiveBuilding] = useState("");
 
   const handleChange = (name, value) => {
     if (name === "buildingName") setBuildingName(value);
@@ -89,7 +76,7 @@ export default function AddSiteStep3(props) {
       setLoading(true);
       const formdata = JSON.stringify({
         name: buildingName,
-        siteId: siteId,
+        siteId: storeAdmin.site.siteId._id,
       });
 
       // JSON.stringify Creation
@@ -100,13 +87,19 @@ export default function AddSiteStep3(props) {
         body: formdata,
       });
 
-      const buildingsArray = buildings;
-      buildingsArray.push(response.data);
-      setBuildings(buildingsArray);
-
-      setBuildingModal((st) => !st);
+      setActiveBuilding(response.data);
       setLoading(false);
       resetStates();
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde]._id = response.data._id;
+      propShapes[inde].name = buildingName;
+      propShapes[inde].levels = [];
+      propShape._id = response.data._id;
+      propShape.levels = [];
+      props.setShapes(propShapes);
+      props.setShape(propShape);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -136,6 +129,16 @@ export default function AddSiteStep3(props) {
       });
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels.push(response.data);
+
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+
+      propShapes[inde].levels = activeBuildingObj.levels;
+      propShape.levels = activeBuildingObj.levels;
+      props.setShapes(propShapes);
+      props.setShape(propShape);
+
       setActiveBuilding(activeBuildingObj);
       setLoading(false);
       resetStates();
@@ -148,6 +151,7 @@ export default function AddSiteStep3(props) {
       );
     }
   }
+
   async function onAddLevelImage(levelId, file, index) {
     try {
       setLoading(true);
@@ -168,6 +172,15 @@ export default function AddSiteStep3(props) {
       setActiveBuilding(activeBuildingObj);
       setLoading(false);
       setUpdate((st) => !st);
+
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde].levels = activeBuildingObj.levels;
+      propShape.levels = activeBuildingObj.levels;
+      props.setShapes(propShapes);
+      props.setShape(propShape);
+
       resetStates();
     } catch (err) {
       setLoading(false);
@@ -179,25 +192,6 @@ export default function AddSiteStep3(props) {
     }
   }
 
-  // Rendering
-  const buildingRows = buildings.map((building) => [
-    building.name,
-    building.name === "Exterior" ? "-" : building.levels.length,
-    <Form.Row style={{ justifyContent: "center" }}>
-      <SmallButton
-        text="Modify"
-        onClick={() => {
-          setActiveBuilding(building);
-          setLevelModal((st) => !st);
-        }}
-        color={theme.palette.primary.contrastText}
-        style={{
-          marginLeft: 10,
-          borderRadius: 4,
-        }}
-      />
-    </Form.Row>,
-  ]);
   const levelRows = [];
   activeBuilding.levels?.map((level, index) =>
     activeBuilding.name === "Exterior"
@@ -309,133 +303,83 @@ export default function AddSiteStep3(props) {
   );
 
   return (
-    <>
-      <div>
-        <Form.Row justifyContent="flex-start">
-          <Button
-            maxWidth="30%"
-            text="Create a Building"
-            style={{ marginRight: 20 }}
-            color={theme.palette.common.black}
-            onClick={() => setBuildingModal((st) => !st)}
-          />
-        </Form.Row>
-        <div className={classes.content}>
-          <Table
-            rows={buildingRows}
-            headers={GLOBALS.Data.buildings.headings}
-          />
-        </div>
-        <Form.ButtonContainer>
-          <Button
-            minWidth={200}
-            text="COMPLETE"
-            fullWidth={false}
-            onClick={() => props.history.replace("/sites")}
-          />
-        </Form.ButtonContainer>
-      </div>
-      {update && ""}
-      {/* Create a building */}
-      <Modal
-        open={buildingModal}
-        title="Create a building"
-        onClose={() => setBuildingModal((st) => !st)}
-        body={
+    <div>
+      {!activeBuilding && (
+        <Form.Form>
+          <Form.Row>
+            <Form.Row noMargin>
+              <FormLabel noMargin bold primary="Building Name" />
+            </Form.Row>
+            <FormInput
+              name="buildingName"
+              value={buildingName}
+              maxLength="30"
+              placeholder="Building Name"
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+            />
+          </Form.Row>
+          <Form.Row justifyContent="center">
+            <Button
+              minWidth={200}
+              text="VALIDATE"
+              fullWidth={false}
+              onClick={onCreateBuilding}
+              disabled={loading || !buildingName}
+            />
+          </Form.Row>
+        </Form.Form>
+      )}
+      {activeBuilding && (
+        <>
           <Form.Form>
-            <Form.Row>
+            <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Building Name" />
+                <FormLabel noMargin bold primary="Level Number" />
               </Form.Row>
-              <FormInput
-                name="buildingName"
-                value={buildingName}
-                maxLength="30"
-                placeholder="Building Name"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+              {activeBuilding && (
+                <FormSelect
+                  name="levelNumber"
+                  value={levelNumber}
+                  // error={levelNumber}
+                  style={GLOBALS.Styles.inputWidth}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                  values={levelNumberList.filter(
+                    (item) =>
+                      !activeBuilding.levels.some(
+                        (item2) => item2.number === item.value,
+                      ),
+                  )}
+                />
+              )}
             </Form.Row>
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
-                onClick={onCreateBuilding}
-                disabled={loading || !buildingName}
+                onClick={onCreateLevel}
+                disabled={loading || !levelNumber}
               />
             </Form.Row>
           </Form.Form>
-        }
-      />
-      {/* Create a level */}
-      <Modal
-        open={levelModal}
-        title={
-          activeBuilding.name === "Exterior" ? "Site Plan" : "Create a level"
-        }
-        onClose={() => setLevelModal((st) => !st)}
-        body={
-          activeBuilding.name === "Exterior" ? (
-            <>
-              <div className={classes.content}>
-                <Table rows={levelRows} headers={["Plan", "Action"]} />
-              </div>
-            </>
-          ) : (
-            <>
-              <Form.Form>
-                <Form.Row alignItems="center">
-                  <Form.Row noMargin>
-                    <FormLabel noMargin bold primary="Level Number" />
-                  </Form.Row>
-                  {activeBuilding && (
-                    <FormSelect
-                      name="levelNumber"
-                      value={levelNumber}
-                      // error={levelNumber}
-                      style={GLOBALS.Styles.inputWidth}
-                      onChange={({ target: { name, value } }) =>
-                        handleChange(name, value)
-                      }
-                      values={levelNumberList.filter(
-                        (item) =>
-                          !activeBuilding.levels.some(
-                            (item2) => item2.number === item.value,
-                          ),
-                      )}
-                    />
-                  )}
-                </Form.Row>
-                <Form.Row justifyContent="center">
-                  <Button
-                    minWidth={200}
-                    text="VALIDATE"
-                    fullWidth={false}
-                    onClick={onCreateLevel}
-                    disabled={loading || !levelNumber}
-                  />
-                </Form.Row>
-              </Form.Form>
-              <Divider />
-              <FormLabel
-                bold
-                noMargin
-                primary={`Building: ${activeBuilding.name}`}
-              />
-              <Divider />
-              <div className={classes.content}>
-                <Table
-                  rows={levelRows}
-                  headers={GLOBALS.Data.levels.headings}
-                />
-              </div>
-            </>
-          )
-        }
-      />
-    </>
+          <Divider />
+          <FormLabel
+            bold
+            noMargin
+            primary={`Building: ${activeBuilding.name}`}
+          />
+          <Divider />
+          <div className={classes.content}>
+            <Table rows={levelRows} headers={GLOBALS.Data.levels.headings} />
+          </div>
+        </>
+      )}
+      {update && ""}
+    </div>
   );
 }

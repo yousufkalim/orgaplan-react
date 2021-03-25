@@ -33,6 +33,8 @@ class App extends Component {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
       this.props.onChange(this.state.shapes);
+    } else if (prevProps.shapes !== this.props.shapes) {
+      this.setState({ shapes: this.props.shapes });
     } else {
       return null;
     }
@@ -210,7 +212,7 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    if (e.target.value === "Mean") {
+    if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
         points: [],
@@ -280,8 +282,10 @@ class App extends Component {
         // s********************************
       }
       if (finishDisable !== true && checkMean !== true) {
-        if (meanCheck === "Mean") {
+        if (meanCheck === "MEAN") {
           if (meanFinish === false) {
+            // alert("hello");
+
             let rand = Date.now();
 
             this.setState({
@@ -347,6 +351,8 @@ class App extends Component {
       } else {
         return;
       }
+    } else if (image === null) {
+      alert("Upload a pdf first");
     } else {
       alert("Select an element first");
     }
@@ -402,7 +408,7 @@ class App extends Component {
   };
   handleConvaLineClick = (id) => {
     const { meanCheck } = this.state;
-    if (meanCheck !== "Mean") {
+    if (meanCheck !== "MEAN") {
       this.handleDisableShape(id);
     } else {
       alert("Please Check Building first to update Building");
@@ -410,7 +416,7 @@ class App extends Component {
   };
   handleConvaCircleClick = (id) => {
     const { meanCheck } = this.state;
-    if (meanCheck === "Mean") {
+    if (meanCheck === "MEAN") {
       this.handleDisableMean(id);
     } else {
       alert("Please Check Mean first to update Mean");

@@ -8,8 +8,8 @@ export default function UnAuth() {
   return (
     <Switch>
       <Route exact path="/" component={Landing} />
-      <Route exact path="/login" component={Login} />
-      {/* <Redirect from="*" to="/" /> */}
+      <Route path="/login" component={Login} />
+      <Redirect from="*" to="/" />
     </Switch>
   );
 }

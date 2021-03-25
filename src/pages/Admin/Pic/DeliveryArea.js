@@ -51,13 +51,12 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
             <FormInput
               name="name"
-              error
-              style={GLOBALS.Styles.inputWidth}
+              value={name}
               placeholder="Company name"
+              style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              value={name}
             />
             <FormMultipleUpload
               name="image"
