@@ -25,41 +25,87 @@ const PopoverModal = ({
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Event Detail </Modal.Title>
+          <Modal.Title className="text-center">Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="showPopover">
-            <h5>{event.title}</h5>
+            <span>BOOKING REASON</span>
+            <h5
+              className="text-center"
+              style={{
+                backgroundColor: "#f7f7f7",
+                fontSize: "16px",
+                color: "#777",
+                textAlign: "center",
+                padding: "10px 20px",
+                margin: "10px 0px",
+              }}
+            >
+              {event.title}
+            </h5>
             {/* {console.log(event)} */}
             <p>
               {/* {event.start.getDay()}-{event.start.getMonth() + 1}-
                 {event.start.getYear()} */}
-              <h6 style={{ "font-size": "12px", "padding-top": "10px" }}>
-                <span>
-                  <b>Start Time:</b> {getStartTime(event.start)}{" "}
-                </span>{" "}
+
+              <span
+                style={{
+                  fontWeight: "normal",
+                  textTransform: "uppercase",
+                }}
+              >
+                Start Time:
+              </span>
+              <div
+                style={{
+                  backgroundColor: "#f7f7f7",
+                  fontSize: "16px",
+                  color: "#777",
+                  color: "#50c878",
+                  textAlign: "center",
+                  padding: "10px 20px",
+                  margin: "10px 0px",
+                }}
+              >
+                {getStartTime(event.start)}-
                 <span>{getStartDate(event.start)}</span>
-                <br />
-                <span>
-                  <b>End Time:</b> {getStartTime(event.end)}{" "}
-                </span>{" "}
-                <span>{getStartDate(event.end)}</span>
-              </h6>
+              </div>
+              <br />
+              <span
+                style={{
+                  textTransform: "uppercase",
+                }}
+              >
+                End Time:
+              </span>
+              <div
+                style={{
+                  backgroundColor: "#f7f7f7",
+                  fontSize: "16px",
+                  color: "#777",
+                  color: "#ed2939",
+                  textAlign: "center",
+                  padding: "10px 20px",
+                  margin: "10px 0px",
+                }}
+              >
+                {getStartTime(event.end)}-<span>{getStartDate(event.end)}</span>
+              </div>
             </p>
 
             <hr />
             <div className="popoverfooter">
-              <div className="col-lg-6">
-                <button
-                  className="btn text-white bg-primary"
+              <div className="col-lg-2">
+                {/* <button
+                  className="btn text-primary btn-light px-3 text-center"
                   onClick={handleEditEvent}
                 >
-                  <i class="fas fa-pencil"></i> <span>edit</span>
-                </button>
+                  <i class="fas fa-pencil"></i> <span>Edit</span>
+                </button> */}
               </div>
-              <div className="col-lg-6">
+              <div className="col-lg-3">
                 <button
-                  className="btn text-white bg-danger"
+                  className="btn text-danger btn-light"
                   onClick={handleDeleteEvent}
                 >
                   <i class="fas fa-trash"></i> <span>Delete</span>
