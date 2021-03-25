@@ -517,6 +517,17 @@ const Means = () => {
               <Button
                 fullWidth={false}
                 component={NavLink}
+                text="Calandar"
+                to={"/means/calendar"}
+                style={{
+                  marginLeft: "20px",
+                  marginBottom: "7px",
+                  width: "200px",
+                }}
+              />
+              <Button
+                fullWidth={false}
+                component={NavLink}
                 text="MEANS REQUEST"
                 to={"/sites/means-request"}
                 style={{ marginLeft: "20px", width: "200px" }}
