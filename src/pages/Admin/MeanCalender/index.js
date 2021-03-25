@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import GLOBALS from "../../../globals";
 import "./Calender.css";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
@@ -17,6 +18,7 @@ import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
+
 import {
   get_means,
   add_mean,
@@ -24,6 +26,8 @@ import {
   delete_mean,
 } from "../../../redux/actions/means";
 import { useSelector, useDispatch } from "react-redux";
+import Actions from "../../../redux/actions";
+
 let view = {
   month: true,
   day: true,
@@ -46,10 +50,15 @@ let formats = {
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
-
   const meansData = useSelector((state) => state.means);
+  const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
+  const [isLoading, setLoading] = useState(true);
+  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const [selectedMean, setSelectedMean] = useState("");
+  const [selectedMeanId, setSelectedMeanId] = useState("");
+  const [selectedMeanIndex, setSelectedMeanIndex] = useState(null);
   // *****
-
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
@@ -94,31 +103,40 @@ const Calender = (props) => {
   //   setoverlapOpen(true);
   // };
   // useEffect
+  // useEffect(() => {
+  //   dispatch(get_means());
+  // }, []);
   useEffect(() => {
-    dispatch(get_means());
+    getData();
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    if (meansData.means) {
-      const tempmeanData = meansData.means.map((key, index) => {
-        return {
-          title: key.bookingReason,
-          companyId: key.companyId,
-          createdAt: key.createdAt,
-          start: new Date(key.startDate),
-          end: new Date(key.endDate),
-          endTime: key.endTime,
-          meanId: key.meanId,
-          siteId: key.siteId,
-          startTime: key.startTime,
-          updatedAt: key.updatedAt,
-          userId: key.userId,
-          _id: key._id,
-          color: "yellow",
-        };
-      });
-      setEvents(tempmeanData);
+    if (selectedMeanId !== "") {
+      onChangeMeans();
     }
-  }, [meansData.means]);
+  }, [selectedMeanId]);
+  // useEffect(() => {
+  //   if (meansData.means) {
+  //     const tempmeanData = meansData.means.map((key, index) => {
+  //       return {
+  //         title: key.bookingReason,
+  //         companyId: key.companyId,
+  //         createdAt: key.createdAt,
+  //         start: new Date(key.startDate),
+  //         end: new Date(key.endDate),
+  //         endTime: key.endTime,
+  //         meanId: key.meanId,
+  //         siteId: key.siteId,
+  //         startTime: key.startTime,
+  //         updatedAt: key.updatedAt,
+  //         userId: key.userId,
+  //         _id: key._id,
+  //         color: "yellow",
+  //       };
+  //     });
+  //     setEvents(tempmeanData);
+  //   }
+  // }, [meansData.means]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -324,7 +342,7 @@ const Calender = (props) => {
           endDate: updateElement[0].end,
         };
         dispatch(update_mean(DbElement, eventID));
-        dispatch(get_means());
+        // dispatch(get_means());
 
         setTitleEdit("");
         setShowEdit(false);
@@ -414,7 +432,7 @@ const Calender = (props) => {
           };
           // setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
-          dispatch(get_means());
+          // dispatch(get_means());
           setTitle("");
         } else if (
           overlap === "Disable" &&
@@ -549,7 +567,7 @@ const Calender = (props) => {
     setEvents(fill);
 
     dispatch(delete_mean(eventID));
-    dispatch(get_means());
+    // dispatch(get_means());
   };
   const handlePopoverShow = (event) => {
     seteventID(event._id);
@@ -661,143 +679,105 @@ const Calender = (props) => {
       };
     else return {};
   };
+  const getData = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        const tempmeanData = response.data.history.map((key, index) => {
+          return {
+            title: key.bookingReason,
+            companyId: key.companyId,
+            createdAt: key.createdAt,
+            start: new Date(key.startDate),
+            end: new Date(key.endDate),
+            endTime: key.endTime,
+            meanId: key.meanId,
+            siteId: key.siteId,
+            startTime: key.startTime,
+            updatedAt: key.updatedAt,
+            userId: key.userId,
+            _id: key._id,
+            color: "yellow",
+          };
+        });
+
+        setEvents(tempmeanData);
+
+        if (response.data.site_means != null) {
+          let selectedMeanIndex = 0;
+
+          const temp = [];
+          response.data.site_means.map((item, index) => {
+            return temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          });
+          setDropdownMeans(temp);
+
+          setSelectedMeanIndex(selectedMeanIndex);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const onChangeMeans = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        const tempmeanData = response.data.history.map((key, index) => {
+          return {
+            title: key.bookingReason,
+            companyId: key.companyId,
+            createdAt: key.createdAt,
+            start: new Date(key.startDate),
+            end: new Date(key.endDate),
+            endTime: key.endTime,
+            meanId: key.meanId,
+            siteId: key.siteId,
+            startTime: key.startTime,
+            updatedAt: key.updatedAt,
+            userId: key.userId,
+            _id: key._id,
+            color: "yellow",
+          };
+        });
+
+        setEvents(tempmeanData);
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   return (
     <>
-      {/* <div className="row ">
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-6">
-          <div
-            style={{
-              display: "flex",
-              "flex-direction": "row",
-              "margin-top": "10px",
-              "align-items": "center",
-              "margin-bottom": "10px",
-            }}
-          >
-            <span
-              style={{
-                "background-color": "#FFFF00",
-                height: "20px",
-                width: "20px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Pending validation</span>
-            <span
-              style={{
-                "background-color": "#808080",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Not availble</span>
-            <span
-              style={{
-                "background-color": "#008000",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Validate</span>
-            
-            <div style={{ "margin-left": "auto", "margin-right": "10px" }}>
-              <OverLapSelect
-                overlap={overlap}
-                overlapOpen={overlapOpen}
-                handleOpen={handleOverLapOpen}
-                handleClose={handleOverLapClose}
-                handleChange={handleOverLapChange}
-              />
-            </div>
-          </div>
-          <div className="Custom_weekdays">
-            <label>Work week</label>
-            <FormGroup row>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Sunday}
-                    onChange={workWeekHandleChange}
-                    name="Sunday"
-                    color="primary"
-                  />
-                }
-                label="Sunday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Monday}
-                    onChange={workWeekHandleChange}
-                    name="Monday"
-                    color="primary"
-                  />
-                }
-                label="Monday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Tuesday}
-                    onChange={workWeekHandleChange}
-                    name="Tuesday"
-                    color="primary"
-                  />
-                }
-                label="Tuesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Wednesday}
-                    onChange={workWeekHandleChange}
-                    name="Wednesday"
-                    color="primary"
-                  />
-                }
-                label="Wednesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Thursday}
-                    onChange={workWeekHandleChange}
-                    name="Thursday"
-                    color="primary"
-                  />
-                }
-                label="Thursday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Friday}
-                    onChange={workWeekHandleChange}
-                    name="Friday"
-                    color="primary"
-                  />
-                }
-                label="Friday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Saturday}
-                    onChange={workWeekHandleChange}
-                    name="Saturday"
-                    color="primary"
-                  />
-                }
-                label="Saturday"
-              />
-            </FormGroup>
-          </div>
-        </div>
-      </div> */}
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
@@ -1132,17 +1112,21 @@ const Calender = (props) => {
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
           <FormSelect
             placeholder="Mean"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
-            onChange={(e) => {
-              console.log("area ==> ", e.target.value);
+            values={dorpdownMeans}
+            value={selectedMeanId}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+
+              if (index !== -1) {
+                const itemId = event.target.value;
+                console.log(event);
+                setSelectedMeanIndex(index);
+                setSelectedMeanId(itemId);
+              } else {
+                setSelectedMeanIndex(null);
+
+                setSelectedMeanId("");
+              }
             }}
             style={{ marginRight: "10px", maxWidth: 250 }}
           />
@@ -1183,7 +1167,7 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "470px",
+                  height: "430px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let newStyle = {

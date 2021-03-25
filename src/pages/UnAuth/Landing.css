@@ -133,7 +133,7 @@ a {
 textarea {
   display: block;
   width: 70%;
-  margin: 1rem;
+  /* margin: 1rem; */
   height: 3rem;
   padding: 1rem;
   outline: none;

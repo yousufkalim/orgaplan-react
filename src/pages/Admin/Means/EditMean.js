@@ -390,10 +390,9 @@ export default function EditMean(props) {
   };
 
   const handleChangecolor = (color) => {
-    setColor(color.hex )
+    setColor(color.hex);
     console.log("color is", color.hex);
   };
-
 
   return (
     <div className={classes.root}>
@@ -434,20 +433,18 @@ export default function EditMean(props) {
             <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
               <FormInput
                 name="name"
-              
-                style={{width: "25%"}}
+                style={{ width: "25%" }}
                 placeholder="name"
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
                 value={name}
-                
               />
               <FormSelect
                 placeholder="Type"
                 name="type"
                 value={selectedMeanType}
-                style={{width: "25%"}}
+                style={{ width: "25%" }}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
 
@@ -465,23 +462,20 @@ export default function EditMean(props) {
               <div style={{ width: "25%" }}>
                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
-
-             
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IMAGE :  " />
             <Form.Row noMargin width="65%">
-            <FormMultipleUpload
+              <FormMultipleUpload
                 name="image"
-                style={{width: "40%"}}
+                style={{ width: "40%" }}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
                 }}
               />
             </Form.Row>
-            
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION * :  " />
@@ -645,11 +639,12 @@ export default function EditMean(props) {
           </Form.Row>
 
           <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="HOURLY RATE :" />
+            <FormLabel bold primary="HOURLY RATE :" />
             <Form.Row noMargin width="65%">
-              <div style={{ width: "30%", height: "100%", position: "relative" }}>
+              <div
+                style={{ width: "30%", height: "100%", position: "relative" }}
+              >
                 <FormInput
-            
                   type="number"
                   name="rate"
                   onChange={({ target: { name, value } }) =>
@@ -657,9 +652,10 @@ export default function EditMean(props) {
                   }
                   value={rate}
                 />
-               <span style={{position: "absolute", top: "25%", right: "5%"}}>€</span>
+                <span style={{ position: "absolute", top: "25%", right: "5%" }}>
+                  €
+                </span>
               </div>
-             
             </Form.Row>
           </Form.Row>
 
