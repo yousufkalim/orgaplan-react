@@ -26,6 +26,15 @@ const App = (props) => {
   const classes = useStyles();
   const [shape, setShape] = useState("");
   const [shapes, setShapes] = useState([]);
+  const [pdf, setPdf] = useState(
+    "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+  );
+
+  const handlePdfChange = (pdf) => {
+    setPdf(pdf);
+  };
+  // const handleChange = (shapes) => {
+  // setShapes(shapes);
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
@@ -45,6 +54,10 @@ const App = (props) => {
       }
     }
     // eslint-disable-next-line
+  }
+
+  const handleClick = (id, shape) => {
+    console.log("Shape Click", id, shape);
   };
 
   const handleChange = (shapesArray) => {
@@ -57,11 +70,16 @@ const App = (props) => {
   const handleClick = (id, shape) => {
     console.log("Shape Click", id, shape);
   };
-
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <Canvas shapes={shapes} onClick={handleClick} onChange={handleChange} />
+        <Canvas
+          shapes={shapes}
+          onClick={handleClick}
+          onChange={handleChange}
+          onPdfChange={handlePdfChange}
+          pdf={pdf}
+        />
       </div>
       {console.log("shapes", shapes)}
       {console.log("shape", shape)}
