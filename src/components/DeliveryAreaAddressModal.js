@@ -7,7 +7,7 @@ import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
 import FormInput from "./FormInput";
-import FormLabel from "../../../components/FormLabel";
+import FormLabel from "./FormLabel";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
