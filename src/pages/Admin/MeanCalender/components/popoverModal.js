@@ -66,8 +66,8 @@ const PopoverModal = ({
                   margin: "10px 0px",
                 }}
               >
-                <span>{getStartDate(event.start)}</span> -
-                {getStartTime(event.start)}
+                
+                <span>{getStartDate(event.start)}</span> - {getStartTime(event.start)}
               </div>
               <br />
               <span

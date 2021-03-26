@@ -13,7 +13,6 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
-import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
@@ -194,7 +193,6 @@ export default function AddClient(props) {
               name="name"
               value={name}
               maxLength="30"
-              // error={name}
               placeholder="Company name"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -214,7 +212,6 @@ export default function AddClient(props) {
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
-                // error={logo}
                 values={logo}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("logo", values)}
@@ -248,7 +245,6 @@ export default function AddClient(props) {
                 name="lastName"
                 value={lastName}
                 maxLength="30"
-                // error={lastName}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -275,7 +271,6 @@ export default function AddClient(props) {
               <FormInput
                 name="email"
                 value={email}
-                // error={email}
                 placeholder="E-mail Address"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -290,7 +285,6 @@ export default function AddClient(props) {
                 name="phone"
                 value={phone}
                 maxLength="30"
-                // error={phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -316,7 +310,6 @@ export default function AddClient(props) {
             <RadioButton
               name="contractType"
               value={contractType}
-              // error={contractType}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -335,7 +328,6 @@ export default function AddClient(props) {
                 placeholder="Start date"
                 name="contractStartDate"
                 value={contractStartDate}
-                // error={contractStartDate}
                 min={moment().format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
@@ -348,7 +340,6 @@ export default function AddClient(props) {
                 placeholder="End date"
                 name="contractEndDate"
                 value={contractEndDate}
-                // error={contractEndDate}
                 min={moment(contractStartDate)
                   .add(1, "days")
                   .format("YYYY-MM-DD")}
@@ -365,7 +356,6 @@ export default function AddClient(props) {
             <RadioButton
               name="functionality"
               value={functionality}
-              // error={functionality}
               style={GLOBALS.Styles.inputWidth}
               items={[{ value: "DELIVERY", label: "Delivery module" }]}
               onChange={({ target: { name, value } }) =>
@@ -381,7 +371,6 @@ export default function AddClient(props) {
               maxLength="300"
               name="additionalInfo"
               value={additionalInfo}
-              // error={additionalInfo}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Additional information"
               onChange={({ target: { name, value } }) =>
@@ -410,7 +399,6 @@ export default function AddClient(props) {
                 placeholder="0"
                 name="notificationPriorToDays"
                 value={notificationPriorToDays}
-                // error={notificationPriorToDays}
                 disabled={contractType !== "MASTERCLIENT"}
                 style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 onChange={({ target: { name, value } }) =>

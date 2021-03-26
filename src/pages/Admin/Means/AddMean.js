@@ -3,11 +3,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
+import moment from "moment";
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
-import FormInput from "../../../components/CustomFormInput";
+import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
@@ -38,7 +39,6 @@ export default function AddMean(props) {
   const [type, setType] = useState("");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
-  const [location, setLocation] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
@@ -51,10 +51,6 @@ export default function AddMean(props) {
   const [DeliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-  const [
-    selectedSiteDeliveryAreadIndex,
-    seltSelectedSiteDeliveryAreaIndex,
-  ] = useState(null);
 
   const [storageAreas, setStorageAreas] = useState([]);
   const [dropdownStorageAreas, setDropdownStorageAreas] = useState([]);
@@ -62,9 +58,6 @@ export default function AddMean(props) {
     selectedDropdownStorageArea,
     setSelectedDropdownStorageArea,
   ] = useState("");
-  const [selectedStorageAreaIndex, setSelectedStorageAreaIndex] = useState(
-    null,
-  );
 
   const [deliveryAreaId, setDeilveryAreaId] = useState("");
   const [storageAreaId, setStorageAreaId] = useState("");
@@ -73,13 +66,6 @@ export default function AddMean(props) {
     deliveryAndStorageLocations,
     setDeliveryAndStorageLocations,
   ] = useState([]);
-
-  const [buildings, setBuidings] = useState([]);
-  const [dropdownBuildings, setDropdownBuildings] = useState([]);
-  const [selectedBuildingIndex] = useState(null);
-
-  const [levels, setLevels] = useState([]);
-  const [selectedDropdownIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -128,8 +114,6 @@ export default function AddMean(props) {
           response.data.site_buildings.map((item, index) =>
             temp.push({ label: item.name, value: item.name }),
           );
-          setBuidings(response.data.site_buildings);
-          setDropdownBuildings(temp);
         }
 
         if (response.data.mean_types !== null) {
@@ -165,11 +149,9 @@ export default function AddMean(props) {
   function handleChange(name, value) {
     if (name === "name") {
       setName(value);
-    }
-    else if (name === "type") setType(value);
+    } else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
     else if (name === "image") setImage(value);
-    else if (name === "location") setLocation(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "techSheet") setTechSheet(value);
@@ -246,8 +228,6 @@ export default function AddMean(props) {
         },
         body: formdata,
       });
-      console.log(JSON.stringify(response, null, 2));
-
       if (response.success) {
         setLoading(false);
       } else {
@@ -259,6 +239,7 @@ export default function AddMean(props) {
         );
       }
       setLoading(false);
+      props.history.goBack();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -279,7 +260,6 @@ export default function AddMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -313,7 +293,6 @@ export default function AddMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -337,42 +316,8 @@ export default function AddMean(props) {
     }
   };
 
-  // const getLevels = async (buidlingId) => {
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
-  //       token: store.token,
-  //     });
-
-  //     if (response.success) {
-  //       setLevels(response.data);
-  //       if (response.data !== null && response.data.length > 0) {
-  //         const temp = [];
-  //         response.data.map((item, index) =>
-  //           temp.push({ label: item.name, value: item.name }),
-  //         );
-
-  //         setDropdownLevels(temp);
-  //       }
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // };
   const handleChangecolor = (color) => {
-    setColor(color.hex )
-    console.log("color is", color.hex);
+    setColor(color.hex);
   };
 
   return (
@@ -380,34 +325,24 @@ export default function AddMean(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-
+      {loading && ""}
       <Form.Row>
         <Heading primary="ADD A MEAN" />
-
-        {/* <Button
-                fullWidth={false}
-                component={NavLink}
-                text="LOCALISATION"
-                to={"/means/add-mean"}
-                style={{
-                  marginRight: "100px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  textAlign: "center",
-                  backgroundColor: "#140772"
-                }}
-              /> */}
       </Form.Row>
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
             <FormLabel bold primary="IDENTITY * : " />
-            <Form.Row noMargin width="65%" style={{ gap: "20px", justifyContent: "flex-start" }}>
+            <Form.Row
+              noMargin
+              width="65%"
+              style={{ gap: "20px", justifyContent: "flex-start" }}
+            >
               <FormInput
                 name="name"
                 value={name}
                 placeholder="name"
-                style={{width: "25%"}}
+                style={{ width: "25%" }}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -415,7 +350,7 @@ export default function AddMean(props) {
               <FormSelect
                 placeholder="Type"
                 name="type"
-                style={{width: "25%"}}
+                style={{ width: "25%" }}
                 values={dropdownMeanTypes}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
@@ -432,40 +367,20 @@ export default function AddMean(props) {
               <div style={{ width: "25%" }}>
                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
-              {/* <FormSelect
-                placeholder="color"
-                name="color"  
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={color}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              /> */}
-              
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IMAGE :  " />
             <Form.Row noMargin width="65%">
-            <FormMultipleUpload
+              <FormMultipleUpload
                 name="image"
-                style={{width: "40%"}}
+                style={{ width: "40%" }}
                 values={image}
                 onChange={(values) => {
                   handleChange("image", values);
                 }}
               />
             </Form.Row>
-            
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="LOCATION * :  " />
@@ -486,7 +401,6 @@ export default function AddMean(props) {
                     : deliveryAreaId
                 }
                 chipValues={(values) => {
-                  console.log(JSON.stringify(values, null, 2));
                   setDeliveryAndStorageLocations(values);
                 }}
                 leftDropdownValues={accessabilityPoints}
@@ -503,20 +417,16 @@ export default function AddMean(props) {
                     if (item === accessabilityPoints[1].value) {
                       getDeliveryArea();
                     } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
                       setSelectedDropdownArea("");
                       setDeilveryAreaId("");
 
-                      setSelectedStorageAreaIndex(0);
                       setSelectedDropdownStorageArea("");
                       setStorageAreaId("");
                     }
                   } else {
-                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                     setDeilveryAreaId("");
 
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
                     setStorageAreaId("");
                   }
@@ -534,25 +444,19 @@ export default function AddMean(props) {
                     const item = event.target.value;
                     if (accessabilityPoints[0].value === accessabilityPoint) {
                       setStorageAreaId(storageAreas[index]._id);
-                      setSelectedStorageAreaIndex(index);
                       setSelectedDropdownStorageArea(item);
                     } else {
-                      setSelectedStorageAreaIndex(0);
                       setSelectedDropdownStorageArea("");
                     }
 
                     if (accessabilityPoints[1].value === accessabilityPoint) {
                       setDeilveryAreaId(DeliveryAreas[index]._id);
-                      seltSelectedSiteDeliveryAreaIndex(index);
                       setSelectedDropdownArea(item);
                     } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
                       setSelectedDropdownArea("");
                     }
                   } else {
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
-                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                   }
                 }}
@@ -570,13 +474,15 @@ export default function AddMean(props) {
             >
               <FormInput
                 type="date"
+                name="startDate"
+                value={startDate}
                 style={{ width: "300px" }}
                 placeholder={`Start date`}
-                name="startDate"
+                min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={startDate}
               />
               <FormInput
                 type="date"
@@ -587,6 +493,8 @@ export default function AddMean(props) {
                   handleChange(name, value)
                 }
                 value={endDate}
+                min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               />
             </Form.Row>
           </Form.Row>
@@ -627,11 +535,12 @@ export default function AddMean(props) {
           </Form.Row>
 
           <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="HOURLY RATE :" />
+            <FormLabel bold primary="HOURLY RATE :" />
             <Form.Row noMargin width="65%">
-              <div style={{ width: "30%", height: "100%", position: "relative" }}>
+              <div
+                style={{ width: "30%", height: "100%", position: "relative" }}
+              >
                 <FormInput
-            
                   type="number"
                   name="rate"
                   onChange={({ target: { name, value } }) =>
@@ -639,30 +548,12 @@ export default function AddMean(props) {
                   }
                   value={rate}
                 />
-               <span style={{position: "absolute", top: "25%", right: "5%"}}>€</span>
+                <span style={{ position: "absolute", top: "25%", right: "5%" }}>
+                  €
+                </span>
               </div>
-             
             </Form.Row>
           </Form.Row>
-          {/* <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="TARIF HORAIRE : " />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={1}
-                style={{ width: "300px", textAlign: "right" }}
-                placeholder="€"
-                name="rate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                value={rate}
-              />
-            </Form.Row>
-          </Form.Row> */}
-
-          
-
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="ADDITIONAL INFORMATION :" />
             <Form.Row noMargin width="65%">
@@ -691,7 +582,6 @@ export default function AddMean(props) {
                 onClick={async () => {
                   await createMean();
                 }}
-                // loading={formik.isSubmitting}
                 disabled={
                   !name ||
                   !selectedMeanType ||

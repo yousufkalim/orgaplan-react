@@ -35,9 +35,9 @@ export default function Canvas({
       >
         <Layer>
           {image ? (
-            <Rectangle fillPatternImage={image} width={800} height={400} />
+            <Rectangle fillPatternImage={image} width={800} height={550} />
           ) : (
-            <Rectangle fill={"#ccc"} width={800} height={400} />
+            <Rectangle fill={"#ccc"} width={800} height={550} />
           )}
           <ConvaLine
             points={flattenedPoints}
@@ -54,7 +54,7 @@ export default function Canvas({
                 let x = 0;
                 let y = 0;
 
-                if (shape.type === "Mean") {
+                if (shape.type === "MEAN") {
                   x = shape.points[0][0] - width / 2;
                   y = shape.points[0][1] - width / 2;
                 } else {
@@ -65,7 +65,7 @@ export default function Canvas({
                 }
                 return (
                   <>
-                    {shape.type === "Mean" ? (
+                    {shape.type === "MEAN" ? (
                       shape.image ? (
                         <Circle
                           key={shape._id}
@@ -120,9 +120,8 @@ export default function Canvas({
                           : null;
 
                       return (
-                        <>
+                        <React.Fragment key={index}>
                           <Rectangle
-                            key={index}
                             x={x}
                             y={y}
                             width={width}
@@ -132,7 +131,7 @@ export default function Canvas({
                             strokeWidth={6}
                             startPointAttr={startPointAttr}
                           />
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </>
@@ -154,17 +153,18 @@ export default function Canvas({
                     : null;
 
                 return (
-                  <Rectangle
-                    key={index}
-                    x={x}
-                    y={y}
-                    width={width}
-                    height={width}
-                    fill="blue"
-                    stroke="black"
-                    strokeWidth={6}
-                    startPointAttr={startPointAttr}
-                  />
+                  <React.Fragment key={index}>
+                    <Rectangle
+                      x={x}
+                      y={y}
+                      width={width}
+                      height={width}
+                      fill="blue"
+                      stroke="black"
+                      strokeWidth={6}
+                      startPointAttr={startPointAttr}
+                    />
+                  </React.Fragment>
                 );
               })}
         </Layer>

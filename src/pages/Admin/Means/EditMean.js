@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 import GLOBALS from "../../../globals";
@@ -14,7 +13,6 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
-import CustomButtonModal from "../../../components/CustomButtonModal";
 import moment from "moment";
 import ColorPicker from "../../../components/ColorPcker";
 
@@ -47,17 +45,12 @@ export default function EditMean(props) {
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [loading, setLoading] = useState(true);
-  const [disableDropdpwn, setDisableDropdown] = useState(false);
   const classes = useStyles();
 
   const [accessabilityPoint, setAccessabilityPoint] = useState("");
   const [DeliveryAreas, setDeliveryAreas] = useState([]);
   const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
   const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-  const [
-    selectedSiteDeliveryAreadIndex,
-    seltSelectedSiteDeliveryAreaIndex,
-  ] = useState(null);
 
   const [storageAreas, setStorageAreas] = useState([]);
   const [dropdownStorageAreas, setDropdownStorageAreas] = useState([]);
@@ -65,9 +58,6 @@ export default function EditMean(props) {
     selectedDropdownStorageArea,
     setSelectedDropdownStorageArea,
   ] = useState("");
-  const [selectedStorageAreaIndex, setSelectedStorageAreaIndex] = useState(
-    null,
-  );
 
   const [deliveryAreaId, setDeilveryAreaId] = useState("");
   const [storageAreaId, setStorageAreaId] = useState("");
@@ -76,16 +66,6 @@ export default function EditMean(props) {
     deliveryAndStorageLocations,
     setDeliveryAndStorageLocations,
   ] = useState([]);
-
-  const [buildings, setBuidings] = useState([]);
-  const [dropdownBuildings, setDropdownBuildings] = useState([]);
-  const [selectedDropdownBuilding, setSelectedDropdownBuilding] = useState("");
-  const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
-
-  const [levels, setLevels] = useState([]);
-  const [dropdownLevels, setDropdownLevels] = useState([]);
-  const [selectedDropdownLevel, setSelectedDropdownLevel] = useState("");
-  const [selectedDropdownIndex, setSelectedLevelIndex] = useState(null);
 
   const [meanTypes, setMeanTypes] = useState([]);
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
@@ -137,11 +117,6 @@ export default function EditMean(props) {
       }
     });
     setDeliveryAndStorageLocations(locationTemp);
-    console.log(JSON.stringify(locationTemp, null, 2));
-    // "key": "61615286801076",
-    // "label": "storqg",
-    // "id": "60096007880eb61e9d7188d2",
-    // "type": "Storage Area"
   };
   useEffect(() => {}, [
     meanTypes,
@@ -180,8 +155,6 @@ export default function EditMean(props) {
           response.data.site_buildings.map((item, index) =>
             temp.push({ label: item.name, value: item.name }),
           );
-          await setBuidings(response.data.site_buildings);
-          await setDropdownBuildings(temp);
         }
 
         if (response.data.mean_types !== null) {
@@ -192,18 +165,9 @@ export default function EditMean(props) {
           await setMeanTypes(response.data.mean_types);
           await setDropdownMeanTypes(temp);
         }
-        // if (response.data.mean_types !== null) {
-        //   setTypes(response.data.mean_types);
-        //   const temp = [];
-        //   response.data.mean_types.map((item, index) => {
-        //     temp.push({ label: item, value: item });
-        //   });
-        //   setDropdownTypes(temp);
-        // }
       } else {
       }
 
-      //   setItems(response.data.items);
       await setValues();
       setLoading(false);
     } catch (err) {
@@ -260,8 +224,8 @@ export default function EditMean(props) {
 
       // TEST DATA , CALENDAR NOT MADE YET
 
-      const sampleDateOne = new Date("05/20/2021");
-      const sampleDateTwo = new Date("05/28/2021");
+      // const sampleDateOne = new Date("05/20/2021");
+      // const sampleDateTwo = new Date("05/28/2021");
       // const unavailabilities = [
       //   {
       //     date: sampleDateOne,
@@ -279,9 +243,9 @@ export default function EditMean(props) {
 
       formdata.append("name", name);
       formdata.append("color", color);
-      if (image.length != 0 && image[0].file != undefined)
+      if (image.length !== 0 && image[0].file !== undefined)
         formdata.append("image", image[0].file);
-      if (image.length != 0 && image[0].file != undefined)
+      if (image.length !== 0 && image[0].file !== undefined)
         formdata.append("sheet", image[0].file);
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
@@ -311,6 +275,7 @@ export default function EditMean(props) {
         );
       }
       setLoading(false);
+      props.history.goBack();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -331,7 +296,6 @@ export default function EditMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -365,7 +329,6 @@ export default function EditMean(props) {
       });
 
       if (response.success) {
-        setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
           response.data.map((item, index) =>
@@ -391,7 +354,6 @@ export default function EditMean(props) {
 
   const handleChangecolor = (color) => {
     setColor(color.hex);
-    console.log("color is", color.hex);
   };
 
   return (
@@ -399,33 +361,10 @@ export default function EditMean(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-
+      {loading && ""}
       <Form.Row>
         <Heading primary="EDIT A MEAN" />
-
-        {/* <Button
-                fullWidth={false}
-                component={NavLink}
-                text="LOCALISATION"
-                to={"/means/add-mean"}
-                style={{
-                  marginRight: "100px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  textAlign: "center",
-                  backgroundColor: "#140772"
-                }}
-              /> */}
       </Form.Row>
-      {loading && ""}
-      {levels && ""}
-      {selectedDropdownIndex && ""}
-      {meanTypes && ""}
-      {selectedBuildingIndex && ""}
-      {DeliveryAreas && ""}
-      {selectedSiteDeliveryAreadIndex && ""}
-      {storageAreas && ""}
-      {selectedStorageAreaIndex && ""}
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
@@ -513,20 +452,16 @@ export default function EditMean(props) {
                     if (item === accessabilityPoints[1].value) {
                       getDeliveryArea();
                     } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
                       setSelectedDropdownArea("");
                       setDeilveryAreaId("");
 
-                      setSelectedStorageAreaIndex(0);
                       setSelectedDropdownStorageArea("");
                       setStorageAreaId("");
                     }
                   } else {
-                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                     setDeilveryAreaId("");
 
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
                     setStorageAreaId("");
                   }
@@ -536,7 +471,6 @@ export default function EditMean(props) {
                     ? dropdownStorageAreas
                     : dropdownDeliveryAreas
                 }
-                // error={addresses}
                 style={GLOBALS.Styles.inputWidth}
                 rightDropdwonValueChange={(event) => {
                   const index = event.target.selectedIndex - 1;
@@ -544,25 +478,19 @@ export default function EditMean(props) {
                     const item = event.target.value;
                     if (accessabilityPoints[0].value === accessabilityPoint) {
                       setStorageAreaId(storageAreas[index]._id);
-                      setSelectedStorageAreaIndex(index);
                       setSelectedDropdownStorageArea(item);
                     } else {
-                      setSelectedStorageAreaIndex(0);
                       setSelectedDropdownStorageArea("");
                     }
 
                     if (accessabilityPoints[1].value === accessabilityPoint) {
                       setDeilveryAreaId(DeliveryAreas[index]._id);
-                      seltSelectedSiteDeliveryAreaIndex(index);
                       setSelectedDropdownArea(item);
                     } else {
-                      seltSelectedSiteDeliveryAreaIndex(0);
                       setSelectedDropdownArea("");
                     }
                   } else {
-                    setSelectedStorageAreaIndex(0);
                     setSelectedDropdownStorageArea("");
-                    seltSelectedSiteDeliveryAreaIndex(0);
                     setSelectedDropdownArea("");
                   }
                 }}
@@ -580,23 +508,27 @@ export default function EditMean(props) {
             >
               <FormInput
                 type="date"
+                name="startDate"
+                value={startDate}
                 style={{ width: "300px" }}
                 placeholder={`Start date`}
-                name="startDate"
+                min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={startDate}
               />
               <FormInput
                 type="date"
+                name="endDate"
+                value={endDate}
                 placeholder="End date"
                 style={{ width: "300px" }}
-                name="endDate"
+                min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={endDate}
               />
             </Form.Row>
           </Form.Row>
@@ -619,8 +551,6 @@ export default function EditMean(props) {
             <FormLabel bold primary="UNAVAILABILITIES" />
             <Form.Row noMargin width="65%">
               <div
-                // name="availability"
-
                 to={"/means/add-mean"}
                 style={{
                   marginLeft: "0px",
@@ -687,7 +617,6 @@ export default function EditMean(props) {
                 onClick={async () => {
                   await updateMean();
                 }}
-                // loading={formik.isSubmitting}
                 disabled={
                   !name ||
                   !selectedMeanType ||
