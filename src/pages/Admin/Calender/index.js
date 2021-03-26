@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import GLOBALS from "../../../globals";
 import "./Calender.css";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
@@ -27,6 +28,7 @@ import {
   update_mean,
   delete_mean,
 } from "../../../redux/actions/means";
+import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 let view = {
   month: true,
@@ -51,8 +53,11 @@ const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
+  const adminStore = useSelector((state) => state.admin);
+  const store = useSelector((state) => state.auth);
   // *****
-
+  const [isLoading, setLoading] = useState(true);
+  const [siteMeans, setSiteMeans] = useState("");
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
@@ -98,30 +103,8 @@ const Calender = (props) => {
   // };
   // useEffect
   useEffect(() => {
-    dispatch(get_means());
-  }, []);
-  useEffect(() => {
-    if (meansData.means) {
-      const tempmeanData = meansData.means.map((key, index) => {
-        return {
-          title: key.bookingReason,
-          companyId: key.companyId,
-          createdAt: key.createdAt,
-          start: new Date(key.startDate),
-          end: new Date(key.endDate),
-          endTime: key.endTime,
-          meanId: key.meanId,
-          siteId: key.siteId,
-          startTime: key.startTime,
-          updatedAt: key.updatedAt,
-          userId: key.userId,
-          _id: key._id,
-          color: "yellow",
-        };
-      });
-      setEvents(tempmeanData);
-    }
-  }, [meansData.means]);
+    getData();
+  }, []); 
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -629,9 +612,45 @@ const Calender = (props) => {
       }, 1000);
     }
   };
-  // const statusBookingChange = (event) => {
-  //   setStatusbooking(event.target.value);
-  // };
+
+  const getData = async () => {
+     let count = 1; 
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.getBookingBySiteId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      }); 
+      if (response.success) {
+        const tempmeanData = response.data.bookings.map((key, index) => { 
+          setSiteMeans(count++);
+          return {
+            title: key.bookingReason,
+            companyId: key.companyId,
+            createdAt: key.createdAt,
+            start: new Date(key.startDate),
+            end: new Date(key.endDate),
+            endTime: key.endTime,
+            meanId: key.meanId,
+            siteId: key.siteId,
+            startTime: key.startTime,
+            updatedAt: key.updatedAt,
+            userId: key.userId,
+            _id: key._id,
+            color: "yellow",
+          };
+        });
+        setEvents(tempmeanData);
+        setLoading(false);
+      }
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   function Alertbox(props) {
     return (
       <Alert
@@ -1210,7 +1229,7 @@ const Calender = (props) => {
                 noMargin
                 topPadding
                 style={{ color: "#F80303", paddingRight: "3rem" }}
-                primary={"PENDING DELIVERY REQUESTS : 3 DELIVERIES"}
+                primary={`DELIVERY REQUESTS : ${siteMeans} DELIVERIES`}
                 bold
               />
             </Form.Row>
