@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Canvas from "../../../components/Canvas";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { useSelector } from "react-redux";
+// "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
 import Mean from "./Mean";
 import Building from "./Building";
 import GLOBALS from "../../../globals";
@@ -24,22 +25,19 @@ const useStyles = makeStyles((theme) => ({
 
 const App = (props) => {
   const classes = useStyles();
+  const adminStore = useSelector((state) => state.admin);
   const [shape, setShape] = useState("");
   const [shapes, setShapes] = useState([]);
-  const [pdf, setPdf] = useState(
-    "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
-  );
-
-  const handlePdfChange = (pdf) => {
-    setPdf(pdf);
-  };
-  // const handleChange = (shapes) => {
-  // setShapes(shapes);
+  const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
     shape && setModal(true);
   }, [shape]);
+
+  const handlePdfChange = (pdf) => {
+    setPdf(pdf);
+  };
 
   const checkShape = () => {
     if (shape && modal) {
@@ -54,10 +52,6 @@ const App = (props) => {
       }
     }
     // eslint-disable-next-line
-  }
-
-  const handleClick = (id, shape) => {
-    console.log("Shape Click", id, shape);
   };
 
   const handleChange = (shapesArray) => {
@@ -67,12 +61,14 @@ const App = (props) => {
     setModal((st) => !st);
   };
 
-  // const handleClick = (id, shape) => {
-  //   console.log("Shape Click", id, shape);
-  // };
+  const handleClick = (id, shape) => {
+    console.log("Shape Click", id, shape);
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.content}>
+        {console.log(adminStore)}
         <Canvas
           shapes={shapes}
           onClick={handleClick}

@@ -49,7 +49,7 @@ class App extends Component {
     document.addEventListener("keydown", this.escFunction, false);
     this.props.onChange(this.state.shapes);
     this.setState({ shapes: this.props.shapes });
-    this.showPdf(this.props.pdf);
+    this.props.pdf && this.showPdf(this.props.pdf);
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
     }
@@ -402,7 +402,6 @@ class App extends Component {
       let file = e.target.files[0];
       if (file.type === "application/pdf") {
         const uri = URL.createObjectURL(file);
-        // this.showPdf(uri);
         this.setState({ tempPdf: file });
         this.setState({ isLoading: true });
 
@@ -695,6 +694,7 @@ class App extends Component {
         <div className="pt-2">
           <Button
             fullWidth={false}
+            disabled={isLoading}
             text={isLoading === true ? "LOADING......" : "Upload PDF"}
             onClick={() =>
               document.getElementById("upload-canvas-pdf-button").click()

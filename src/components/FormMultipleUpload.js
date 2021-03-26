@@ -146,7 +146,7 @@ export default function FormMultipleUpload(props) {
         </Grid>
         {update && ""}
         {props.values.map((value, index) => (
-          <Grid item xs={4} key={index}>
+          <Grid item xs={12} lg={4} key={index}>
             <div className={classes.imageWrapper}>
               <Avatar
                 variant="square"
