@@ -67,9 +67,9 @@ const App = (props) => {
     setModal((st) => !st);
   };
 
-  const handleClick = (id, shape) => {
-    console.log("Shape Click", id, shape);
-  };
+  // const handleClick = (id, shape) => {
+  //   console.log("Shape Click", id, shape);
+  // };
   return (
     <div className={classes.root}>
       <div className={classes.content}>

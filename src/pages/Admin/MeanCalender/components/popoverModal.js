@@ -13,7 +13,7 @@ const PopoverModal = ({
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
     var yyyy = start.getFullYear();
-    start = mm + "/" + dd + "/" + yyyy;
+    start = dd + "/" + mm + "/" + yyyy;
     return start;
   };
 
@@ -60,15 +60,14 @@ const PopoverModal = ({
                 style={{
                   backgroundColor: "#f7f7f7",
                   fontSize: "16px",
-                  color: "#777",
                   color: "#50c878",
                   textAlign: "center",
                   padding: "10px 20px",
                   margin: "10px 0px",
                 }}
               >
-                {getStartTime(event.start)}-
-                <span>{getStartDate(event.start)}</span>
+                
+                <span>{getStartDate(event.start)}</span> - {getStartTime(event.start)}
               </div>
               <br />
               <span
@@ -82,14 +81,14 @@ const PopoverModal = ({
                 style={{
                   backgroundColor: "#f7f7f7",
                   fontSize: "16px",
-                  color: "#777",
                   color: "#ed2939",
                   textAlign: "center",
                   padding: "10px 20px",
                   margin: "10px 0px",
                 }}
               >
-                {getStartTime(event.end)}-<span>{getStartDate(event.end)}</span>
+                <span>{getStartDate(event.end)}</span> -{" "}
+                {getStartTime(event.end)}
               </div>
             </p>
 
