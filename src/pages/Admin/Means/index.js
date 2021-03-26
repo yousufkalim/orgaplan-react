@@ -4,7 +4,7 @@ import AddMean from "./AddMean";
 import Mean from "./Means";
 import EditMean from "./EditMean";
 import Historic from "./Historic";
-import MeanCalendar from "../MeanCalender";
+import MeanCalender from "../MeanCalender";
 
 export default function Index(props) {
   return (
@@ -14,7 +14,7 @@ export default function Index(props) {
       <Route
         exact
         path={props.match.path + "/calendar"}
-        component={MeanCalendar}
+        component={MeanCalender}
       />
       <Route
         exact
