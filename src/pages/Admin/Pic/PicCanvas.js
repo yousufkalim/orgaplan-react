@@ -54,6 +54,10 @@ const App = (props) => {
       }
     }
     // eslint-disable-next-line
+  }
+
+  const handleClick = (id, shape) => {
+    console.log("Shape Click", id, shape);
   };
 
   const handleChange = (shapesArray) => {
