@@ -62,6 +62,8 @@ const endpoints = {
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
+  getBookingBySiteId: BASE_URL_V1 + "mean_booking/getBookingBySiteId",
+
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
 
   GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",

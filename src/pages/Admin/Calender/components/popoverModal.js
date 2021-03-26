@@ -94,22 +94,22 @@ const PopoverModal = ({
 
             <hr />
             <div className="popoverfooter">
-              <div className="col-lg-2">
+              {/* <div className="col-lg-2">
                 <button
                   className="btn text-primary btn-light px-3 text-center"
                   onClick={handleEditEvent}
                 >
                   <i class="fas fa-pencil"></i> <span>Edit</span>
                 </button>
-              </div>
-              <div className="col-lg-3">
+              </div> */}
+              {/* <div className="col-lg-3">
                 <button
                   className="btn text-danger btn-light"
                   onClick={handleDeleteEvent}
                 >
                   <i class="fas fa-trash"></i> <span>Delete</span>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </Modal.Body>
