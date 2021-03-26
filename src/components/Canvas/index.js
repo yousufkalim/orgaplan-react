@@ -14,6 +14,8 @@ class App extends Component {
     isFinished: false,
     image: null,
     tempImage: "",
+    tempPdf: "",
+
     checkDisable: true,
     meanDisable: true,
     color: "black",
@@ -23,8 +25,7 @@ class App extends Component {
     meanCheck: "",
     meanValue: "",
     meanFinish: false,
-    viewPortWidth: 0,
-    viewPortHeight: 0,
+    isLoading: true,
   };
 
   // LifeCycle Hooks
@@ -33,6 +34,8 @@ class App extends Component {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
       this.props.onChange(this.state.shapes);
+    } else if (prevState.tempPdf !== this.state.tempPdf) {
+      this.props.onPdfChange(this.state.tempPdf);
     } else if (prevProps.shapes !== this.props.shapes) {
       this.setState({ shapes: this.props.shapes });
     } else {
@@ -46,7 +49,10 @@ class App extends Component {
     document.addEventListener("keydown", this.escFunction, false);
     this.props.onChange(this.state.shapes);
     this.setState({ shapes: this.props.shapes });
-    // this.showPdf(this.state.tempPdf);
+    this.showPdf(this.props.pdf);
+    if (!this.props.pdf) {
+      this.setState({ isLoading: false });
+    }
   }
 
   // ******************
@@ -119,11 +125,13 @@ class App extends Component {
       catImage2.onload = () => {
         this.setState({ image: catImage2 });
       };
+      this.setState({ isLoading: false });
+
       // this.setState({ tempImage: "" });
 
       canvas.display = "none";
     } catch (error) {
-      console.log(error, error.message);
+      console.log("error", error.message);
     }
   };
   handleUpdateMean = () => {
@@ -392,10 +400,16 @@ class App extends Component {
   handlePdfChange = (e) => {
     if (e.target.files.length) {
       let file = e.target.files[0];
-      const uri = URL.createObjectURL(file);
-      // this.showPdf(uri);
+      if (file.type === "application/pdf") {
+        const uri = URL.createObjectURL(file);
+        // this.showPdf(uri);
+        this.setState({ tempPdf: file });
+        this.setState({ isLoading: true });
 
-      this.setState({ tempImage: uri });
+        this.setState({ tempImage: uri });
+      } else {
+        alert("You can upload only pdf file");
+      }
     }
   };
   handleConvaLineMouseOver = (id) => {
@@ -490,8 +504,6 @@ class App extends Component {
 
     let diff = Math.abs(num1 - num2);
     let tempCheck = tempArr.find((dt) => dt === diff);
-    // console.log(diff, "diff");
-    // console.log(tempCheck, "tempCheck");
 
     /* Check if sum of A1, A2 and A3 is same as A */
     if (tempCheck !== undefined) {
@@ -639,6 +651,7 @@ class App extends Component {
         meanCheck,
         means,
         meanFinish,
+        isLoading,
       },
       handleConvaClick,
       handleMouseMove,
@@ -682,7 +695,7 @@ class App extends Component {
         <div className="pt-2">
           <Button
             fullWidth={false}
-            text="Upload PDF"
+            text={isLoading === true ? "LOADING......" : "Upload PDF"}
             onClick={() =>
               document.getElementById("upload-canvas-pdf-button").click()
             }
