@@ -50,6 +50,8 @@ let formats = {
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [alertMsg, setAlertMsg] = useState("");
   const meansData = useSelector((state) => state.means);
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -64,6 +66,7 @@ const Calender = (props) => {
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
+  const [addedEvent, setAddedEvent] = useState({});
   const [show, setShow] = useState(false);
   let [startTime, setStartTime] = useState("");
   let [endTime, setEndTime] = useState("");
@@ -80,6 +83,7 @@ const Calender = (props) => {
   let [endtimesliceEdit, setEndtimesliceEdit] = useState("");
   const [statusColorEdit, setStatusColorEdit] = useState("");
   const [bookingslot, setbookingslot] = useState(false);
+  const [bookingDate, setBookingDate] = useState(new Date());
   const [bookingEvent, setbookingEvent] = useState();
   const [bookingTitle, setBookingTitle] = useState();
   let [bookingstartTime, setBookingstartTime] = useState("");
@@ -89,6 +93,10 @@ const Calender = (props) => {
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
   const [cdate, setCdate] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
@@ -110,7 +118,8 @@ const Calender = (props) => {
   useEffect(() => {
     getData();
     // eslint-disable-next-line
-  }, []);
+  }, [addedEvent]);
+
   useEffect(() => {
     if (selectedMeanId !== "") {
       onChangeMeans();
@@ -361,7 +370,7 @@ const Calender = (props) => {
     }
   };
   const saveEvent = () => {
-    if (title !== "") {
+    if (title !== "" && selectedCompany !== "") {
       /* start time*/
       startTime = String(startTime);
       starttimeslice = String(starttimeslice);
@@ -427,14 +436,19 @@ const Calender = (props) => {
           };
 
           var DbElement = {
-            bookingReason: title,
             startDate: startTime,
             endDate: endTime,
+            bookingReason: title,
+            siteId: adminStore.site.siteId._id,
+            userId: store.user._id,
+            companyId: selectedCompany,
+            meanId: props.location.mean._id,
           };
           // setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
-          // dispatch(get_means());
           setTitle("");
+          setSelectedCompany("");
+          setAddedEvent(DbElement);
         } else if (
           overlap === "Disable" &&
           dateCheck2 !== -1 &&
@@ -448,17 +462,19 @@ const Calender = (props) => {
         } else {
           setShow(false);
 
-          setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
           setTitle("");
+          setSelectedCompany("");
         }
       } else {
+        setAlertMsg("Time is Invalid");
         setAlertBoxTime(true);
         setTimeout(function () {
           setAlertBoxTime(false);
         }, 1000);
       }
     } else {
+      setAlertMsg("Please Select Company name or Booking Reason");
       setAlertBoxTime(true);
       setTimeout(function () {
         setAlertBoxTime(false);
@@ -466,6 +482,7 @@ const Calender = (props) => {
     }
   };
   const AddEvent = ({ start, end, slots }) => {
+    setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
@@ -492,32 +509,19 @@ const Calender = (props) => {
           moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
         );
       });
-      if (dateCheck.length === 0 && overlap) {
-        if (start > preDateTime && start < end) {
-          if (slots.length >= 2) {
-            var format = "HH:mm";
-            let time = moment(start, format);
-            let beforeTime = moment(start).format("HH:mm");
-            let afterTime = moment(end).format("HH:mm");
-            let checkDiff = time.isBetween(beforeTime, afterTime);
-            if (
-              beforeTime !== "17:00" &&
-              beforeTime !== "17:30" &&
-              checkDiff === false
-            ) {
-              setShow(!show);
-              setStartTime(start);
-              setEndTime(end);
-              let getstart = String(start);
-              let getend = String(end);
-              getstart = getstart.slice(16, 21);
-              getend = getend.slice(16, 21);
-              setstarttimeslice(getstart);
-              setEndtimeslice(getend);
-            } else {
-              return false;
-            }
-          } else {
+      // if (dateCheck.length === 0 && overlap) {
+      if (start > preDateTime && start < end) {
+        if (slots.length >= 2) {
+          var format = "HH:mm";
+          let time = moment(start, format);
+          let beforeTime = moment(start).format("HH:mm");
+          let afterTime = moment(end).format("HH:mm");
+          let checkDiff = time.isBetween(beforeTime, afterTime);
+          if (
+            beforeTime !== "17:00" &&
+            beforeTime !== "17:30" &&
+            checkDiff === false
+          ) {
             setShow(!show);
             setStartTime(start);
             setEndTime(end);
@@ -527,16 +531,35 @@ const Calender = (props) => {
             getend = getend.slice(16, 21);
             setstarttimeslice(getstart);
             setEndtimeslice(getend);
+          } else {
+            return false;
           }
         } else {
-          setAlertBoxTime(true);
-          setTimeout(function () {
-            setAlertBoxTime(false);
-          }, 2000);
+          setShow(!show);
+          setStartTime(start);
+          setEndTime(end);
+          let getstart = String(start);
+          let getend = String(end);
+          getstart = getstart.slice(16, 21);
+          getend = getend.slice(16, 21);
+          setstarttimeslice(getstart);
+          setEndtimeslice(getend);
         }
       } else {
         console.log("disable time clicked");
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(
+              "Please Add Booking Reason After time ",
+              "error",
+            ),
+          ),
+        );
       }
+      // }
+      // else {
+
+      // }
     }
   };
 
@@ -722,6 +745,14 @@ const Calender = (props) => {
 
           setSelectedMeanIndex(selectedMeanIndex);
         }
+        const companyTemp = [];
+        response.data.site_companies.map((item, index) => {
+          return companyTemp.push({
+            label: item.companyId.name,
+            value: item.companyId._id,
+          });
+        });
+        setDropdownCompanies(companyTemp);
       } else {
       }
 
@@ -905,16 +936,77 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Event</Modal.Title>
+          <Modal.Title>Booking</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Please Add valid Time and Event" />
+
+        <Alertbox message={alertMsg} />
         <Modal.Body>
+          <div className="row justify-content-center">
+            <div className="col-md-6 mb-4">
+              <h5
+                class="text-center"
+                style={{
+                  backgroundColor: "rgb(247, 247, 247)",
+                  fontSize: "16px",
+                  color: "rgb(119, 119, 119)",
+                  textAlign: "center",
+                  padding: "14px 20px",
+                }}
+              >
+                Date : {bookingDate}
+              </h5>
+            </div>
+            <div className="col-md-6 mb-4">
+              <FormSelect
+                placeholder="Company"
+                values={dropdownCompanies}
+                value={selectedCompany}
+                onChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
+                  if (index !== -1) {
+                    const item = event.target.value;
+
+                    setSelectedCompanyIndex(index);
+
+                    setSelectedCompany(item);
+                  } else {
+                    setSelectedCompanyIndex(null);
+
+                    setSelectedCompany("");
+                  }
+                }}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+            </div>
+          </div>
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="starttime">
+                <label>Start hour</label>
+                <TimePicker
+                  value={starttimeslice}
+                  onChange={(e) => setstarttimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="endTime">
+                <label>End hour</label>
+                <TimePicker
+                  value={Endtimeslice}
+                  onChange={(e) => setEndtimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Add Event</label>
                   <textarea
+                    placeholder="Reason of booking"
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -924,16 +1016,8 @@ const Calender = (props) => {
               </div>
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-md-6">
-              <div className="starttime">
-                <label>Start time</label>
-                <TimePicker
-                  value={starttimeslice}
-                  onChange={(e) => setstarttimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
               <div class="form-group statusColor">
                 <label>Status Color </label>
                 <FormControl component="fieldset">
@@ -980,27 +1064,33 @@ const Calender = (props) => {
                 </FormControl>
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="endTime">
-                <label>End Time</label>
-                <TimePicker
-                  value={Endtimeslice}
-                  onChange={(e) => setEndtimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
-            </div>
-          </div>
+          </div> */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={saveEvent}>
-            Save Event
+          <Button
+            style={{
+              backgroundColor: "#DBB20A",
+              padding: "5px 20px",
+              outline: "none",
+              border: "none",
+            }}
+            onClick={saveEvent}
+          >
+            Book
           </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button
+            variant="secondary"
+            style={{
+              outline: "none",
+              border: "none",
+            }}
+            onClick={handleClose}
+          >
             Close
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Event </Modal.Title>
@@ -1134,14 +1224,13 @@ const Calender = (props) => {
           <div style={{ width: "25%", marginLeft: "20px" }}>
             <DatePicker
               showPopperArrow={true}
-              dateFormat="yyyy-MM-dd"
-              selected={startDate}
+              dateFormat="dd-MM-yyyy"
+              selected={calendarDate}
               popperPlacement="top-start"
               showYearDropdown
-              minDate={addDays(new Date(), 1)}
               placeholderText="Delivery date"
               onChange={(date) => {
-                setStartDate(date);
+                setCalendarDate(date);
               }}
             />
           </div>
@@ -1189,6 +1278,10 @@ const Calender = (props) => {
                 }}
                 custom_week_days={days}
                 dayPropGetter={customDayPropGetter}
+                date={calendarDate}
+                onNavigate={(date) => {
+                  setCalendarDate(date);
+                }}
               />
             ) : (
               <h1>Loading.....</h1>
