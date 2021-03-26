@@ -24,19 +24,19 @@ export const Buildings = [
 export const Elements = [
   {
     label: "Building",
-    value: "Building",
+    value: "BUILDING",
   },
   {
     label: "Mean",
-    value: "Mean",
+    value: "MEAN",
   },
   {
     label: "Storage_Area",
-    value: "Storage_Area",
+    value: "STORAGEAREA",
   },
   {
     label: "Delivery_Area",
-    value: "Delivery_Area",
+    value: "DELIVERYAREA",
   },
 ];
 

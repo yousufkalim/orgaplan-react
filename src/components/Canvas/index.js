@@ -33,6 +33,8 @@ class App extends Component {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
       this.props.onChange(this.state.shapes);
+    } else if (prevProps.shapes !== this.props.shapes) {
+      this.setState({ shapes: this.props.shapes });
     } else {
       return null;
     }
@@ -44,7 +46,7 @@ class App extends Component {
     document.addEventListener("keydown", this.escFunction, false);
     this.props.onChange(this.state.shapes);
     this.setState({ shapes: this.props.shapes });
-    this.showPdf(this.state.tempPdf);
+    // this.showPdf(this.state.tempPdf);
   }
 
   // ******************
@@ -86,25 +88,39 @@ class App extends Component {
         url: uri,
       });
       var page = await _PDF_DOC.getPage(1);
-      var rotate = (page.rotate + 90) % 360;
+      var canvas = document.getElementById("pdf-canvas");
+      var rotate;
+      if (page.view[2] > 612 && page.view[3] > 792) {
+        rotate = (page.rotate + 150) % 360;
+      } else {
+        rotate = (page.rotate + 270) % 360;
+      }
+      // var viewport = page.getViewport(1);
+      var unscaledViewport = page.getViewport(1);
+      var scale = Math.min(
+        canvas.height / unscaledViewport.height,
+        canvas.width / unscaledViewport.width,
+      );
+      var viewport = page.getViewport(scale, rotate);
 
-      var viewport = page.getViewport(1, rotate);
-      console.log(viewport, "viewport");
+      // console.log(page, "page");
+
+      // console.log(viewport, "viewport");
 
       var render_context = {
         canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
         viewport: viewport,
       };
       await page.render(render_context);
-      var canvas = document.getElementById("pdf-canvas");
       var img = canvas.toDataURL("image/png");
-
       let catImage2 = new Image();
       this.setState({ image2: img });
       catImage2.src = img;
       catImage2.onload = () => {
         this.setState({ image: catImage2 });
       };
+      // this.setState({ tempImage: "" });
+
       canvas.display = "none";
     } catch (error) {
       console.log(error, error.message);
@@ -196,7 +212,7 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    if (e.target.value === "Mean") {
+    if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
         points: [],
@@ -225,10 +241,11 @@ class App extends Component {
         meanCheck,
         meanFinish,
         meanPoints,
+        image,
       },
       getMousePos,
     } = this;
-    if (meanCheck !== "") {
+    if (meanCheck !== "" && image !== null) {
       const stage = event.target.getStage();
       const pointer = stage.getPointerPosition();
       const mousePos = getMousePos(stage);
@@ -265,9 +282,11 @@ class App extends Component {
         // s********************************
       }
       if (finishDisable !== true && checkMean !== true) {
-        if (meanCheck === "Mean") {
+        if (meanCheck === "MEAN") {
           if (meanFinish === false) {
-            let rand = Math.floor(Math.random() * 100);
+            // alert("hello");
+
+            let rand = Date.now();
 
             this.setState({
               shapes: [
@@ -294,7 +313,7 @@ class App extends Component {
             );
           }
         } else {
-          let rand = Math.floor(Math.random() * 100);
+          let rand = Date.now();
 
           if (isMouseOverStartPoint && points.length >= 3) {
             this.setState({
@@ -332,8 +351,10 @@ class App extends Component {
       } else {
         return;
       }
+    } else if (image === null) {
+      alert("Upload a pdf first");
     } else {
-      alert("Google");
+      alert("Select an element first");
     }
   };
 
@@ -372,6 +393,7 @@ class App extends Component {
     if (e.target.files.length) {
       let file = e.target.files[0];
       const uri = URL.createObjectURL(file);
+      // this.showPdf(uri);
 
       this.setState({ tempImage: uri });
     }
@@ -386,7 +408,7 @@ class App extends Component {
   };
   handleConvaLineClick = (id) => {
     const { meanCheck } = this.state;
-    if (meanCheck !== "Mean") {
+    if (meanCheck !== "MEAN") {
       this.handleDisableShape(id);
     } else {
       alert("Please Check Building first to update Building");
@@ -394,7 +416,7 @@ class App extends Component {
   };
   handleConvaCircleClick = (id) => {
     const { meanCheck } = this.state;
-    if (meanCheck === "Mean") {
+    if (meanCheck === "MEAN") {
       this.handleDisableMean(id);
     } else {
       alert("Please Check Mean first to update Mean");
@@ -633,9 +655,10 @@ class App extends Component {
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
+          image={image}
         />
         <div className="row">
-          <div className="pt-4" style={{ width: "80%" }}>
+          <div className="pt-4 pl-3" style={{ width: 800 }}>
             <ConvaExample
               onClick={handleConvaClick}
               onMouseMove={handleMouseMove}
@@ -674,8 +697,8 @@ class App extends Component {
         </div>
         <canvas
           id="pdf-canvas"
-          width="400"
-          height="440"
+          width="800"
+          height="700"
           style={{ display: "none" }}
         ></canvas>
       </>
