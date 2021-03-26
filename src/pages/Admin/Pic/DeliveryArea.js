@@ -5,9 +5,10 @@ import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import FormLabel from "../../../components/FormLabel";
+import ColorPicker from "../../../components/ColorPcker";
 import FormInput from "../../../components/CustomFormInput";
-import CustomInputModal from "../../../components/CustomInputModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
+import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -23,11 +24,12 @@ export default function DeliveryArea(props) {
   const [type, setType] = useState("");
   const [color, setColor] = useState("");
   const [image, setImage] = useState([]);
-  const [location, setLocation] = useState([]);
   const [startDate, setStartDate] = useState("");
+  const [addresses, setAddresses] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
   const [rate, setRate] = useState("");
+  const [update, setUpdate] = useState(false);
   const [addInfo, setAddInfo] = useState("");
 
   function handleChange(name, value) {
@@ -35,8 +37,10 @@ export default function DeliveryArea(props) {
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
     else if (name === "image") setImage(value);
-    else if (name === "location") setLocation(value);
-    else if (name === "startDate") setStartDate(value);
+    else if (name === "addresses") {
+      setUpdate((st) => !st);
+      setAddresses(value);
+    } else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "techSheet") setTechSheet(value);
     else if (name === "rate") setRate(value);
@@ -58,12 +62,12 @@ export default function DeliveryArea(props) {
                 handleChange(name, value)
               }
             />
-            <FormMultipleUpload
-              name="image"
-              style={GLOBALS.Styles.inputWidth}
-              values={image}
-              onChange={(values) => handleChange("profile", values)}
-            />
+            <div style={{ width: "25%" }}>
+              <ColorPicker
+                color={color}
+                handleChange={(color) => handleChange("color", color.hex)}
+              />
+            </div>
           </Form.Row>
         </Form.Row>
         <Form.Row>
@@ -76,13 +80,13 @@ export default function DeliveryArea(props) {
           >
             <FormInput
               type="date"
+              name="startDate"
+              value={startDate}
               style={{ width: "300px" }}
               placeholder={`Date de début`}
-              name="startDate"
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              value={startDate}
             />
             <FormInput
               type="date"
@@ -96,21 +100,19 @@ export default function DeliveryArea(props) {
             />
           </Form.Row>
         </Form.Row>
-
         <Form.Row>
           <FormLabel bold primary="ACCESSIBILITY ADDRESSES :  " />
           <Form.Row noMargin width="65%">
-            <CustomInputModal
-              name="location"
-              values={location}
+            <DeliveryAreaAddressModal
+              name="addresses"
+              values={addresses}
               // error={addresses}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter Delivery areas"
+              placeholder="Enter site addresses"
               onChange={(values) => handleChange("addresses", values)}
             />
           </Form.Row>
         </Form.Row>
-
         <Form.Row>
           <FormLabel bold primary="FICHE TECHNIQUE : " />
           <Form.Row noMargin width="65%">
@@ -124,7 +126,6 @@ export default function DeliveryArea(props) {
             />
           </Form.Row>
         </Form.Row>
-
         <Form.Row>
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
@@ -147,7 +148,6 @@ export default function DeliveryArea(props) {
             </div>
           </Form.Row>
         </Form.Row>
-
         <Form.Row alignItems="flex-start">
           <FormLabel bold primary="TARIF HORAIRE : " />
           <Form.Row noMargin width="65%">
@@ -164,7 +164,6 @@ export default function DeliveryArea(props) {
             />
           </Form.Row>
         </Form.Row>
-
         <Form.Row alignItems="flex-start">
           <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
           <Form.Row noMargin width="65%">
@@ -182,7 +181,6 @@ export default function DeliveryArea(props) {
             />
           </Form.Row>
         </Form.Row>
-
         <Form.Row>
           <Form.ButtonContainer style={{ width: "80%" }}>
             <Button
@@ -191,9 +189,7 @@ export default function DeliveryArea(props) {
               text="VALIDATE"
               fullWidth={false}
               // loading={formik.isSubmitting}
-              disabled={
-                !name || location.length === 0 || !type || !color || !startDate
-              }
+              disabled={!name || !type || !color || !startDate}
             />
           </Form.ButtonContainer>
         </Form.Row>
