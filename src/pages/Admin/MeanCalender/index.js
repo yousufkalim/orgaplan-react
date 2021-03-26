@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import GLOBALS from "../../../globals";
 import "./Calender.css";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
@@ -17,6 +18,7 @@ import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
+
 import {
   get_means,
   add_mean,
@@ -24,6 +26,8 @@ import {
   delete_mean,
 } from "../../../redux/actions/means";
 import { useSelector, useDispatch } from "react-redux";
+import Actions from "../../../redux/actions";
+
 let view = {
   month: true,
   day: true,
@@ -46,15 +50,23 @@ let formats = {
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
-
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [alertMsg, setAlertMsg] = useState("");
   const meansData = useSelector((state) => state.means);
+  const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
+  const [isLoading, setLoading] = useState(true);
+  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const [selectedMean, setSelectedMean] = useState("");
+  const [selectedMeanId, setSelectedMeanId] = useState("");
+  const [selectedMeanIndex, setSelectedMeanIndex] = useState(null);
   // *****
-
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([0]);
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
+  const [addedEvent, setAddedEvent] = useState({});
   const [show, setShow] = useState(false);
   let [startTime, setStartTime] = useState("");
   let [endTime, setEndTime] = useState("");
@@ -71,6 +83,7 @@ const Calender = (props) => {
   let [endtimesliceEdit, setEndtimesliceEdit] = useState("");
   const [statusColorEdit, setStatusColorEdit] = useState("");
   const [bookingslot, setbookingslot] = useState(false);
+  const [bookingDate, setBookingDate] = useState(new Date());
   const [bookingEvent, setbookingEvent] = useState();
   const [bookingTitle, setBookingTitle] = useState();
   let [bookingstartTime, setBookingstartTime] = useState("");
@@ -80,6 +93,10 @@ const Calender = (props) => {
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
   const [cdate, setCdate] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
@@ -94,31 +111,42 @@ const Calender = (props) => {
   //   setoverlapOpen(true);
   // };
   // useEffect
+  // useEffect(() => {
+
+  //   dispatch(get_means());
+  // }, []);
   useEffect(() => {
-    dispatch(get_means());
-  }, []);
+    getData();
+    // eslint-disable-next-line
+  }, [addedEvent]);
+
   useEffect(() => {
-    if (meansData.means) {
-      const tempmeanData = meansData.means.map((key, index) => {
-        return {
-          title: key.bookingReason,
-          companyId: key.companyId,
-          createdAt: key.createdAt,
-          start: new Date(key.startDate),
-          end: new Date(key.endDate),
-          endTime: key.endTime,
-          meanId: key.meanId,
-          siteId: key.siteId,
-          startTime: key.startTime,
-          updatedAt: key.updatedAt,
-          userId: key.userId,
-          _id: key._id,
-          color: "yellow",
-        };
-      });
-      setEvents(tempmeanData);
+    if (selectedMeanId !== "") {
+      onChangeMeans();
     }
-  }, [meansData.means]);
+  }, [selectedMeanId]);
+  // useEffect(() => {
+  //   if (meansData.means) {
+  //     const tempmeanData = meansData.means.map((key, index) => {
+  //       return {
+  //         title: key.bookingReason,
+  //         companyId: key.companyId,
+  //         createdAt: key.createdAt,
+  //         start: new Date(key.startDate),
+  //         end: new Date(key.endDate),
+  //         endTime: key.endTime,
+  //         meanId: key.meanId,
+  //         siteId: key.siteId,
+  //         startTime: key.startTime,
+  //         updatedAt: key.updatedAt,
+  //         userId: key.userId,
+  //         _id: key._id,
+  //         color: "yellow",
+  //       };
+  //     });
+  //     setEvents(tempmeanData);
+  //   }
+  // }, [meansData.means]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -324,7 +352,7 @@ const Calender = (props) => {
           endDate: updateElement[0].end,
         };
         dispatch(update_mean(DbElement, eventID));
-        dispatch(get_means());
+        // dispatch(get_means());
 
         setTitleEdit("");
         setShowEdit(false);
@@ -342,7 +370,7 @@ const Calender = (props) => {
     }
   };
   const saveEvent = () => {
-    if (title !== "") {
+    if (title !== "" && selectedCompany !== "") {
       /* start time*/
       startTime = String(startTime);
       starttimeslice = String(starttimeslice);
@@ -408,14 +436,19 @@ const Calender = (props) => {
           };
 
           var DbElement = {
-            bookingReason: title,
             startDate: startTime,
             endDate: endTime,
+            bookingReason: title,
+            siteId: adminStore.site.siteId._id,
+            userId: store.user._id,
+            companyId: selectedCompany,
+            meanId: props.location.mean._id,
           };
           // setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
-          dispatch(get_means());
           setTitle("");
+          setSelectedCompany("");
+          setAddedEvent(DbElement);
         } else if (
           overlap === "Disable" &&
           dateCheck2 !== -1 &&
@@ -429,17 +462,19 @@ const Calender = (props) => {
         } else {
           setShow(false);
 
-          setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
           setTitle("");
+          setSelectedCompany("");
         }
       } else {
+        setAlertMsg("Time is Invalid");
         setAlertBoxTime(true);
         setTimeout(function () {
           setAlertBoxTime(false);
         }, 1000);
       }
     } else {
+      setAlertMsg("Please Select Company name or Booking Reason");
       setAlertBoxTime(true);
       setTimeout(function () {
         setAlertBoxTime(false);
@@ -447,6 +482,7 @@ const Calender = (props) => {
     }
   };
   const AddEvent = ({ start, end, slots }) => {
+    setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
@@ -473,32 +509,19 @@ const Calender = (props) => {
           moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
         );
       });
-      if (dateCheck.length === 0 && overlap) {
-        if (start > preDateTime && start < end) {
-          if (slots.length >= 2) {
-            var format = "HH:mm";
-            let time = moment(start, format);
-            let beforeTime = moment(start).format("HH:mm");
-            let afterTime = moment(end).format("HH:mm");
-            let checkDiff = time.isBetween(beforeTime, afterTime);
-            if (
-              beforeTime !== "17:00" &&
-              beforeTime !== "17:30" &&
-              checkDiff === false
-            ) {
-              setShow(!show);
-              setStartTime(start);
-              setEndTime(end);
-              let getstart = String(start);
-              let getend = String(end);
-              getstart = getstart.slice(16, 21);
-              getend = getend.slice(16, 21);
-              setstarttimeslice(getstart);
-              setEndtimeslice(getend);
-            } else {
-              return false;
-            }
-          } else {
+      // if (dateCheck.length === 0 && overlap) {
+      if (start > preDateTime && start < end) {
+        if (slots.length >= 2) {
+          var format = "HH:mm";
+          let time = moment(start, format);
+          let beforeTime = moment(start).format("HH:mm");
+          let afterTime = moment(end).format("HH:mm");
+          let checkDiff = time.isBetween(beforeTime, afterTime);
+          if (
+            beforeTime !== "17:00" &&
+            beforeTime !== "17:30" &&
+            checkDiff === false
+          ) {
             setShow(!show);
             setStartTime(start);
             setEndTime(end);
@@ -508,16 +531,35 @@ const Calender = (props) => {
             getend = getend.slice(16, 21);
             setstarttimeslice(getstart);
             setEndtimeslice(getend);
+          } else {
+            return false;
           }
         } else {
-          setAlertBoxTime(true);
-          setTimeout(function () {
-            setAlertBoxTime(false);
-          }, 2000);
+          setShow(!show);
+          setStartTime(start);
+          setEndTime(end);
+          let getstart = String(start);
+          let getend = String(end);
+          getstart = getstart.slice(16, 21);
+          getend = getend.slice(16, 21);
+          setstarttimeslice(getstart);
+          setEndtimeslice(getend);
         }
       } else {
         console.log("disable time clicked");
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(
+              "Bookings can't be made in past time.",
+              "error",
+            ),
+          ),
+        );
       }
+      // }
+      // else {
+
+      // }
     }
   };
 
@@ -549,7 +591,7 @@ const Calender = (props) => {
     setEvents(fill);
 
     dispatch(delete_mean(eventID));
-    dispatch(get_means());
+    // dispatch(get_means());
   };
   const handlePopoverShow = (event) => {
     seteventID(event._id);
@@ -661,143 +703,113 @@ const Calender = (props) => {
       };
     else return {};
   };
+  const getData = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        const tempmeanData = response.data.history.map((key, index) => {
+          return {
+            title: key.bookingReason,
+            companyId: key.companyId,
+            createdAt: key.createdAt,
+            start: new Date(key.startDate),
+            end: new Date(key.endDate),
+            endTime: key.endTime,
+            meanId: key.meanId,
+            siteId: key.siteId,
+            startTime: key.startTime,
+            updatedAt: key.updatedAt,
+            userId: key.userId,
+            _id: key._id,
+            color: "yellow",
+          };
+        });
+
+        setEvents(tempmeanData);
+
+        if (response.data.site_means != null) {
+          let selectedMeanIndex = 0;
+
+          const temp = [];
+          response.data.site_means.map((item, index) => {
+            return temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          });
+          setDropdownMeans(temp);
+
+          setSelectedMeanIndex(selectedMeanIndex);
+        }
+        const companyTemp = [];
+        response.data.site_companies.map((item, index) => {
+          return companyTemp.push({
+            label: item.companyId.name,
+            value: item.companyId._id,
+          });
+        });
+        setDropdownCompanies(companyTemp);
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const onChangeMeans = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      if (response.success) {
+        const tempmeanData = response.data.history.map((key, index) => {
+          return {
+            title: key.bookingReason,
+            companyId: key.companyId,
+            createdAt: key.createdAt,
+            start: new Date(key.startDate),
+            end: new Date(key.endDate),
+            endTime: key.endTime,
+            meanId: key.meanId,
+            siteId: key.siteId,
+            startTime: key.startTime,
+            updatedAt: key.updatedAt,
+            userId: key.userId,
+            _id: key._id,
+            color: "yellow",
+          };
+        });
+
+        setEvents(tempmeanData);
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   return (
     <>
-      {/* <div className="row ">
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-6">
-          <div
-            style={{
-              display: "flex",
-              "flex-direction": "row",
-              "margin-top": "10px",
-              "align-items": "center",
-              "margin-bottom": "10px",
-            }}
-          >
-            <span
-              style={{
-                "background-color": "#FFFF00",
-                height: "20px",
-                width: "20px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Pending validation</span>
-            <span
-              style={{
-                "background-color": "#808080",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Not availble</span>
-            <span
-              style={{
-                "background-color": "#008000",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Validate</span>
-            
-            <div style={{ "margin-left": "auto", "margin-right": "10px" }}>
-              <OverLapSelect
-                overlap={overlap}
-                overlapOpen={overlapOpen}
-                handleOpen={handleOverLapOpen}
-                handleClose={handleOverLapClose}
-                handleChange={handleOverLapChange}
-              />
-            </div>
-          </div>
-          <div className="Custom_weekdays">
-            <label>Work week</label>
-            <FormGroup row>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Sunday}
-                    onChange={workWeekHandleChange}
-                    name="Sunday"
-                    color="primary"
-                  />
-                }
-                label="Sunday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Monday}
-                    onChange={workWeekHandleChange}
-                    name="Monday"
-                    color="primary"
-                  />
-                }
-                label="Monday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Tuesday}
-                    onChange={workWeekHandleChange}
-                    name="Tuesday"
-                    color="primary"
-                  />
-                }
-                label="Tuesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Wednesday}
-                    onChange={workWeekHandleChange}
-                    name="Wednesday"
-                    color="primary"
-                  />
-                }
-                label="Wednesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Thursday}
-                    onChange={workWeekHandleChange}
-                    name="Thursday"
-                    color="primary"
-                  />
-                }
-                label="Thursday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Friday}
-                    onChange={workWeekHandleChange}
-                    name="Friday"
-                    color="primary"
-                  />
-                }
-                label="Friday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Saturday}
-                    onChange={workWeekHandleChange}
-                    name="Saturday"
-                    color="primary"
-                  />
-                }
-                label="Saturday"
-              />
-            </FormGroup>
-          </div>
-        </div>
-      </div> */}
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
@@ -924,16 +936,77 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Event</Modal.Title>
+          <Modal.Title>Booking</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Please Add valid Time and Event" />
+
+        <Alertbox message={alertMsg} />
         <Modal.Body>
+          <div className="row justify-content-center">
+            <div className="col-md-6 mb-4">
+              <h5
+                class="text-center"
+                style={{
+                  backgroundColor: "rgb(247, 247, 247)",
+                  fontSize: "16px",
+                  color: "rgb(119, 119, 119)",
+                  textAlign: "center",
+                  padding: "14px 20px",
+                }}
+              >
+                Date : {bookingDate}
+              </h5>
+            </div>
+            <div className="col-md-6 mb-4">
+              <FormSelect
+                placeholder="Company"
+                values={dropdownCompanies}
+                value={selectedCompany}
+                onChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
+                  if (index !== -1) {
+                    const item = event.target.value;
+
+                    setSelectedCompanyIndex(index);
+
+                    setSelectedCompany(item);
+                  } else {
+                    setSelectedCompanyIndex(null);
+
+                    setSelectedCompany("");
+                  }
+                }}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+            </div>
+          </div>
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="starttime">
+                <label>Start hour</label>
+                <TimePicker
+                  value={starttimeslice}
+                  onChange={(e) => setstarttimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="endTime">
+                <label>End hour</label>
+                <TimePicker
+                  value={Endtimeslice}
+                  onChange={(e) => setEndtimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Add Event</label>
                   <textarea
+                    placeholder="Reason of booking"
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -943,16 +1016,8 @@ const Calender = (props) => {
               </div>
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-md-6">
-              <div className="starttime">
-                <label>Start time</label>
-                <TimePicker
-                  value={starttimeslice}
-                  onChange={(e) => setstarttimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
               <div class="form-group statusColor">
                 <label>Status Color </label>
                 <FormControl component="fieldset">
@@ -999,27 +1064,33 @@ const Calender = (props) => {
                 </FormControl>
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="endTime">
-                <label>End Time</label>
-                <TimePicker
-                  value={Endtimeslice}
-                  onChange={(e) => setEndtimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
-            </div>
-          </div>
+          </div> */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={saveEvent}>
-            Save Event
+          <Button
+            style={{
+              backgroundColor: "#DBB20A",
+              padding: "5px 20px",
+              outline: "none",
+              border: "none",
+            }}
+            onClick={saveEvent}
+          >
+            Book
           </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button
+            variant="secondary"
+            style={{
+              outline: "none",
+              border: "none",
+            }}
+            onClick={handleClose}
+          >
             Close
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Event </Modal.Title>
@@ -1132,31 +1203,34 @@ const Calender = (props) => {
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
           <FormSelect
             placeholder="Mean"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
-            onChange={(e) => {
-              console.log("area ==> ", e.target.value);
+            values={dorpdownMeans}
+            value={selectedMeanId}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+
+              if (index !== -1) {
+                const itemId = event.target.value;
+                console.log(event);
+                setSelectedMeanIndex(index);
+                setSelectedMeanId(itemId);
+              } else {
+                setSelectedMeanIndex(null);
+
+                setSelectedMeanId("");
+              }
             }}
             style={{ marginRight: "10px", maxWidth: 250 }}
           />
           <div style={{ width: "25%", marginLeft: "20px" }}>
             <DatePicker
               showPopperArrow={true}
-              dateFormat="yyyy-MM-dd"
-              selected={startDate}
+              dateFormat="dd-MM-yyyy"
+              selected={calendarDate}
               popperPlacement="top-start"
               showYearDropdown
-              minDate={addDays(new Date(), 1)}
               placeholderText="Delivery date"
               onChange={(date) => {
-                setStartDate(date);
+                setCalendarDate(date);
               }}
             />
           </div>
@@ -1183,18 +1257,26 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "470px",
+                  height: "430px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let newStyle = {
-                    backgroundColor: events["color"],
-                    color: "black",
-                    borderRadius: "0px",
-                    border: "none",
+                    clear: "both",
+                    display: "block",
+                    fontSize: "13px",
+                    borderRadius: "4px",
+                    padding: "5px",
+                    marginTop: "5px !important",
+                    marginLeft: "5px !important",
+                    lineHeight: "14px",
+                    background: "#ffefa1",
+                    border: "2px solid #fff",
+                    color: "#333",
                   };
 
                   if (events.isMine) {
-                    newStyle.backgroundColor = "lightgreen";
+                    newStyle.backgroundColor = "#ffcb91";
+                    newStyle.border = "2px solid #fff";
                   }
 
                   return {
@@ -1204,6 +1286,10 @@ const Calender = (props) => {
                 }}
                 custom_week_days={days}
                 dayPropGetter={customDayPropGetter}
+                date={calendarDate}
+                onNavigate={(date) => {
+                  setCalendarDate(date);
+                }}
               />
             ) : (
               <h1>Loading.....</h1>

@@ -5,7 +5,6 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import myEventsList from "./components/events";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -15,8 +14,13 @@ import TimePicker from "react-time-picker";
 import SearchInput from "../../../components/SearchInput";
 import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
+import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
+import Heading from "../../../components/Heading";
+import FormInput from "../../../components/FormInput";
+import SubHeading from "../../../components/SubHeading";
+
 import {
   get_means,
   add_mean,
@@ -46,7 +50,6 @@ let formats = {
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
-
   const meansData = useSelector((state) => state.means);
   // *****
 
@@ -924,16 +927,69 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Event</Modal.Title>
+          <Modal.Title>Booking</Modal.Title>
         </Modal.Header>
         <Alertbox message="Please Add valid Time and Event" />
         <Modal.Body>
+          <div className="row justify-content-center">
+            <div className="col-md-6 mb-4">
+              <div>
+                <DatePicker
+                  showPopperArrow={true}
+                  dateFormat="dd-MMMM-yyyy"
+                  selected={startDate}
+                  popperPlacement="top-start"
+                  showYearDropdown
+                  minDate={addDays(new Date(), 1)}
+                  placeholderText="Booking Date"
+                  onChange={(date) => {
+                    setStartDate(date);
+                  }}
+                  className="modal-datepicker"
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-4">
+              <FormSelect
+                placeholder="ConstructBTP"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "20px" }}
+              />
+            </div>
+          </div>
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="starttime">
+                <label>Start hour</label>
+                <TimePicker
+                  value={starttimeslice}
+                  onChange={(e) => setstarttimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="endTime">
+                <label>End hour</label>
+                <TimePicker
+                  value={Endtimeslice}
+                  onChange={(e) => setEndtimeslice(e)}
+                  locale="sv-sv"
+                />
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Add Event</label>
                   <textarea
+                    placeholder="Reason of booking"
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -945,14 +1001,6 @@ const Calender = (props) => {
           </div>
           <div className="row">
             <div className="col-md-6">
-              <div className="starttime">
-                <label>Start time</label>
-                <TimePicker
-                  value={starttimeslice}
-                  onChange={(e) => setstarttimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
               <div class="form-group statusColor">
                 <label>Status Color </label>
                 <FormControl component="fieldset">
@@ -999,21 +1047,14 @@ const Calender = (props) => {
                 </FormControl>
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="endTime">
-                <label>End Time</label>
-                <TimePicker
-                  value={Endtimeslice}
-                  onChange={(e) => setEndtimeslice(e)}
-                  locale="sv-sv"
-                />
-              </div>
-            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={saveEvent}>
-            Save Event
+          <Button
+            style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
+            onClick={saveEvent}
+          >
+            Book
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
@@ -1161,7 +1202,89 @@ const Calender = (props) => {
             />
           </div>
         </div> */}
-        <div className="d-flex px-2">
+        <div className="px-2">
+          <Form.Row alignItems="center">
+            <Form.Row noMargin>
+              <Heading primary="PLANNING" noWrap />
+              <SubHeading
+                noMargin
+                topPadding
+                style={{ color: "#F80303", paddingRight: "3rem" }}
+                primary={"PENDING DELIVERY REQUESTS : 3 DELIVERIES"}
+                bold
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row alignItems="center" noMargin>
+            <Form.Row justifyContent="flex-start" noMargin>
+              <FormInput
+                type="date"
+                placeholder="Start date"
+                name="startDate"
+                icon
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                }}
+                // onChange={formik.handleChange}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+              <FormSelect
+                placeholder="Company"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+              <FormSelect
+                placeholder="Type of planning"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+              <FormSelect
+                placeholder="Status"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "5px", maxWidth: 250 }}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <Form.Row justifyContent="flex-start" noMargin>
+              <FormSelect
+                placeholder="Type of location"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+              <FormSelect
+                placeholder="Location"
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexp" },
+                ]}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+              />
+            </Form.Row>
+          </Form.Row>
           <div style={{ flexBasis: "100%" }}>
             {events ? (
               <Calendar
@@ -1183,18 +1306,26 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "470px",
+                  height: "540px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let newStyle = {
-                    backgroundColor: events["color"],
-                    color: "black",
-                    borderRadius: "0px",
-                    border: "none",
+                    clear: "both",
+                    display: "block",
+                    fontSize: "13px",
+                    borderRadius: "4px",
+                    padding: "5px",
+                    marginTop: "5px !important",
+                    marginLeft: "5px !important",
+                    lineHeight: "14px",
+                    background: "#ffefa1",
+                    border: "2px solid #fff",
+                    color: "#333",
                   };
 
                   if (events.isMine) {
-                    newStyle.backgroundColor = "lightgreen";
+                    newStyle.backgroundColor = "#ffcb91";
+                    newStyle.border = "2px solid #fff";
                   }
 
                   return {
