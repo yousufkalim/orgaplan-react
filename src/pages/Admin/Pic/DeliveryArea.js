@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
 
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import FormLabel from "../../../components/FormLabel";
+import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import FormInput from "../../../components/CustomFormInput";
-import FormMultipleUpload from "../../../components/FormMultipleUpload";
+import FormMultiSelect from "../../../components/FormMultiSelect";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,32 +23,60 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DeliveryArea(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
+  const adminStore = useSelector((state) => state.admin);
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [color, setColor] = useState("");
-  const [image, setImage] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
   const [endDate, setEndDate] = useState("");
-  const [techSheet, setTechSheet] = useState([]);
-  const [rate, setRate] = useState("");
   const [update, setUpdate] = useState(false);
-  const [addInfo, setAddInfo] = useState("");
+
+  const [selectedMeans, setSelectedMeans] = useState([]);
+  const [means, setMeans] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  async function fetchData() {
+    try {
+      const means = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      const meansTempArray = [];
+      means.data.map((item) =>
+        meansTempArray.push({
+          value: item._id,
+          label: item.name,
+        }),
+      );
+      setMeans(meansTempArray);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
 
   function handleChange(name, value) {
     if (name === "name") setName(value);
     else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
-    else if (name === "image") setImage(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
     } else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
-    else if (name === "techSheet") setTechSheet(value);
-    else if (name === "rate") setRate(value);
-    else if (name === "addInfo") setAddInfo(value);
+    else if (name === "means") setSelectedMeans(value);
   }
 
   return (
@@ -56,7 +88,7 @@ export default function DeliveryArea(props) {
             <FormInput
               name="name"
               value={name}
-              placeholder="Company name"
+              placeholder="Name"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -114,15 +146,27 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="FICHE TECHNIQUE : " />
+          <FormLabel bold primary="Means: " />
           <Form.Row noMargin width="65%">
-            <FormMultipleUpload
-              name="techSheet"
+            <FormSelect
+              name="means"
+              values={means}
+              placeholder="Means"
+              value={selectedMeans}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              values={techSheet}
+            />
+            <FormMultiSelect
+              name="means"
+              values={means}
+              placeholder="Means"
+              value={selectedMeans}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
         </Form.Row>
@@ -130,9 +174,6 @@ export default function DeliveryArea(props) {
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
             <div
-              // name="availability"
-
-              to={"/means/add-mean"}
               style={{
                 marginLeft: "0px",
                 marginBottom: "7px",
@@ -148,39 +189,6 @@ export default function DeliveryArea(props) {
             </div>
           </Form.Row>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="TARIF HORAIRE : " />
-          <Form.Row noMargin width="65%">
-            <FormInput
-              textArea
-              rows={1}
-              style={{ width: "300px", textAlign: "right" }}
-              placeholder="€"
-              name="rate"
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-              value={rate}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="INFORMATIONS COMPLÉMENTAIRES :" />
-          <Form.Row noMargin width="65%">
-            <FormInput
-              textArea
-              rows={3}
-              style={{ width: "600px" }}
-              placeholder="Informations complémentaires"
-              name="addInfo"
-              onChange={({ target: { name, value } }) => {
-                console.log("add, info", value);
-                handleChange(name, value);
-              }}
-              value={addInfo}
-            />
-          </Form.Row>
-        </Form.Row>
         <Form.Row>
           <Form.ButtonContainer style={{ width: "80%" }}>
             <Button
@@ -188,12 +196,12 @@ export default function DeliveryArea(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              // loading={formik.isSubmitting}
               disabled={!name || !type || !color || !startDate}
             />
           </Form.ButtonContainer>
         </Form.Row>
       </Form.Form>
+      {update && ""}
     </div>
   );
 }

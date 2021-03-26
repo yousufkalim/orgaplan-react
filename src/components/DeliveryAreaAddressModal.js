@@ -8,6 +8,7 @@ import Modal from "./Modal";
 import Button from "./Button";
 import FormInput from "./FormInput";
 import FormLabel from "./FormLabel";
+import FormMultipleUpload from "./FormMultipleUpload";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -59,20 +60,16 @@ export default function MultiAdderInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
 
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [postal, setPostal] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [image, setImage] = useState([]);
+  const [location, setLocation] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState("");
 
   const handleChange = (name, value) => {
-    if (name === "street") setStreet(value);
-    else if (name === "city") setCity(value);
-    else if (name === "postal") {
-      if (value.length <= 7) {
-        setPostal(value);
-      }
-    }
+    if (name === "location") setLocation(value);
+    else if (name === "image") setImage(value);
+    else if (name === "endDate") setEndDate(value);
+    else if (name === "startDate") setStartDate(value);
   };
 
   async function onSubmit() {
@@ -80,19 +77,18 @@ export default function MultiAdderInputModal(props) {
 
     const values = {
       _id: newValues.length,
-      street: street,
-      city: city,
-      postal: postal,
-      label: `${street} ${city} ${postal}`,
+      location: location,
+      label: `${location}`,
     };
     newValues.push(values);
     props.onChange(newValues);
 
     setUpdate((st) => !st);
     setModal(false);
-    setStreet("");
-    setCity("");
-    setPostal("");
+    setLocation("");
+    setImage([]);
+    setEndDate("");
+    setStartDate("");
   }
 
   const handleDelete = (value) => () => {
@@ -135,49 +131,45 @@ export default function MultiAdderInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD ADDRESS"
+        title="ADD ADDRESSES"
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>
             <Form.Row>
-              <FormInput
-                name="street"
-                value={street}
-                maxLength="80"
-                // error={street}
-                placeholder="Street"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+              <FormLabel bold primary="Address * :" />
+              <Form.Row
+                noMargin
+                width="65%"
+                justifyContent="flex-start"
+                style={{ gap: "20px" }}
+              >
+                <FormInput
+                  name="location"
+                  maxLength="80"
+                  value={location}
+                  placeholder="Location"
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormInput
-                name="city"
-                value={city}
-                maxLength="30"
-                // error={city}
-                placeholder="City (text only)"
-                onChange={({ target: { name, value } }) => {
-                  (/^[A-Za-z]+$/.test(value) || value === "") &&
-                    handleChange(name, value);
-                }}
-              />
-            </Form.Row>
-            <Form.Row>
-              <FormInput
-                type="number"
-                name="postal"
-                max="7"
-                maxLength={11}
-                value={postal}
-                // error={postal}
-                placeholder="Postal (5 digits only)"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+              <FormLabel bold primary="Image * :" />
+              <Form.Row
+                noMargin
+                width="65%"
+                justifyContent="flex-start"
+                style={{ gap: "20px" }}
+              >
+                <FormMultipleUpload
+                  name="image"
+                  values={image}
+                  fileTypes={["application/pdf"]}
+                  onChange={(values) => handleChange("image", values)}
+                />
+              </Form.Row>
             </Form.Row>
             <Form.Row>
               <FormLabel bold primary="AVAILABILITIES * :" />
@@ -215,13 +207,7 @@ export default function MultiAdderInputModal(props) {
                 text="VALIDATE"
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={
-                  !street ||
-                  !postal ||
-                  postal.length !== 5 ||
-                  !city ||
-                  !/^[a-zA-Z]+$/.test(city)
-                }
+                disabled={!location || !startDate || !endDate}
               />
             </Form.Row>
           </Form.Form>

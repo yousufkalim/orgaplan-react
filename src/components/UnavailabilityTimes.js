@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import GLOBALS from "../globals";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
-import Input from "./Input";
 import moment from "moment";
 import Form from "./Form";
 import Modal from "./Modal";
@@ -15,25 +14,7 @@ import FormInput from "./FormInput";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Actions from "../redux/actions";
-import { FreeBreakfastOutlined } from "@material-ui/icons";
 import "./custom.css";
-const useStyles = makeStyles((theme) => ({
-  root: {
-    position: "relative",
-  },
-  chips: {
-    margin: 0,
-    marginTop: 15,
-    display: "flex",
-    flexWrap: "wrap",
-    listStyle: "none",
-    justifyContent: "center",
-  },
-  chip: {
-    color: theme.palette.primary.contrastText,
-    margin: theme.spacing(0.5),
-  },
-}));
 
 const addUnavailabilityYup = Yup.object().shape({
   key: Yup.number().required("Required"),
@@ -54,8 +35,6 @@ export default function MultiAdderInputModal(props) {
 
   const dispatch = useDispatch();
   const theme = useTheme();
-
-  const classes = useStyles();
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -184,10 +163,10 @@ export default function MultiAdderInputModal(props) {
               moment(date2).isBetween(loop_date1, loop_date2) ||
               moment(date1).isBetween(loop_date1, loop_date2)
             ) {
-              console.log("is between time");
+              // console.log("is between time");
               break;
             } else {
-              console.log("greater or less");
+              // console.log("greater or less");
               if (moment(localdate).isSame(date) && localdayOff === true) {
                 break;
               } else if (
@@ -201,7 +180,7 @@ export default function MultiAdderInputModal(props) {
               }
             }
           } else {
-            console.log("greate or less no valid");
+            // console.log("greate or less no valid");
             addvalue = 0;
             break;
           }

@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import { useSelector } from "react-redux";
-
+import moment from "moment";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import Actions from "../../../redux/actions";
-
-import { useFormik } from "formik";
-import moment from "moment";
-
-// import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
@@ -51,7 +46,6 @@ const Incidents = (props) => {
 
   // const [loading, setLoading] = useState(true);
   const [incidents, setIncidents] = useState([]);
-  const [completeIncidents, setCompleteIncidents] = useState([]);
   const [items, setItems] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
   const [siteStorageArea, setSiteStorageArea] = useState([]);
@@ -59,13 +53,10 @@ const Incidents = (props) => {
   const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
   // const [status, setStatus] = useState([]);
-  const [type, setType] = useState([]);
   const [tatalInvoices, seTatalInvoices] = useState([]);
   const [tatalPrice, seTatalPrice] = useState([]);
-  const [selectedFilterType, setSelectedFilterType] = useState("");
   const [nameText, setNameText] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
   const [selectedType, setSelectedType] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -83,7 +74,7 @@ const Incidents = (props) => {
   useEffect(() => {
     filterIncidents();
     // eslint-disable-next-line
-  }, [nameText, companyId, selectedType, ]);
+  }, [nameText, companyId, selectedType]);
 
   async function fetchData() {
     try {
@@ -92,7 +83,6 @@ const Incidents = (props) => {
       });
       if (result.success) {
         setIncidents(result.data.incidents);
-        setCompleteIncidents(result.data.incidents);
 
         if (result.data.incidents) {
           seTatalInvoices(result.data.incidents.length);
@@ -129,21 +119,11 @@ const Incidents = (props) => {
       setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
       if (nameText.length !== 0) params["name"] = nameText;
-      // if (selectedDropdownArea.length !== 0)
-      //   params["deliveryArea"] =
-      //     siteDeliveryAreas[selectedSiteDeliveryAreadIndex]._id;
-      // if (selectedStorageArea.length !== 0)
-      //   params["storageArea"] =
-      //     storageAreas[selectedDropdownStorageAreaIndex]._id;
 
       if (companyId.length !== 0) params["company"] = companyId;
 
       if (selectedType.length !== 0) params["type"] = selectedType;
       if (selectedStatus.length !== 0) params["status"] = selectedStatus;
-      // if (!isNaN(moment(formik.values.contractStartDate)))
-      //   params["startDate"] = formik.values.contractStartDate;
-      // if (!isNaN(moment(formik.values.contractEndDate)))
-      // params["endDate"] = formik.values.contractEndDate;
 
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_INCIDENT}`,
@@ -151,10 +131,7 @@ const Incidents = (props) => {
         method: "POST",
         body: JSON.stringify(params),
       });
-      console.log("response", response);
       if (response.success) {
-        let temp = [];
-
         getIncidentsfiltered(response.data);
         // setItems(temp);
         setLoading(false);
@@ -212,7 +189,6 @@ const Incidents = (props) => {
         value: item,
       });
     });
-    setType(temp);
   }
 
   function getDeliveryArea(data) {
@@ -266,6 +242,7 @@ const Incidents = (props) => {
     <div className={classes.root}>
       <Form.Row alignItems="center">
         <Heading icon primary="RE-INVOICING" noWrap />
+        {loading && ""}
         <div>
           <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
             <SubHeading
@@ -340,12 +317,10 @@ const Incidents = (props) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
                 const item = event.target.value;
-                setSelectedTypeIndex(index);
                 setSelectedType(item);
                 // Reset Storage Means
                 //filterMean();
               } else {
-                setSelectedTypeIndex(0);
                 setSelectedType("");
                 // Reset Storage Means
                 //filterMean();

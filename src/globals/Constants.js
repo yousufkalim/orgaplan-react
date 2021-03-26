@@ -45,6 +45,7 @@ const endpoints = {
 
   // ADMIN
   CREATE_MEAN: BASE_URL_V1 + "mean",
+  SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
 
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
