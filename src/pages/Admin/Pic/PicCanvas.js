@@ -51,18 +51,30 @@ const App = (props) => {
   //   },
   // ];
   const [shapes, setShapes] = useState([]);
+  const [pdf, setPdf] = useState(
+    "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+  );
 
+  const handlePdfChange = (pdf) => {
+    setPdf(pdf);
+  };
   const handleChange = (shapes) => {
     setShapes(shapes);
   };
   const handleClick = (id, shape) => {
     alert("Shape Click", id, shape);
   };
-
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <Canvas shapes={shapes} onClick={handleClick} onChange={handleChange} />
+        
+        <Canvas
+          shapes={shapes}
+          onClick={handleClick}
+          onChange={handleChange}
+          onPdfChange={handlePdfChange}
+          pdf={pdf}
+        />
       </div>
     </div>
   );
