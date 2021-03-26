@@ -4,8 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
 
-// import Actions from "../../../redux/actions";
-
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Heading from "../../../components/Heading";
@@ -134,7 +132,6 @@ const Historic = (props) => {
       } else {
       }
 
-      //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
