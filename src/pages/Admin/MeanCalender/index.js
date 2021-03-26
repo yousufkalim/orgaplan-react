@@ -550,7 +550,7 @@ const Calender = (props) => {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Please Add Booking Reason After time ",
+              "Bookings can't be made in past time.",
               "error",
             ),
           ),
@@ -1261,14 +1261,22 @@ const Calender = (props) => {
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let newStyle = {
-                    backgroundColor: events["color"],
-                    color: "black",
-                    borderRadius: "0px",
-                    border: "none",
+                    clear: "both",
+                    display: "block",
+                    fontSize: "13px",
+                    borderRadius: "4px",
+                    padding: "5px",
+                    marginTop: "5px !important",
+                    marginLeft: "5px !important",
+                    lineHeight: "14px",
+                    background: "#ffefa1",
+                    border: "2px solid #fff",
+                    color: "#333",
                   };
 
                   if (events.isMine) {
-                    newStyle.backgroundColor = "lightgreen";
+                    newStyle.backgroundColor = "#ffcb91";
+                    newStyle.border = "2px solid #fff";
                   }
 
                   return {
