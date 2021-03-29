@@ -80,6 +80,7 @@ export default function Sites(props) {
       setItems(result.data.items);
       setData(result.data);
       setLoading(false);
+      
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(

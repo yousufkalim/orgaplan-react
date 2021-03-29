@@ -52,40 +52,142 @@ export default function UserList(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [companies, setCompanies] = useState([]);
+  // const [companies, setCompanies] = useState([]);
+    const [userList, setUserList] = useState([]);
+
   const [open, setOpen] = useState(false);
 
   const [selectedItem] = useState("");
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [users, setUsers] = useState([]);
+
+  const [filterCompanyId, setFilterCompanyId] = useState("");
+  const [editModel, setEditModel] = useState("");
+
+  const [dropdownCompanies, setDropdownCompanies] = useState([]);
+  const [dropdownRoles, setDropdownRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [userId, setUserId] = useState("");
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    filteredUser();
+    // eslint-disable-next-line
+  }, [filterCompanyId]);
+
+   useEffect(() => {
+     updateEditModel();
+     // eslint-disable-next-line
+   }, [editModel]);
+
+ async function updateEditModel() {
+   if(editModel) {
+     console.log(editModel);
+    setEmail(editModel.userId.email);
+    setPhone(editModel.userId.phone);
+    setCompanyId(editModel.companyId.name);
+    setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
+    setUserId(editModel.userId._id);
+   }
+  
+
+ }
+
+
+
+ async function filteredUser() {
+   console.log('filter called')
+   setLoading(true);
+   const params = { siteId: adminStore.site.siteId._id };
+   if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
+   const response = await GLOBALS.API({
+    uri: `${GLOBALS.Constants.FILTER_USER}`,
+    token: store.token,
+    method: "POST",
+    body: JSON.stringify(params),
+   });
+   console.log(response);
+    //  let rows = userList.map((item) => {
+    //    // console.log(item)
+    //    return [
+    //      item.usersArray[0].firstName + " " + item.usersArray[0].lastName,
+    //      item.company.name,
+    //      item.usersArray[0].role,
+    //      item.usersArray[0].isVerified ? "Inscrit" : "En attente",
+    //      item.usersArray[0].email,
+    //      <SmallButton
+    //        text={item.usersArray[0].isVerified ? "Edit" : "Re-Send"}
+    //        onClick={
+    //          item.usersArray[0].isVerified
+    //            ? handleClickOpen
+    //            : resendVerificaiontRequest
+    //        }
+    //        color={theme.palette.primary.contrastText}
+    //        to={"/companies"}
+    //        // component={NavLink}
+    //        style={{
+    //          marginLeft: 10,
+    //          borderRadius: 4,
+    //        }}
+    //      />,
+    //    ];
+    //  });
+}
+
+
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.location.id}`,
+        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
         token: store.token,
       });
-      //console.log(JSON.stringify(response.data[0].usersArray, null, 2));
-      if (response.success) {
-        setCompanyName(response.data[0].company.name);
-        setUsers(response.data[0].usersArray);
-        setLoading(false);
-      } else {
-        setLoading(false);
+       const userResponse = await GLOBALS.API({
+         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
+         token: store.token,
+       });
+      console.log('response', response.data);
+      // console.log('userResponse', userResponse);
+      if (userResponse.success) {
+            if (userResponse.data.roles != null) {
+              const rolesTemp = [];
+              userResponse.data.roles.map((item, index) => {
+                return rolesTemp.push({ label: item, value: item });
+              });
+              setDropdownRoles(rolesTemp);
+            }
+        if (userResponse.data.site_companies.companies) {
+          const companyTemp = [];
+          userResponse.data.site_companies.companies.map((item, index) => {
+            return companyTemp.push({
+              label: item.companyId.name,
+              value: item.companyId._id,
+            });
+          });
+           setDropdownCompanies(companyTemp);
+        }
+      
       }
+        if (response.success) {
+          setUserList(response.data.users);
+          // setCompanyName(response.data[0].company.name);
+          // setUsers(response.data[0].usersArray);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -96,38 +198,26 @@ export default function UserList(props) {
     }
   };
   const resendVerificaiontRequest = () => {};
-  const handleChange = (name, value) => {
-    if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
-  };
+
 
   const onUpdate = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
-      var formdata = new FormData();
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
-      formdata.append("phone", phone);
-      formdata.append("companyId", companyId);
-      formdata.append("userId", selectedItem._id);
-      image.file && formdata.append("image", image.file);
 
-      const result = await GLOBALS.API({
+      const formdata = JSON.stringify({
+        role: selectedRole,
+        siteId: adminStore.site.siteId._id,
+        email: email,
+        companyId: companyId,
+        userId: userId,
+      });
+       await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.ADMINS,
-        headers: {
-          Authorization: store.token,
-        },
+        uri: GLOBALS.Constants.UPDATE_COMPANY_USER,
+        token: store.token,
         body: formdata,
       });
-      const itemsArray = items.map((item) =>
-        item._id === selectedItem._id ? result.data : item,
-      );
-      setItems(itemsArray);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -139,20 +229,24 @@ export default function UserList(props) {
     }
   };
   const handleClickOpen = () => {
+    // console.log('item', e.target.value);
     setOpen(true);
   };
-  const rows = users.map((item) => {
-    console.log(JSON.stringify(item, null, 2));
-    const user = item;
+  let rows = userList.map((item) => {
     return [
-      user.firstName + " " + user.lastName,
-      companyName,
+      item.userId.firstName + " " + item.userId.lastName,
+      item.companyId.name,
       item.role,
-      user.isVerified ? "Inscrit" : "En attente",
-      user.email,
+      item.userId.isVerified ? "Inscrit" : "En attente",
+      item.userId.email,
       <SmallButton
-        text={user.isVerified ? "Edit" : "Re-Send"}
-        onClick={user.isVerified ? handleClickOpen : resendVerificaiontRequest}
+      text={item.userId.isVerified ? "Edit" : "Re-Send"}
+      onClick={ 
+        (e) => {
+          setEditModel(item)
+          handleClickOpen();
+        }
+        }
         color={theme.palette.primary.contrastText}
         to={"/companies"}
         // component={NavLink}
@@ -162,6 +256,7 @@ export default function UserList(props) {
         }}
       />,
     ];
+
   });
 
   return (
@@ -173,7 +268,7 @@ export default function UserList(props) {
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 disableMargin
-                primary={`Total : ${users.length} Users`}
+                primary={`Total : ${userList.length} Users`}
                 bold
               />
               <Button
@@ -186,7 +281,7 @@ export default function UserList(props) {
             </Form.Row>
           </div>
         </Form.Row>
-        {companies && ""}
+
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <SearchInput placeholder="Name OF USER" />
@@ -194,15 +289,10 @@ export default function UserList(props) {
               placeholder="Company"
               name="color"
               style={{ marginLeft: "20px", maxWidth: 250 }}
-              values={[
-                { value: "green", label: "Green" },
-                { value: "Yellow", label: "Yellow" },
-                { value: "Red", label: "Red" },
-                { value: "Blue", label: "Blue" },
-                { value: "Orange", label: "Orange" },
-                { value: "Purple", label: "Purple" },
-                { value: "Magenta", label: "Magenta" },
-              ]}
+              values={dropdownCompanies}
+              onChange={(e) => {
+                setFilterCompanyId(e.target.value);
+              }}
             />
           </Form.Row>
         </Form.Row>
@@ -220,44 +310,77 @@ export default function UserList(props) {
               <AvatarUpload
                 value={image}
                 // error={image}
+                disabled
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
-                  handleChange("image", { file, uri });
                 }}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormInput
-                name="thier@contrco.com"
-                value={firstName}
+                name="email"
+                value={email}
                 // error={firstName}
-                placeholder="First Name"
+                disabled
+                placeholder="Email"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+               
               />
             </Form.Row>
             <Form.Row justifyContent="center">
               <FormInput
-                name="lastName"
-                value={lastName}
+                name="phone"
+                value={phone}
                 // error={lastName}
-                placeholder="Last Name"
+                placeholder="Phone"
+                disabled
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+              
               />
             </Form.Row>
-            <Form.Row justifyContent="center"></Form.Row>
+
+            <Form.Row justifyContent="center">
+              <FormInput
+                name="company"
+                value="Client 1"
+                disabled
+                // error={lastName}
+                placeholder="Company"
+                style={GLOBALS.Styles.inputWidth}
+         
+              />
+            </Form.Row>
+
+         
+            <Form.Row justifyContent="center">
+              <Form.Row noMargin width="80%">
+                <FormSelect
+                  placeholder="RÔLE : "
+                  name="color"
+                  style={GLOBALS.Styles.inputWidth}
+                  values={dropdownRoles}
+                  value={selectedRole}
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex - 1;
+
+                    if (index !== -1) {
+                      const item = event.target.value;
+
+                      setSelectedRole(item);
+                    } else {
+                      setSelectedRole("");
+                    }
+                  }}
+                />
+              </Form.Row>
+            </Form.Row>
+
             <Form.ButtonContainer>
               <Button
                 type="submit"
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
-                disabled={loading}
               />
             </Form.ButtonContainer>
           </Form.Form>
