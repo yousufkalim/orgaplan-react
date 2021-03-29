@@ -148,7 +148,6 @@ export default function AddMean(props) {
       setLoading(true);
 
       var formdata = new FormData();
-
       let locations = [];
 
       deliveryAndStorageLocations.forEach((item) => {
@@ -219,8 +218,20 @@ export default function AddMean(props) {
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = name;
       propShape._id = response.data._id;
+      propShape.name = response.data.name;
       props.setShapes(propShapes);
       props.setShape(propShape);
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        token: store.token,
+        body: JSON.stringify({
+          picId: props.pic._id,
+          mean: response.data._id,
+          ...propShape,
+        }),
+      });
 
       props.setModal(false);
       setLoading(false);

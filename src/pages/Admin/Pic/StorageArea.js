@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
-import FormInput from "../../../components/FormInput";
+import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
-import MultiAdderInputModal from "../../../components/MultiAdderInputModal";
+import ColorPicker from "../../../components/ColorPcker";
+import FormInput from "../../../components/CustomFormInput";
+import FormMultiSelect from "../../../components/FormMultiSelect";
+import MultiAdderInput from "../../../components/MultiAdderInput";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -18,43 +23,77 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StorageArea(props) {
+export default function DeliveryArea(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
-  const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [incident, setIncident] = useState([]);
-  const [sites, setSites] = useState([]);
+  const adminStore = useSelector((state) => state.admin);
 
-  const [incidentId, setIncidentId] = useState("");
+  const [isFull, setIsFull] = useState(false);
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [siteId, setSiteId] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [description, setDescription] = useState("");
+  const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]);
+  const [selectedMeans, setSelectedMeans] = useState([]);
+  const [unavailabilities, setUnavailabilities] = useState([]);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationTo, setNotificationTo] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [deliveryAreas, setDeliveryAreas] = useState([]);
+  const [means, setMeans] = useState([]);
+  const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    incident && fetchSitesByClient();
-    // eslint-disable-next-line
-  }, [incidentId]);
-
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.ADD_INCIDENTS}`,
-      //   token: store.token,
-      // });
-      // let itemsArray = result.data.items.map((item) => ({
-      //   value: item._id,
-      //   label: item.companyId.name,
-      // }));
-      // setIncident(itemsArray);
+      const means = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const companies = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const deliveryAreas = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
+      const meansTempArray = [];
+      means.data.map((item) =>
+        meansTempArray.push({
+          value: item._id,
+          label: item.name,
+        }),
+      );
+
+      const companiesTempArray = [];
+      companies.data.companies.map((item) =>
+        companiesTempArray.push({
+          value: item.companyId._id,
+          label: item.companyId.name,
+        }),
+      );
+
+      const deliveryAreasTempArray = [];
+      deliveryAreas.data.map((item) =>
+        deliveryAreasTempArray.push({
+          value: item._id,
+          label: item.name,
+        }),
+      );
+
+      setMeans(meansTempArray);
+      setCompanies(companiesTempArray);
+      setDeliveryAreas(deliveryAreasTempArray);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -64,56 +103,80 @@ export default function StorageArea(props) {
     }
   }
 
-  async function fetchSitesByClient() {
-    try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.SITE_BY_CLIENT}/${incidentId}`,
-      //   token: store.token,
-      // });
-      // let itemsArray = result.data.items.map((item) => ({
-      //   value: item._id,
-      //   label: item.name,
-      // }));
-      // setSites(itemsArray);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  }
-
-  const handleChange = (name, value) => {
-    if (name === "clientId") setIncidentId(value);
+  function handleChange(name, value) {
+    if (name === "name") setName(value);
+    else if (name === "isFull") setIsFull(value);
+    else if (name === "color") setColor(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
-    else if (name === "siteId") setSiteId(value);
-    else if (name === "amount") setAmount(value);
-    else if (name === "description") setDescription(value);
-  };
+    else if (name === "deliveryAreas") setSelectedDeliveryAreas(value);
+    else if (name === "means") setSelectedMeans(value);
+    else if (name === "unavailabilities") {
+      setUpdate((st) => !st);
+      setUnavailabilities(value);
+    } else if (name === "companies") setSelectedCompanies(value);
+    else if (name === "notificationPriorToDays")
+      setNotificationPriorToDays(value);
+    else if (name === "notificationTo") {
+      setUpdate((st) => !st);
+      setNotificationTo(value);
+    }
+  }
 
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
+
+      const notificationToAr = notificationTo.map((item) => item.label);
+
       const formdata = JSON.stringify({
-        incidentId: incidentId,
-        startDate: startDate,
-        endDate: endDate,
-        siteId: siteId,
-        amount: amount,
-        description: description,
+        siteId: adminStore.site.siteId._id,
+        isFull: isFull,
+        name,
+        color: props.shape.color,
+        availability: {
+          start: startDate,
+          end: endDate,
+        },
+        deliveryAreas: selectedDeliveryAreas,
+        means: selectedMeans,
+        unavailabilities,
+        companies: selectedCompanies,
+        notificationPriorToDays,
+        notificationTo: notificationToAr,
       });
 
-      await GLOBALS.API({
+      const response = await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.INVOICES,
+        uri: GLOBALS.Constants.CREATE_STORAGE_AREA,
         token: store.token,
         body: formdata,
       });
+
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde]._id = response.data._id;
+      propShapes[inde].name = name;
+      propShape._id = response.data._id;
+      propShape.name = response.data.name;
+      props.setShapes(propShapes);
+      props.setShape(propShape);
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        token: store.token,
+        body: JSON.stringify({
+          picId: props.pic._id,
+          deliveryArea: response.data._id,
+          ...propShape,
+        }),
+      });
+
+      props.setModal(false);
       setLoading(false);
-      props.history.goBack();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -126,43 +189,50 @@ export default function StorageArea(props) {
 
   return (
     <div className={classes.content}>
-      <div
-        style={{
-          marginRight: 20,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ marginRight: "8rem", color: "red" }}>
-          <input type="checkbox" name="isFull" />
-          <span>FULL ?</span>
-        </div>
-      </div>
       <Form.Form onSubmit={onSubmit}>
+        <Form.Row justifyContent="flex-end">
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="isFull"
+                color="error"
+                checked={isFull}
+                onChange={({ target: { name, checked } }) =>
+                  handleChange(name, checked)
+                }
+              />
+            }
+            label="isFull"
+          />
+        </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NAME* :" />
-          <Form.Row width="48%">
+          <FormLabel bold primary="Name : " />
+          <Form.Row noMargin width="65%">
             <FormInput
               name="name"
-              style={GLOBALS.Styles.inputWidth}
+              value={name}
               placeholder="Name"
-            />
-            <FormInput
-              name="color"
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Color"
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
+            <div style={GLOBALS.Styles.inputWidth}>
+              <ColorPicker
+                color={color}
+                handleChange={(color) => handleChange("color", color.hex)}
+              />
+            </div>
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="DATE OF AVAILABILITIES* : " />
-          <Form.Row noMargin width="48%">
+          <FormLabel bold primary="AVAILABILITY :" />
+          <Form.Row noMargin width="65%">
             <FormInput
               type="date"
               name="startDate"
               value={startDate}
-              placeholder="Start date"
+              placeholder={`Date de début`}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -171,8 +241,23 @@ export default function StorageArea(props) {
             <FormInput
               type="date"
               name="endDate"
+              placeholder="Date de fin"
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
               value={endDate}
-              placeholder="End date"
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="Delivery Areas: " />
+          <Form.Row noMargin width="65%">
+            <FormMultiSelect
+              name="deliveryAreas"
+              values={deliveryAreas}
+              placeholder="Delivery Areas"
+              value={selectedDeliveryAreas}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -180,100 +265,109 @@ export default function StorageArea(props) {
             />
           </Form.Row>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="DELIVERY AREAS :" />
-          <Form.Row style={{ width: "48%" }}>
-            <MultiAdderInputModal
-              name="addresses"
-              values={addresses}
+        <Form.Row>
+          <FormLabel bold primary="Available Means: " />
+          <Form.Row noMargin width="65%">
+            <FormMultiSelect
+              name="means"
+              values={means}
+              placeholder="Means"
+              value={selectedMeans}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
-              onChange={(values) => handleChange("addresses", values)}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
             />
           </Form.Row>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="AVAILABLE MEANS" />
-          <Form.Row width="48%">
-            <div>Moyen 1</div>
-            <div>Moyen 2</div>
-            <div>Moyen 3</div>
+        <Form.Row>
+          <FormLabel bold primary="Unavailabilities: " />
+          <Form.Row noMargin width="65%">
+            <div
+              style={{
+                marginLeft: "0px",
+                marginBottom: "7px",
+                width: "320px",
+                color: "#fff",
+                padding: "0.8rem 0",
+                borderRadius: "8px",
+                textAlign: "center",
+                backgroundColor: "#140772",
+              }}
+            >
+              SHOW UNAVAILABILITIES
+            </div>
           </Form.Row>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="UNAVAILABILITIES:" />
-          <Form.Row style={{ width: "48%" }}>
-            <Button
-              fullWidth={false}
-              text="SHOW THE UNAVAILABILITIES"
-              style={{
-                backgroundColor: "#140772",
-                alignSelf: "flex-start",
+        <Form.Row>
+          <FormLabel bold primary="Companies Allowed: " />
+          <Form.Row noMargin width="65%">
+            <FormMultiSelect
+              name="companies"
+              values={companies}
+              placeholder="Companies"
+              value={selectedCompanies}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="NOTIFICATION : " />
+          <Form.Row
+            noMargin
+            width="65%"
+            alignItems="center"
+            justifyContent="flex-start"
+          >
+            <FormInput
+              type="number"
+              placeholder="0"
+              name="notificationPriorToDays"
+              value={notificationPriorToDays}
+              style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
+              onChange={({ target: { name, value } }) =>
+                value >= 0 && handleChange(name, value)
+              }
+            />
+            <SmallText
+              primary="Days before end of the contract"
+              style={{ marginLeft: "10px" }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+          <Form.Row noMargin width="65%">
+            <MultiAdderInput
+              name="notificationTo"
+              values={notificationTo}
+              style={{ width: "100%" }}
+              validateError="Invalid Email"
+              placeholder="Enter email address"
+              onChange={(values) => handleChange("notificationTo", values)}
+              validate={(text) => {
+                const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
+                return !re.test(String(text).toLowerCase());
               }}
             />
           </Form.Row>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="COMPANIES ALLOWED :" />
-          <Form.Row noMargin width="48%">
-            <MultiAdderInputModal
-              name="addresses"
-              values={addresses}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
-              onChange={(values) => handleChange("addresses", values)}
+        <Form.Row>
+          <Form.ButtonContainer>
+            <Button
+              type="submit"
+              minWidth={200}
+              text="VALIDATE"
+              fullWidth={false}
+              disabled={loading || !name || !color || !startDate}
             />
-          </Form.Row>
+          </Form.ButtonContainer>
         </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="NOTIFICATION*:" />
-          <Form.Row width="48%" justifyContent="flex-start">
-            <Form.Row width="25%">
-              <FormInput
-                type="number"
-                name="amount"
-                value={amount}
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-            <span style={{ marginTop: "15px" }}>
-              Jours avant la fin du contrat
-            </span>
-          </Form.Row>
-        </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="NOTIFY THE PEOPLE:" />
-          <Form.Row noMargin width="48%">
-            <MultiAdderInputModal
-              name="addresses"
-              values={addresses}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
-              onChange={(values) => handleChange("addresses", values)}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.ButtonContainer>
-          <Button
-            type="submit"
-            minWidth={200}
-            text="VALIDATE"
-            fullWidth={false}
-            loading={loading}
-            disabled={
-              loading ||
-              !incidentId ||
-              !startDate ||
-              !endDate ||
-              !siteId ||
-              Number(amount) <= 0
-            }
-          />
-        </Form.ButtonContainer>
       </Form.Form>
+      {update && ""}
     </div>
   );
 }

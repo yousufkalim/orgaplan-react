@@ -47,6 +47,7 @@ const levelNumberList = [
   { value: 9, label: 9 },
   { value: 10, label: 10 },
 ];
+
 export default function AddSiteStep3(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -88,7 +89,6 @@ export default function AddSiteStep3(props) {
       });
 
       setActiveBuilding(response.data);
-      setLoading(false);
       resetStates();
       let propShapes = props.shapes;
       let propShape = props.shape;
@@ -97,9 +97,23 @@ export default function AddSiteStep3(props) {
       propShapes[inde].name = buildingName;
       propShapes[inde].levels = [];
       propShape._id = response.data._id;
+      propShape.name = buildingName;
       propShape.levels = [];
       props.setShapes(propShapes);
       props.setShape(propShape);
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        token: store.token,
+        body: JSON.stringify({
+          picId: props.pic._id,
+          building: response.data._id,
+          ...propShape,
+        }),
+      });
+
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       dispatch(

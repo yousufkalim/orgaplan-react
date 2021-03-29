@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Canvas from "../../../components/Canvas";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
-// "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+import { useSelector, useDispatch } from "react-redux";
+
 import Mean from "./Mean";
 import Building from "./Building";
 import GLOBALS from "../../../globals";
 import StorageArea from "./StorageArea";
 import DeliveryArea from "./DeliveryArea";
+import Form from "../../../components/Form";
+import Actions from "../../../redux/actions";
+import Loader from "../../../components/Loader";
 import FullScreenModal from "../../../components/FullScreenModal";
 
+// "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -25,7 +29,13 @@ const useStyles = makeStyles((theme) => ({
 
 const App = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+
+  const [sitePic, setSitePic] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [shape, setShape] = useState("");
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -34,6 +44,35 @@ const App = (props) => {
   useEffect(() => {
     shape && setModal(true);
   }, [shape]);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      let response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      setSitePic(response.data);
+      setPdf(
+        response.data?.exteriorBuilding?.levels[0]?.image
+          ? GLOBALS.Constants.BASE_URL +
+              response.data.exteriorBuilding.levels[0].image
+          : undefined,
+      );
+      setShapes(response.data.shapes);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   const handlePdfChange = (pdf) => {
     setPdf(pdf);
@@ -68,93 +107,109 @@ const App = (props) => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        {console.log(adminStore)}
-        <Canvas
-          shapes={shapes}
-          onClick={handleClick}
-          onChange={handleChange}
-          onPdfChange={handlePdfChange}
-          pdf={pdf}
-        />
+        <Form.Row>
+          <div style={{ width: 800 }}>
+            {loading ? (
+              <Loader.Progress />
+            ) : (
+              <Canvas
+                shapes={shapes}
+                onClick={handleClick}
+                onChange={handleChange}
+                onPdfChange={handlePdfChange}
+                pdf={pdf}
+              />
+            )}
+          </div>
+          <div>asdas</div>
+        </Form.Row>
       </div>
-      {console.log("shapes", shapes)}
-      {console.log("shape", shape)}
-      {shape &&
-        (shape.type === "DELIVERYAREA" ? (
-          <FullScreenModal
-            title="ADD DELIVERY AREA"
-            open={modal}
-            onClose={() => {
-              checkShape();
-              setModal((st) => !st);
-            }}
-            body={
-              <DeliveryArea
-                shapes={shapes}
-                setShapes={setShapes}
-                shape={shape}
-                setShape={setShape}
-                setModal={setModal}
-              />
-            }
-          />
-        ) : shape.type === "STORAGEAREA" ? (
-          <FullScreenModal
-            title="ADD STORAGE AREA"
-            open={modal}
-            onClose={() => {
-              checkShape();
-              setModal((st) => !st);
-            }}
-            body={
-              <StorageArea
-                shapes={shapes}
-                setShapes={setShapes}
-                shape={shape}
-                setShape={setShape}
-                setModal={setModal}
-              />
-            }
-          />
-        ) : shape.type === "BUILDING" ? (
-          <FullScreenModal
-            title="ADD Building"
-            open={modal}
-            onClose={() => {
-              checkShape();
-              setModal((st) => !st);
-            }}
-            body={
-              <Building
-                shapes={shapes}
-                setShapes={setShapes}
-                shape={shape}
-                setShape={setShape}
-                setModal={setModal}
-              />
-            }
-          />
-        ) : shape.type === "MEAN" ? (
-          <FullScreenModal
-            title="ADD MEAN"
-            open={modal}
-            onClose={() => {
-              checkShape();
-              setModal((st) => !st);
-            }}
-            body={
-              <Mean
-                shapes={shapes}
-                setShapes={setShapes}
-                shape={shape}
-                setShape={setShape}
-                setModal={setModal}
-              />
-            }
-          />
-        ) : (
-          ""
-        ))}
+      <>
+        {shape &&
+          (shape.type === "DELIVERYAREA" ? (
+            <FullScreenModal
+              title="ADD DELIVERY AREA"
+              open={modal}
+              onClose={() => {
+                checkShape();
+                setModal((st) => !st);
+              }}
+              body={
+                <DeliveryArea
+                  shapes={shapes}
+                  setShapes={setShapes}
+                  shape={shape}
+                  setShape={setShape}
+                  setModal={setModal}
+                  pic={sitePic}
+                  setSitePic={setSitePic}
+                />
+              }
+            />
+          ) : shape.type === "STORAGEAREA" ? (
+            <FullScreenModal
+              title="ADD STORAGE AREA"
+              open={modal}
+              onClose={() => {
+                checkShape();
+                setModal((st) => !st);
+              }}
+              body={
+                <StorageArea
+                  shapes={shapes}
+                  setShapes={setShapes}
+                  shape={shape}
+                  setShape={setShape}
+                  setModal={setModal}
+                  pic={sitePic}
+                  setSitePic={setSitePic}
+                />
+              }
+            />
+          ) : shape.type === "BUILDING" ? (
+            <FullScreenModal
+              title="ADD Building"
+              open={modal}
+              onClose={() => {
+                checkShape();
+                setModal((st) => !st);
+              }}
+              body={
+                <Building
+                  shapes={shapes}
+                  setShapes={setShapes}
+                  shape={shape}
+                  setShape={setShape}
+                  setModal={setModal}
+                  pic={sitePic}
+                  setSitePic={setSitePic}
+                />
+              }
+            />
+          ) : shape.type === "MEAN" ? (
+            <FullScreenModal
+              title="ADD MEAN"
+              open={modal}
+              onClose={() => {
+                checkShape();
+                setModal((st) => !st);
+              }}
+              body={
+                <Mean
+                  shapes={shapes}
+                  setShapes={setShapes}
+                  shape={shape}
+                  setShape={setShape}
+                  setModal={setModal}
+                  pic={sitePic}
+                  setSitePic={setSitePic}
+                />
+              }
+            />
+          ) : (
+            ""
+          ))}
+      </>
     </div>
   );
 };

@@ -28,16 +28,16 @@ export default function Canvas({
   return (
     <>
       <Stage
-        width={800}
+        width={1000}
         height={550}
         onMouseDown={onClick}
         onMouseMove={onMouseMove}
       >
         <Layer>
           {image ? (
-            <Rectangle fillPatternImage={image} width={800} height={550} />
+            <Rectangle fillPatternImage={image} width={1000} height={550} />
           ) : (
-            <Rectangle fill={"#ccc"} width={800} height={550} />
+            <Rectangle fill={"#ccc"} width={1000} height={550} />
           )}
           <ConvaLine
             points={flattenedPoints}

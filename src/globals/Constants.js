@@ -44,8 +44,18 @@ const endpoints = {
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
 
   // ADMIN
+  ADMIN_PIC: BASE_URL_V1 + "pic",
+  ADMIN_PIC_GET: BASE_URL_V1 + "pic/get",
+  ADMIN_PIC_BY_SITE: BASE_URL_V1 + "pic/site",
+  ADMIN_PIC_ADD_SHAPE: BASE_URL_V1 + "pic/shape/add",
+
   CREATE_MEAN: BASE_URL_V1 + "mean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
+
+  CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",
+  CREATE_DELIVERY_AREA: BASE_URL_V1 + "delivery-area",
+
+  SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",

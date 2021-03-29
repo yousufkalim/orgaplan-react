@@ -33,11 +33,12 @@ class App extends Component {
     if (prevState.tempImage !== this.state.tempImage) {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
-      this.props.onChange(this.state.shapes);
     } else if (prevState.tempPdf !== this.state.tempPdf) {
       this.props.onPdfChange(this.state.tempPdf);
     } else if (prevProps.shapes !== this.props.shapes) {
       this.setState({ shapes: this.props.shapes });
+    } else if (prevProps.pdf !== this.props.pdf) {
+      this.showPdf(this.props.pdf);
     } else {
       return null;
     }
@@ -47,8 +48,10 @@ class App extends Component {
   }
   componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
-    this.props.onChange(this.state.shapes);
-    this.setState({ shapes: this.props.shapes });
+    // this.props.onChange(this.state.shapes);
+
+    this.props.shapes && this.setState({ shapes: this.props.shapes });
+
     this.props.pdf && this.showPdf(this.props.pdf);
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
@@ -88,6 +91,7 @@ class App extends Component {
     }
   };
   showPdf = async (uri) => {
+    console.log(uri, "uri");
     const PDFJS = window.pdfjsLib;
     try {
       var _PDF_DOC = await PDFJS.getDocument({
@@ -296,19 +300,25 @@ class App extends Component {
 
             let rand = Date.now();
 
-            this.setState({
-              shapes: [
-                ...shapes,
-                {
-                  _id: rand,
-                  type: meanCheck,
-                  color: color,
-                  opacity: 0.3,
+            this.setState(
+              {
+                shapes: [
+                  ...shapes,
+                  {
+                    _id: rand,
+                    type: meanCheck,
+                    color: color,
+                    opacity: 0.3,
 
-                  points: [...meanPoints, mousePos],
-                },
-              ],
-            });
+                    points: [...meanPoints, mousePos],
+                  },
+                ],
+              },
+              () => {
+                this.props.onChange(this.state.shapes);
+              },
+            );
+
             this.setState(
               {
                 meanFinish: true,
@@ -324,18 +334,23 @@ class App extends Component {
           let rand = Date.now();
 
           if (isMouseOverStartPoint && points.length >= 3) {
-            this.setState({
-              shapes: [
-                ...shapes,
-                {
-                  _id: rand,
-                  type: meanCheck,
-                  color: color,
-                  opacity: 0.3,
-                  points,
-                },
-              ],
-            });
+            this.setState(
+              {
+                shapes: [
+                  ...shapes,
+                  {
+                    _id: rand,
+                    type: meanCheck,
+                    color: color,
+                    opacity: 0.3,
+                    points,
+                  },
+                ],
+              },
+              () => {
+                this.props.onChange(this.state.shapes);
+              },
+            );
             this.setState({
               isFinished: true,
             });
@@ -663,14 +678,14 @@ class App extends Component {
       handleConvaCircleClick,
     } = this;
     return (
-      <>
+      <div className="bg-primary " style={{ width: 1000 }}>
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
         />
         <div className="row">
-          <div className="pt-4 pl-3" style={{ width: 800 }}>
+          <div className="pt-4 pl-3" style={{ width: 1000 }}>
             <ConvaExample
               onClick={handleConvaClick}
               onMouseMove={handleMouseMove}
@@ -710,11 +725,11 @@ class App extends Component {
         </div>
         <canvas
           id="pdf-canvas"
-          width="800"
+          width="1000"
           height="700"
           style={{ display: "none" }}
         ></canvas>
-      </>
+      </div>
     );
   }
 }
