@@ -61,6 +61,7 @@ const Incidents = (props) => {
   const [companyId, setCompanyId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [siteBuilding, setSiteBuilding] = useState([]);
 
   // const [page, setPage] = useState("");
   const store = useSelector((state) => state.auth);
@@ -74,12 +75,13 @@ const Incidents = (props) => {
   useEffect(() => {
     filterIncidents();
     // eslint-disable-next-line
-  }, [nameText, companyId, selectedType]);
+  }, [nameText, companyId, selectedType, selectedStatus, startDate]);
 
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
+
       });
       if (result.success) {
         setIncidents(result.data.incidents);
@@ -103,6 +105,9 @@ const Incidents = (props) => {
         if (result.data.site_companies) {
           getCompanies(result.data.site_companies);
         }
+        if(result.data.site_buildings) {
+          getBuildingLocation(result.data.site_buildings);
+        }
       }
       // setLoading(false);
     } catch (err) {
@@ -124,6 +129,9 @@ const Incidents = (props) => {
 
       if (selectedType.length !== 0) params["type"] = selectedType;
       if (selectedStatus.length !== 0) params["status"] = selectedStatus;
+      if (!isNaN(moment(startDate))) params["startDate"] = startDate;
+      // if (!isNaN(moment(formik.values.contractEndDate)))
+      // params["endDate"] = formik.values.contractEndDate;
 
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_INCIDENT}`,
@@ -149,6 +157,16 @@ const Incidents = (props) => {
     }
   }
 
+  function getBuildingLocation(data) {
+        let temp = [];
+        data.map((item, index) => {
+          return temp.push({
+            label: item.name,
+            value: item._id,
+          });
+        });
+        setSiteBuilding(temp);
+  }
   function getCompanies(data) {
     let temp = [];
     data.map((item, index) => {
@@ -291,7 +309,7 @@ const Incidents = (props) => {
           />
           <FormSelect
             placeholder="Location"
-            values={siteDeliveryArea}
+            values={siteBuilding}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
@@ -370,7 +388,6 @@ const Incidents = (props) => {
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
-            placeholder="Status"
             values={status}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={(event) => {

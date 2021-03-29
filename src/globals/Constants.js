@@ -85,6 +85,8 @@ const endpoints = {
   GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/add_company",
 
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
+  ADD_COMPANY_USER: BASE_URL_V1 + "users/add_company_user",
+  UPDATE_COMPANY_USER: BASE_URL_V1 + "users/update_company_user",
 
   GET_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/site",
   DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
@@ -104,5 +106,8 @@ const endpoints = {
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
+  FILTER_USER: BASE_URL_V1 + "users/filter",
+
+  GET_ALL_USERS: BASE_URL_V1 + "users",
 };
 export default endpoints;
