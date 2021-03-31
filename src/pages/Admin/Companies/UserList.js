@@ -33,18 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const updateAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   image: Yup.object().optional(""),
-//   companyId: Yup.string().required("Required"),
-// });
+
 
 export default function UserList(props) {
   const theme = useTheme();
@@ -55,24 +44,19 @@ export default function UserList(props) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   // const [companies, setCompanies] = useState([]);
-    const [userList, setUserList] = useState([]);
-
+  const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
-
   const [selectedItem] = useState("");
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companyName, setCompanyName] = useState("");
-
   const [filterCompanyId, setFilterCompanyId] = useState("");
+  const [filterUserName, setFilterUserName] = useState("");
   const [editModel, setEditModel] = useState("");
-
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownRoles, setDropdownRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
@@ -82,11 +66,13 @@ export default function UserList(props) {
     getData();
     // eslint-disable-next-line
   }, []);
+  
 
   useEffect(() => {
+
     filteredUser();
     // eslint-disable-next-line
-  }, [filterCompanyId]);
+  }, [filterCompanyId, filterUserName]);
 
    useEffect(() => {
      updateEditModel();
@@ -95,10 +81,10 @@ export default function UserList(props) {
 
  async function updateEditModel() {
    if(editModel) {
-     console.log(editModel);
     setEmail(editModel.userId.email);
     setPhone(editModel.userId.phone);
-    setCompanyId(editModel.companyId.name);
+    setCompanyId(editModel.companyId._id);
+    setCompanyName(editModel.companyId.name);
     setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
     setUserId(editModel.userId._id);
    }
@@ -109,65 +95,61 @@ export default function UserList(props) {
 
 
  async function filteredUser() {
-   console.log('filter called')
+   try{
    setLoading(true);
    const params = { siteId: adminStore.site.siteId._id };
    if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
+   if (filterUserName.length !== 0) params["name"] = filterUserName;
+
    const response = await GLOBALS.API({
-    uri: `${GLOBALS.Constants.FILTER_USER}`,
-    token: store.token,
-    method: "POST",
-    body: JSON.stringify(params),
+     uri: `${GLOBALS.Constants.FILTER_USER}`,
+     token: store.token,
+     method: "POST",
+     body: JSON.stringify(params),
    });
-   console.log(response);
-    //  let rows = userList.map((item) => {
-    //    // console.log(item)
-    //    return [
-    //      item.usersArray[0].firstName + " " + item.usersArray[0].lastName,
-    //      item.company.name,
-    //      item.usersArray[0].role,
-    //      item.usersArray[0].isVerified ? "Inscrit" : "En attente",
-    //      item.usersArray[0].email,
-    //      <SmallButton
-    //        text={item.usersArray[0].isVerified ? "Edit" : "Re-Send"}
-    //        onClick={
-    //          item.usersArray[0].isVerified
-    //            ? handleClickOpen
-    //            : resendVerificaiontRequest
-    //        }
-    //        color={theme.palette.primary.contrastText}
-    //        to={"/companies"}
-    //        // component={NavLink}
-    //        style={{
-    //          marginLeft: 10,
-    //          borderRadius: 4,
-    //        }}
-    //      />,
-    //    ];
-    //  });
+   if (response.data.users) {
+     const data = response.data.users.filter(
+       (x) => x.companyId._id === filterCompanyId,
+     );
+     setUserList(data);
+   } else {
+     setUserList([]);
+   }
+
+   } catch (err) {
+      setUserList([]);
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+   }
+
+   
 }
 
 
   const getData = async () => {
     try {
+      setFilterCompanyId(props?.match?.params?.id);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
         token: store.token,
       });
-       const userResponse = await GLOBALS.API({
-         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
-         token: store.token,
-       });
-      console.log('response', response.data);
-      // console.log('userResponse', userResponse);
+      const userResponse = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
+        token: store.token,
+      });
+      console.log('response------------------', response);
       if (userResponse.success) {
-            if (userResponse.data.roles != null) {
-              const rolesTemp = [];
-              userResponse.data.roles.map((item, index) => {
-                return rolesTemp.push({ label: item, value: item });
-              });
-              setDropdownRoles(rolesTemp);
-            }
+        if (userResponse.data.roles != null) {
+          const rolesTemp = [];
+          userResponse.data.roles.map((item, index) => {
+            return rolesTemp.push({ label: item, value: item });
+          });
+          setDropdownRoles(rolesTemp);
+        }
         if (userResponse.data.site_companies.companies) {
           const companyTemp = [];
           userResponse.data.site_companies.companies.map((item, index) => {
@@ -176,18 +158,20 @@ export default function UserList(props) {
               value: item.companyId._id,
             });
           });
-           setDropdownCompanies(companyTemp);
+          setDropdownCompanies(companyTemp);
         }
-      
       }
-        if (response.success) {
-          setUserList(response.data.users);
-          // setCompanyName(response.data[0].company.name);
-          // setUsers(response.data[0].usersArray);
-          setLoading(false);
-        } else {
-          setLoading(false);
-        }
+      if (response.success) {  ///working
+       const data = response.data.users.filter(
+          (x) => x.companyId._id === filterCompanyId,
+        );
+        setUserList(data);
+        // setCompanyName(response.data[0].company.name);
+        // setUsers(response.data[0].usersArray);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -218,6 +202,8 @@ export default function UserList(props) {
         token: store.token,
         body: formdata,
       });
+      getData();
+      setOpen(false);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -233,29 +219,35 @@ export default function UserList(props) {
     setOpen(true);
   };
   let rows = userList.map((item) => {
-    return [
-      item.userId.firstName + " " + item.userId.lastName,
-      item.companyId.name,
-      item.role,
-      item.userId.isVerified ? "Inscrit" : "En attente",
-      item.userId.email,
-      <SmallButton
-      text={item.userId.isVerified ? "Edit" : "Re-Send"}
-      onClick={ 
-        (e) => {
-          setEditModel(item)
-          handleClickOpen();
-        }
-        }
-        color={theme.palette.primary.contrastText}
-        to={"/companies"}
-        // component={NavLink}
-        style={{
-          marginLeft: 10,
-          borderRadius: 4,
-        }}
-      />,
-    ];
+    if (item.companyId && item.userId) {
+      // if (item.companyId._id === setFilterCompanyId) {
+      
+
+      return [
+    item.userId.firstName + " " + item.userId.lastName,
+    item.companyId.name,
+    item.role,
+    item.userId.isVerified ? "Inscrit" : "En attente",
+    item.userId.email,
+    <SmallButton
+      text="Edit"
+      // text={item.userId.isVerified ? "Edit" : "Re-Send"}
+      onClick={(e) => {
+        setEditModel(item);
+        handleClickOpen();
+      }}
+      color={theme.palette.primary.contrastText}
+      to={"/companies"}
+      style={{
+        marginLeft: 10,
+        borderRadius: 4,
+      }}
+    />,
+  ];
+      } 
+    
+  
+     
 
   });
 
@@ -284,7 +276,14 @@ export default function UserList(props) {
 
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
-            <SearchInput placeholder="Name OF USER" />
+            <SearchInput
+              placeholder="Name OF USER"
+              value={filterUserName}
+              onClick={filteredUser}
+              onChange={(e) => {
+                setFilterUserName(e.target.value);
+              }}
+            />
             <FormSelect
               placeholder="Company"
               name="color"
@@ -324,7 +323,6 @@ export default function UserList(props) {
                 disabled
                 placeholder="Email"
                 style={GLOBALS.Styles.inputWidth}
-               
               />
             </Form.Row>
             <Form.Row justifyContent="center">
@@ -335,7 +333,6 @@ export default function UserList(props) {
                 placeholder="Phone"
                 disabled
                 style={GLOBALS.Styles.inputWidth}
-              
               />
             </Form.Row>
 
@@ -347,11 +344,9 @@ export default function UserList(props) {
                 // error={lastName}
                 placeholder="Company"
                 style={GLOBALS.Styles.inputWidth}
-         
               />
             </Form.Row>
 
-         
             <Form.Row justifyContent="center">
               <Form.Row noMargin width="80%">
                 <FormSelect

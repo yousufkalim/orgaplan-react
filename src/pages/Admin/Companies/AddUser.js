@@ -47,6 +47,7 @@ export default function AddUser(props) {
 
   const [dropdownRoles, setDropdownRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
+  const [disableUser, setDisableUser] = useState(false);
 
 
   const [users, setUsers] = useState([]);
@@ -199,6 +200,9 @@ export default function AddUser(props) {
                       setLastName(item.lastName);
                       setPhone(item.phone);
                       setLogo([{ uri: item.image }]);
+                      setDisableUser(true);
+                    } else {
+                      setDisableUser(false);
                     }
                   });
                 }}
@@ -225,6 +229,7 @@ export default function AddUser(props) {
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
                 placeholder="Téléphone"
                 value={phone}
+                disabled={disableUser}
                 onChange={(e) => {
                   setPhone(e.target.value);
                 }}
@@ -243,6 +248,7 @@ export default function AddUser(props) {
                 style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
                 placeholder="FIRST NAME"
                 value={firstName}
+                disabled={disableUser}
                 onChange={(e) => {
                   setFirstName(e.target.value);
                 }}
