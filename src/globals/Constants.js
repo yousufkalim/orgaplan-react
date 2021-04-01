@@ -94,5 +94,11 @@ const endpoints = {
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
+  getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  getDeliveryAreaSiteBySiteId:
+    BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
+  getStorageSiteBysiteId:
+    BASE_URL_V1 + "storage-area/get_all_storage_site/enterprise",
+  filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
 };
 export default endpoints;
