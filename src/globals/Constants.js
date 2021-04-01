@@ -46,8 +46,8 @@ const endpoints = {
   // ADMIN
   ADMIN_PIC: BASE_URL_V1 + "pic",
   ADMIN_PIC_GET: BASE_URL_V1 + "pic/get",
+  ADMIN_PIC_SHAPE: BASE_URL_V1 + "pic/shape",
   ADMIN_PIC_BY_SITE: BASE_URL_V1 + "pic/site",
-  ADMIN_PIC_ADD_SHAPE: BASE_URL_V1 + "pic/shape/add",
 
   CREATE_MEAN: BASE_URL_V1 + "mean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
@@ -109,5 +109,6 @@ const endpoints = {
   FILTER_USER: BASE_URL_V1 + "users/filter",
 
   GET_ALL_USERS: BASE_URL_V1 + "users",
+  FILE_UPLOAD: BASE_URL_V1 + "file-upload",
 };
 export default endpoints;

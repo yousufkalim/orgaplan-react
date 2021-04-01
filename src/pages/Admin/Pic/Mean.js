@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import Actions from "../../../redux/actions";
+import moment from "moment";
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import FormLabel from "../../../components/FormLabel";
+import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
-import FormInput from "../../../components/CustomFormInput";
 import CustomInputModal from "../../../components/CustomInputModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
@@ -215,16 +217,29 @@ export default function AddMean(props) {
       let propShapes = props.shapes;
       let propShape = props.shape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
-      propShapes[inde]._id = response.data._id;
-      propShapes[inde].name = name;
-      propShape._id = response.data._id;
-      propShape.name = response.data.name;
-      props.setShapes(propShapes);
-      props.setShape(propShape);
 
+      const formdataImage = new FormData();
+      formdataImage.append("image", image[0].file);
+
+      const imageData = await GLOBALS.API({
+        method: "POST",
+        uri: `${GLOBALS.Constants.FILE_UPLOAD}/mean`,
+        headers: {},
+        body: formdataImage,
+      });
+      propShapes[inde].image = imageData.image;
+      propShape.image = imageData.image;
+      propShapes[inde].mean = response.data;
+      propShape.mean = response.data;
+      propShapes[inde].name = name;
+      propShape.name = name;
+      propShapes[inde].color = color;
+      propShape.color = color;
+      propShapes[inde]._id = response.data._id;
+      propShape._id = response.data._id;
       await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
         token: store.token,
         body: JSON.stringify({
           picId: props.pic._id,
@@ -232,9 +247,8 @@ export default function AddMean(props) {
           ...propShape,
         }),
       });
-
-      props.setModal(false);
       setLoading(false);
+      props.setShapes(propShapes, propShape);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -361,7 +375,6 @@ export default function AddMean(props) {
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="image"
-              style={{ width: "40%" }}
               values={image}
               onChange={(values) => {
                 handleChange("image", values);
@@ -388,7 +401,6 @@ export default function AddMean(props) {
                   : deliveryAreaId
               }
               chipValues={(values) => {
-                console.log(JSON.stringify(values, null, 2));
                 setDeliveryAndStorageLocations(values);
               }}
               leftDropdownValues={accessabilityPoints}
@@ -424,7 +436,6 @@ export default function AddMean(props) {
                   ? dropdownStorageAreas
                   : dropdownDeliveryAreas
               }
-              style={GLOBALS.Styles.inputWidth}
               rightDropdwonValueChange={(event) => {
                 const index = event.target.selectedIndex - 1;
                 if (index !== -1) {
@@ -460,9 +471,11 @@ export default function AddMean(props) {
           >
             <FormInput
               type="date"
+              name="startDate"
               style={{ width: "300px" }}
               placeholder={`Start date`}
-              name="startDate"
+              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -477,6 +490,8 @@ export default function AddMean(props) {
                 handleChange(name, value)
               }
               value={endDate}
+              min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
             />
           </Form.Row>
         </Form.Row>
@@ -485,7 +500,6 @@ export default function AddMean(props) {
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="techSheet"
-              style={GLOBALS.Styles.inputWidth}
               values={techSheet}
               onChange={(values) => {
                 handleChange("techSheet", values);

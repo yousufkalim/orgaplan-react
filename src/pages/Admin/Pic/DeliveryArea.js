@@ -146,16 +146,16 @@ export default function DeliveryArea(props) {
       let propShapes = props.shapes;
       let propShape = props.shape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde].deliveryArea = response.data;
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = name;
       propShape._id = response.data._id;
       propShape.name = response.data.name;
-      props.setShapes(propShapes);
-      props.setShape(propShape);
+      propShape.deliveryArea = response.data;
 
       await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
         token: store.token,
         body: JSON.stringify({
           picId: props.pic._id,
@@ -164,8 +164,8 @@ export default function DeliveryArea(props) {
         }),
       });
 
-      props.setModal(false);
       setLoading(false);
+      props.setShapes(propShapes, propShape);
     } catch (err) {
       setLoading(false);
       dispatch(

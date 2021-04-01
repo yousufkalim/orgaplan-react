@@ -23,6 +23,7 @@ export default function FormMultipleUpload(props) {
 
   const useStyles = makeStyles((theme) => ({
     root: {
+      width: "100%",
       position: "relative",
     },
     container: {

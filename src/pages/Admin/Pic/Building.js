@@ -95,16 +95,16 @@ export default function AddSiteStep3(props) {
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = buildingName;
+      propShapes[inde].building = response.data;
       propShapes[inde].levels = [];
       propShape._id = response.data._id;
       propShape.name = buildingName;
+      propShape.building = response.data;
       propShape.levels = [];
-      props.setShapes(propShapes);
-      props.setShape(propShape);
 
       await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_ADD_SHAPE,
+        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
         token: store.token,
         body: JSON.stringify({
           picId: props.pic._id,
@@ -114,6 +114,7 @@ export default function AddSiteStep3(props) {
       });
 
       setLoading(false);
+      props.setShapes(propShapes, propShape, true);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -150,8 +151,7 @@ export default function AddSiteStep3(props) {
 
       propShapes[inde].levels = activeBuildingObj.levels;
       propShape.levels = activeBuildingObj.levels;
-      props.setShapes(propShapes);
-      props.setShape(propShape);
+      props.setShapes(propShapes, propShape, true);
 
       setActiveBuilding(activeBuildingObj);
       setLoading(false);
@@ -192,8 +192,7 @@ export default function AddSiteStep3(props) {
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde].levels = activeBuildingObj.levels;
       propShape.levels = activeBuildingObj.levels;
-      props.setShapes(propShapes);
-      props.setShape(propShape);
+      props.setShapes(propShapes, propShape, true);
 
       resetStates();
     } catch (err) {
