@@ -106,18 +106,15 @@ const endpoints = {
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
-<<<<<<< HEAD
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
   getDeliveryAreaSiteBySiteId:
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   getStorageSiteBysiteId:
     BASE_URL_V1 + "storage-area/get_all_storage_site/enterprise",
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
-=======
   FILTER_USER: BASE_URL_V1 + "users/filter",
 
   GET_ALL_USERS: BASE_URL_V1 + "users",
   FILE_UPLOAD: BASE_URL_V1 + "file-upload",
->>>>>>> da2667bbeea054fa65f0a354f9ebb0f752d3cbdf
 };
 export default endpoints;
