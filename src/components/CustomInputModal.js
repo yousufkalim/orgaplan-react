@@ -44,7 +44,6 @@ export default function CustomInputModal(props) {
       notificationPriorToDays: "",
       notificationTo: [],
     },
-
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
@@ -53,6 +52,7 @@ export default function CustomInputModal(props) {
 
   const useStyles = makeStyles((theme) => ({
     root: {
+      width: "100%",
       position: "relative",
     },
     container: {
@@ -101,7 +101,6 @@ export default function CustomInputModal(props) {
     let rightValue = props.rightValue;
     // let leftId = props.leftId;
     let rightId = props.rightId;
-    console.log(leftValue);
 
     let valuesTemp = [...chipValues];
     if (leftValue) {

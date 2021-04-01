@@ -77,7 +77,10 @@ export default function MultiAdderInputModal(props) {
 
     const values = {
       _id: newValues.length,
+      image: image,
+      endDate: endDate,
       location: location,
+      startDate: startDate,
       label: `${location}`,
     };
     newValues.push(values);

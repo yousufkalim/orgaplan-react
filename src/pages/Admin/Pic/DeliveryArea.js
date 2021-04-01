@@ -7,11 +7,12 @@ import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
+import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
-import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import FormInput from "../../../components/CustomFormInput";
 import FormMultiSelect from "../../../components/FormMultiSelect";
+import MultiAdderInput from "../../../components/MultiAdderInput";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,15 +29,20 @@ export default function DeliveryArea(props) {
   const adminStore = useSelector((state) => state.admin);
 
   const [name, setName] = useState("");
-  const [type, setType] = useState("");
   const [color, setColor] = useState("");
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
+  const [unavailabilities, setUnavailabilities] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
-
   const [selectedMeans, setSelectedMeans] = useState([]);
+  const [selectedVehicles, setSelecetedVehicles] = useState([]);
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationTo, setNotificationTo] = useState([]);
+
   const [means, setMeans] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -49,6 +55,10 @@ export default function DeliveryArea(props) {
         uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+      const vehicles = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITE_VEHICLES}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
 
       const meansTempArray = [];
       means.data.map((item) =>
@@ -57,7 +67,16 @@ export default function DeliveryArea(props) {
           label: item.name,
         }),
       );
+
+      const vehiclesTempArray = [];
+      vehicles.data.map((item) =>
+        vehiclesTempArray.push({
+          value: item._id,
+          label: item.name,
+        }),
+      );
       setMeans(meansTempArray);
+      setVehicles(vehiclesTempArray);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -69,22 +88,100 @@ export default function DeliveryArea(props) {
 
   function handleChange(name, value) {
     if (name === "name") setName(value);
-    else if (name === "type") setType(value);
     else if (name === "color") setColor(value);
+    else if (name === "startDate") setStartDate(value);
+    else if (name === "endDate") setEndDate(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
-    } else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "means") setSelectedMeans(value);
+    } else if (name === "unavailabilities") {
+      setUpdate((st) => !st);
+      setUnavailabilities(value);
+    } else if (name === "means") setSelectedMeans(value);
+    else if (name === "vehicles") setSelecetedVehicles(value);
+    else if (name === "notificationPriorToDays")
+      setNotificationPriorToDays(value);
+    else if (name === "notificationTo") {
+      setUpdate((st) => !st);
+      setNotificationTo(value);
+    }
   }
+
+  const onSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+
+      const addressesAr = addresses.map((item) => ({
+        location: [0, 0],
+        endDate: item.endDate,
+        startDate: item.startDate,
+        pdf: "pdf",
+      }));
+      const notificationToAr = notificationTo.map((item) => item.label);
+
+      const formdata = JSON.stringify({
+        name,
+        addresses: addressesAr,
+        unavailabilities,
+        color: props.shape.color,
+        availability: {
+          start: startDate,
+          end: endDate,
+        },
+        siteId: adminStore.site.siteId._id,
+        means: selectedMeans,
+        vehicles: selectedVehicles,
+        notificationPriorToDays,
+        notificationTo: notificationToAr,
+      });
+
+      const response = await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.CREATE_DELIVERY_AREA,
+        token: store.token,
+        body: formdata,
+      });
+
+      let propShapes = props.shapes;
+      let propShape = props.shape;
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde].deliveryArea = response.data;
+      propShapes[inde]._id = response.data._id;
+      propShapes[inde].name = name;
+      propShape._id = response.data._id;
+      propShape.name = response.data.name;
+      propShape.deliveryArea = response.data;
+
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+        token: store.token,
+        body: JSON.stringify({
+          picId: props.pic._id,
+          deliveryArea: response.data._id,
+          ...propShape,
+        }),
+      });
+
+      setLoading(false);
+      props.setShapes(propShapes, propShape);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   return (
     <div className={classes.content}>
-      <Form.Form>
+      <Form.Form onSubmit={onSubmit}>
         <Form.Row>
           <FormLabel bold primary="Name : " />
-          <Form.Row noMargin width="65%" style={{ gap: "20px" }}>
+          <Form.Row noMargin width="65%">
             <FormInput
               name="name"
               value={name}
@@ -94,7 +191,7 @@ export default function DeliveryArea(props) {
                 handleChange(name, value)
               }
             />
-            <div style={{ width: "25%" }}>
+            <div style={GLOBALS.Styles.inputWidth}>
               <ColorPicker
                 color={color}
                 handleChange={(color) => handleChange("color", color.hex)}
@@ -104,27 +201,22 @@ export default function DeliveryArea(props) {
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary="AVAILABILITY :" />
-          <Form.Row
-            noMargin
-            width="65%"
-            justifyContent="flex-start"
-            style={{ gap: "20px" }}
-          >
+          <Form.Row noMargin width="65%">
             <FormInput
               type="date"
               name="startDate"
               value={startDate}
-              style={{ width: "300px" }}
               placeholder={`Date de début`}
+              style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
             />
             <FormInput
               type="date"
-              placeholder="Date de fin"
-              style={{ width: "300px" }}
               name="endDate"
+              placeholder="Date de fin"
+              style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -133,7 +225,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :  " />
+          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
           <Form.Row noMargin width="65%">
             <DeliveryAreaAddressModal
               name="addresses"
@@ -148,16 +240,6 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="Means: " />
           <Form.Row noMargin width="65%">
-            <FormSelect
-              name="means"
-              values={means}
-              placeholder="Means"
-              value={selectedMeans}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
             <FormMultiSelect
               name="means"
               values={means}
@@ -190,13 +272,69 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <Form.ButtonContainer style={{ width: "80%" }}>
+          <FormLabel bold primary="Vehicles: " />
+          <Form.Row noMargin width="65%">
+            <FormMultiSelect
+              name="vehicles"
+              values={vehicles}
+              placeholder="Vehicles"
+              value={selectedVehicles}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="NOTIFICATION : " />
+          <Form.Row
+            noMargin
+            width="65%"
+            alignItems="center"
+            justifyContent="flex-start"
+          >
+            <FormInput
+              type="number"
+              placeholder="0"
+              name="notificationPriorToDays"
+              value={notificationPriorToDays}
+              style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
+              onChange={({ target: { name, value } }) =>
+                value >= 0 && handleChange(name, value)
+              }
+            />
+            <SmallText
+              primary="Days before end of the contract"
+              style={{ marginLeft: "10px" }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+          <Form.Row noMargin width="65%">
+            <MultiAdderInput
+              name="notificationTo"
+              values={notificationTo}
+              style={{ width: "100%" }}
+              validateError="Invalid Email"
+              placeholder="Enter email address"
+              onChange={(values) => handleChange("notificationTo", values)}
+              validate={(text) => {
+                const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
+                return !re.test(String(text).toLowerCase());
+              }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <Form.ButtonContainer>
             <Button
               type="submit"
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              disabled={!name || !type || !color || !startDate}
+              disabled={loading || !name || !color || !startDate}
             />
           </Form.ButtonContainer>
         </Form.Row>

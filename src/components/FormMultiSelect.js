@@ -75,20 +75,21 @@ export default function MultipleSelect(props) {
       fontSize: theme.typography.pxToRem(12),
     },
   }));
-
   const classes = useStyles();
 
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       {/* <FormControl className={classes.formControl}> */}
       <Select
+        multiple
+        fullWidth
         input={<Input />}
         name={props.name}
         value={props.value}
         MenuProps={MenuProps}
         disabled={props.disabled}
         onChange={props.onChange}
-        // className={classes.select}
+        className={classes.select}
       >
         {props.values.map((item) => (
           <MenuItem

@@ -2,6 +2,24 @@ import React, { Component } from "react";
 import ConvaExample from "./ConvaExample";
 import Header from "./Components/Header";
 import Button from "../Button";
+import GLOBALS from "../../globals";
+import _ from "lodash";
+
+export const width = 1000;
+export const height = 600;
+
+const loadImage = (data) =>
+  new Promise((res, rej) => {
+    try {
+      let catImage = new Image();
+      catImage.src = data;
+      catImage.onload = async () => {
+        res(catImage);
+      };
+    } catch (err) {
+      rej(err);
+    }
+  });
 
 class App extends Component {
   state = {
@@ -15,7 +33,6 @@ class App extends Component {
     image: null,
     tempImage: "",
     tempPdf: "",
-
     checkDisable: true,
     meanDisable: true,
     color: "black",
@@ -29,15 +46,29 @@ class App extends Component {
   };
 
   // LifeCycle Hooks
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState.tempImage !== this.state.tempImage) {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
-      this.props.onChange(this.state.shapes);
     } else if (prevState.tempPdf !== this.state.tempPdf) {
       this.props.onPdfChange(this.state.tempPdf);
-    } else if (prevProps.shapes !== this.props.shapes) {
-      this.setState({ shapes: this.props.shapes });
+    } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
+      const newArray = [];
+      await Promise.all(
+        this.props.shapes.map(async (tempShape) => {
+          if (tempShape.image && typeof tempShape.image === "string") {
+            const image = await loadImage(
+              `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
+            );
+            tempShape.image = image;
+          }
+          newArray.push(tempShape);
+          return tempShape;
+        }),
+      );
+      this.setState({ shapes: newArray });
+    } else if (prevProps.pdf !== this.props.pdf) {
+      this.showPdf(this.props.pdf);
     } else {
       return null;
     }
@@ -45,10 +76,27 @@ class App extends Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escFunction, false);
   }
-  componentDidMount() {
+  async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
-    this.props.onChange(this.state.shapes);
-    this.setState({ shapes: this.props.shapes });
+    // this.props.onChange(this.state.shapes);
+
+    if (this.props.shapes) {
+      const newArray = [];
+      await Promise.all(
+        this.props.shapes.map(async (tempShape) => {
+          if (tempShape.image && typeof tempShape.image === "string") {
+            const image = await loadImage(
+              `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
+            );
+            tempShape.image = image;
+          }
+          newArray.push(tempShape);
+          return tempShape;
+        }),
+      );
+      this.setState({ shapes: newArray });
+      // this.setState({ shapes: this.props.shapes });
+    }
     this.props.pdf && this.showPdf(this.props.pdf);
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
@@ -109,10 +157,6 @@ class App extends Component {
       );
       var viewport = page.getViewport(scale, rotate);
 
-      // console.log(page, "page");
-
-      // console.log(viewport, "viewport");
-
       var render_context = {
         canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
         viewport: viewport,
@@ -160,20 +204,21 @@ class App extends Component {
   handleDisableShape = (id) => {
     const { shapes, shapeId, color } = this.state;
     if (shapes.length > 0) {
-      let tempArr = shapes.filter((sp) => sp._id === id);
+      let tempArr = shapes.find((sp) => sp._id === id);
       this.props.onClick(id, tempArr);
-      tempArr[0].color = "white";
-      tempArr[0].opacity = 0.9;
+      tempArr.color = "white";
+      tempArr.opacity = 0.9;
       this.setState({
-        shapeName: tempArr[0].name,
+        shapeName: tempArr.name,
       });
       if (shapeId) {
-        let tempArr2 = shapes.filter((sp) => sp._id === shapeId);
-
-        if (shapeId !== id) {
-          tempArr2[0].color = color;
-        } else {
-          tempArr[0].color = "white";
+        let tempArr2 = shapes.find((sp) => sp._id === shapeId);
+        if (tempArr2) {
+          if (shapeId !== id) {
+            tempArr2.color = "#ccc";
+          } else {
+            tempArr.color = "white";
+          }
         }
       }
     }
@@ -253,42 +298,43 @@ class App extends Component {
       },
       getMousePos,
     } = this;
-    if (meanCheck !== "" && image !== null) {
-      const stage = event.target.getStage();
-      const pointer = stage.getPointerPosition();
-      const mousePos = getMousePos(stage);
-      var finishDisable;
-      let checkMean = false;
+    var finishDisable = false;
+    var checkMean = false;
 
-      if (shapes.length > 0) {
-        var flat = event.target.attrs.points;
-        if (flat !== undefined && event.target.attrs.closed === true) {
-          if (flat.length === 6) {
-            finishDisable = this.isInsideTriangle(flat, pointer.x, pointer.y);
-          } else if (flat.length === 8) {
-            finishDisable = this.isInsideRectangle(flat, pointer.x, pointer.y);
-          } else if (flat.length === 10) {
-            finishDisable = this.isInsidePentagon(flat, pointer.x, pointer.y);
-          } else if (flat.length === 12) {
-            finishDisable = this.isInsideHexagon(flat, pointer.x, pointer.y);
-          }
+    const stage = event.target.getStage();
+    const pointer = stage.getPointerPosition();
+    const mousePos = getMousePos(stage);
+
+    if (shapes.length > 0) {
+      var flat = event.target.attrs.points;
+      if (flat !== undefined && event.target.attrs.closed === true) {
+        if (flat.length === 6) {
+          finishDisable = this.isInsideTriangle(flat, pointer.x, pointer.y);
+        } else if (flat.length === 8) {
+          finishDisable = this.isInsideRectangle(flat, pointer.x, pointer.y);
+        } else if (flat.length === 10) {
+          finishDisable = this.isInsidePentagon(flat, pointer.x, pointer.y);
+        } else if (flat.length === 12) {
+          finishDisable = this.isInsideHexagon(flat, pointer.x, pointer.y);
         }
-        if (event.target.attrs.meanFinish === false) {
-          checkMean = true;
-        } else if (event.target.attrs.meanFinish === true) {
-          checkMean = true;
-        } else if (
-          event.target.attrs.fillPatternImage &&
-          this.state.meanShapeId &&
-          event.target.attrs.meanFinish === false
-        ) {
-          checkMean = true;
-        } else {
-          checkMean = false;
-        }
-        // s********************************
-        // s********************************
       }
+      if (event.target.attrs.meanFinish === false) {
+        checkMean = true;
+      } else if (event.target.attrs.meanFinish === true) {
+        checkMean = true;
+      } else if (
+        event.target.attrs.fillPatternImage &&
+        this.state.meanShapeId &&
+        event.target.attrs.meanFinish === false
+      ) {
+        checkMean = true;
+      } else {
+        checkMean = false;
+      }
+      // s********************************
+      // s********************************
+    }
+    if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
         if (meanCheck === "MEAN") {
           if (meanFinish === false) {
@@ -296,19 +342,25 @@ class App extends Component {
 
             let rand = Date.now();
 
-            this.setState({
-              shapes: [
-                ...shapes,
-                {
-                  _id: rand,
-                  type: meanCheck,
-                  color: color,
-                  opacity: 0.3,
+            this.setState(
+              {
+                shapes: [
+                  ...shapes,
+                  {
+                    _id: rand,
+                    type: meanCheck,
+                    color: color,
+                    opacity: 0.3,
 
-                  points: [...meanPoints, mousePos],
-                },
-              ],
-            });
+                    points: [...meanPoints, mousePos],
+                  },
+                ],
+              },
+              () => {
+                this.props.onChange(this.state.shapes);
+              },
+            );
+
             this.setState(
               {
                 meanFinish: true,
@@ -324,18 +376,23 @@ class App extends Component {
           let rand = Date.now();
 
           if (isMouseOverStartPoint && points.length >= 3) {
-            this.setState({
-              shapes: [
-                ...shapes,
-                {
-                  _id: rand,
-                  type: meanCheck,
-                  color: color,
-                  opacity: 0.3,
-                  points,
-                },
-              ],
-            });
+            this.setState(
+              {
+                shapes: [
+                  ...shapes,
+                  {
+                    _id: rand,
+                    type: meanCheck,
+                    color: color,
+                    opacity: 0.3,
+                    points,
+                  },
+                ],
+              },
+              () => {
+                this.props.onChange(this.state.shapes);
+              },
+            );
             this.setState({
               isFinished: true,
             });
@@ -360,9 +417,11 @@ class App extends Component {
         return;
       }
     } else if (image === null) {
-      alert("Upload a pdf first");
+      if (checkMean === true || finishDisable === true) return;
+      else alert("Upload a pdf first");
     } else {
-      alert("Select an element first");
+      if (checkMean === true || finishDisable === true) return;
+      else alert("Select an element first");
     }
   };
 
@@ -420,35 +479,30 @@ class App extends Component {
     tempArr[0].opacity = 0.3;
   };
   handleConvaLineClick = (id) => {
-    const { meanCheck } = this.state;
-    if (meanCheck !== "MEAN") {
-      this.handleDisableShape(id);
-    } else {
-      alert("Please Check Building first to update Building");
-    }
+    // const { meanCheck } = this.state;
+
+    this.handleDisableShape(id);
   };
   handleConvaCircleClick = (id) => {
-    const { meanCheck } = this.state;
-    if (meanCheck === "MEAN") {
-      this.handleDisableMean(id);
-    } else {
-      alert("Please Check Mean first to update Mean");
-    }
+    // const { meanCheck } = this.state;
+
+    this.handleDisableMean(id);
   };
 
   handleDisableMean = (id) => {
     const { shapes, meanShapeId } = this.state;
     if (shapes.length > 0) {
-      let tempArr = shapes.filter((sp) => sp._id === id);
+      let tempArr = shapes.find((sp) => sp._id === id);
       this.props.onClick(id, tempArr);
-      tempArr[0].color = "white";
+      tempArr.color = "white";
       if (meanShapeId) {
-        let tempArr2 = shapes.filter((sp) => sp._id === meanShapeId);
-
-        if (meanShapeId !== id) {
-          tempArr2[0].color = "black";
-        } else {
-          tempArr[0].color = "white";
+        let tempArr2 = shapes.find((sp) => sp._id === meanShapeId);
+        if (tempArr2) {
+          if (meanShapeId !== id) {
+            tempArr2.color = "black";
+          } else {
+            tempArr.color = "white";
+          }
         }
       }
     }
@@ -663,34 +717,36 @@ class App extends Component {
       handleConvaCircleClick,
     } = this;
     return (
-      <>
+      <div className="bg-primary ">
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
         />
-        <div className="row">
-          <div className="pt-4 pl-3" style={{ width: 800 }}>
-            <ConvaExample
-              onClick={handleConvaClick}
-              onMouseMove={handleMouseMove}
-              onMouseOverStartPoint={handleMouseOverStartPoint}
-              onMouseOutStartPoint={handleMouseOutStartPoint}
-              handleConvaLineMouseOver={handleConvaLineMouseOver}
-              handleConvaLineMouseOut={handleConvaLineMouseOut}
-              handleConvaLineClick={handleConvaLineClick}
-              handleConvaCircleClick={handleConvaCircleClick}
-              // states start
-              image={image}
-              curMousePos={curMousePos}
-              isFinished={isFinished}
-              points={points}
-              shapes={shapes}
-              means={means}
-              meanFinish={meanFinish}
-            />
-          </div>
+
+        <div className="pt-4 pl-3">
+          <ConvaExample
+            onClick={handleConvaClick}
+            onMouseMove={handleMouseMove}
+            onMouseOverStartPoint={handleMouseOverStartPoint}
+            onMouseOutStartPoint={handleMouseOutStartPoint}
+            handleConvaLineMouseOver={handleConvaLineMouseOver}
+            handleConvaLineMouseOut={handleConvaLineMouseOut}
+            handleConvaLineClick={handleConvaLineClick}
+            handleConvaCircleClick={handleConvaCircleClick}
+            // states start
+            image={image}
+            curMousePos={curMousePos}
+            isFinished={isFinished}
+            points={points}
+            shapes={shapes}
+            means={means}
+            meanFinish={meanFinish}
+            width={width}
+            height={height}
+          />
         </div>
+
         <div className="pt-2">
           <Button
             fullWidth={false}
@@ -710,11 +766,11 @@ class App extends Component {
         </div>
         <canvas
           id="pdf-canvas"
-          width="800"
-          height="700"
+          width={width}
+          height={height}
           style={{ display: "none" }}
         ></canvas>
-      </>
+      </div>
     );
   }
 }

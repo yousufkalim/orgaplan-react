@@ -44,8 +44,18 @@ const endpoints = {
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
 
   // ADMIN
+  ADMIN_PIC: BASE_URL_V1 + "pic",
+  ADMIN_PIC_GET: BASE_URL_V1 + "pic/get",
+  ADMIN_PIC_SHAPE: BASE_URL_V1 + "pic/shape",
+  ADMIN_PIC_BY_SITE: BASE_URL_V1 + "pic/site",
+
   CREATE_MEAN: BASE_URL_V1 + "mean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
+
+  CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",
+  CREATE_DELIVERY_AREA: BASE_URL_V1 + "delivery-area",
+
+  SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
@@ -75,6 +85,8 @@ const endpoints = {
   GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/add_company",
 
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
+  ADD_COMPANY_USER: BASE_URL_V1 + "users/add_company_user",
+  UPDATE_COMPANY_USER: BASE_URL_V1 + "users/update_company_user",
 
   GET_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/site",
   DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
@@ -94,11 +106,18 @@ const endpoints = {
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
+<<<<<<< HEAD
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
   getDeliveryAreaSiteBySiteId:
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   getStorageSiteBysiteId:
     BASE_URL_V1 + "storage-area/get_all_storage_site/enterprise",
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
+=======
+  FILTER_USER: BASE_URL_V1 + "users/filter",
+
+  GET_ALL_USERS: BASE_URL_V1 + "users",
+  FILE_UPLOAD: BASE_URL_V1 + "file-upload",
+>>>>>>> da2667bbeea054fa65f0a354f9ebb0f752d3cbdf
 };
 export default endpoints;

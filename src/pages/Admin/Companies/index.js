@@ -22,7 +22,7 @@ export default function Index(props) {
       />
       <Route
         exact
-        path={props.match.path + "/user-list"}
+        path={props.match.path + "/user-list/:id"}
         component={UserList}
       />
       <Route

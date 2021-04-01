@@ -227,7 +227,7 @@ export default function AddIncidents(props) {
       });
       if(response.success) {
         if(response.data) {
-       const temp = [];
+          const temp = [];
           response.data.map((item, index) => {
             return temp.push({ label: item.name, value: item._id });
           });

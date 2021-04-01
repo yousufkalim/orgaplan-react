@@ -20,6 +20,8 @@ export default function Canvas({
   shapes,
   means,
   meanFinish,
+  width,
+  height,
 }) {
   var flattenedPoints = points
     .concat(isFinished ? [] : curMousePos)
@@ -28,16 +30,16 @@ export default function Canvas({
   return (
     <>
       <Stage
-        width={800}
-        height={550}
+        width={width}
+        height={height}
         onMouseDown={onClick}
         onMouseMove={onMouseMove}
       >
         <Layer>
           {image ? (
-            <Rectangle fillPatternImage={image} width={800} height={550} />
+            <Rectangle fillPatternImage={image} width={width} height={height} />
           ) : (
-            <Rectangle fill={"#ccc"} width={800} height={550} />
+            <Rectangle fill={"#ccc"} width={width} height={height} />
           )}
           <ConvaLine
             points={flattenedPoints}
@@ -63,6 +65,7 @@ export default function Canvas({
                     [],
                   );
                 }
+
                 return (
                   <>
                     {shape.type === "MEAN" ? (

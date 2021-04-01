@@ -13,7 +13,7 @@ export default function SubHeading({
     subHeading: {
       marginBottom: noMargin ? 0 : 10,
       paddingTop: topPadding && 20,
-      fontSize: theme.typography.pxToRem(18),
+      fontSize: props.fontSize || theme.typography.pxToRem(18),
       color: theme.palette.primary.contrastText,
       fontWeight: bold ? "bold" : "normal",
     },
