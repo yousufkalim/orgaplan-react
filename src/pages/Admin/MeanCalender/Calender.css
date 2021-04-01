@@ -41,3 +41,6 @@ input[type="number"] {
   border: 0.5px solid #707070;
   outline: none;
 }
+.rbc-toolbar-label {
+  opacity: 0;
+}

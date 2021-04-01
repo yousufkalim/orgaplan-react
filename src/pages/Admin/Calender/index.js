@@ -34,6 +34,7 @@ let view = {
   month: true,
   day: true,
   work_week: MyWorkWeek,
+  agenda: true,
 };
 
 const localizer = momentLocalizer(moment);
@@ -88,6 +89,22 @@ const Calender = (props) => {
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
   const [cdate, setCdate] = useState("");
+  const [filterDate, setFilterDate] = useState(new Date());
+  const [company, setCompany] = useState([]);
+  const [typeOfPlace, setTypeOfPlace] = useState([]);
+  const [dropdownCompany, setDropdownCompany] = useState([]);
+  const [enterprise, setEnterprise] = useState("");
+  const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
+  const [status, setStatus] = useState("");
+  const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
+  const [placeId, setPlaceId] = useState("");
+  const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
+    { value: "PENDING", label: "PENDING" },
+    { value: "VALIDATED", label: "VALIDATED" },
+    { value: "MODIFIED", label: "MODIFIED" },
+    { value: "ALERTE", label: "ALERTE" },
+  ]);
+
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
@@ -103,8 +120,13 @@ const Calender = (props) => {
   // };
   // useEffect
   useEffect(() => {
-    getData();
-  }, []); 
+    // getData();
+    // filterBookingCalendar();
+    getfilterdata();
+  }, []);
+  useEffect(() => {
+    filterBookingCalendar();
+  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -134,133 +156,6 @@ const Calender = (props) => {
       work_week_obj.Saturday = false;
     }
   }
-  // const [workWeekstate, workWeekSetState] = useState(work_week_obj);
-  // const workWeekHandleChange = (event) => {
-  //   workWeekSetState({
-  //     ...workWeekstate,
-  //     [event.target.name]: event.target.checked,
-  //   });
-
-  //   // if (event.target.checked === true) {
-  //   //   setavailabilitieModal(true);
-  //   // }
-
-  //   // sunday Start
-  //   if (event.target.name === "Sunday" && event.target.checked === true) {
-  //     let remove = days.indexOf(0);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //     // setAvailibilityDateMin();
-  //   } else if (
-  //     event.target.name === "Sunday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(0);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // sunday End
-  //   // Monday Start
-  //   else if (event.target.name === "Monday" && event.target.checked === true) {
-  //     let remove = days.indexOf(1);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Monday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(1);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Monday End
-  //   // Tuesday Start
-  //   else if (event.target.name === "Tuesday" && event.target.checked === true) {
-  //     let remove = days.indexOf(2);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Tuesday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(2);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Tuesday End
-  //   // Wednesday Start
-  //   else if (
-  //     event.target.name === "Wednesday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(3);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Wednesday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(3);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Wednesday End
-  //   // Thursday Start
-  //   else if (
-  //     event.target.name === "Thursday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(4);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Thursday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(4);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Thursday End
-  //   // Friday Start
-  //   else if (event.target.name === "Friday" && event.target.checked === true) {
-  //     let remove = days.indexOf(5);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Friday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(5);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Friday End
-  //   // Saturday Start
-  //   else if (
-  //     event.target.name === "Saturday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(6);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Saturday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(6);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Saturday End
-  // };
 
   const updateEvent = () => {
     if (titleEdit !== "") {
@@ -613,35 +508,137 @@ const Calender = (props) => {
     }
   };
 
-  const getData = async () => {
-     let count = 1; 
+  const getfilterdata = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.getBookingBySiteId}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
-      }); 
+      });
       if (response.success) {
-        const tempmeanData = response.data.bookings.map((key, index) => { 
-          setSiteMeans(count++);
-          return {
-            title: key.bookingReason,
-            companyId: key.companyId,
-            createdAt: key.createdAt,
-            start: new Date(key.startDate),
-            end: new Date(key.endDate),
-            endTime: key.endTime,
-            meanId: key.meanId,
-            siteId: key.siteId,
-            startTime: key.startTime,
-            updatedAt: key.updatedAt,
-            userId: key.userId,
-            _id: key._id,
-            color: "yellow",
-          };
-        });
-        setEvents(tempmeanData);
-        setLoading(false);
+        if (response.data.site_companies !== null) {
+          const temp = [];
+          response.data.site_companies.map((item, index) => {
+            return temp.push({
+              label: item.companyId.name,
+              value: item.companyId._id,
+            });
+          });
+          setCompany(response.data.site_companies);
+          setDropdownCompany(temp);
+        }
+      } else {
       }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  function handleChangeTypeOfPlace(e) {
+    setTypeOfPlacevalue(e.target.value);
+    if (e.target.value === "deliveryArea") {
+      getDeliveryAreaSiteBySiteId();
+    } else if (e.target.value === "storageArea") {
+      getStorageSiteBysiteId();
+    } else if (e.target.value === "building") {
+      getbuildingBysiteId();
+    } else {
+      setTypeOfPlace([]);
+    }
+  }
+  const getbuildingBysiteId = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.getBuildingsBySiteId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data !== null) {
+          const temp = [];
+          response.data.map((item, index) => {
+            return temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          });
+
+          setTypeOfPlace(temp);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const getStorageSiteBysiteId = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.getStorageSiteBysiteId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data !== null) {
+          const temp = [];
+          console.log(response.data);
+          response.data.map((item, index) => {
+            return temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          });
+
+          setTypeOfPlace(temp);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  const getDeliveryAreaSiteBySiteId = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.getDeliveryAreaSiteBySiteId}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      if (response.success) {
+        if (response.data !== null) {
+          const temp = [];
+          console.log(response.data);
+          response.data.map((item, index) => {
+            return temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          });
+
+          setTypeOfPlace(temp);
+        }
+      } else {
+      }
+
+      //   setItems(response.data.items);
+      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -682,6 +679,91 @@ const Calender = (props) => {
         },
       };
     else return {};
+  };
+
+  const filterBookingCalendar = async () => {
+    let count = 0;
+    let tempEvent;
+    try {
+      const response = await GLOBALS.API({
+        method: "POST",
+        token: store.token,
+        uri: `${GLOBALS.Constants.filterBookingCalendar}`,
+        body: JSON.stringify({
+          siteId: adminStore.site.siteId._id,
+          companyId: enterprise,
+          typeOfPlaning: typeOfPlaning,
+          status: status,
+          typeOfPlace: typeOfPlacevalue,
+          placeId: placeId,
+        }),
+      });
+      if (response.success) {
+        if (typeOfPlaning === "Deliveries") {
+          let colour = "";
+          tempEvent = response.data.Deliveries.map((key, index) => {
+            if (!(key.startTime && key.endTime)) {
+              return {};
+            }
+            if (key.status === "PENDING") {
+              colour = "yellow";
+            } else if (key.status === "VALIDATED") {
+              colour = "green";
+            } else if (key.status === "MODIFIED") {
+              colour = "orange";
+            } else if (key.status === "ALERTE") {
+              colour = "red";
+            }
+            /* start time converstion */
+            let start = new Date(key.date);
+            let startHours = key.startTime.slice(0, 2);
+            let startmint = key.startTime.slice(3, 5);
+            start.setHours(startHours);
+            start.setMinutes(startmint);
+            /* start time converstion */
+
+            /* End time converstion */
+            let end = new Date(key.date);
+            let endHours = key.endTime.slice(0, 2);
+            let endmint = key.endTime.slice(3, 5);
+            end.setHours(endHours);
+            end.setMinutes(endmint);
+            /* End time converstion */
+
+            count++;
+            return {
+              title: key.statusReason,
+              start: start,
+              end: end,
+              color: colour,
+            };
+          });
+          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
+        } else if (typeOfPlaning === "Means") {
+          tempEvent = response.data.Means.map((key, index) => {
+            let start = new Date(key.startDate);
+            let end = new Date(key.endDate);
+            count++;
+            return {
+              title: key.bookingReason,
+              start: start,
+              end: end,
+              color: "blue",
+            };
+          });
+          setSiteMeans(`TOTAL MEANS : ${count} MEANS`);
+        }
+        setEvents(tempEvent);
+      }
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+    console.log(events);
   };
   return (
     <>
@@ -936,12 +1018,6 @@ const Calender = (props) => {
           >
             Book
           </button>
-          {/* <Button variant="primary" onClick={saveBooking}>
-            Add Booking
-          </Button>
-          <Button variant="secondary" onClick={() => setbookingslot(false)}>
-            Close
-          </Button> */}
         </Modal.Footer>
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
@@ -1189,38 +1265,7 @@ const Calender = (props) => {
           handleEditEvent={handleEditEvent}
           event={event}
         />
-        {/* <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
-          <FormSelect
-            placeholder="Mean"
-            values={[
-              { value: "green", label: "Green" },
-              { value: "Yellow", label: "Yellow" },
-              { value: "Red", label: "Red" },
-              { value: "Blue", label: "Blue" },
-              { value: "Orange", label: "Orange" },
-              { value: "Purple", label: "Purple" },
-              { value: "Magenta", label: "Magenta" },
-            ]}
-            onChange={(e) => {
-              console.log("area ==> ", e.target.value);
-            }}
-            style={{ marginRight: "10px", maxWidth: 250 }}
-          />
-          <div style={{ width: "25%", marginLeft: "20px" }}>
-            <DatePicker
-              showPopperArrow={true}
-              dateFormat="yyyy-MM-dd"
-              selected={startDate}
-              popperPlacement="top-start"
-              showYearDropdown
-              minDate={addDays(new Date(), 1)}
-              placeholderText="Delivery date"
-              onChange={(date) => {
-                setStartDate(date);
-              }}
-            />
-          </div>
-        </div> */}
+
         <div className="px-2">
           <Form.Row alignItems="center">
             <Form.Row noMargin>
@@ -1229,53 +1274,60 @@ const Calender = (props) => {
                 noMargin
                 topPadding
                 style={{ color: "#F80303", paddingRight: "3rem" }}
-                primary={`DELIVERY REQUESTS : ${siteMeans} DELIVERIES`}
+                primary={siteMeans}
                 bold
               />
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="center" noMargin>
             <Form.Row justifyContent="flex-start" noMargin>
-              <FormInput
-                type="date"
-                placeholder="Start date"
-                name="startDate"
-                icon
-                value={startDate}
+              <div style={{ marginRight: "20px", width: 250 }}>
+                <DatePicker
+                  showPopperArrow={true}
+                  dateFormat="dd-MM-yyyy"
+                  selected={filterDate}
+                  popperPlacement="top-start"
+                  showYearDropdown
+                  placeholderText="Delivery date"
+                  onChange={(filterDate) => {
+                    setFilterDate(filterDate);
+                  }}
+                />
+              </div>
+
+              <FormSelect
+                placeholder="Enterprise"
+                values={dropdownCompany}
+                style={{ marginRight: "20px", maxWidth: 250 }}
+                onChange={(e) => setEnterprise(e.target.value)}
+              />
+              <FormSelect
+                values={[
+                  { value: "Deliveries", label: "Deliveries" },
+                  { value: "Means", label: "Means" },
+                ]}
                 onChange={(e) => {
-                  setStartDate(e.target.value);
+                  setTypeOfPlaning(e.target.value);
+                  if (e.target.value === "Deliveries") {
+                    setDeliveriesMeansStatus([
+                      { value: "PENDING", label: "PENDING" },
+                      { value: "VALIDATED", label: "VALIDATED" },
+                      { value: "MODIFIED", label: "MODIFIED" },
+                      { value: "ALERTE", label: "ALERTE" },
+                    ]);
+                  } else if (e.target.value === "Means") {
+                    setDeliveriesMeansStatus([
+                      { value: "AVAILABLE", label: "AVAILABLE" },
+                      { value: "UNAVAILABLE", label: "UNAVAILABLE" },
+                    ]);
+                  }
                 }}
-                // onChange={formik.handleChange}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-              <FormSelect
-                placeholder="Company"
-                values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
-                ]}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-              <FormSelect
-                placeholder="Type of planning"
-                values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
-                ]}
                 style={{ marginRight: "20px", maxWidth: 250 }}
               />
               <FormSelect
                 placeholder="Status"
-                values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
-                ]}
+                values={deliveriesMeansStatus}
+                onChange={(e) => setStatus(e.target.value)}
                 style={{ marginRight: "5px", maxWidth: 250 }}
               />
             </Form.Row>
@@ -1283,24 +1335,20 @@ const Calender = (props) => {
           <Form.Row>
             <Form.Row justifyContent="flex-start" noMargin>
               <FormSelect
-                placeholder="Type of location"
+                placeholder="Type of place"
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
+                  { value: "deliveryArea", label: "Delivery area" },
+                  { value: "storageArea", label: "Storage area" },
+                  { value: "building", label: "Emplacement" },
                 ]}
                 style={{ marginRight: "20px", maxWidth: 250 }}
+                onChange={handleChangeTypeOfPlace}
               />
               <FormSelect
-                placeholder="Location"
-                values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
-                ]}
+                placeholder="place"
+                values={typeOfPlace}
                 style={{ marginRight: "20px", maxWidth: 250 }}
+                onChange={(e) => setPlaceId(e.target.value)}
               />
             </Form.Row>
           </Form.Row>
@@ -1319,7 +1367,7 @@ const Calender = (props) => {
                 onSelectEvent={handlePopoverShow}
                 // onSelectEvent={bookingSlot}
                 onSelecting={true}
-                onSelectSlot={AddEvent}
+                // onSelectSlot={AddEvent}
                 // onSelectSlot={AddAvailability}
                 startAccessor="start"
                 endAccessor="end"
@@ -1328,6 +1376,9 @@ const Calender = (props) => {
                   height: "540px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
+                  let { color } = events;
+                  console.log(color, "color");
+
                   let newStyle = {
                     clear: "both",
                     display: "block",
@@ -1337,13 +1388,13 @@ const Calender = (props) => {
                     marginTop: "5px !important",
                     marginLeft: "5px !important",
                     lineHeight: "14px",
-                    background: "#ffefa1",
+                    background: `${color}`,
                     border: "2px solid #fff",
-                    color: "#333",
+                    color: "black",
                   };
 
                   if (events.isMine) {
-                    newStyle.backgroundColor = "#ffcb91";
+                    newStyle.backgroundColor = "color";
                     newStyle.border = "2px solid #fff";
                   }
 
@@ -1354,6 +1405,10 @@ const Calender = (props) => {
                 }}
                 custom_week_days={days}
                 dayPropGetter={customDayPropGetter}
+                date={filterDate}
+                onNavigate={(date) => {
+                  setFilterDate(date);
+                }}
               />
             ) : (
               <h1>Loading.....</h1>
