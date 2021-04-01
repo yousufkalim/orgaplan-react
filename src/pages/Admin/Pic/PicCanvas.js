@@ -91,15 +91,12 @@ const App = (props) => {
       }
     }
     // eslint-disable-next-line
-<<<<<<< Updated upstream
-  };
-=======
+  
   }
 
   // const handleClick = (id, shape) => {
   //   console.log("Shape Click", id, shape);
   // };
->>>>>>> Stashed changes
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
