@@ -6,21 +6,17 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import myEventsList from "./components/events";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
 import TimePicker from "react-time-picker";
-import SearchInput from "../../../components/SearchInput";
-import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
-  get_means,
   add_mean,
   update_mean,
   delete_mean,
@@ -52,14 +48,10 @@ const Calender = (props) => {
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
-  const meansData = useSelector((state) => state.means);
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [isLoading, setLoading] = useState(true);
   const [dorpdownMeans, setDropdownMeans] = useState([]);
-  const [selectedMean, setSelectedMean] = useState("");
   const [selectedMeanId, setSelectedMeanId] = useState("");
-  const [selectedMeanIndex, setSelectedMeanIndex] = useState(null);
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([0]);
@@ -74,7 +66,6 @@ const Calender = (props) => {
   let [Endtimeslice, setEndtimeslice] = useState("");
   const [title, setTitle] = useState("");
   const [value, setValue] = useState("");
-  const [statusColor, setStatusColor] = useState("#FFFF00");
   const [showEdit, setShowEdit] = useState(false);
   const [titleEdit, setTitleEdit] = useState("");
   let [startTimeEdit, setStartTimeEdit] = useState("");
@@ -84,19 +75,15 @@ const Calender = (props) => {
   const [statusColorEdit, setStatusColorEdit] = useState("");
   const [bookingslot, setbookingslot] = useState(false);
   const [bookingDate, setBookingDate] = useState(new Date());
-  const [bookingEvent, setbookingEvent] = useState();
+  const [bookingEvent] = useState();
   const [bookingTitle, setBookingTitle] = useState();
-  let [bookingstartTime, setBookingstartTime] = useState("");
-  let [bookingEndTime, setBookingEndTime] = useState("");
+  let [bookingstartTime] = useState("");
+  let [bookingEndTime] = useState("");
   let [bookingstartTimeslice, setBookingstartTimeslice] = useState("");
   let [bookingendTimeslice, setBookingendTimeslice] = useState("");
-  const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
-  const [cdate, setCdate] = useState("");
-  const [companies, setCompanies] = useState([]);
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
@@ -124,6 +111,7 @@ const Calender = (props) => {
     if (selectedMeanId !== "") {
       onChangeMeans();
     }
+    // eslint-disable-next-line
   }, [selectedMeanId]);
   // useEffect(() => {
   //   if (meansData.means) {
@@ -416,8 +404,6 @@ const Calender = (props) => {
         return startTime > item.end;
       });
 
-      let uniqid = Math.random();
-
       /*check not in previous day  Start */
       let preDateTime = new Date();
       let milliseconds = Date.parse(preDateTime);
@@ -428,12 +414,12 @@ const Calender = (props) => {
       if (startTime > preDateTime && startTime < endTime) {
         if (overlap === "Enable") {
           setShow(false);
-          var stateElement = {
-            title: title,
-            start: startTime,
-            end: endTime,
-            color: statusColor,
-          };
+          // var stateElement = {
+          //   title: title,
+          //   start: startTime,
+          //   end: endTime,
+          //   color: statusColor,
+          // };
 
           var DbElement = {
             startDate: startTime,
@@ -501,14 +487,14 @@ const Calender = (props) => {
       console.log("not active day");
     } else {
       // active days
-      let beforeTime = moment(start).format("HH:mm");
-      let afterTime = moment(end).format("HH:mm");
-      let dateCheck = events.filter((item) => {
-        return (
-          moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
-          moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
-        );
-      });
+      // let beforeTime = moment(start).format("HH:mm");
+      // let afterTime = moment(end).format("HH:mm");
+      // let dateCheck = events.filter((item) => {
+      //   return (
+      //     moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
+      //     moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
+      //   );
+      // });
       // if (dateCheck.length === 0 && overlap) {
       if (start > preDateTime && start < end) {
         if (slots.length >= 2) {
@@ -600,24 +586,24 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     // admin code end
   };
-  const bookingSlot = (event) => {
-    // booking Event
-    setbookingslot(true);
-    const fill = events.filter((e) => e.id === event.id);
-    setbookingEvent(fill[0]);
-    setBookingstartTime(fill[0].start);
-    setBookingEndTime(fill[0].end);
+  // const bookingSlot = (event) => {
+  //   // booking Event
+  //   setbookingslot(true);
+  //   const fill = events.filter((e) => e.id === event.id);
+  //   setbookingEvent(fill[0]);
+  //   setBookingstartTime(fill[0].start);
+  //   setBookingEndTime(fill[0].end);
 
-    /* show time start */
-    let getstart = String(fill[0].start);
-    let getend = String(fill[0].end);
-    getstart = getstart.slice(16, 21);
-    getend = getend.slice(16, 21);
+  //   /* show time start */
+  //   let getstart = String(fill[0].start);
+  //   let getend = String(fill[0].end);
+  //   getstart = getstart.slice(16, 21);
+  //   getend = getend.slice(16, 21);
 
-    setBookingstartTimeslice(getstart);
-    setBookingendTimeslice(getend);
-    /* show time End  */
-  };
+  //   setBookingstartTimeslice(getstart);
+  //   setBookingendTimeslice(getend);
+  //   /* show time End  */
+  // };
   const saveBooking = () => {
     /* start time*/
     bookingstartTime = String(bookingstartTime);
@@ -732,8 +718,6 @@ const Calender = (props) => {
         setEvents(tempmeanData);
 
         if (response.data.site_means != null) {
-          let selectedMeanIndex = 0;
-
           const temp = [];
           response.data.site_means.map((item, index) => {
             return temp.push({
@@ -742,8 +726,6 @@ const Calender = (props) => {
             });
           });
           setDropdownMeans(temp);
-
-          setSelectedMeanIndex(selectedMeanIndex);
         }
         const companyTemp = [];
         response.data.site_companies.map((item, index) => {
@@ -757,7 +739,6 @@ const Calender = (props) => {
       }
 
       //   setItems(response.data.items);
-      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -798,7 +779,6 @@ const Calender = (props) => {
       }
 
       //   setItems(response.data.items);
-      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -966,12 +946,8 @@ const Calender = (props) => {
                   if (index !== -1) {
                     const item = event.target.value;
 
-                    setSelectedCompanyIndex(index);
-
                     setSelectedCompany(item);
                   } else {
-                    setSelectedCompanyIndex(null);
-
                     setSelectedCompany("");
                   }
                 }}
@@ -1211,11 +1187,8 @@ const Calender = (props) => {
               if (index !== -1) {
                 const itemId = event.target.value;
                 console.log(event);
-                setSelectedMeanIndex(index);
                 setSelectedMeanId(itemId);
               } else {
-                setSelectedMeanIndex(null);
-
                 setSelectedMeanId("");
               }
             }}

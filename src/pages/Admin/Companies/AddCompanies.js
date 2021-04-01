@@ -22,7 +22,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import ColorPicker from "../../../components/ColorPcker";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -74,13 +73,10 @@ export default function AddCompanies(props) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [color, setColor] = useState("#d71313");
-  const [colorError, setColorError] = useState("");
-  const [images, setImages] = useState([]);
   const [companyType, setCompanyType] = useState("generalcontractor");
   const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
-  const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phone, setPhone] = useState("");
@@ -96,7 +92,6 @@ export default function AddCompanies(props) {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
 
-  const [trades, setTrades] = useState([]);
   const [dropdownTrades, setDropdownTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState("");
   const [listOfTrades, setListOfTrades] = useState([]);
@@ -104,10 +99,12 @@ export default function AddCompanies(props) {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     getCompanyAutoFill();
+    // eslint-disable-next-line
   }, [companyId]);
 
   const getData = async () => {
@@ -120,8 +117,7 @@ export default function AddCompanies(props) {
       if (response.success) {
         console.log("Response", JSON.stringify(response, null, 2));
         setCompanies(response.data.site_companies);
-        setTrades(response.data.site_trades);
-        if (response.data.site_companies != null) {
+        if (response.data.site_companies !== null) {
           const companyTemp = [];
 
           response.data.site_companies.map((item, index) => {
@@ -133,7 +129,7 @@ export default function AddCompanies(props) {
           setDropdownCompanies(companyTemp);
         }
 
-        if (response.data.site_trades != null) {
+        if (response.data.site_trades !== null) {
           const tradesTemp = [];
 
           response.data.site_trades.map((item, index) => {
@@ -166,10 +162,10 @@ export default function AddCompanies(props) {
         token: store.token,
       });
       if (response.success) {
-        if (response.data.site_companies.length != 0) {
+        if (response.data.site_companies.length !== 0) {
           const company = response.data.site_companies[0].companyId;
           const trades = response.data.site_companies[0].trades;
-          if (company.incharge != undefined) {
+          if (company.incharge !== undefined) {
             const incharge = company.incharge;
             setFname(incharge.firstName);
             setLname(incharge.lastName);
@@ -181,12 +177,13 @@ export default function AddCompanies(props) {
             setEmail("");
             setPhone("");
           }
-          if (company.color != undefined) setColor(company.color);
-          if (company.website != undefined) setWebsite(company.website);
+          if (company.color !== undefined) setColor(company.color);
+          if (company.website !== undefined) setWebsite(company.website);
           else setWebsite("");
-          if (company.description != undefined) setAddInfo(company.description);
+          if (company.description !== undefined)
+            setAddInfo(company.description);
           else setAddInfo("");
-          if (trades != undefined) {
+          if (trades !== undefined) {
             const tradesTemp = [];
             trades.forEach((item, index) => {
               tradesTemp.push({ key: item, label: item });
@@ -233,7 +230,7 @@ export default function AddCompanies(props) {
               companyValue = item.companyId.name;
             }
           });
-          if (companyIndex != null && companyValue != null) {
+          if (companyIndex !== null && companyValue !== null) {
             setSelectedCompany(companyValue);
             setSelectedCompanyIndex(companyIndex);
           } else {
@@ -267,74 +264,73 @@ export default function AddCompanies(props) {
 
   const onSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
-    if(emailError || phoneError || websiteError ){
+    if (emailError || phoneError || websiteError) {
       alert("something went wrong");
-    }
-    else{
+    } else {
       const values = formik.values;
-    const isSubContractor = companyType === "subcontractor";
-    let parentCompanyId = undefined;
-    if (
-      companies.length != 0 &&
-      isSubContractor &&
-      companies[selectedCompanyIndex].companyId != undefined
-    )
-      parentCompanyId = companies[selectedCompanyIndex].companyId._id;
+      const isSubContractor = companyType === "subcontractor";
+      let parentCompanyId = undefined;
+      if (
+        companies.length !== 0 &&
+        isSubContractor &&
+        companies[selectedCompanyIndex].companyId !== undefined
+      )
+        parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
-    const trades = [];
+      const trades = [];
 
-    listOfTrades.forEach((item, index) => {
-      trades.push(item.label);
-    });
+      listOfTrades.forEach((item, index) => {
+        trades.push(item.label);
+      });
 
-    var formdata = new FormData();
-    formdata.append("logo", values.images[0]?.file);
-    formdata.append("name", name);
-    formdata.append("color", color);
-    formdata.append("website", website);
-    formdata.append("description", addInfo);
-    formdata.append("trades", JSON.stringify(trades));
-    formdata.append("siteId", adminStore.site.siteId._id);
+      var formdata = new FormData();
+      formdata.append("logo", values.images[0]?.file);
+      formdata.append("name", name);
+      formdata.append("color", color);
+      formdata.append("website", website);
+      formdata.append("description", addInfo);
+      formdata.append("trades", JSON.stringify(trades));
+      formdata.append("siteId", adminStore.site.siteId._id);
 
-    if (isSubContractor) {
-      if (parentCompanyId === undefined)
-        alert("You need to select a general contractor");
-      formdata.append("parentCompanyId", parentCompanyId);
-    }
-    if (
-      fname.length !== 0 &&
-      lname.length !== 0 &&
-      email.length !== 0 &&
-      phone.length !== 0
-    ) {
-      const incharge = {
-        firstName: fname,
-        lastName: lname,
-        email: email,
-        phone: phone,
-      };
-      formdata.append("incharge", JSON.stringify(incharge));
-    }
+      if (isSubContractor) {
+        if (parentCompanyId === undefined)
+          alert("You need to select a general contractor");
+        formdata.append("parentCompanyId", parentCompanyId);
+      }
+      if (
+        fname.length !== 0 &&
+        lname.length !== 0 &&
+        email.length !== 0 &&
+        phone.length !== 0
+      ) {
+        const incharge = {
+          firstName: fname,
+          lastName: lname,
+          email: email,
+          phone: phone,
+        };
+        formdata.append("incharge", JSON.stringify(incharge));
+      }
 
-    const response = await GLOBALS.API({
-      method: "POST",
+      const response = await GLOBALS.API({
+        method: "POST",
 
-      uri: GLOBALS.Constants.CREATE_COMPANY,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    if (response.success) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(response.message, "success"),
-        ),
-      );
-    }
+        uri: GLOBALS.Constants.CREATE_COMPANY,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      if (response.success) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(response.message, "success"),
+          ),
+        );
+      }
 
-    formik.setSubmitting(false);
-    props.history.push("/clients");
+      formik.setSubmitting(false);
+      props.history.push("/clients");
     }
   };
 
@@ -350,9 +346,7 @@ export default function AddCompanies(props) {
     if (e.target.name === "color") {
       setColor(e.target.value);
       if (e.target.value === "" || e.target.value === null) {
-        setColorError(true);
       } else {
-        setColorError(false);
       }
     }
 
@@ -370,6 +364,7 @@ export default function AddCompanies(props) {
     }
     if (e.target.name === "email") {
       setEmail(e.target.value);
+      // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!e.target.value.match(mailformat)) {
         setEmailError(true);
@@ -381,7 +376,10 @@ export default function AddCompanies(props) {
       setPhone(e.target.value);
       if (e.target.value.charAt(0) !== "0") {
         setPhoneError("Telephone shoud starts with 0");
-      } else if (e.target.value.charAt(0) === "0" && e.target.value.length !== 10) {
+      } else if (
+        e.target.value.charAt(0) === "0" &&
+        e.target.value.length !== 10
+      ) {
         setPhoneError("Telephone must have 10 digits");
       } else {
         setPhoneError("");
@@ -389,44 +387,32 @@ export default function AddCompanies(props) {
     }
 
     if (e.target.name === "images") {
-      setImages(e.target.value);
     }
     if (e.target.name === "trades") {
-      setTrades(e.target.value);
     }
 
     if (e.target.name === "addInfo") {
       setAddInfo(e.target.value);
     }
-    if(e.target.name === "website"){
+    if (e.target.name === "website") {
       setWebsite(e.target.value);
       const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-      if(!e.target.value.match(web)){
-        setWebsiteError("Invalid Url")
-      }
-      else{
+      if (!e.target.value.match(web)) {
+        setWebsiteError("Invalid Url");
+      } else {
         setWebsiteError("");
       }
     }
   };
 
-  const handleChange = (name, value) => {
-    if (name === "trades") {
-      if (value !== "") {
-        setUpdate((st) => !st);
-        setTrades(value);
-      }
-    }
-  };
-
   const submitHandler = (e) => {
+    // eslint-disable-next-line
     var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     e.preventDefault();
     if (name === "" || name === null) {
       setNameError(true);
     }
     if (color === "" || color === null) {
-      setColorError(true);
     }
     if (
       companyType === "" ||
@@ -479,7 +465,7 @@ export default function AddCompanies(props) {
   });
 
   const handleChangecolor = (color) => {
-    setColor(color.hex )
+    setColor(color.hex);
     console.log("color is", color.hex);
   };
 
@@ -493,7 +479,10 @@ export default function AddCompanies(props) {
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
             <FormLabel bold primary="IDENTITY * :" />
-            <Form.Row width="55%" style={{ gap: "20px", justifyContent: "flex-start" }}>
+            <Form.Row
+              width="55%"
+              style={{ gap: "20px", justifyContent: "flex-start" }}
+            >
               <div style={{ width: "35%", height: "100%" }}>
                 <Autocomplete
                   id="free-solo-demo"
@@ -518,16 +507,17 @@ export default function AddCompanies(props) {
                     //                  let fileClone = [{ uri: mean.image }];
                     // setImage(fileClone);
 
-                    if (companyId.length != 0) {
+                    if (companyId.length !== 0) {
                       setCompanyId(companyId);
                       setFieldsEnabled(false);
                       formik.setFieldValue("images", [{ uri: logo }]);
                     }
                   }}
-                  options={companies.map((option) => {
-                    if (option.companyId.name != undefined)
-                      return option.companyId.name;
-                  })}
+                  options={companies.map(
+                    (option) =>
+                      option.companyId.name !== undefined &&
+                      option.companyId.name,
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -535,7 +525,7 @@ export default function AddCompanies(props) {
                       margin="normal"
                       variant="outlined"
                       name="name"
-                      style={{width: "100%"}}
+                      style={{ width: "100%" }}
                       disabled={!fieldsEnabled}
                       onChange={(event) => {
                         console.log(event);
@@ -552,19 +542,17 @@ export default function AddCompanies(props) {
                 )}
               </div>
               <div style={{ width: "35%", height: "100%" }}>
-                 <ColorPicker color={color} handleChange={handleChangecolor} />
+                <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
-
-              
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IMAGE * :" />
             <Form.Row width="55%">
-            <FormMultipleUpload
+              <FormMultipleUpload
                 name="images"
                 enabled={!fieldsEnabled}
-                style={{width: "60%"}}
+                style={{ width: "60%" }}
                 values={formik.values.images}
                 onChange={(values) =>
                   inputChange({
@@ -575,7 +563,6 @@ export default function AddCompanies(props) {
                     },
                   })
                 }
-                
               />
             </Form.Row>
           </Form.Row>
@@ -586,7 +573,7 @@ export default function AddCompanies(props) {
                 name="contractType"
                 value={companyType}
                 // error={contractType}
-                style={{width: "70%"}}
+                style={{ width: "70%" }}
                 defaultValue={`generalcontractor`}
                 onChange={({ target: { name, value } }) =>
                   setCompanyType(value)
@@ -738,9 +725,7 @@ export default function AddCompanies(props) {
                   value={phone}
                 />
                 {phoneError && (
-                  <div className={classes.error}>
-                    {phoneError}
-                  </div>
+                  <div className={classes.error}>{phoneError}</div>
                 )}
               </div>
             </Form.Row>
@@ -775,21 +760,17 @@ export default function AddCompanies(props) {
           <Form.Row>
             <FormLabel bold primary="Website : " />
             <Form.Row width="55%">
-              <div style={{width: "50%"}}>
-              <FormInput
-                name="website"
-                style={{ width: "100%" }}
-                placeholder="http://"
-                onChange={inputChange}
-                value={website}
-              />
-              {
-                websiteError && (
-                  <div className={classes.error}>
-                  {websiteError}
-                </div>
-                )
-              }
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="website"
+                  style={{ width: "100%" }}
+                  placeholder="http://"
+                  onChange={inputChange}
+                  value={website}
+                />
+                {websiteError && (
+                  <div className={classes.error}>{websiteError}</div>
+                )}
               </div>
             </Form.Row>
           </Form.Row>
@@ -818,11 +799,7 @@ export default function AddCompanies(props) {
               }}
               fullWidth={false}
               // loading={formik.isSubmitting}
-              disabled={
-                !name ||
-                !color ||
-                !companyType
-              }
+              disabled={!name || !color || !companyType}
             />
           </Form.ButtonContainer>
         </Form.Form>

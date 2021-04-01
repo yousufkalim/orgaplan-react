@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -11,8 +12,8 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
+import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
-import FormInput from "../../../components/CustomFormInput";
 import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 
@@ -38,7 +39,7 @@ export default function DeliveryArea(props) {
   const [selectedMeans, setSelectedMeans] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -94,6 +95,23 @@ export default function DeliveryArea(props) {
       setMeans(meansTempArray);
       setCompanies(companiesTempArray);
       setDeliveryAreas(deliveryAreasTempArray);
+      if (props.selectedShape) {
+        console.log("props", props.selectedShape);
+        setName(props.selectedShape.storageArea.name);
+        setIsFull(props.selectedShape.storageArea.isFull);
+        setColor(props.selectedShape.color);
+        setStartDate(props.selectedShape.storageArea.availability.start);
+        setEndDate(props.selectedShape.storageArea.availability.end);
+        setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
+        setSelectedMeans(props.selectedShape.storageArea.means);
+        setUnavailabilities(props.selectedShape.storageArea.unavailabilities);
+        setSelectedCompanies(props.selectedShape.storageArea.companies);
+        setNotificationPriorToDays(
+          props.selectedShape.storageArea.notificationPriorToDays,
+        );
+        setNotificationTo(props.selectedShape.storageArea.notificationTo);
+        setUpdate((st) => !st);
+      }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -130,7 +148,7 @@ export default function DeliveryArea(props) {
 
       const notificationToAr = notificationTo.map((item) => item.label);
 
-      const formdata = JSON.stringify({
+      const formdata = {
         siteId: adminStore.site.siteId._id,
         isFull: isFull,
         name,
@@ -145,17 +163,18 @@ export default function DeliveryArea(props) {
         companies: selectedCompanies,
         notificationPriorToDays,
         notificationTo: notificationToAr,
-      });
-
-      const response = await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.CREATE_STORAGE_AREA,
+      };
+      let response = await GLOBALS.API({
+        method: props.selectedShape ? "PUT" : "POST",
+        uri: props.selectedShape
+          ? `${GLOBALS.Constants.CREATE_STORAGE_AREA}/${props.selectedShape._id}`
+          : GLOBALS.Constants.CREATE_STORAGE_AREA,
         token: store.token,
-        body: formdata,
+        body: JSON.stringify(formdata),
       });
 
       let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShape = props.shape ? props.shape : props.selectedShape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = name;
@@ -164,16 +183,18 @@ export default function DeliveryArea(props) {
       propShape.name = response.data.name;
       propShape.storageArea = response.data;
 
-      await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-        token: store.token,
-        body: JSON.stringify({
-          picId: props.pic._id,
-          deliveryArea: response.data._id,
-          ...propShape,
-        }),
-      });
+      if (!props.selectedShape) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            deliveryArea: response.data._id,
+            ...propShape,
+          }),
+        });
+      }
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
@@ -232,6 +253,8 @@ export default function DeliveryArea(props) {
               type="date"
               name="startDate"
               value={startDate}
+              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               placeholder={`Date de début`}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -242,6 +265,8 @@ export default function DeliveryArea(props) {
               type="date"
               name="endDate"
               placeholder="Date de fin"
+              min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)

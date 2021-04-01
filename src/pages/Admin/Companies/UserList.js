@@ -33,27 +33,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 export default function UserList(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   // const [companies, setCompanies] = useState([]);
   const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
-  const [selectedItem] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
   const [filterUserName, setFilterUserName] = useState("");
   const [editModel, setEditModel] = useState("");
@@ -66,69 +58,56 @@ export default function UserList(props) {
     getData();
     // eslint-disable-next-line
   }, []);
-  
 
   useEffect(() => {
-
     filteredUser();
     // eslint-disable-next-line
   }, [filterCompanyId, filterUserName]);
 
-   useEffect(() => {
-     updateEditModel();
-     // eslint-disable-next-line
-   }, [editModel]);
+  useEffect(() => {
+    updateEditModel();
+    // eslint-disable-next-line
+  }, [editModel]);
 
- async function updateEditModel() {
-   if(editModel) {
-    setEmail(editModel.userId.email);
-    setPhone(editModel.userId.phone);
-    setCompanyId(editModel.companyId._id);
-    setCompanyName(editModel.companyId.name);
-    setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
-    setUserId(editModel.userId._id);
-   }
-  
+  async function updateEditModel() {
+    if (editModel) {
+      setEmail(editModel.userId.email);
+      setPhone(editModel.userId.phone);
+      setCompanyId(editModel.companyId._id);
+      setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
+      setUserId(editModel.userId._id);
+    }
+  }
 
- }
+  async function filteredUser() {
+    try {
+      const params = { siteId: adminStore.site.siteId._id };
+      if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
+      if (filterUserName.length !== 0) params["name"] = filterUserName;
 
-
-
- async function filteredUser() {
-   try{
-   setLoading(true);
-   const params = { siteId: adminStore.site.siteId._id };
-   if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
-   if (filterUserName.length !== 0) params["name"] = filterUserName;
-
-   const response = await GLOBALS.API({
-     uri: `${GLOBALS.Constants.FILTER_USER}`,
-     token: store.token,
-     method: "POST",
-     body: JSON.stringify(params),
-   });
-   if (response.data.users) {
-     const data = response.data.users.filter(
-       (x) => x.companyId._id === filterCompanyId,
-     );
-     setUserList(data);
-   } else {
-     setUserList([]);
-   }
-
-   } catch (err) {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.FILTER_USER}`,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+      if (response.data.users) {
+        const data = response.data.users.filter(
+          (x) => x.companyId._id === filterCompanyId,
+        );
+        setUserList(data);
+      } else {
+        setUserList([]);
+      }
+    } catch (err) {
       setUserList([]);
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
-   }
-
-   
-}
-
+    }
+  }
 
   const getData = async () => {
     try {
@@ -141,7 +120,7 @@ export default function UserList(props) {
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
       });
-      console.log('response------------------', response);
+      console.log("response------------------", response);
       if (userResponse.success) {
         if (userResponse.data.roles != null) {
           const rolesTemp = [];
@@ -161,19 +140,16 @@ export default function UserList(props) {
           setDropdownCompanies(companyTemp);
         }
       }
-      if (response.success) {  ///working
-       const data = response.data.users.filter(
+      if (response.success) {
+        ///working
+        const data = response.data.users.filter(
           (x) => x.companyId._id === filterCompanyId,
         );
         setUserList(data);
-        // setCompanyName(response.data[0].company.name);
         // setUsers(response.data[0].usersArray);
-        setLoading(false);
       } else {
-        setLoading(false);
       }
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -181,13 +157,10 @@ export default function UserList(props) {
       );
     }
   };
-  const resendVerificaiontRequest = () => {};
-
 
   const onUpdate = async (e) => {
     try {
       e.preventDefault();
-      setLoading(true);
 
       const formdata = JSON.stringify({
         role: selectedRole,
@@ -196,7 +169,7 @@ export default function UserList(props) {
         companyId: companyId,
         userId: userId,
       });
-       await GLOBALS.API({
+      await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.UPDATE_COMPANY_USER,
         token: store.token,
@@ -204,9 +177,7 @@ export default function UserList(props) {
       });
       getData();
       setOpen(false);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -218,37 +189,31 @@ export default function UserList(props) {
     // console.log('item', e.target.value);
     setOpen(true);
   };
+  // eslint-disable-next-line
   let rows = userList.map((item) => {
     if (item.companyId && item.userId) {
-      // if (item.companyId._id === setFilterCompanyId) {
-      
-
       return [
-    item.userId.firstName + " " + item.userId.lastName,
-    item.companyId.name,
-    item.role,
-    item.userId.isVerified ? "Inscrit" : "En attente",
-    item.userId.email,
-    <SmallButton
-      text="Edit"
-      // text={item.userId.isVerified ? "Edit" : "Re-Send"}
-      onClick={(e) => {
-        setEditModel(item);
-        handleClickOpen();
-      }}
-      color={theme.palette.primary.contrastText}
-      to={"/companies"}
-      style={{
-        marginLeft: 10,
-        borderRadius: 4,
-      }}
-    />,
-  ];
-      } 
-    
-  
-     
-
+        item.userId.firstName + " " + item.userId.lastName,
+        item.companyId.name,
+        item.role,
+        item.userId.isVerified ? "Inscrit" : "En attente",
+        item.userId.email,
+        <SmallButton
+          text="Edit"
+          // text={item.userId.isVerified ? "Edit" : "Re-Send"}
+          onClick={(e) => {
+            setEditModel(item);
+            handleClickOpen();
+          }}
+          color={theme.palette.primary.contrastText}
+          to={"/companies"}
+          style={{
+            marginLeft: 10,
+            borderRadius: 4,
+          }}
+        />,
+      ];
+    }
   });
 
   return (
@@ -310,9 +275,7 @@ export default function UserList(props) {
                 value={image}
                 // error={image}
                 disabled
-                onChange={(file) => {
-                  const uri = URL.createObjectURL(file);
-                }}
+                onChange={(file) => {}}
               />
             </Form.Row>
             <Form.Row justifyContent="center">

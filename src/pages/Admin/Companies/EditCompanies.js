@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import * as Yup from "yup";
-import MultiAdderInput from "../../../components/MultiAdderInput";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -16,7 +15,6 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import { InputSharp } from "@material-ui/icons";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import Actions from "../../../redux/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -74,14 +72,9 @@ export default function EditCompany(props) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [color, setColor] = useState("");
-  const [colorError, setColorError] = useState("");
-  const [images, setImages] = useState([]);
   const [companyType, setCompanyType] = useState("subcontractor");
-  const [companyTypeError, setCompanyTypeError] = useState("");
   const [contract, setContract] = useState("");
   const [contractError, setContractError] = useState("");
-  const [typeError, setTypeError] = useState("");
-  const [update, setUpdate] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phone, setPhone] = useState("");
@@ -89,7 +82,6 @@ export default function EditCompany(props) {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [website, setWebsite] = useState("");
-  const [websiteError, setWebsiteError] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -97,7 +89,6 @@ export default function EditCompany(props) {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
 
-  const [trades, setTrades] = useState([]);
   const [dropdownTrades, setDropdownTrades] = useState([]);
   const [selectedTrade, setSelectedTrade] = useState("");
   const [listOfTrades, setListOfTrades] = useState([]);
@@ -105,9 +96,11 @@ export default function EditCompany(props) {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     getCompanyAutoFill();
+    // eslint-disable-next-line
   }, [companyId]);
   const getData = async () => {
     setCompanyId(props.location.id);
@@ -119,8 +112,7 @@ export default function EditCompany(props) {
       });
       if (response.success) {
         setCompanies(response.data.site_companies);
-        setTrades(response.data.site_trades);
-        if (response.data.site_companies != null) {
+        if (response.data.site_companies !== null) {
           const companyTemp = [];
 
           response.data.site_companies.map((item, index) => {
@@ -132,7 +124,7 @@ export default function EditCompany(props) {
           setDropdownCompanies(companyTemp);
         }
 
-        if (response.data.site_trades != null) {
+        if (response.data.site_trades !== null) {
           const tradesTemp = [];
 
           response.data.site_trades.map((item, index) => {
@@ -165,12 +157,12 @@ export default function EditCompany(props) {
         token: store.token,
       });
       if (response.success) {
-        if (response.data.site_companies.length != 0) {
+        if (response.data.site_companies.length !== 0) {
           const company = response.data.site_companies[0].companyId;
           const trades = response.data.site_companies[0].trades;
           formik.setFieldValue("email", company.name);
           setName(company.name);
-          if (company.incharge != undefined) {
+          if (company.incharge !== undefined) {
             const incharge = company.incharge;
             setFname(incharge.firstName);
             setLname(incharge.lastName);
@@ -182,12 +174,13 @@ export default function EditCompany(props) {
             setEmail("");
             setPhone("");
           }
-          if (company.color != undefined) setColor(company.color);
-          if (company.website != undefined) setWebsite(company.website);
+          if (company.color !== undefined) setColor(company.color);
+          if (company.website !== undefined) setWebsite(company.website);
           else setWebsite("");
-          if (company.description != undefined) setAddInfo(company.description);
+          if (company.description !== undefined)
+            setAddInfo(company.description);
           else setAddInfo("");
-          if (trades != undefined) {
+          if (trades !== undefined) {
             const tradesTemp = [];
             trades.forEach((item, index) => {
               tradesTemp.push({ key: item, label: item });
@@ -232,7 +225,7 @@ export default function EditCompany(props) {
               companyValue = item.companyId.name;
             }
           });
-          if (companyIndex != null && companyValue != null) {
+          if (companyIndex !== null && companyValue !== null) {
             setSelectedCompany(companyValue);
             setSelectedCompanyIndex(companyIndex);
           } else {
@@ -266,13 +259,12 @@ export default function EditCompany(props) {
 
   const onSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
-    const values = formik.values;
     const isSubContractor = companyType === "subcontractor";
     let parentCompanyId = undefined;
     if (
-      companies.length != 0 &&
+      companies.length !== 0 &&
       isSubContractor &&
-      companies[selectedCompanyIndex].companyId != undefined
+      companies[selectedCompanyIndex].companyId !== undefined
     )
       parentCompanyId = companies[selectedCompanyIndex].companyId._id;
 
@@ -345,9 +337,7 @@ export default function EditCompany(props) {
     if (e.target.name === "color") {
       setColor(e.target.value);
       if (e.target.value === "" || e.target.value === null) {
-        setColorError(true);
       } else {
-        setColorError(false);
       }
     }
 
@@ -365,6 +355,7 @@ export default function EditCompany(props) {
     }
     if (e.target.name === "email") {
       setEmail(e.target.value);
+      // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!e.target.value.match(mailformat)) {
         setEmailError(true);
@@ -372,26 +363,14 @@ export default function EditCompany(props) {
         setEmailError(false);
       }
     }
-    
 
     if (e.target.name === "images") {
-      setImages(e.target.value);
     }
     if (e.target.name === "trades") {
-      setTrades(e.target.value);
     }
 
     if (e.target.name === "addInfo") {
       setAddInfo(e.target.value);
-    }
-  };
-
-  const handleChange = (name, value) => {
-    if (name === "trades") {
-      if (value !== "") {
-        setUpdate((st) => !st);
-        setTrades(value);
-      }
     }
   };
 
@@ -402,14 +381,12 @@ export default function EditCompany(props) {
       setNameError(true);
     }
     if (color === "" || color === null) {
-      setColorError(true);
     }
     if (
       companyType === "" ||
       companyType === null ||
       companyType === undefined
     ) {
-      setCompanyTypeError(true);
     }
     if (contract === "" || contract === null || contract === undefined) {
       setContractError(true);
@@ -455,7 +432,7 @@ export default function EditCompany(props) {
   });
 
   const handleChangecolor = (color) => {
-    setColor(color.hex )
+    setColor(color.hex);
     console.log("color is", color.hex);
   };
 
@@ -469,7 +446,10 @@ export default function EditCompany(props) {
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
             <FormLabel bold primary="IDENTITY* :" />
-            <Form.Row width="55%" style={{ gap: "20px", justifyContent: "flex-start" }}>
+            <Form.Row
+              width="55%"
+              style={{ gap: "20px", justifyContent: "flex-start" }}
+            >
               <div style={{ width: "35%", height: "100%" }}>
                 <Autocomplete
                   id="free-solo-demo"
@@ -496,16 +476,17 @@ export default function EditCompany(props) {
                     //                  let fileClone = [{ uri: mean.image }];
                     // setImage(fileClone);
 
-                    if (companyId.length != 0) {
+                    if (companyId.length !== 0) {
                       setCompanyId(companyId);
                       setFieldsEnabled(false);
                       formik.setFieldValue("images", [{ uri: logo }]);
                     }
                   }}
-                  options={companies.map((option) => {
-                    if (option.companyId.name != undefined)
-                      return option.companyId.name;
-                  })}
+                  options={companies.map(
+                    (option) =>
+                      option.companyId.name !== undefined &&
+                      option.companyId.name,
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -530,15 +511,18 @@ export default function EditCompany(props) {
                 )}
               </div>
               <div style={{ width: "35%", height: "100%" }}>
-                 <ColorPicker disableAlpha="true" color={color} handleChange={handleChangecolor} />
+                <ColorPicker
+                  disableAlpha="true"
+                  color={color}
+                  handleChange={handleChangecolor}
+                />
               </div>
-              
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IMAGE * :" />
             <Form.Row width="55%">
-            <FormMultipleUpload
+              <FormMultipleUpload
                 name="images"
                 disabled
                 enabled={!fieldsEnabled}
@@ -563,7 +547,7 @@ export default function EditCompany(props) {
                 name="contractType"
                 value={companyType}
                 // error={contractType}
-                style={{width: "70%"}}
+                style={{ width: "70%" }}
                 onChange={({ target: { name, value } }) =>
                   setCompanyType(value)
                 }

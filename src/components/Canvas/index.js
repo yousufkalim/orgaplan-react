@@ -202,7 +202,7 @@ class App extends Component {
     }
   };
   handleDisableShape = (id) => {
-    const { shapes, shapeId, color } = this.state;
+    const { shapes, shapeId } = this.state;
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
       this.props.onClick(id, tempArr);

@@ -30,8 +30,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-
-
 export default function AddIncidents(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
@@ -41,9 +39,7 @@ export default function AddIncidents(props) {
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownLocationType, setDropdownLocationType] = useState([]);
   const [dropdownLocation, setDropdownLocation] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState([]);
 
-  const [location, setLocations] = useState([]);
   const [selectedLocationType, setselectedLocationType] = useState("");
 
   const [companyId, setCompanyId] = useState("");
@@ -58,14 +54,7 @@ export default function AddIncidents(props) {
   const [type, setType] = useState("");
 
   const [comment, setComment] = useState("");
-  const [selctedLocationObject, setselctedLocationObject] = useState("");
   const [image, setImage] = useState([]);
-
-  const [nameError, setNameError] = useState(""); 
-
-  const [comapnyError, setComapnyError] = useState("");
-  const [dateError, setDateError] = useState("");
-  const [timeError, setTimeError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -97,7 +86,6 @@ export default function AddIncidents(props) {
       }
 
       if (response.data.locationTypes) {
-        setLocations(response.data.locationTypes);
         const temp = [];
         response.data.locationTypes.map((item, index) => {
           return temp.push({ label: item, value: item });
@@ -113,15 +101,15 @@ export default function AddIncidents(props) {
     setName(incident.name);
     setCompanyId(incident?.companyId?._id); //working
     setDate(incident?.date);
-     //setTime(incident?.time); // moment(item.date).format("MM/DD/yyyy"): ' '
-     
+    //setTime(incident?.time); // moment(item.date).format("MM/DD/yyyy"): ' '
+
     // setTime(moment(incident?.time).format("HH:mm:ss"));
     // console.log(moment(incident?.time).format("HH:mm:ss"));
     setIsBillable(incident?.isBillable);
     setPrice(incident?.price);
     setType(incident?.type);
     setStatus(incident?.status);
-    setDescription(incident?.description)
+    setDescription(incident?.description);
     console.log(props.location?.data);
 
     // setType(contactInfo.type);
@@ -135,7 +123,7 @@ export default function AddIncidents(props) {
 
     // setCompany(contactInfo.company);
     // setRole(contactInfo.role);
-  };;
+  };
 
   const onFormSubmit = async () => {
     // const notificationTo = values.notificationTo.map((item) => item.label);
@@ -161,7 +149,10 @@ export default function AddIncidents(props) {
     console.log(store.token);
     await GLOBALS.API({
       method: "PUT",
-      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS + "/" + props.location.data._id,
+      uri:
+        GLOBALS.Constants.POST_ADD_SITE_INCIDENTS +
+        "/" +
+        props.location.data._id,
       headers: {
         Authorization: store.token,
       },
@@ -174,66 +165,47 @@ export default function AddIncidents(props) {
     if (e.target.name === "name") {
       setName(e.target.value);
       if (e.target.name === "" || name === null) {
-        setNameError(true);
       } else {
-        setNameError(false);
       }
     }
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
       if (e.target.value === "" || e.target.value === null) {
-        setComapnyError(true);
       } else {
-        setComapnyError(false);
       }
     }
     if (e.target.name === "date") {
       setDate(e.target.value);
       // console.log(date)
       if (e.target.value === "" || e.target.value === null) {
-        setDateError(true);
       } else {
-        setDateError(false);
       }
     }
     if (e.target.name === "time") {
       setTime(e.target.value);
       if (e.target.value === "" || e.target.value === null) {
-        setTimeError(true);
       } else {
-        setTimeError(false);
       }
     }
     if (e.target.name === "location") {
       // setTime(e.target.value);
-      const selectedObject = dropdownLocation.filter(
-        (x) => x.value === e.target.value,
-      );
-      console.log(selectedObject[0]);
-      setSelectedLocation(selectedObject[0]);
       const locationObject = {};
       locationObject[0] = selectedLocationType;
 
       locationObject[1] = e.target.value;
-      setselctedLocationObject(locationObject);
 
       if (e.target.value === "" || e.target.value === null) {
-        setTimeError(true);
       } else {
-        setTimeError(false);
       }
     }
     if (e.target.name === "description") {
       setDescription(e.target.value);
-   
     }
     if (e.target.name === "isBillable") {
       setIsBillable(e.target.value);
-
     }
     if (e.target.name === "price") {
       setPrice(e.target.value);
-
     }
     if (e.target.name === "comment") {
       setComment(e.target.value);
@@ -256,14 +228,14 @@ export default function AddIncidents(props) {
         token: store.token,
       });
       if (response.success) {
- const storageValue = [
-   {
-     label: response.data.name,
-     value: response.data._id,
-   },
- ];
+        const storageValue = [
+          {
+            label: response.data.name,
+            value: response.data._id,
+          },
+        ];
 
- setDropdownLocation(storageValue);
+        setDropdownLocation(storageValue);
       }
       console.log(response);
     }
@@ -290,7 +262,6 @@ export default function AddIncidents(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     if (name === "" || name === null) {
-      setNameError(true);
     }
     // if (types === "" || types === null) {
     //   setTypeError(true);
@@ -319,8 +290,8 @@ export default function AddIncidents(props) {
     onFormSubmit();
   };
   const timeChange = (e) => {
-   // setTime(e?._d); 
-   setTime(moment(e?._d).format("HH:mm:ss"));
+    // setTime(e?._d);
+    setTime(moment(e?._d).format("HH:mm:ss"));
     // moment(incident.time).format("HH:mm:ss");
     // console.log(moment(e?._d).format("HH:mm:ss"));
   };
@@ -369,7 +340,6 @@ export default function AddIncidents(props) {
           <Form.Row>
             <FormLabel bold primary="DESIGNATION* :" />
             <FormInput
-              placeholder="Type"
               name="name"
               style={GLOBALS.Styles.inputWidth}
               placeholder="Name of incident"

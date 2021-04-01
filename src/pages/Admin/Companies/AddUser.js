@@ -15,7 +15,6 @@ import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import Actions from "../../../redux/actions";
-import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -26,15 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function AddUser(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [page] = useState(1);
-  const [companies, setCompanies] = useState([]);
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [email, setEmail] = useState("");
@@ -42,18 +38,17 @@ export default function AddUser(props) {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const [roles, setRoles] = useState([]);
-    const [logo, setLogo] = useState([]);
+  const [logo, setLogo] = useState([]);
 
   const [dropdownRoles, setDropdownRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
   const [disableUser, setDisableUser] = useState(false);
 
-
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   const getData = async () => {
@@ -62,15 +57,14 @@ export default function AddUser(props) {
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
       });
-       const userResponse = await GLOBALS.API({
-         uri: `${GLOBALS.Constants.GET_ALL_USERS}`,
-         token: store.token,
-       });
-       if(userResponse.success) {
-         setUsers(userResponse.data);
-       }
+      const userResponse = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ALL_USERS}`,
+        token: store.token,
+      });
+      if (userResponse.success) {
+        setUsers(userResponse.data);
+      }
       if (response.success) {
-        setCompanies(response.data.site_companies.companies);
         // setRoles(response.data.site_companies.companies);
         // console.log("setUsers", response.data.users);
         // setUsers(response.data.users);
@@ -139,16 +133,12 @@ export default function AddUser(props) {
   //     );
   //   }
   // };
-  const  handleSubmit = () => {
-
-  };
+  const handleSubmit = () => {};
 
   // const onSubmit = async (e) => {
 
   // }
   const onSubmit = async () => {
-    
-  
     var formdata = new FormData();
     // formdata.append("image", values.logo[0].file);
     //formdata.append("name", values.name);
@@ -159,7 +149,7 @@ export default function AddUser(props) {
     formdata.append("siteId", adminStore.site.siteId._id);
     formdata.append("companyId", selectedCompany);
     formdata.append("role", selectedRole);
-        // formdata.append("image", logo[0].file);
+    // formdata.append("image", logo[0].file);
 
     await GLOBALS.API({
       method: "POST",
@@ -171,8 +161,6 @@ export default function AddUser(props) {
     });
     props.history.goBack();
   };
-
-
 
   return (
     <div className={classes.root}>
@@ -206,9 +194,9 @@ export default function AddUser(props) {
                     }
                   });
                 }}
-                options={users.map((option) => {
-                  if (option.email != undefined) return option.email;
-                })}
+                options={users.map(
+                  (option) => option.email !== undefined && option.email,
+                )}
                 renderInput={(params) => (
                   <TextField
                     {...params}

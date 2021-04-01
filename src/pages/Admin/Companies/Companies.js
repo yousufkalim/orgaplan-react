@@ -34,8 +34,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 export default function Companies(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -43,7 +41,6 @@ export default function Companies(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
-  const [page] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
@@ -132,7 +129,7 @@ export default function Companies(props) {
     if (subcontractors && subcontractors.length > 0) {
       const value = subcontractors
         .map((item, index) => {
-          if (item.name != undefined) return item.name;
+          if (item.name !== undefined) return item.name;
           return "N/A";
         })
         .toString()
@@ -158,9 +155,9 @@ export default function Companies(props) {
       });
       // console.log(response);
       if (response.success) {
-        const companies = response.data.companies.filter(x => {
-          return x.companyId !== null || undefined
-        })
+        const companies = response.data.companies.filter((x) => {
+          return x.companyId !== null || undefined;
+        });
         console.log(companies);
         setCompanies(companies);
         setLoading(false);
@@ -180,59 +177,71 @@ export default function Companies(props) {
 
   const rows = companies.map((item) => {
     // console.log(item)
-    
-return [
-  <img src={Images.site} alt="Icon" />,
-  item.companyId.name,
-  getSubContractors(item.subContractors),
-  item.companyId.incharge != undefined
-    ? item.companyId.incharge.firstName + " " + item.companyId.incharge.lastName
-    : "N/A",
-  item.companyId.incharge != undefined ? item.companyId.incharge.phone : "N/A",
-  item.companyId.incharge != undefined ? item.companyId.incharge.email : "N/A",
 
-  <div>
-    <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-      <NavLink
-        to={{
-          pathname: `/companies/user-list/${item.companyId._id}`,
-          id: item.companyId._id,
-        }}
-      >
-        <img
-          src={Images.comapnies}
-          style={{ width: 18, height: 17 }}
-          alt="Icon"
-        />
-      </NavLink>
-    </IconButton>
-    <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-      <NavLink
-        to={{
-          pathname: "/companies/edit-companies",
-          id: item.companyId._id,
-        }}
-      >
-        <Pencil style={{ width: 18, height: 15 }} />
-      </NavLink>
-    </IconButton>
-    <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-      <img src={Images.calender} style={{ width: 18, height: 17 }} alt="Icon" />
-    </IconButton>
-    <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-      <img src={Images.invoices} style={{ width: 18, height: 17 }} alt="Icon" />
-    </IconButton>
-    <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-      <img
-        src={Images.incidents}
-        style={{ width: 18, height: 17 }}
-        alt="Icon"
-      />
-    </IconButton>
-  </div>,
-];
-    
-      
+    return [
+      <img src={Images.site} alt="Icon" />,
+      item.companyId.name,
+      getSubContractors(item.subContractors),
+      item.companyId.incharge !== undefined
+        ? item.companyId.incharge.firstName +
+          " " +
+          item.companyId.incharge.lastName
+        : "N/A",
+      item.companyId.incharge !== undefined
+        ? item.companyId.incharge.phone
+        : "N/A",
+      item.companyId.incharge !== undefined
+        ? item.companyId.incharge.email
+        : "N/A",
+
+      <div>
+        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+          <NavLink
+            to={{
+              pathname: `/companies/user-list/${item.companyId._id}`,
+              id: item.companyId._id,
+            }}
+          >
+            <img
+              src={Images.comapnies}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </NavLink>
+        </IconButton>
+        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+          <NavLink
+            to={{
+              pathname: "/companies/edit-companies",
+              id: item.companyId._id,
+            }}
+          >
+            <Pencil style={{ width: 18, height: 15 }} />
+          </NavLink>
+        </IconButton>
+        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+          <img
+            src={Images.calender}
+            style={{ width: 18, height: 17 }}
+            alt="Icon"
+          />
+        </IconButton>
+        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+          <img
+            src={Images.invoices}
+            style={{ width: 18, height: 17 }}
+            alt="Icon"
+          />
+        </IconButton>
+        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+          <img
+            src={Images.incidents}
+            style={{ width: 18, height: 17 }}
+            alt="Icon"
+          />
+        </IconButton>
+      </div>,
+    ];
   });
 
   return (

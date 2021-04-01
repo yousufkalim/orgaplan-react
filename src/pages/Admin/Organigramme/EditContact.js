@@ -95,6 +95,7 @@ export default function EditContact(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
+      // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError("Please enter valid format");

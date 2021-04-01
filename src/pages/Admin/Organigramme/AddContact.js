@@ -60,7 +60,6 @@ export default function AddContact(props) {
   const [image, setImage] = useState([]);
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
-  const [disabledBtn, setDisabledBtn] = useState(true);
 
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -112,6 +111,7 @@ export default function AddContact(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
+      // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError("Please enter valid format");
@@ -165,7 +165,6 @@ export default function AddContact(props) {
     else if (name === "company") setCompany(value);
     else if (name === "role") setRole(value);
     else if (dropdownType !== "") {
-      setDisabledBtn(false);
     }
   };
 

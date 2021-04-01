@@ -38,7 +38,6 @@ const Historic = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [isLoading, setLoading] = useState(true);
   const [history, setHistory] = useState([]);
 
   const [means, setMeans] = useState([]);
@@ -63,7 +62,6 @@ const Historic = (props) => {
 
   const filterBooking = async () => {
     try {
-      setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
       if (selectedMean.length !== 0)
         params["meanId"] = means[selectedMeanIndex]._id;
@@ -78,14 +76,9 @@ const Historic = (props) => {
       });
       if (response.success) {
         setHistory(response.data);
-
-        setLoading(false);
       } else {
-        setLoading(false);
       }
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -131,8 +124,6 @@ const Historic = (props) => {
         }
       } else {
       }
-
-      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(

@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
   error: {
-    color: "red"
-  }
+    color: "red",
+  },
 }));
 
 export default function AddAdmin(props) {
@@ -45,7 +45,6 @@ export default function AddAdmin(props) {
   const [companyId, setCompanyId] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [mailformat] = useState("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/")
 
   useEffect(() => {
     fetchData();
@@ -77,6 +76,7 @@ export default function AddAdmin(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
+      // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError(true);
@@ -93,8 +93,7 @@ export default function AddAdmin(props) {
       } else {
         setPhoneError("");
       }
-    }
-    else if (name === "firstName") setFirstName(value);
+    } else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "image") {
       setUpdate((st) => !st);
@@ -145,40 +144,37 @@ export default function AddAdmin(props) {
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO*: " />
-            <Form.Row noMargin width="48%" style={{gap: "20px"}}>
-              <div style={{width: "50%"}}>
-              <FormInput
-                name="email"
-                type="email"
-                placeholder="E-mail Address"
-                value={email}
-                // error={email}
-                style={{width: "100%"}}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-               {emailError === true && (
+            <Form.Row noMargin width="48%" style={{ gap: "20px" }}>
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="email"
+                  type="email"
+                  placeholder="E-mail Address"
+                  value={email}
+                  // error={email}
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+                {emailError === true && (
                   <div className={classes.error}>Please enter valid email</div>
                 )}
               </div>
-              <div style={{width: "50%"}}>
-
-              <FormInput
-                name="phone"
-                value={phone}
-                type="number"
-                // error={phone}
-                placeholder="Phone Number"
-                style={{width: "100%"}}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="phone"
+                  value={phone}
+                  type="number"
+                  // error={phone}
+                  placeholder="Phone Number"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
                 {phoneError && (
-                  <div className={classes.error}>
-                    {phoneError}
-                  </div>
+                  <div className={classes.error}>{phoneError}</div>
                 )}
               </div>
             </Form.Row>
@@ -243,8 +239,9 @@ export default function AddAdmin(props) {
               disabled={
                 loading ||
                 emailError ||
-                
-                (!phone || phone.length !== 10 || phone.charAt(0) !== "0" )||
+                !phone ||
+                phone.length !== 10 ||
+                phone.charAt(0) !== "0" ||
                 !firstName ||
                 !lastName ||
                 !companyId

@@ -3,7 +3,6 @@ import Canvas from "../../../components/Canvas";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { useSelector, useDispatch } from "react-redux";
-// import _ from "lodash";
 
 import Mean from "./Mean";
 import Building from "./Building";
@@ -131,40 +130,18 @@ const App = (props) => {
   };
 
   const setShapesFn = (newShapes, shape, modalDecision) => {
-    // console.log("this.", shapes, newShapes);
     setShapes(newShapes);
     if (!modalDecision) {
-      setShape("");
       setModal(modalDecision);
+      if (shape) {
+        setShape("");
+      } else if (selectedShape) {
+        setSelectedShape(shape);
+      }
     }
   };
 
   // InfoDrawer
-
-  const onUpdateShape = async () => {
-    try {
-      let response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-      setSitePic(response.data);
-      setPdf(
-        response.data?.exteriorBuilding?.levels[0]?.image
-          ? GLOBALS.Constants.BASE_URL +
-              response.data.exteriorBuilding.levels[0].image
-          : undefined,
-      );
-      setShapes(response.data.shapes);
-      setLoading(false);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-
   const onDeleteShape = async () => {
     try {
       if (window.confirm("Are you sure you want to delete this shape?")) {
@@ -202,7 +179,7 @@ const App = (props) => {
               pdf={pdf}
             />
           )}
-          {/* {console.log("shapes", shapes)} */}
+          {console.log("shapes", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>
@@ -213,6 +190,7 @@ const App = (props) => {
                     disabled={loading}
                     onClick={(e) => {
                       e.stopPropagation();
+                      setModal(true);
                     }}
                   >
                     <Pencil className={classes.infoIcon} />
@@ -249,8 +227,13 @@ const App = (props) => {
         </div>
       </div>
       <>
-        {shape &&
-          (shape.type === "DELIVERYAREA" ? (
+        {modal &&
+          (shape || selectedShape) &&
+          ((
+            shape
+              ? shape.type === "DELIVERYAREA"
+              : selectedShape.type === "DELIVERYAREA"
+          ) ? (
             <FullScreenModal
               title="ADD DELIVERY AREA"
               open={modal}
@@ -264,10 +247,15 @@ const App = (props) => {
                   pic={sitePic}
                   shapes={shapes}
                   setShapes={setShapesFn}
+                  selectedShape={selectedShape}
                 />
               }
             />
-          ) : shape.type === "STORAGEAREA" ? (
+          ) : (
+              shape
+                ? shape.type === "STORAGEAREA"
+                : selectedShape.type === "STORAGEAREA"
+            ) ? (
             <FullScreenModal
               title="ADD STORAGE AREA"
               open={modal}
@@ -281,10 +269,15 @@ const App = (props) => {
                   pic={sitePic}
                   shapes={shapes}
                   setShapes={setShapesFn}
+                  selectedShape={selectedShape}
                 />
               }
             />
-          ) : shape.type === "BUILDING" ? (
+          ) : (
+              shape
+                ? shape.type === "BUILDING"
+                : selectedShape.type === "BUILDING"
+            ) ? (
             <FullScreenModal
               title="ADD Building"
               open={modal}
@@ -298,10 +291,13 @@ const App = (props) => {
                   pic={sitePic}
                   shapes={shapes}
                   setShapes={setShapesFn}
+                  selectedShape={selectedShape}
                 />
               }
             />
-          ) : shape.type === "MEAN" ? (
+          ) : (
+              shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
+            ) ? (
             <FullScreenModal
               title="ADD MEAN"
               open={modal}
@@ -315,6 +311,7 @@ const App = (props) => {
                   pic={sitePic}
                   shapes={shapes}
                   setShapes={setShapesFn}
+                  selectedShape={selectedShape}
                 />
               }
             />
