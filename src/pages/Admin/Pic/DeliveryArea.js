@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -9,8 +10,8 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
+import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
-import FormInput from "../../../components/CustomFormInput";
 import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
@@ -36,12 +37,11 @@ export default function DeliveryArea(props) {
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
   const [selectedMeans, setSelectedMeans] = useState([]);
-  const [selectedVehicles, setSelecetedVehicles] = useState([]);
-  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [vehicles, setVehicles] = useState([]);
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
 
   const [means, setMeans] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -55,10 +55,6 @@ export default function DeliveryArea(props) {
         uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      const vehicles = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_VEHICLES}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
 
       const meansTempArray = [];
       means.data.map((item) =>
@@ -68,15 +64,22 @@ export default function DeliveryArea(props) {
         }),
       );
 
-      const vehiclesTempArray = [];
-      vehicles.data.map((item) =>
-        vehiclesTempArray.push({
-          value: item._id,
-          label: item.name,
-        }),
-      );
       setMeans(meansTempArray);
-      setVehicles(vehiclesTempArray);
+      if (props.selectedShape) {
+        setName(props.selectedShape.deliveryArea.name);
+        setColor(props.selectedShape.color);
+        setStartDate(props.selectedShape.deliveryArea.availability.start);
+        setEndDate(props.selectedShape.deliveryArea.availability.end);
+        setAddresses(props.selectedShape.deliveryArea.addresses);
+        setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
+        setSelectedMeans(props.selectedShape.deliveryArea.means);
+        setVehicles(props.selectedShape.deliveryArea.vehicles);
+        setNotificationPriorToDays(
+          props.selectedShape.deliveryArea.notificationPriorToDays,
+        );
+        setNotificationTo(props.selectedShape.deliveryArea.notificationTo);
+        setUpdate((st) => !st);
+      }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -98,7 +101,7 @@ export default function DeliveryArea(props) {
       setUpdate((st) => !st);
       setUnavailabilities(value);
     } else if (name === "means") setSelectedMeans(value);
-    else if (name === "vehicles") setSelecetedVehicles(value);
+    else if (name === "vehicles") setVehicles(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") {
@@ -111,12 +114,13 @@ export default function DeliveryArea(props) {
     try {
       e.preventDefault();
       setLoading(true);
+      console.log("address", addresses);
 
       const addressesAr = addresses.map((item) => ({
         location: [0, 0],
         endDate: item.endDate,
         startDate: item.startDate,
-        pdf: "pdf",
+        pdf: item.image,
       }));
       const notificationToAr = notificationTo.map((item) => item.label);
 
@@ -131,14 +135,16 @@ export default function DeliveryArea(props) {
         },
         siteId: adminStore.site.siteId._id,
         means: selectedMeans,
-        vehicles: selectedVehicles,
+        vehicles: vehicles,
         notificationPriorToDays,
         notificationTo: notificationToAr,
       });
 
       const response = await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.CREATE_DELIVERY_AREA,
+        method: props.selectedShape ? "PUT" : "POST",
+        uri: props.selectedShape
+          ? `${GLOBALS.Constants.CREATE_DELIVERY_AREA}/${props.selectedShape._id}`
+          : GLOBALS.Constants.CREATE_DELIVERY_AREA,
         token: store.token,
         body: formdata,
       });
@@ -153,16 +159,18 @@ export default function DeliveryArea(props) {
       propShape.name = response.data.name;
       propShape.deliveryArea = response.data;
 
-      await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-        token: store.token,
-        body: JSON.stringify({
-          picId: props.pic._id,
-          deliveryArea: response.data._id,
-          ...propShape,
-        }),
-      });
+      if (!props.selectedShape) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            deliveryArea: response.data._id,
+            ...propShape,
+          }),
+        });
+      }
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
@@ -207,6 +215,8 @@ export default function DeliveryArea(props) {
               name="startDate"
               value={startDate}
               placeholder={`Date de début`}
+              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -216,6 +226,8 @@ export default function DeliveryArea(props) {
               type="date"
               name="endDate"
               placeholder="Date de fin"
+              min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -228,9 +240,12 @@ export default function DeliveryArea(props) {
           <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
           <Form.Row noMargin width="65%">
             <DeliveryAreaAddressModal
+              max={endDate}
+              min={startDate}
               name="addresses"
               values={addresses}
               // error={addresses}
+              disabled={!startDate || !endDate}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Enter site addresses"
               onChange={(values) => handleChange("addresses", values)}
@@ -274,15 +289,12 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="Vehicles: " />
           <Form.Row noMargin width="65%">
-            <FormMultiSelect
+            <MultiAdderInput
               name="vehicles"
               values={vehicles}
-              placeholder="Vehicles"
-              value={selectedVehicles}
+              placeholder="Enter vehicles"
               style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
+              onChange={(values) => handleChange("vehicles", values)}
             />
           </Form.Row>
         </Form.Row>
