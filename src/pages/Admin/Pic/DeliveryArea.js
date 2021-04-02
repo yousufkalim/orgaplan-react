@@ -30,7 +30,7 @@ export default function DeliveryArea(props) {
   const adminStore = useSelector((state) => state.admin);
 
   const [name, setName] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);

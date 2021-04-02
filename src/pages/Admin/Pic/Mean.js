@@ -11,7 +11,7 @@ import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
-import CustomInputModal from "../../../components/CustomInputModal";
+import CustomInputModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,62 +24,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const accessabilityPoints = [
-  { label: "Storage Area", value: "Storage Area" },
-  { label: "Delivery Area", value: "Delivery Area" },
-];
-
 export default function AddMean(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+
   const [name, setName] = useState("");
+  const [meanType, setMeanType] = useState("");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
-  const [rate, setRate] = useState("");
+  const [rate, setRate] = useState("0");
   const [addInfo, setAddInfo] = useState("");
+
+  const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
-  const classes = useStyles();
-
-  const [accessabilityPoint, setAccessabilityPoint] = useState("");
-  const [DeliveryAreas, setDeliveryAreas] = useState([]);
-  const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
-  const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-
+  const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
-  const [dropdownStorageAreas, setDropdownStorageAreas] = useState([]);
-  const [
-    selectedDropdownStorageArea,
-    setSelectedDropdownStorageArea,
-  ] = useState("");
-
-  const [deliveryAreaId, setDeilveryAreaId] = useState("");
-  const [storageAreaId, setStorageAreaId] = useState("");
-
-  const [
-    deliveryAndStorageLocations,
-    setDeliveryAndStorageLocations,
-  ] = useState([]);
-
   const [meanTypes, setMeanTypes] = useState([]);
-  const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
-  const [selectedMeanType, setSelectedMeanType] = useState("");
-  const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {}, [
-    meanTypes,
-    dropdownMeanTypes,
-    selecetedMeanTypeIndex,
-    selectedMeanType,
-  ]);
 
   const getData = async () => {
     try {
@@ -87,41 +58,63 @@ export default function AddMean(props) {
         uri: `${GLOBALS.Constants.GET_ADD_MEAN}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data.site_delivery_areas !== null) {
-          const temp = [];
-          response.data.site_delivery_areas.map((item, index) =>
-            temp.push({ label: item.name, value: item.name, id: item._id }),
-          );
-          setDeliveryAreas(response.data.site_delivery_areas);
-          setDropdownDeliveryAreas(temp);
-        }
-
-        if (response.data.site_storage_areas !== null) {
-          const temp = [];
-          response.data.site_storage_areas.map((item, index) =>
-            temp.push({ label: item.name, value: item.name, id: item._id }),
-          );
-          setStorageAreas(response.data.site_storage_areas);
-          setDropdownStorageAreas(temp);
-        }
-
-        if (response.data.site_buildings !== null) {
-          const temp = [];
-          response.data.site_buildings.map((item, index) =>
-            temp.push({ label: item.name, value: item.name }),
-          );
-        }
-
-        if (response.data.mean_types !== null) {
-          const temp = [];
-          response.data.mean_types.map((item, index) =>
-            temp.push({ label: item, value: item }),
-          );
-          setMeanTypes(response.data.mean_types);
-          setDropdownMeanTypes(temp);
-        }
-      } else {
+      if (response.data.site_delivery_areas !== null) {
+        const temp = [];
+        response.data.site_delivery_areas.map((item) =>
+          temp.push({
+            label: item.name,
+            value: item._id,
+          }),
+        );
+        setDeliveryAreas(temp);
+      }
+      if (response.data.site_storage_areas !== null) {
+        const temp = [];
+        response.data.site_storage_areas.map((item) =>
+          temp.push({ label: item.name, value: item._id }),
+        );
+        setStorageAreas(temp);
+      }
+      if (response.data.mean_types !== null) {
+        const temp = [];
+        response.data.mean_types.map((item) =>
+          temp.push({ label: item, value: item }),
+        );
+        setMeanTypes(temp);
+      }
+      if (props.selectedShape) {
+        console.log("selectedShape", props.selectedShape);
+        setName(props.selectedShape.mean.name);
+        setMeanType(props.selectedShape.mean.meanType);
+        setColor(props.selectedShape.mean.color);
+        setStartDate(props.selectedShape.mean.availability.start);
+        setEndDate(props.selectedShape.mean.availability.end);
+        setRate(props.selectedShape.mean.pricePerHour);
+        setImage([
+          {
+            key: 0,
+            uri: props.selectedShape.mean.image,
+          },
+        ]);
+        const locaAr = props.selectedShape.mean.location.map((loc) => ({
+          key:
+            loc.locationType === "STORAGEAREA"
+              ? loc.storageArea
+              : loc.deliveryArea,
+          type: loc.locationType,
+          label: loc.label,
+        }));
+        setLocations(locaAr);
+        // setTechSheet(props.selectedShape.mean.sheet);
+        props.selectedShape.mean.sheet &&
+          setTechSheet([
+            {
+              key: 0,
+              uri: props.selectedShape.mean.sheet,
+            },
+          ]);
+        setAddInfo(props.selectedShape.mean.additionalInfo);
+        setUpdate((st) => !st);
       }
       setLoading(false);
     } catch (err) {
@@ -133,81 +126,74 @@ export default function AddMean(props) {
     }
   };
 
-  function handleChange(name, value) {
+  const handleChange = (name, value) => {
     if (name === "name") {
       setName(value);
     } else if (name === "color") setColor(value);
-    else if (name === "image") setImage(value);
-    else if (name === "startDate") setStartDate(value);
+    else if (name === "meanType") setMeanType(value);
+    else if (name === "image") {
+      setImage(value);
+      setUpdate((st) => !st);
+    } else if (name === "locations") {
+      setLocations(value);
+      setUpdate((st) => !st);
+    } else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "techSheet") setTechSheet(value);
     else if (name === "rate") setRate(value);
     else if (name === "addInfo") setAddInfo(value);
-  }
+  };
 
   const createMean = async () => {
     try {
       setLoading(true);
 
-      var formdata = new FormData();
-      let locations = [];
-
-      deliveryAndStorageLocations.forEach((item) => {
-        if (item.type === accessabilityPoints[0].value) {
-          let loc = {
-            locationType: "STORAGEAREA",
-            storageArea: item.id,
-          };
-          locations.push(loc);
-        }
-        if (item.type === accessabilityPoints[1].value) {
-          let loc = {
-            locationType: "DELIVERYAREA",
-            deliveryArea: item.id,
-          };
-          locations.push(loc);
-        }
+      const locationsAr = locations.map((ite) => {
+        let vals =
+          ite.type === "STORAGEAREA"
+            ? { storageArea: ite.key }
+            : { deliveryArea: ite.key };
+        return { locationType: ite.type, label: ite.label, ...vals };
       });
-
+      var formdata = new FormData();
       let availabilities = {
         start: startDate,
         end: endDate,
       };
 
       // TEST DATA , CALENDAR NOT MADE YET
-
-      const sampleDateOne = new Date("05/20/2021");
-      const sampleDateTwo = new Date("05/28/2021");
       const unavailabilities = [
         {
-          date: sampleDateOne,
+          date: new Date("05/20/2021"),
           reason: "Public Holiday",
           startingHour: new Date().getTime(),
           endingHour: new Date().getTime(),
         },
         {
-          date: sampleDateTwo,
+          date: new Date("05/28/2021"),
           reason: "Maintenance",
           startingHour: new Date().getTime(),
           endingHour: new Date().getTime(),
         },
       ];
 
+      formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("name", name);
+      formdata.append("meanType", meanType);
       formdata.append("color", color);
       formdata.append("image", image[0].file);
+      formdata.append("location", JSON.stringify(locationsAr));
+      formdata.append("availability", JSON.stringify(availabilities));
       formdata.append("sheet", image[0].file);
+      formdata.append("unavailability", JSON.stringify(unavailabilities));
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-      formdata.append("siteId", adminStore.site.siteId._id);
-      formdata.append("meanType", selectedMeanType);
-      formdata.append("location", JSON.stringify(locations));
-      formdata.append("availability", JSON.stringify(availabilities));
-      formdata.append("unavailability", JSON.stringify(unavailabilities));
 
       const response = await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.CREATE_MEAN,
+        method: props.selectedShape ? "PUT" : "POST",
+        uri: props.selectedShape
+          ? `${GLOBALS.Constants.CREATE_MEAN}/${props.selectedShape._id}`
+          : GLOBALS.Constants.CREATE_MEAN,
         headers: {
           Authorization: store.token,
         },
@@ -215,7 +201,7 @@ export default function AddMean(props) {
       });
 
       let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShape = props.shape ? props.shape : props.selectedShape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       const formdataImage = new FormData();
@@ -227,6 +213,8 @@ export default function AddMean(props) {
         headers: {},
         body: formdataImage,
       });
+      propShapes[inde].color = color;
+      propShape.color = color;
       propShapes[inde].image = imageData.image;
       propShape.image = imageData.image;
       propShapes[inde].mean = response.data;
@@ -237,16 +225,19 @@ export default function AddMean(props) {
       propShape.color = color;
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
-      await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-        token: store.token,
-        body: JSON.stringify({
-          picId: props.pic._id,
-          mean: response.data._id,
-          ...propShape,
-        }),
-      });
+
+      if (!props.selectedShape) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            mean: response.data._id,
+            ...propShape,
+          }),
+        });
+      }
       setLoading(false);
       props.setShapes(propShapes, propShape);
     } catch (err) {
@@ -259,80 +250,11 @@ export default function AddMean(props) {
     }
   };
 
-  const getDeliveryArea = async () => {
-    try {
-      setLoading(true);
-
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-
-      if (response.success) {
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-          response.data.map((item, index) =>
-            temp.push({ label: item.name, value: item.name }),
-          );
-
-          setDropdownDeliveryAreas(temp);
-        }
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-
-  const getStorageArea = async () => {
-    try {
-      setLoading(true);
-
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-
-      if (response.success) {
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-          response.data.map((item, index) =>
-            temp.push({ label: item.name, value: item.name }),
-          );
-
-          setDropdownStorageAreas(temp);
-        }
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-
-  const handleChangecolor = (color) => {
-    setColor(color.hex);
-  };
-
   return (
     <div className={classes.content}>
       <Form.Form>
         <Form.Row>
+          {update && ""}
           <FormLabel bold primary="IDENTITY * : " />
           <Form.Row
             noMargin
@@ -349,24 +271,18 @@ export default function AddMean(props) {
               }
             />
             <FormSelect
-              placeholder="Type"
               name="type"
+              value={meanType}
+              placeholder="Type"
+              values={meanTypes}
               style={{ width: "25%" }}
-              values={dropdownMeanTypes}
-              onChange={(event) => {
-                const index = event.target.selectedIndex - 1;
-                if (index !== -1) {
-                  const item = event.target.value;
-                  setSelectedMeanTypeIndex(index);
-                  setSelectedMeanType(item);
-                } else {
-                  setSelectedMeanTypeIndex(null);
-                  setSelectedMeanType("");
-                }
-              }}
+              onChange={(event) => handleChange("meanType", event.target.value)}
             />
             <div style={{ width: "25%" }}>
-              <ColorPicker color={color} handleChange={handleChangecolor} />
+              <ColorPicker
+                color={color}
+                handleChange={(values) => handleChange("color", values.hex)}
+              />
             </div>
           </Form.Row>
         </Form.Row>
@@ -387,77 +303,10 @@ export default function AddMean(props) {
           <Form.Row noMargin width="65%">
             <CustomInputModal
               name="location"
-              values={accessabilityPoints}
-              leftValue={accessabilityPoint}
-              rightValue={
-                accessabilityPoint === accessabilityPoints[0].value
-                  ? selectedDropdownStorageArea
-                  : selectedDropdownArea
-              }
-              leftId={accessabilityPoint}
-              rightId={
-                accessabilityPoint === accessabilityPoints[0].value
-                  ? storageAreaId
-                  : deliveryAreaId
-              }
-              chipValues={(values) => {
-                setDeliveryAndStorageLocations(values);
-              }}
-              leftDropdownValues={accessabilityPoints}
-              leftDropdwonPlaceholder={"Select Location Type"}
-              rightDropdownPlaceholder={"Select Location"}
-              leftDropdwonValueChange={(event) => {
-                const index = event.target.selectedIndex - 1;
-                if (index !== -1) {
-                  const item = event.target.value;
-                  setAccessabilityPoint(item);
-                  if (item === accessabilityPoints[0].value) {
-                    getStorageArea();
-                  }
-                  if (item === accessabilityPoints[1].value) {
-                    getDeliveryArea();
-                  } else {
-                    setSelectedDropdownArea("");
-                    setDeilveryAreaId("");
-
-                    setSelectedDropdownStorageArea("");
-                    setStorageAreaId("");
-                  }
-                } else {
-                  setSelectedDropdownArea("");
-                  setDeilveryAreaId("");
-
-                  setSelectedDropdownStorageArea("");
-                  setStorageAreaId("");
-                }
-              }}
-              rightDropdownValues={
-                accessabilityPoint === accessabilityPoints[0].value
-                  ? dropdownStorageAreas
-                  : dropdownDeliveryAreas
-              }
-              rightDropdwonValueChange={(event) => {
-                const index = event.target.selectedIndex - 1;
-                if (index !== -1) {
-                  const item = event.target.value;
-                  if (accessabilityPoints[0].value === accessabilityPoint) {
-                    setStorageAreaId(storageAreas[index]._id);
-                    setSelectedDropdownStorageArea(item);
-                  } else {
-                    setSelectedDropdownStorageArea("");
-                  }
-
-                  if (accessabilityPoints[1].value === accessabilityPoint) {
-                    setDeilveryAreaId(DeliveryAreas[index]._id);
-                    setSelectedDropdownArea(item);
-                  } else {
-                    setSelectedDropdownArea("");
-                  }
-                } else {
-                  setSelectedDropdownStorageArea("");
-                  setSelectedDropdownArea("");
-                }
-              }}
+              values={locations}
+              storageAreas={storageAreas}
+              deliveryAreas={deliveryAreas}
+              onChange={(values) => handleChange("locations", values)}
             />
           </Form.Row>
         </Form.Row>
@@ -576,10 +425,10 @@ export default function AddMean(props) {
               disabled={
                 loading ||
                 !name ||
-                !selectedMeanType ||
+                !meanType ||
                 !color ||
                 !startDate ||
-                !deliveryAndStorageLocations
+                !locations
               }
             />
           </Form.ButtonContainer>
