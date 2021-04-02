@@ -66,14 +66,27 @@ export default function DeliveryArea(props) {
 
       setMeans(meansTempArray);
       if (props.selectedShape) {
+        const addressAr = props.selectedShape.deliveryArea.addresses.map(
+          (address) => ({
+            _id: address._id,
+            image: [{ key: address._id, uri: address.pdf }],
+            endDate: address.endDate,
+            location: address.location,
+            startDate: address.startDate,
+            label: address.label,
+          }),
+        );
+        const vehiclesAr = props.selectedShape.deliveryArea.vehicles.map(
+          (vehi, ind) => ({ key: ind, label: vehi }),
+        );
         setName(props.selectedShape.deliveryArea.name);
-        setColor(props.selectedShape.color);
+        setColor(props.selectedShape.deliveryArea.color);
         setStartDate(props.selectedShape.deliveryArea.availability.start);
         setEndDate(props.selectedShape.deliveryArea.availability.end);
-        setAddresses(props.selectedShape.deliveryArea.addresses);
+        setAddresses(addressAr);
         setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
         setSelectedMeans(props.selectedShape.deliveryArea.means);
-        setVehicles(props.selectedShape.deliveryArea.vehicles);
+        setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
         );
@@ -114,28 +127,29 @@ export default function DeliveryArea(props) {
     try {
       e.preventDefault();
       setLoading(true);
-      console.log("address", addresses);
 
       const addressesAr = addresses.map((item) => ({
         location: [0, 0],
         endDate: item.endDate,
         startDate: item.startDate,
-        pdf: item.image,
+        pdf: item.image[0].uri,
+        label: item.label,
       }));
       const notificationToAr = notificationTo.map((item) => item.label);
+      const vehiclesAr = vehicles.map((item) => item.label);
 
       const formdata = JSON.stringify({
         name,
         addresses: addressesAr,
         unavailabilities,
-        color: props.shape.color,
+        color: color,
         availability: {
           start: startDate,
           end: endDate,
         },
         siteId: adminStore.site.siteId._id,
         means: selectedMeans,
-        vehicles: vehicles,
+        vehicles: vehiclesAr,
         notificationPriorToDays,
         notificationTo: notificationToAr,
       });
@@ -150,7 +164,7 @@ export default function DeliveryArea(props) {
       });
 
       let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShape = props.shape ? props.shape : props.selectedShape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde].deliveryArea = response.data;
       propShapes[inde]._id = response.data._id;

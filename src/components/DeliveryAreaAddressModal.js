@@ -4,10 +4,10 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import moment from "moment";
 
-import GLOBALS from "../globals";
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
+import GLOBALS from "../globals";
 import FormInput from "./FormInput";
 import FormLabel from "./FormLabel";
 import FormMultipleUpload from "./FormMultipleUpload";
@@ -77,7 +77,6 @@ export default function MultiAdderInputModal(props) {
 
   async function onSubmit() {
     let newValues = props.values;
-    console.log("name", image);
 
     setLoading(true);
     const formdataImage = new FormData();
@@ -90,9 +89,13 @@ export default function MultiAdderInputModal(props) {
       body: formdataImage,
     });
 
+    let imageAr = image;
+    delete imageAr[0].file;
+    imageAr[0].uri = imageData.image;
+
     const values = {
       _id: newValues.length,
-      image: { ...image, image: imageData.image },
+      image: imageAr,
       endDate: endDate,
       location: location,
       startDate: startDate,
