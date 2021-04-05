@@ -262,7 +262,6 @@ const Incidents = (props) => {
     <div className={classes.root}>
       <Form.Row alignItems="center">
         <Heading icon primary="RE-INVOICING" noWrap />
-        {loading && ""}
         <div>
           <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
             <SubHeading
@@ -276,6 +275,7 @@ const Incidents = (props) => {
             <Form.Column style={{ width: "50%" }}>
               <Button
                 fullWidth={false}
+                disabled={loading}
                 component={NavLink}
                 text="CREATE AN INCIDENT"
                 to={"/incidents/add-incidents"}
@@ -287,41 +287,30 @@ const Incidents = (props) => {
                   backgroundColor: "#F80303",
                 }}
               />
-              {/* <Button
-                fullWidth={false}
-                component={NavLink}
-                text="MEANS REQUEST"
-                to={"/sites/means-request"}
-                style={{ marginLeft: "20px", width: "200px" }}
-              /> */}
             </Form.Column>
           </Form.Row>
         </div>
       </Form.Row>
       <Form.Row alignItems="center" noMargin>
         <Form.Row justifyContent="flex-start" noMargin>
-          {/* <SearchInput
-            placeholder="Site name"
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          /> */}
           <FormSelect
-            placeholder="Delivery area"
             values={siteDeliveryArea}
+            placeholder="Delivery area"
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
-            placeholder="Location"
             values={siteBuilding}
+            placeholder="Location"
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
-            placeholder="Level"
             values={[]}
+            placeholder="Level"
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
-            placeholder="Storage area"
             values={siteStorageArea}
+            placeholder="Storage area"
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
@@ -338,19 +327,12 @@ const Incidents = (props) => {
               if (index !== -1) {
                 const item = event.target.value;
                 setSelectedType(item);
-                // Reset Storage Means
-                //filterMean();
               } else {
                 setSelectedType("");
-                // Reset Storage Means
-                //filterMean();
               }
             }}
           />
         </Form.Row>
-        {/* <NavLink className={classes.link} to="/sites/archives">
-          See archived sites
-        </NavLink> */}
       </Form.Row>
 
       <Form.Row alignItems="center" className="mt-3">
@@ -374,7 +356,6 @@ const Incidents = (props) => {
             onChange={(e) => {
               setStartDate(e.target.value);
             }}
-            // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormInput
@@ -385,8 +366,6 @@ const Incidents = (props) => {
             onChange={(e) => {
               setEndDate(e.target.value);
             }}
-            // icon
-            // onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
