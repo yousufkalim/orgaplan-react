@@ -752,7 +752,6 @@ const Calender = (props) => {
       );
     }
   };
-  console.log(disableHours);
   const slotPropGetter = (date) => {
     let flagDateAndTime;
     let newStyle = {
