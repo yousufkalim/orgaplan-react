@@ -91,10 +91,11 @@ export default function UserList(props) {
         method: "POST",
         body: JSON.stringify(params),
       });
-      if (response.succes) {
+      console.log("response", response.data.users);
+      if (response.success) {
         if (response.data.users) {
           const data = response.data.users.filter(
-            (x) => x.companyId._id === filterCompanyId,
+            (x) => x.companyId._id === filterCompanyId && x.userId !== null,
           );
           setUserList(data);
         } else {
@@ -115,6 +116,7 @@ export default function UserList(props) {
 
   const getData = async () => {
     try {
+      console.log(props?.match?.params?.id);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
         token: store.token,
@@ -123,7 +125,6 @@ export default function UserList(props) {
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
       });
-      setFilterCompanyId(props?.match?.params?.id);
       if (userResponse.success) {
         if (userResponse.data.roles != null) {
           const rolesTemp = [];
@@ -143,15 +144,17 @@ export default function UserList(props) {
           setDropdownCompanies(companyTemp);
         }
       }
-      if (response.success) {
-        ///working
-        const data = response.data.users.filter(
-          (x) => x.companyId._id === filterCompanyId,
-        );
-        setUserList(data);
-        // setUsers(response.data[0].usersArray);
-      } else {
-      }
+      setFilterCompanyId(props?.match?.params?.id);
+
+      // if (response.success) {
+      //   ///working
+      //   const data = response.data.users.filter(
+      //     (x) => x.companyId._id === filterCompanyId,
+      //   );
+      //   // setUserList(data);
+      //   // setUsers(response.data[0].usersArray);
+      // } else {
+      // }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -189,6 +192,7 @@ export default function UserList(props) {
     }
   };
   const handleClickOpen = () => {
+    // console.log('item', e.target.value);
     setOpen(true);
   };
   // eslint-disable-next-line
@@ -246,7 +250,7 @@ export default function UserList(props) {
             <SearchInput
               placeholder="Name OF USER"
               value={filterUserName}
-              // onClick={filteredUser}
+              onClick={filteredUser}
               onChange={(e) => {
                 setFilterUserName(e.target.value);
               }}
@@ -256,7 +260,6 @@ export default function UserList(props) {
               name="color"
               style={{ marginLeft: "20px", maxWidth: 250 }}
               values={dropdownCompanies}
-              onClick={filteredUser}
               onChange={(e) => {
                 setFilterCompanyId(e.target.value);
               }}
