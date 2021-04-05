@@ -752,51 +752,41 @@ const Calender = (props) => {
       );
     }
   };
+  console.log(disableHours);
   const slotPropGetter = (date) => {
-    // var tempdate = [];
-    // adminStore.site.siteId.unavailabilityDates.map((key, index) => {
-    //   if (key.dayOff === false) {
-    //     for (let i = key.startHour; key.startHour <= key.endHour; i++) {
-    //       let date = new Date(key.date);
-    //       date.setHours(i);
-    //       tempdate.push(date);
-    //     }
-    //   }
-    //   return {};
-    // });
-    // let start = new Date(key.date);
-    // let startHours = key.startTime.slice(0, 2);
-    // let startmint = key.startTime.slice(3, 5);
-    // start.setHours(startHours);
-    // start.setMinutes(startmint);
-    /* start time converstion */
-    // if (dt === "17:00" || dt === "20:00") {
-    //   let newStyle = {
-    //     backgroundColor: "#ccc ",
-    //   };
-    //   return {
-    //     className: "rbc-day-slot rbc-time-slot ",
-    //     style: newStyle,
-    //   };
-    // }
-    // }
+    let flagDateAndTime;
+    let newStyle = {
+      backgroundColor: "#D3D3D3 ",
+    };
+    disableHours.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        flagDateAndTime = date;
+      }
+      return {};
+    });
+
+    if (flagDateAndTime) {
+      return {
+        className: "rbc-day-slot rbc-time-slot ",
+        style: newStyle,
+      };
+    }
   };
-  // console.log(tempdate);
   //setDisableHours
   const unavailabilityDates = () => {
-    // adminStore.site.siteId.unavailabilityDates.map((key, index) => {
-    //   if (key.dayOff === false) {
-    //     // for (let i = key.startHour; key.startHour <= key.endHour; i++) {
-    //     //   let date = new Date(key.date);
-    //     //   date.setHours(i);
-    //     //   console.log(key.date);
-    //     //   // setDisableHours(date);
-    //     // }
-    //   }
-    //   return {};
-    // });
+    let tempDisabledTime = [];
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === false) {
+        for (let i = key.startHour; i <= key.endHour; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisabledTime.push(date);
+        }
+      }
+      return {};
+    });
+    setDisableHours(tempDisabledTime);
   };
-  console.log(disableHours);
   return (
     <>
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
