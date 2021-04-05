@@ -191,7 +191,10 @@ export default function AddContact(props) {
         formdata.append("phone", phone);
         formdata.append("firstName", firstName);
         formdata.append("lastName", lastName);
-        formdata.append("image", image[0].file);
+        if (image[0]?.file) {
+          formdata.append("image", image[0].file);
+        }
+
         formdata.append("company", company);
         formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("type", type);
@@ -338,7 +341,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY: " />
+            <FormLabel bold primary="COMPANY*: " />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
@@ -355,17 +358,6 @@ export default function AddContact(props) {
                   <div className={classes.error}>{companyError}</div>
                 )}
               </div>
-              {/* <FormSelect
-                name="company"
-                value={company}
-                // error={companyId}
-                values={companies}
-                placeholder="Entreprise"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              /> */}
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -386,18 +378,6 @@ export default function AddContact(props) {
                   <div className={classes.error}>{roleError}</div>
                 )}
               </div>
-
-              {/* <FormSelect
-                name="companyId"
-                value={companyId}
-                // error={companyId}
-                values={companies}
-                placeholder="Rôle"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              /> */}
             </Form.Row>
           </Form.Row>
           <Form.ButtonContainer>
@@ -408,7 +388,13 @@ export default function AddContact(props) {
               fullWidth={false}
               loading={loading}
               disabled={
-                loading || !type || !email || !phone || !firstName || !lastName
+                loading ||
+                !type ||
+                !email ||
+                !phone ||
+                !firstName ||
+                !lastName ||
+                !company
               }
             />
           </Form.ButtonContainer>
