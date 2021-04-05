@@ -15,6 +15,7 @@ import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModal";
 import ColorPicker from "../../../components/ColorPcker";
+import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,7 +72,8 @@ export default function AddMean(props) {
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
   const [selectedMeanType, setSelectedMeanType] = useState("");
   const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
-
+  const [unavailabilities, setUnavailabilities] = useState([]);
+  console.log(unavailabilities);
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -193,20 +195,6 @@ export default function AddMean(props) {
 
       const sampleDateOne = new Date("05/20/2021");
       const sampleDateTwo = new Date("05/28/2021");
-      const unavailabilities = [
-        {
-          date: sampleDateOne,
-          reason: "Public Holiday",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-        {
-          date: sampleDateTwo,
-          reason: "Maintenance",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-      ];
 
       formdata.append("name", name);
       formdata.append("color", color);
@@ -512,28 +500,29 @@ export default function AddMean(props) {
               />
             </Form.Row>
           </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="UNAVAILABILITIES" />
-            <Form.Row noMargin width="65%">
-              <div
-                // name="availability"
-
-                to={"/means/add-mean"}
-                style={{
-                  marginLeft: "0px",
-                  marginBottom: "7px",
-                  width: "320px",
-                  color: "#fff",
-                  padding: "0.8rem 0",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  backgroundColor: "#140772",
-                }}
-              >
-                SHOW UNAVAILABILITIES
-              </div>
-            </Form.Row>
-          </Form.Row>
+          {startDate !== "" && endDate !== "" ? (
+            <>
+              <Form.Row>
+                <FormLabel bold primary="UNAVAILABILITIES" />
+                <Form.Row noMargin width="65%">
+                  <UnavailabilityTimes
+                    name="unavailabilityDates"
+                    values={unavailabilities}
+                    style={GLOBALS.Styles.inputWidth}
+                    unavailabilityDates={unavailabilities}
+                    setUnavailabilityDates={setUnavailabilities}
+                    startRange={startDate}
+                    endRange={moment(endDate).add(1, "days")}
+                    onChange={(values) =>
+                      handleChange("unavailabilityDates", values)
+                    }
+                  />
+                </Form.Row>
+              </Form.Row>
+            </>
+          ) : (
+            ""
+          )}
 
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="HOURLY RATE :" />

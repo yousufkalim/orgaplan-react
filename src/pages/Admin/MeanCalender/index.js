@@ -45,16 +45,19 @@ let formats = {
 
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
+  console.log(props.history.location.mean);
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
   const [dorpdownMeans, setDropdownMeans] = useState([]);
-  const [selectedMeanId, setSelectedMeanId] = useState("");
+  const [selectedMeanId, setSelectedMeanId] = useState(
+    props.history.location.mean._id,
+  );
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
-  const [days] = useState([0]);
+  const [days] = useState([]);
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
@@ -84,6 +87,7 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
+    const [disableHours, setDisableHours] = useState([]);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
@@ -670,25 +674,25 @@ const Calender = (props) => {
     );
   }
   const customDayPropGetter = (date) => {
-    // console.log(getWeekDay(new Date()));
-
-    if (
-      date.getDay() === days[0] ||
-      date.getDay() === days[1] ||
-      date.getDay() === days[2] ||
-      date.getDay() === days[3] ||
-      date.getDay() === days[4] ||
-      date.getDay() === days[5] ||
-      date.getDay() === days[6]
-    )
+    let flagDate;
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        if (moment(date).isSame(key.date, "day")) {
+          flagDate = date;
+        }
+      }
+      return {};
+    });
+    if (flagDate) {
       return {
         className: "special-day",
         style: {
           backgroundColor: "#EBEBE4",
         },
       };
-    else return {};
+    }
   };
+  
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -787,7 +791,20 @@ const Calender = (props) => {
       );
     }
   };
-
+  const unavailabilityDates = () => {
+    let tempDisabledTime = [];
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === false) {
+        for (let i = key.startHour; i <= key.endHour; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisabledTime.push(date);
+        }
+      }
+      return {};
+    });
+    setDisableHours(tempDisabledTime);
+  };
   return (
     <>
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
