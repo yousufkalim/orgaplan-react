@@ -79,9 +79,11 @@ const Incidents = (props) => {
 
   async function fetchData() {
     try {
+      if (props?.location?.companyId) {
+        setCompanyId(props?.location?.companyId);
+      }
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
-
       });
       if (result.success) {
         setIncidents(result.data.incidents);
@@ -105,7 +107,7 @@ const Incidents = (props) => {
         if (result.data.site_companies) {
           getCompanies(result.data.site_companies);
         }
-        if(result.data.site_buildings) {
+        if (result.data.site_buildings) {
           getBuildingLocation(result.data.site_buildings);
         }
       }
@@ -158,14 +160,14 @@ const Incidents = (props) => {
   }
 
   function getBuildingLocation(data) {
-        let temp = [];
-        data.map((item, index) => {
-          return temp.push({
-            label: item.name,
-            value: item._id,
-          });
-        });
-        setSiteBuilding(temp);
+    let temp = [];
+    data.map((item, index) => {
+      return temp.push({
+        label: item.name,
+        value: item._id,
+      });
+    });
+    setSiteBuilding(temp);
   }
   function getCompanies(data) {
     let temp = [];

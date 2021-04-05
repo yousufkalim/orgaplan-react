@@ -174,7 +174,7 @@ export default function Organigramme(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
-          <Heading primary="ORGANNIGRAMME" noWrap />
+          <Heading primary="ORGANIGRAMME" noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
               <Button
