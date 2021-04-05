@@ -66,12 +66,8 @@ export default function Companies(props) {
         uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        setCompanies(response.data.companies);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
+      setCompanies(response.data.companies);
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -128,7 +124,7 @@ export default function Companies(props) {
   const getSubContractors = (subcontractors) => {
     if (subcontractors && subcontractors.length > 0) {
       const value = subcontractors
-        .map((item, index) => {
+        .map((item) => {
           if (item.name !== undefined) return item.name;
           return "N/A";
         })
@@ -153,12 +149,10 @@ export default function Companies(props) {
         method: "POST",
         body: JSON.stringify(params),
       });
-      // console.log(response);
       if (response.success) {
         const companies = response.data.companies.filter((x) => {
           return x.companyId !== null || undefined;
         });
-        console.log(companies);
         setCompanies(companies);
         setLoading(false);
       } else {
@@ -176,8 +170,6 @@ export default function Companies(props) {
   };
 
   const rows = companies.map((item) => {
-    // console.log(item)
-
     return [
       <img src={Images.site} alt="Icon" />,
       item.companyId.name,

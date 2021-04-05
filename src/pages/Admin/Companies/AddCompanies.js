@@ -115,7 +115,6 @@ export default function AddCompanies(props) {
         token: store.token,
       });
       if (response.success) {
-        console.log("Response", JSON.stringify(response, null, 2));
         setCompanies(response.data.site_companies);
         if (response.data.site_companies !== null) {
           const companyTemp = [];
@@ -207,42 +206,35 @@ export default function AddCompanies(props) {
 
   const getGeneralContractor = async () => {
     try {
-      //formik.setFieldValue("site", adminStore.site.siteId.name);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_GENERAL_CONTRACTOR}/${adminStore.site.siteId._id}/${companyId}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data.companies.length === 0) {
-          await setCompanyType("generalcontractor");
+      if (response.data.companies.length === 0) {
+        await setCompanyType("generalcontractor");
 
+        setSelectedCompany("");
+        setSelectedCompanyIndex(null);
+      } else {
+        await setCompanyType("subcontractor");
+
+        const company = response.data.companies[0].companyId;
+        let companyIndex = null;
+        let companyValue = null;
+        companies.forEach((item, index) => {
+          if (item.companyId._id === company._id) {
+            companyIndex = index;
+            companyValue = item.companyId.name;
+          }
+        });
+        if (companyIndex !== null && companyValue !== null) {
+          setSelectedCompany(companyValue);
+          setSelectedCompanyIndex(companyIndex);
+        } else {
           setSelectedCompany("");
           setSelectedCompanyIndex(null);
-        } else {
-          await setCompanyType("subcontractor");
-
-          const company = response.data.companies[0].companyId;
-          let companyIndex = null;
-          let companyValue = null;
-          companies.forEach((item, index) => {
-            if (item.companyId._id === company._id) {
-              companyIndex = index;
-              companyValue = item.companyId.name;
-            }
-          });
-          if (companyIndex !== null && companyValue !== null) {
-            setSelectedCompany(companyValue);
-            setSelectedCompanyIndex(companyIndex);
-          } else {
-            setSelectedCompany("");
-            setSelectedCompanyIndex(null);
-          }
         }
-        console.log(JSON.stringify(response, null, 2));
-      } else {
       }
-
-      //   setItems(response.data.items);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -252,18 +244,7 @@ export default function AddCompanies(props) {
     }
   };
 
-  // const [startDate, setStartDate] = useState("");
-  // const [startDateError, setStartDateError] = useState("");
-  // const [isDateSelect, setIsDateSelect] = useState("");
-  // const [endDate, setEndDate] = useState("");
-  // const [endDateError, setEndDateError] = useState("");
-  // const [available, setAvailable] = useState("VOIR LES INDISPONIBILITÉS");
-  // const [techSheet, setTechSheet] = useState([]);
-  // const [rate, setRate] = useState("");
-  // const [rateError, setRateError] = useState("");
-
   const onSubmit = async () => {
-    // const notificationTo = values.notificationTo.map((item) => item.label);
     if (emailError || phoneError || websiteError) {
       alert("something went wrong");
     } else {
@@ -279,7 +260,7 @@ export default function AddCompanies(props) {
 
       const trades = [];
 
-      listOfTrades.forEach((item, index) => {
+      listOfTrades.forEach((item) => {
         trades.push(item.label);
       });
 
@@ -330,7 +311,7 @@ export default function AddCompanies(props) {
       }
 
       formik.setSubmitting(false);
-      props.history.push("/clients");
+      props.history.goBack();
     }
   };
 
@@ -466,7 +447,6 @@ export default function AddCompanies(props) {
 
   const handleChangecolor = (color) => {
     setColor(color.hex);
-    console.log("color is", color.hex);
   };
 
   return (
