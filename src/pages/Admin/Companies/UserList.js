@@ -91,11 +91,15 @@ export default function UserList(props) {
         method: "POST",
         body: JSON.stringify(params),
       });
-      if (response.data.users) {
-        const data = response.data.users.filter(
-          (x) => x.companyId._id === filterCompanyId,
-        );
-        setUserList(data);
+      if (response.succes) {
+        if (response.data.users) {
+          const data = response.data.users.filter(
+            (x) => x.companyId._id === filterCompanyId,
+          );
+          setUserList(data);
+        } else {
+          setUserList([]);
+        }
       } else {
         setUserList([]);
       }
@@ -111,7 +115,6 @@ export default function UserList(props) {
 
   const getData = async () => {
     try {
-      setFilterCompanyId(props?.match?.params?.id);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
         token: store.token,
@@ -120,7 +123,7 @@ export default function UserList(props) {
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
       });
-      console.log("response------------------", response);
+      setFilterCompanyId(props?.match?.params?.id);
       if (userResponse.success) {
         if (userResponse.data.roles != null) {
           const rolesTemp = [];
@@ -186,7 +189,6 @@ export default function UserList(props) {
     }
   };
   const handleClickOpen = () => {
-    // console.log('item', e.target.value);
     setOpen(true);
   };
   // eslint-disable-next-line
@@ -244,7 +246,7 @@ export default function UserList(props) {
             <SearchInput
               placeholder="Name OF USER"
               value={filterUserName}
-              onClick={filteredUser}
+              // onClick={filteredUser}
               onChange={(e) => {
                 setFilterUserName(e.target.value);
               }}
@@ -254,6 +256,7 @@ export default function UserList(props) {
               name="color"
               style={{ marginLeft: "20px", maxWidth: 250 }}
               values={dropdownCompanies}
+              onClick={filteredUser}
               onChange={(e) => {
                 setFilterCompanyId(e.target.value);
               }}

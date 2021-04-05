@@ -228,17 +228,24 @@ export default function Companies(props) {
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <img
-            src={Images.invoices}
+            src={Images.means}
             style={{ width: 18, height: 17 }}
             alt="Icon"
           />
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <img
-            src={Images.incidents}
-            style={{ width: 18, height: 17 }}
-            alt="Icon"
-          />
+          <NavLink
+            to={{
+              pathname: "/incidents",
+              companyId: item.companyId._id,
+            }}
+          >
+            <img
+              src={Images.incidents}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </NavLink>
         </IconButton>
       </div>,
     ];
