@@ -212,11 +212,18 @@ export default function Companies(props) {
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <img
-            src={Images.calender}
-            style={{ width: 18, height: 17 }}
-            alt="Icon"
-          />
+          <NavLink
+            to={{
+              pathname: "/companies/calendar",
+              id: item.companyId._id,
+            }}
+          >
+            <img
+              src={Images.calender}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <img

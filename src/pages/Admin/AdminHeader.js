@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 
 const userItems = [
   {
-    name: "Calender",
+    name: "Calendar",
     path: ["/", "/calendar"],
     icon: <Calender />,
   },

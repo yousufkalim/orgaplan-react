@@ -60,7 +60,7 @@ const Calender = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [siteMeans, setSiteMeans] = useState("");
   const [alertBoxTime, setAlertBoxTime] = useState(false);
-  const [days] = useState([0]);
+  const [days, setDays] = useState([]);
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
@@ -104,25 +104,13 @@ const Calender = (props) => {
     { value: "MODIFIED", label: "MODIFIED" },
     { value: "ALERTE", label: "ALERTE" },
   ]);
-
-  // const [statusbooking, setStatusbooking] = useState("#FFFF00");
+  const [disableHours, setDisableHours] = useState([]);
   const [overlap] = React.useState("Enable");
-  // const [overlapOpen, setoverlapOpen] = React.useState(false);
-  // overlap functions **************
-  // const handleOverLapChange = (event) => {
-  //   setoverlap(event.target.value);
-  // };
-  // const handleOverLapClose = () => {
-  //   setoverlapOpen(false);
-  // };
-  // const handleOverLapOpen = () => {
-  //   setoverlapOpen(true);
-  // };
+
   // useEffect
   useEffect(() => {
-    // getData();
-    // filterBookingCalendar();
     getfilterdata();
+    unavailabilityDates();
   }, []);
   useEffect(() => {
     filterBookingCalendar();
@@ -401,7 +389,6 @@ const Calender = (props) => {
       }
     }
   };
-
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -411,7 +398,7 @@ const Calender = (props) => {
     setShowEdit(true);
     setAlertBoxTime(false);
     const fill = events.filter((e) => e._id === eventID);
-    console.log(fill);
+
     setTitleEdit(fill[0].title);
     let getstart = String(fill[0].start);
     let getend = String(fill[0].end);
@@ -433,8 +420,8 @@ const Calender = (props) => {
     dispatch(get_means());
   };
   const handlePopoverShow = (event) => {
-    seteventID(event._id);
-    const fill = events.filter((e) => e._id === event._id);
+    seteventID(event.id);
+    const fill = events.filter((e) => e.id === event.id);
     setEvent(fill[0]);
     setpopoverShow(!popoverShow);
     // admin code end
@@ -592,7 +579,7 @@ const Calender = (props) => {
       if (response.success) {
         if (response.data !== null) {
           const temp = [];
-          console.log(response.data);
+
           response.data.map((item, index) => {
             return temp.push({
               label: item.name,
@@ -624,7 +611,7 @@ const Calender = (props) => {
       if (response.success) {
         if (response.data !== null) {
           const temp = [];
-          console.log(response.data);
+
           response.data.map((item, index) => {
             return temp.push({
               label: item.name,
@@ -660,27 +647,26 @@ const Calender = (props) => {
       </Alert>
     );
   }
-  const customDayPropGetter = (date) => {
-    // console.log(getWeekDay(new Date()));
 
-    if (
-      date.getDay() === days[0] ||
-      date.getDay() === days[1] ||
-      date.getDay() === days[2] ||
-      date.getDay() === days[3] ||
-      date.getDay() === days[4] ||
-      date.getDay() === days[5] ||
-      date.getDay() === days[6]
-    )
+  const customDayPropGetter = (date) => {
+    let flagDate;
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        if (moment(date).isSame(key.date, "day")) {
+          flagDate = date;
+        }
+      }
+      return {};
+    });
+    if (flagDate) {
       return {
         className: "special-day",
         style: {
           backgroundColor: "#EBEBE4",
         },
       };
-    else return {};
+    }
   };
-
   const filterBookingCalendar = async () => {
     let count = 0;
     let tempEvent;
@@ -732,6 +718,7 @@ const Calender = (props) => {
 
             count++;
             return {
+              id: key._id,
               title: key.statusReason,
               start: start,
               end: end,
@@ -745,10 +732,11 @@ const Calender = (props) => {
             let end = new Date(key.endDate);
             count++;
             return {
+              id: key._id,
               title: key.bookingReason,
               start: start,
               end: end,
-              color: "blue",
+              color: "#ADD8E6",
             };
           });
           setSiteMeans(`TOTAL MEANS : ${count} MEANS`);
@@ -763,145 +751,43 @@ const Calender = (props) => {
         ),
       );
     }
-    console.log(events);
+  };
+  const slotPropGetter = (date) => {
+    let flagDateAndTime;
+    let newStyle = {
+      backgroundColor: "#D3D3D3 ",
+    };
+    disableHours.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        flagDateAndTime = date;
+      }
+      return {};
+    });
+
+    if (flagDateAndTime) {
+      return {
+        className: "rbc-day-slot rbc-time-slot ",
+        style: newStyle,
+      };
+    }
+  };
+  //setDisableHours
+  const unavailabilityDates = () => {
+    let tempDisabledTime = [];
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === false) {
+        for (let i = key.startHour; i <= key.endHour; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisabledTime.push(date);
+        }
+      }
+      return {};
+    });
+    setDisableHours(tempDisabledTime);
   };
   return (
     <>
-      {/* <div className="row ">
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-2"></div>
-        <div className="col-md-6">
-          <div
-            style={{
-              display: "flex",
-              "flex-direction": "row",
-              "margin-top": "10px",
-              "align-items": "center",
-              "margin-bottom": "10px",
-            }}
-          >
-            <span
-              style={{
-                "background-color": "#FFFF00",
-                height: "20px",
-                width: "20px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Pending validation</span>
-            <span
-              style={{
-                "background-color": "#808080",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Not availble</span>
-            <span
-              style={{
-                "background-color": "#008000",
-                height: "20px",
-                width: "20px",
-                "margin-left": "10px",
-              }}
-            ></span>
-            <span style={{ "margin-left": "10px" }}>Validate</span>
-            
-            <div style={{ "margin-left": "auto", "margin-right": "10px" }}>
-              <OverLapSelect
-                overlap={overlap}
-                overlapOpen={overlapOpen}
-                handleOpen={handleOverLapOpen}
-                handleClose={handleOverLapClose}
-                handleChange={handleOverLapChange}
-              />
-            </div>
-          </div>
-          <div className="Custom_weekdays">
-            <label>Work week</label>
-            <FormGroup row>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Sunday}
-                    onChange={workWeekHandleChange}
-                    name="Sunday"
-                    color="primary"
-                  />
-                }
-                label="Sunday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Monday}
-                    onChange={workWeekHandleChange}
-                    name="Monday"
-                    color="primary"
-                  />
-                }
-                label="Monday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Tuesday}
-                    onChange={workWeekHandleChange}
-                    name="Tuesday"
-                    color="primary"
-                  />
-                }
-                label="Tuesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Wednesday}
-                    onChange={workWeekHandleChange}
-                    name="Wednesday"
-                    color="primary"
-                  />
-                }
-                label="Wednesday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Thursday}
-                    onChange={workWeekHandleChange}
-                    name="Thursday"
-                    color="primary"
-                  />
-                }
-                label="Thursday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Friday}
-                    onChange={workWeekHandleChange}
-                    name="Friday"
-                    color="primary"
-                  />
-                }
-                label="Friday"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={workWeekstate.Saturday}
-                    onChange={workWeekHandleChange}
-                    name="Saturday"
-                    color="primary"
-                  />
-                }
-                label="Saturday"
-              />
-            </FormGroup>
-          </div>
-        </div>
-      </div> */}
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
@@ -928,53 +814,6 @@ const Calender = (props) => {
                   locale="sv-sv"
                 />
               </div>
-              {/* <div class="form-group statusColor">
-                <label>Status Color </label>
-
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="statusColor"
-                    name="statusColor"
-                    value={statusbooking}
-                    onChange={statusBookingChange}
-                  >
-                    <FormControlLabel
-                      value="#FFFF00"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Pending validation"
-                      className="pending"
-                    />
-
-                    <FormControlLabel
-                      value="#808080"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Not availble"
-                      className="notAvailble"
-                    />
-                    <FormControlLabel
-                      value="#008000"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Validate"
-                      className="validate"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </div> */}
             </div>
             <div className="col-md-12">
               <div className="endTime">
@@ -1355,6 +1194,7 @@ const Calender = (props) => {
           <div style={{ flexBasis: "100%" }}>
             {events ? (
               <Calendar
+                slotPropGetter={slotPropGetter}
                 popup
                 selectable
                 formats={formats}
@@ -1377,7 +1217,6 @@ const Calender = (props) => {
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let { color } = events;
-                  console.log(color, "color");
 
                   let newStyle = {
                     clear: "both",
@@ -1391,6 +1230,8 @@ const Calender = (props) => {
                     background: `${color}`,
                     border: "2px solid #fff",
                     color: "black",
+                    fontWeight: "bold",
+                    fontSize: "16px",
                   };
 
                   if (events.isMine) {
@@ -1414,126 +1255,6 @@ const Calender = (props) => {
               <h1>Loading.....</h1>
             )}
           </div>
-          {/* <div style={{ flexBasis: "25%", margin: "0 20px 0px 10px" }}>
-            <div className="calender-sidebar pt-5">
-              <div className="text-center w-100 calender-sidebar-heading pb-3">
-                BOOKING
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <input
-                    disabled
-                    type="text"
-                    style={{ border: "1px solid #707070", textAlign: "center" }}
-                    placeholder="Lundi 03 Septembre 2020"
-                    className="w-100 p-2"
-                    value={cdate}
-                    onChange={(e) => setCdate(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="row mt-3">
-                <div className="col-md-12">
-                  <div className="starttime">
-                    <FormSelect
-                      placeholder="ConstructBTP"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12 mt-3">
-                  <div className="endTime">
-                    <FormSelect
-                      placeholder="Start hour"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12 mt-3">
-                  <div className="endTime">
-                    <FormSelect
-                      placeholder="End hour"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="row pt-3">
-                <div className="col-md-12">
-                  <div className="description">
-                    <div className="form-group ">
-                    <label for="exampleFormControlTextarea1">Add message</label>  
-                      <textarea
-                        className="form-control"
-                        id="exampleFormControlTextarea1"
-                        placeholder="Reason of booking"
-                        rows="3"
-                        value={bookingTitle}
-                        onChange={(e) => setBookingTitle(e.target.value)}
-                      ></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  className="w-100 py-2"
-                  onClick={saveBooking}
-                  style={{
-                    color: "#fff",
-                    backgroundColor: "#DBB20A",
-                    border: "none",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Book
-                </button>
-              </div>
-           <Button variant="primary" onClick={saveBooking}>
-            Add Booking
-          </Button>
-          <Button variant="secondary" onClick={() => setbookingslot(false)}>
-            Close
-          </Button> 
-            </div>
-          </div> */}
         </div>
       </div>
     </>
