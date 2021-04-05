@@ -17,7 +17,6 @@ import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,7 +121,7 @@ export default function Invoices(props) {
     item.amount,
     item.description,
     <>
-      <IconButton component={NavLink} to={`/clients/edit-invoice/${item._id}`}>
+      <IconButton component={NavLink} to={`/invoices/edit-invoice/${item._id}`}>
         <Pencil style={{ width: 15, height: 15 }} />
       </IconButton>
       <IconButton onClick={() => onDelete(item._id)}>
@@ -133,9 +132,6 @@ export default function Invoices(props) {
 
   return (
     <div className={classes.root}>
-      <IconButton onClick={() => props.history.goBack()}>
-        <BackArrow style={{ width: 30, height: 30 }} />
-      </IconButton>
       <Form.Row alignItems="center">
         <Heading primary="INVOICES" noWrap />
         <Button
@@ -143,7 +139,7 @@ export default function Invoices(props) {
           component={NavLink}
           text="CREATE AN INVOICE"
           to={{
-            pathname: "/clients/add-invoice",
+            pathname: "/invoices/add-invoice",
             clientId: client,
           }}
         />
@@ -155,7 +151,7 @@ export default function Invoices(props) {
           values={clientsArray}
           style={{ maxWidth: 250 }}
           onChange={({ target: { value } }) => {
-            props.history.replace(`/clients/invoices/${value}`);
+            props.history.replace(`/invoices/${value}`);
             setClient(value);
           }}
         />

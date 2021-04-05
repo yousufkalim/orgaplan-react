@@ -77,7 +77,7 @@ export default function Clients(props) {
 
   async function fetchData() {
     try {
-      setLoading(true)
+      setLoading(true);
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}?page=${page}&name=${query}`,
       });
@@ -262,7 +262,7 @@ export default function Clients(props) {
               disabled={loading}
               onClick={(e) => {
                 e.stopPropagation();
-                props.history.push(`/clients/invoices/${item._id}`);
+                props.history.push(`/invoices/${item._id}`);
               }}
             >
               <Report style={{ width: 15, height: 15 }} />
