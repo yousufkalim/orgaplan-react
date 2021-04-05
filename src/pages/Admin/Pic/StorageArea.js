@@ -32,7 +32,7 @@ export default function DeliveryArea(props) {
 
   const [isFull, setIsFull] = useState(false);
   const [name, setName] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]);
@@ -157,7 +157,7 @@ export default function DeliveryArea(props) {
           start: startDate,
           end: endDate,
         },
-        deliveryAreas: selectedDeliveryAreas,
+        deliveryArea: selectedDeliveryAreas,
         means: selectedMeans,
         unavailabilities,
         companies: selectedCompanies,
@@ -210,6 +210,7 @@ export default function DeliveryArea(props) {
 
   return (
     <div className={classes.content}>
+      {console.log("selectedDeliveryAreas", selectedDeliveryAreas)}
       <Form.Form onSubmit={onSubmit}>
         <Form.Row justifyContent="flex-end">
           <FormControlLabel

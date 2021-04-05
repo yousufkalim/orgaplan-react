@@ -81,15 +81,11 @@ export default function AddClient(props) {
     // Validation
 
     if (name === "name") {
-      console.log(value.length);
-
       if (value !== "") setErrors({ nameError: "" });
       if (value.length > 30)
         setErrors({ nameError: "Max 30 characters are allowed" });
     }
     if (name === "firstName") {
-      console.log(value.length);
-
       if (value !== "") setErrors({ firstNameError: "" });
       if (value.length > 30)
         setErrors({ firstNameError: "Max 30 characters are allowed" });
@@ -427,7 +423,6 @@ export default function AddClient(props) {
               }}
             />
           </Form.Row>
-
           <Form.ButtonContainer>
             <Button
               type="submit"

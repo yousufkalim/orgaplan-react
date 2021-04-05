@@ -6,6 +6,7 @@ import Logs from "./Logs";
 import Sites from "./Sites";
 import Admins from "./Admins";
 import Clients from "./Clients";
+import Invoices from "./Invoices";
 import Header from "./SuperAdminHeader";
 
 export default function UnAuth() {
@@ -14,6 +15,7 @@ export default function UnAuth() {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/clients" component={Clients} />
+        <Route path="/invoices" component={Invoices} />
         <Route path="/logs" component={Logs} />
         <Route path="/sites" component={Sites} />
         <Route path="/admins" component={Admins} />

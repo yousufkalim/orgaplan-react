@@ -172,7 +172,7 @@ export default function Home(props) {
           title: "INVOICE",
           total: data && data.invoices.total,
           tabs: false,
-          path: "/clients/invoices",
+          path: "/invoices",
           text: "Invoices list",
           items: [
             { "Marché couvert ULYS": "11,392" },

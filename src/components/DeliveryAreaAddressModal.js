@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
+import moment from "moment";
 
 import Form from "./Form";
 import Modal from "./Modal";
 import Button from "./Button";
+import GLOBALS from "../globals";
 import FormInput from "./FormInput";
 import FormLabel from "./FormLabel";
 import FormMultipleUpload from "./FormMultipleUpload";
@@ -59,6 +61,7 @@ export default function MultiAdderInputModal(props) {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [image, setImage] = useState([]);
   const [location, setLocation] = useState("");
@@ -75,9 +78,24 @@ export default function MultiAdderInputModal(props) {
   async function onSubmit() {
     let newValues = props.values;
 
+    setLoading(true);
+    const formdataImage = new FormData();
+    formdataImage.append("image", image[0].file);
+
+    const imageData = await GLOBALS.API({
+      method: "POST",
+      uri: `${GLOBALS.Constants.FILE_UPLOAD}/delivery-area`,
+      headers: {},
+      body: formdataImage,
+    });
+
+    let imageAr = image;
+    delete imageAr[0].file;
+    imageAr[0].uri = imageData.image;
+
     const values = {
       _id: newValues.length,
-      image: image,
+      image: imageAr,
       endDate: endDate,
       location: location,
       startDate: startDate,
@@ -87,6 +105,7 @@ export default function MultiAdderInputModal(props) {
     props.onChange(newValues);
 
     setUpdate((st) => !st);
+    setLoading(false);
     setModal(false);
     setLocation("");
     setImage([]);
@@ -184,23 +203,25 @@ export default function MultiAdderInputModal(props) {
               >
                 <FormInput
                   type="date"
-                  style={{ width: "300px" }}
-                  placeholder={`Start date`}
                   name="startDate"
+                  value={startDate}
+                  placeholder={`Start date`}
+                  min={moment(props.min).format("YYYY-MM-DD")}
+                  max={moment(props.max).format("YYYY-MM-DD")}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
-                  value={startDate}
                 />
                 <FormInput
                   type="date"
                   placeholder="End date"
-                  style={{ width: "300px" }}
                   name="endDate"
+                  value={endDate}
+                  min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+                  max={moment(props.max).format("YYYY-MM-DD")}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
-                  value={endDate}
                 />
               </Form.Row>
             </Form.Row>
@@ -208,9 +229,10 @@ export default function MultiAdderInputModal(props) {
               <Button
                 minWidth={200}
                 text="VALIDATE"
+                loading={loading}
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={!location || !startDate || !endDate}
+                disabled={!location || !startDate || !endDate || loading}
               />
             </Form.Row>
           </Form.Form>

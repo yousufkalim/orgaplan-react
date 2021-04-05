@@ -15,7 +15,7 @@
           "title": "INVOICE",
           "total": "35,780",
           "tabs": false,
-          "path": "/clients/invoices",
+          "path": "/invoices",
           "text": "Invoices list",
           "items": [
             { "Marché couvert ULYS": "11,392" },

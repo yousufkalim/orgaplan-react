@@ -19,6 +19,7 @@ import { ReactComponent as Sites } from "../../assets/icons/Sites.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/Home.svg";
 import { ReactComponent as Admins } from "../../assets/icons/Admins.svg";
 import { ReactComponent as Clients } from "../../assets/icons/Clients.svg";
+import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
 
 const drawerWidth = 240;
 
@@ -92,17 +93,17 @@ const userItems = [
     icon: <Clients />,
   },
   {
+    name: "Invoices",
+    path: "/invoices",
+    icon: <Invoices />,
+  },
+  {
     name: "Sites",
     path: "/sites",
     icon: <Sites />,
   },
-  // {
-  //   name: "Logs",
-  //   path: "/logs",
-  //   icon: <Logs />,
-  // },
   {
-    name: "List of Admins",
+    name: "Admins",
     path: "/admins",
     icon: <Admins />,
   },
