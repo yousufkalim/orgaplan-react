@@ -78,7 +78,7 @@ export default function CustomInputModal(props) {
     let elem =
       type === "STORAGEAREA"
         ? props.storageAreas.find((el) => el.value === area)
-        : props.deliveryArea.find((el) => el.value === area);
+        : props.deliveryAreas.find((el) => el.value === area);
     const val = {
       key: area,
       type: type,

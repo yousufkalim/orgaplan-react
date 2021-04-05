@@ -11,7 +11,7 @@ import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
-import CustomInputModal from "../../../components/MeanLocationModal";
+import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +83,6 @@ export default function AddMean(props) {
         setMeanTypes(temp);
       }
       if (props.selectedShape) {
-        console.log("selectedShape", props.selectedShape);
         setName(props.selectedShape.mean.name);
         setMeanType(props.selectedShape.mean.meanType);
         setColor(props.selectedShape.mean.color);
@@ -105,7 +104,6 @@ export default function AddMean(props) {
           label: loc.label,
         }));
         setLocations(locaAr);
-        // setTechSheet(props.selectedShape.mean.sheet);
         props.selectedShape.mean.sheet &&
           setTechSheet([
             {
@@ -301,7 +299,7 @@ export default function AddMean(props) {
         <Form.Row>
           <FormLabel bold primary="LOCATION * :  " />
           <Form.Row noMargin width="65%">
-            <CustomInputModal
+            <MeanLocationModal
               name="location"
               values={locations}
               storageAreas={storageAreas}

@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import GLOBALS from "../../../globals";
-import { makeStyles } from "@material-ui/core/styles";
-
-import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import Actions from "../../../redux/actions";
-
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
+
+import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
-import FormInput from "../../../components/FormInput";
 
-import moment from "moment";
 import { Images } from "../../../assets/Assets";
-
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,7 +62,6 @@ const Means = () => {
   const [locations, setLocations] = useState([]);
   const [dropdownLocations, setDropdownLocations] = useState([]);
   const [selectedLocationIndex, setSelectedLocationIndex] = useState(0);
-  const [selectedLocation, setSelectedLocation] = useState("");
 
   const [types, setTypes] = useState([]);
   const [doropdownTypes, setDropdownTypes] = useState([]);
@@ -86,7 +83,6 @@ const Means = () => {
   const [selectedDropdownLevelIndex, setSelectedDropdownLevelIndex] = useState(
     0,
   );
-  const [selectedLevel, setSelectedLevel] = useState("");
   const [disableDropdpwn, setDisableDropdown] = useState(true);
   const [disableStorageDropdown, setDisableStorageDropdow] = useState(true);
 
@@ -97,7 +93,6 @@ const Means = () => {
     setSelectedDropdownStorageAreaIndex,
   ] = useState(0);
   const [selectedStorageArea, setSelectedStorageArea] = useState("");
-  const [storageMeans, setStorageMeans] = useState([]);
   const [means, setMeans] = useState([]);
   const [meanText, setMeanText] = useState("");
 
@@ -198,7 +193,6 @@ const Means = () => {
       } else {
       }
 
-      //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -269,9 +263,9 @@ const Means = () => {
         setLevels(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
+          response.data.map((item) =>
+            temp.push({ label: item.number, value: item.number }),
+          );
 
           setDropdownLevels(temp);
         }
@@ -482,11 +476,6 @@ const Means = () => {
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
-        {loading && ""}
-        {selectedLocation && ""}
-        {company && ""}
-        {selectedLevel && ""}
-        {storageMeans && ""}
         <Heading primary="LIST OF MEANS" noWrap />
         <div>
           <Form.Row
@@ -512,12 +501,14 @@ const Means = () => {
                   marginBottom: "7px",
                   width: "200px",
                 }}
+                disabled={loading}
               />
 
               <Button
                 fullWidth={false}
                 component={NavLink}
                 text="MEANS REQUEST"
+                disabled={loading}
                 to={"/sites/means-request"}
                 style={{ marginLeft: "20px", width: "200px" }}
               />
@@ -553,13 +544,9 @@ const Means = () => {
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
-                const item = event.target.value;
-
                 setSelectedLocationIndex(index);
-                setSelectedLocation(item);
                 // Reset Levels
                 setSelectedDropdownLevelIndex(0);
-                setSelectedLevel("");
                 setDropdownLevels([]);
                 // Reset Storage Area
                 setSelectedDropdownStorageAreaIndex(0);
@@ -567,7 +554,6 @@ const Means = () => {
                 setDropdownStorageAreas([]);
                 setDisableStorageDropdow(true);
                 // Reset Storage Means
-                setStorageMeans([]);
                 if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
                   getExternalMeans();
@@ -578,17 +564,14 @@ const Means = () => {
                 }
               } else {
                 setSelectedLocationIndex(0);
-                setSelectedLocation("");
                 // Reset Levels
                 setSelectedDropdownLevelIndex(0);
-                setSelectedLevel("");
                 setDropdownLevels([]);
                 // Reset Storage Area
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
-                setStorageMeans([]);
                 setDisableStorageDropdow(true);
               }
             }}
@@ -601,26 +584,21 @@ const Means = () => {
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
-                const item = event.target.value;
                 setSelectedDropdownLevelIndex(index);
-                setSelectedLevel(item);
                 // Reset Storage Area
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
-                setStorageMeans([]);
                 setDisableStorageDropdow(false);
                 getStorageAreasByLevel(levels[index]._id);
               } else {
                 setSelectedDropdownLevelIndex(0);
-                setSelectedLevel("");
                 // Reset Storage Area
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
                 setDropdownStorageAreas([]);
                 // Reset Storage Means
-                setStorageMeans([]);
                 setDisableStorageDropdow(true);
               }
             }}
@@ -638,7 +616,6 @@ const Means = () => {
                 setSelectedDropdownStorageAreaIndex(index);
                 setSelectedStorageArea(item);
                 // Reset Storage Means
-                setStorageMeans([]);
 
                 // filterMean();
               } else {

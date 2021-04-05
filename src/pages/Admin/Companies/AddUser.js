@@ -207,7 +207,17 @@ export default function AddUser(props) {
                     value={email}
                     onChange={(e) => {
                       //  console.log(e.target.value)
-                      setEmail(e.target.value);
+                      users.forEach((item, index) => {
+                        if (item.email != e.target.value) {
+                          setEmail(e.target.value);
+                          setFirstName("");
+                          setLastName("");
+                          setPhone("");
+                          setLogo([]);
+                          setDisableUser(true);
+                        }
+                      });
+                      // setEmail(e.target.value);
                     }}
                   />
                 )}
