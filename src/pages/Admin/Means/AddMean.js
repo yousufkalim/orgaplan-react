@@ -210,8 +210,8 @@ export default function AddMean(props) {
 
       formdata.append("name", name);
       formdata.append("color", color);
-      formdata.append("image", image[0].file);
-      formdata.append("sheet", image[0].file);
+      if (image[0]?.file) formdata.append("image", image[0].file);
+      // formdata.append("sheet", image[0].file);
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
       formdata.append("siteId", adminStore.site.siteId._id);
@@ -401,6 +401,7 @@ export default function AddMean(props) {
                     : deliveryAreaId
                 }
                 chipValues={(values) => {
+                  console.log(values);
                   setDeliveryAndStorageLocations(values);
                 }}
                 leftDropdownValues={accessabilityPoints}
@@ -587,7 +588,8 @@ export default function AddMean(props) {
                   !selectedMeanType ||
                   !color ||
                   !startDate ||
-                  !deliveryAndStorageLocations
+                  !deliveryAndStorageLocations[0] ||
+                  !endDate
                 }
               />
             </Form.ButtonContainer>

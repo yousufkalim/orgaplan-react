@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { TimePicker } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import moment from "moment";
+
 import GLOBALS from "../../../globals";
+import Actions from "../../../redux/actions";
+
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -11,11 +16,9 @@ import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
-import { TimePicker } from "antd";
-
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
+
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import moment from "moment";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,6 +37,7 @@ export default function AddIncidents(props) {
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
 
   const [name, setName] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
@@ -56,6 +60,9 @@ export default function AddIncidents(props) {
   const [comment, setComment] = useState("");
   const [image, setImage] = useState([]);
 
+  const [companies, setCompanies] = useState([]);
+  const [generalContractor, setGeneralContractor] = useState("");
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -65,23 +72,35 @@ export default function AddIncidents(props) {
     // eslint-disable-next-line
   }, [selectedLocationType]);
 
+  useEffect(() => {
+    if (companyId) {
+      companies.map((com) => {
+        let subc = com.subContractors.find((sub) => sub._id === companyId);
+        if (subc) {
+          setGeneralContractor(subc.name);
+        }
+        return true;
+      });
+    }
+    // eslint-disable-next-line
+  }, [companyId]);
+
   const fetchData = async () => {
-    const response = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
-      token: store.token,
-    });
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
 
-    console.log(response);
-
-    if (response.success) {
       if (response.data.site_companies) {
+        setCompanies(response.data.site_companies);
         const temp = [];
-        response.data.site_companies.map((item, index) => {
-          return temp.push({
+        response.data.site_companies.map((item) =>
+          temp.push({
             label: item.companyId.name,
             value: item.companyId._id,
-          });
-        });
+          }),
+        );
         setDropdownCompanies(temp);
       }
 
@@ -92,135 +111,44 @@ export default function AddIncidents(props) {
         });
         setDropdownLocationType(temp);
       }
+      await setValues();
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
-    await setValues();
   };
-
   const setValues = () => {
     const incident = props?.location?.data;
     setName(incident.name);
     setCompanyId(incident?.companyId?._id); //working
     setDate(incident?.date);
-    //setTime(incident?.time); // moment(item.date).format("MM/DD/yyyy"): ' '
-
-    // setTime(moment(incident?.time).format("HH:mm:ss"));
-    // console.log(moment(incident?.time).format("HH:mm:ss"));
     setIsBillable(incident?.isBillable);
     setPrice(incident?.price);
     setType(incident?.type);
     setStatus(incident?.status);
     setDescription(incident?.description);
-    console.log(props.location?.data);
-
-    // setType(contactInfo.type);
-    // setEmail(contactInfo.email);
-    // setPhone(contactInfo.phone);
-    // setFirstName(contactInfo.firstName);
-    // setLastName(contactInfo.lastName);
-    // setImage([{ key: 0, file: undefined, uri: contactInfo.image }]);
-
-    // // setImage(fileClone);
-
-    // setCompany(contactInfo.company);
-    // setRole(contactInfo.role);
-  };
-
-  const onFormSubmit = async () => {
-    // const notificationTo = values.notificationTo.map((item) => item.label);
-
-    var formdata = new FormData();
-    // formdata.append("photos", values.logo[0].file);
-    formdata.append("name", name);
-    formdata.append("date", date);
-    formdata.append("time", time);
-    formdata.append("status", status);
-    formdata.append("description", description);
-    formdata.append("isBillable", isBillable);
-    formdata.append("price", price);
-    formdata.append("type", type);
-    formdata.append("comment", comment);
-    // formdata.append(
-    //   "location",
-    //   JSON.stringify({ deliveryArea: "600952a9df49e51b42fab57b" }),
-    // );
-    // formdata.append("type", );
-    formdata.append("companyId", companyId);
-    formdata.append("siteId", adminStore.site.siteId._id);
-    console.log(store.token);
-    await GLOBALS.API({
-      method: "PUT",
-      uri:
-        GLOBALS.Constants.POST_ADD_SITE_INCIDENTS +
-        "/" +
-        props.location.data._id,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-
-    props.history.push("/incidents");
   };
   const nameChange = (e) => {
-    if (e.target.name === "name") {
-      setName(e.target.value);
-      if (e.target.name === "" || name === null) {
-      } else {
-      }
-    }
-    if (e.target.name === "comapnyId") {
-      setCompanyId(e.target.value);
-      if (e.target.value === "" || e.target.value === null) {
-      } else {
-      }
-    }
-    if (e.target.name === "date") {
-      setDate(e.target.value);
-      // console.log(date)
-      if (e.target.value === "" || e.target.value === null) {
-      } else {
-      }
-    }
-    if (e.target.name === "time") {
-      setTime(e.target.value);
-      if (e.target.value === "" || e.target.value === null) {
-      } else {
-      }
-    }
+    if (e.target.name === "name") setName(e.target.value);
+    if (e.target.name === "date") setDate(e.target.value);
+    if (e.target.name === "time") setTime(e.target.value);
+    if (e.target.name === "description") setDescription(e.target.value);
+    if (e.target.name === "isBillable") setIsBillable(e.target.value);
+    if (e.target.name === "price") setPrice(e.target.value);
+    if (e.target.name === "comment") setComment(e.target.value);
+    if (e.target.name === "profile") setImage(e.target.value);
+    if (e.target.name === "type") setType(e.target.value);
+    if (e.target.name === "status") setType(e.target.status);
+    if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
-      // setTime(e.target.value);
       const locationObject = {};
       locationObject[0] = selectedLocationType;
-
       locationObject[1] = e.target.value;
-
-      if (e.target.value === "" || e.target.value === null) {
-      } else {
-      }
-    }
-    if (e.target.name === "description") {
-      setDescription(e.target.value);
-    }
-    if (e.target.name === "isBillable") {
-      setIsBillable(e.target.value);
-    }
-    if (e.target.name === "price") {
-      setPrice(e.target.value);
-    }
-    if (e.target.name === "comment") {
-      setComment(e.target.value);
-    }
-    if (e.target.name === "profile") {
-      setImage(e.target.value);
-    }
-    if (e.target.name === "type") {
-      setType(e.target.value);
-    }
-    if (e.target.name === "status") {
-      setType(e.target.status);
     }
   };
-
   const fetchLocationDataOnTypeChange = async () => {
     if (selectedLocationType === "STORAGEAREA") {
       const response = await GLOBALS.API({
@@ -237,7 +165,6 @@ export default function AddIncidents(props) {
 
         setDropdownLocation(storageValue);
       }
-      console.log(response);
     }
     if (selectedLocationType === "DELIVERYAREA") {
       const response = await GLOBALS.API({
@@ -253,48 +180,51 @@ export default function AddIncidents(props) {
           setDropdownLocation(temp);
         }
       }
-      console.log(response);
     }
   };
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
   };
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (name === "" || name === null) {
-    }
-    // if (types === "" || types === null) {
-    //   setTypeError(true);
-    // }
-    // if (color === "" || color === null) {
-    //   setColorError(true);
-    // }
-    // if (startDate === "" || startDate === undefined || startDate === null) {
-    //   setStartDateError(true);
-    //   setIsDateSelect(true);
+  const submitHandler = async (e) => {
+    try {
+      e.preventDefault();
+      var formdata = new FormData();
+      formdata.append("name", name);
+      formdata.append("date", date);
+      formdata.append("time", time);
+      formdata.append("status", status);
+      formdata.append("description", description);
+      formdata.append("isBillable", isBillable);
+      formdata.append("price", price);
+      formdata.append("type", type);
+      formdata.append("comment", comment);
+      formdata.append("companyId", companyId);
+      formdata.append("siteId", adminStore.site.siteId._id);
+      await GLOBALS.API({
+        method: "PUT",
+        uri:
+          GLOBALS.Constants.POST_ADD_SITE_INCIDENTS +
+          "/" +
+          props.location.data._id,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
 
-    // }
-    // if (endDate === "" || endDate === undefined || endDate === null) {
-    //   setEndDateError(true);
-    // }
-    // if( rate === "" || rate === null){
-    //   setRateError(true);
-    // }
-    // if( name !== "" && types !== "" && color !== "" && startDate !== "" && endDate !== ""){
-    //   clearFileds();
-    // }
-    else {
-      // clearFileds();
-      // submitIncident()
+      props.history.goBack();
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
-    onFormSubmit();
   };
   const timeChange = (e) => {
-    // setTime(e?._d);
     setTime(moment(e?._d).format("HH:mm:ss"));
-    // moment(incident.time).format("HH:mm:ss");
-    // console.log(moment(e?._d).format("HH:mm:ss"));
   };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -310,11 +240,6 @@ export default function AddIncidents(props) {
                 name="type"
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                //  onChange={(e) => {
-                //    seIsBillable(e.target.value);
-                //    console.log("billable is", isBillable);
-                //    isBillable === "No" && console.log("value");
-                //  }}
                 onChange={nameChange}
                 value={type}
                 values={[
@@ -349,7 +274,12 @@ export default function AddIncidents(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="NAME OF COMPANY* :" />
-            <Form.Row noMargin width="48%">
+            <Form.Row
+              noMargin
+              width="48%"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <FormSelect
                 placeholder="Nom de I'enterprise"
                 name="comapnyId"
@@ -358,15 +288,10 @@ export default function AddIncidents(props) {
                 value={companyId}
                 values={dropdownCompanies}
               />
-              <span
-                style={{
-                  textAlign: "center",
-                  marginRight: "50px",
-                  marginTop: "10px",
-                }}
-              >
-                General Contractor name
-              </span>
+              <SmallText
+                primary={generalContractor}
+                style={GLOBALS.Styles.inputWidth}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -380,22 +305,12 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 value={date}
               />
-
-              {/* <FormInput
-                placeholder="TIME"
-                type="time"
-                name="time"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
-                value={time}
-              /> */}
               <TimePicker
                 name="time"
                 placeholder="Time"
                 style={{ width: "48%", height: "45px", color: "#8B8989" }}
                 onChange={timeChange}
                 value={time}
-                //  value={time}
               />
             </Form.Row>
           </Form.Row>
@@ -459,17 +374,6 @@ export default function AddIncidents(props) {
                   { value: false, label: "No" },
                 ]}
               />
-              {/* 
-              <select
-                name="bill"
-                id="bill"
-                // value={isBillable}
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  setIsBillable(e.target.value);
-                  if (isBillable === false) setPrice(0);
-                }}
-              ></select> */}
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -487,7 +391,6 @@ export default function AddIncidents(props) {
               </Form.Row>
             </Form.Row>
           </Form.Row>
-
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="COMMENT ON INVOICE : " />
             <FormInput

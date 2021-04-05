@@ -93,9 +93,9 @@ const userItems = [
     icon: <Clients />,
   },
   {
-    name: "Invoices",
-    path: "/invoices",
-    icon: <Invoices />,
+    name: "Admins",
+    path: "/admins",
+    icon: <Admins />,
   },
   {
     name: "Sites",
@@ -103,9 +103,9 @@ const userItems = [
     icon: <Sites />,
   },
   {
-    name: "Admins",
-    path: "/admins",
-    icon: <Admins />,
+    name: "Invoices",
+    path: "/invoices",
+    icon: <Invoices />,
   },
 ];
 
