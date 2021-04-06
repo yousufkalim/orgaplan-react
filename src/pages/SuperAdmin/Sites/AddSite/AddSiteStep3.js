@@ -88,9 +88,11 @@ export default function AddSiteStep3(props) {
   async function onCreateBuilding() {
     try {
       setLoading(true);
+      const color = GLOBALS.Functions.randomColor();
       const formdata = JSON.stringify({
         name: buildingName,
         siteId: siteId,
+        color,
       });
 
       // JSON.stringify Creation

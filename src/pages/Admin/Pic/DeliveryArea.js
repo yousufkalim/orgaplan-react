@@ -166,11 +166,13 @@ export default function DeliveryArea(props) {
       let propShapes = props.shapes;
       let propShape = props.shape ? props.shape : props.selectedShape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde].color = color;
       propShapes[inde].deliveryArea = response.data;
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = name;
       propShape._id = response.data._id;
       propShape.name = response.data.name;
+      propShape.color = response.data.color;
       propShape.deliveryArea = response.data;
 
       if (!props.selectedShape) {

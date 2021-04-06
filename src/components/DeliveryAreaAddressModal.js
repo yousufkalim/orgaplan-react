@@ -178,12 +178,12 @@ export default function MultiAdderInputModal(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="Image * :" />
+              <FormLabel bold primary="PDF * :" />
               <Form.Row
                 noMargin
                 width="65%"
-                justifyContent="flex-start"
                 style={{ gap: "20px" }}
+                justifyContent="flex-start"
               >
                 <FormMultipleUpload
                   name="image"

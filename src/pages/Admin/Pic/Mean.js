@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import _ from "lodash";
+
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
@@ -30,15 +32,15 @@ export default function AddMean(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
-  const [name, setName] = useState("");
-  const [meanType, setMeanType] = useState("");
+  const [name, setName] = useState("Me");
+  const [meanType, setMeanType] = useState("LIFTING");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState("2021-04-06T00:00:00.000+00:00");
+  const [endDate, setEndDate] = useState("2021-04-07T00:00:00.000+00:00");
   const [techSheet, setTechSheet] = useState([]);
-  const [rate, setRate] = useState("0");
+  const [rate, setRate] = useState("20");
   const [addInfo, setAddInfo] = useState("");
 
   const [update, setUpdate] = useState(false);
@@ -198,8 +200,10 @@ export default function AddMean(props) {
         body: formdata,
       });
 
-      let propShapes = props.shapes;
-      let propShape = props.shape ? props.shape : props.selectedShape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? { ...props.shape }
+        : { ...props.selectedShape };
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       const formdataImage = new FormData();
@@ -219,8 +223,6 @@ export default function AddMean(props) {
       propShape.mean = response.data;
       propShapes[inde].name = name;
       propShape.name = name;
-      propShapes[inde].color = color;
-      propShape.color = color;
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
 

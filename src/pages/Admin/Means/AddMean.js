@@ -16,13 +16,8 @@ import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-<<<<<<< HEAD
-import CustomInputModal from "../../../components/CustomInputModal";
-import ColorPicker from "../../../components/ColorPcker";
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
-=======
->>>>>>> c0256d64301b299d5d19b32982251c0e4ac98927
+import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,15 +51,8 @@ export default function AddMean(props) {
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
   const [meanTypes, setMeanTypes] = useState([]);
-<<<<<<< HEAD
-  const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
-  const [selectedMeanType, setSelectedMeanType] = useState("");
-  const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
   const [unavailabilities, setUnavailabilities] = useState([]);
-  console.log(unavailabilities);
-=======
 
->>>>>>> c0256d64301b299d5d19b32982251c0e4ac98927
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -145,28 +133,6 @@ export default function AddMean(props) {
         end: endDate,
       };
 
-      // TEST DATA , CALENDAR NOT MADE YET
-<<<<<<< HEAD
-
-      const sampleDateOne = new Date("05/20/2021");
-      const sampleDateTwo = new Date("05/28/2021");
-=======
-      const unavailabilities = [
-        {
-          date: new Date("05/20/2021"),
-          reason: "Public Holiday",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-        {
-          date: new Date("05/28/2021"),
-          reason: "Maintenance",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-      ];
->>>>>>> c0256d64301b299d5d19b32982251c0e4ac98927
-
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("name", name);
       formdata.append("meanType", meanType);
@@ -205,7 +171,6 @@ export default function AddMean(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      {loading && ""}
       <Form.Row>
         <Heading primary="ADD A MEAN" />
       </Form.Row>
@@ -313,26 +278,29 @@ export default function AddMean(props) {
             />
           </Form.Row>
         </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="UNAVAILABILITIES" />
-          <Form.Row noMargin width="65%">
-            <div
-              to={"/means/add-mean"}
-              style={{
-                marginLeft: "0px",
-                marginBottom: "7px",
-                width: "320px",
-                color: "#fff",
-                padding: "0.8rem 0",
-                borderRadius: "8px",
-                textAlign: "center",
-                backgroundColor: "#140772",
-              }}
-            >
-              SHOW UNAVAILABILITIES
-            </div>
-          </Form.Row>
-        </Form.Row>
+        {startDate !== "" && endDate !== "" ? (
+          <>
+            <Form.Row>
+              <FormLabel bold primary="UNAVAILABILITIES" />
+              <Form.Row noMargin width="65%">
+                <UnavailabilityTimes
+                  name="unavailabilityDates"
+                  values={unavailabilities}
+                  style={GLOBALS.Styles.inputWidth}
+                  unavailabilityDates={unavailabilities}
+                  setUnavailabilityDates={setUnavailabilities}
+                  startRange={startDate}
+                  endRange={moment(endDate).add(1, "days")}
+                  onChange={(values) =>
+                    handleChange("unavailabilityDates", values)
+                  }
+                />
+              </Form.Row>
+            </Form.Row>
+          </>
+        ) : (
+          ""
+        )}
         <Form.Row alignItems="flex-start">
           <FormLabel bold primary="HOURLY RATE :" />
           <Form.Row noMargin width="65%">
@@ -345,105 +313,6 @@ export default function AddMean(props) {
                 }
                 value={rate}
               />
-<<<<<<< HEAD
-            </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="TECHNICAL SHEET :" />
-            <Form.Row noMargin width="65%">
-              <FormMultipleUpload
-                name="techSheet"
-                style={GLOBALS.Styles.inputWidth}
-                values={techSheet}
-                onChange={(values) => {
-                  handleChange("techSheet", values);
-                }}
-              />
-            </Form.Row>
-          </Form.Row>
-          {startDate !== "" && endDate !== "" ? (
-            <>
-              <Form.Row>
-                <FormLabel bold primary="UNAVAILABILITIES" />
-                <Form.Row noMargin width="65%">
-                  <UnavailabilityTimes
-                    name="unavailabilityDates"
-                    values={unavailabilities}
-                    style={GLOBALS.Styles.inputWidth}
-                    unavailabilityDates={unavailabilities}
-                    setUnavailabilityDates={setUnavailabilities}
-                    startRange={startDate}
-                    endRange={moment(endDate).add(1, "days")}
-                    onChange={(values) =>
-                      handleChange("unavailabilityDates", values)
-                    }
-                  />
-                </Form.Row>
-              </Form.Row>
-            </>
-          ) : (
-            ""
-          )}
-
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="HOURLY RATE :" />
-            <Form.Row noMargin width="65%">
-              <div
-                style={{ width: "30%", height: "100%", position: "relative" }}
-              >
-                <FormInput
-                  type="number"
-                  name="rate"
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
-                  value={rate}
-                />
-                <span style={{ position: "absolute", top: "25%", right: "5%" }}>
-                  €
-                </span>
-              </div>
-            </Form.Row>
-          </Form.Row>
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONAL INFORMATION :" />
-            <Form.Row noMargin width="65%">
-              <FormInput
-                textArea
-                rows={3}
-                maxLength="300"
-                style={{ width: "100%" }}
-                placeholder="Informations complémentaires"
-                name="addInfo"
-                className="means-addinfo"
-                onChange={({ target: { name, value } }) => {
-                  handleChange(name, value);
-                }}
-                value={addInfo}
-              />
-            </Form.Row>
-          </Form.Row>
-          {type && ""}
-          <Form.Row>
-            <Form.ButtonContainer style={{ width: "80%" }}>
-              <Button
-                minWidth={200}
-                text="VALIDATE"
-                fullWidth={false}
-                onClick={async () => {
-                  await createMean();
-                }}
-                disabled={
-                  !name ||
-                  !selectedMeanType ||
-                  !color ||
-                  !startDate ||
-                  !deliveryAndStorageLocations[0] ||
-                  !endDate
-                }
-              />
-            </Form.ButtonContainer>
-=======
               <span style={{ position: "absolute", top: "25%", right: "5%" }}>
                 €
               </span>
@@ -466,7 +335,6 @@ export default function AddMean(props) {
               }}
               value={addInfo}
             />
->>>>>>> c0256d64301b299d5d19b32982251c0e4ac98927
           </Form.Row>
         </Form.Row>
         <Form.Row>

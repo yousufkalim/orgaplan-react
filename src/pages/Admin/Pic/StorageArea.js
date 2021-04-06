@@ -96,7 +96,6 @@ export default function DeliveryArea(props) {
       setCompanies(companiesTempArray);
       setDeliveryAreas(deliveryAreasTempArray);
       if (props.selectedShape) {
-        console.log("props", props.selectedShape);
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
         setColor(props.selectedShape.color);
@@ -177,10 +176,12 @@ export default function DeliveryArea(props) {
       let propShape = props.shape ? props.shape : props.selectedShape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
-      propShapes[inde].name = name;
-      propShapes[inde].storageArea = response.data;
       propShape._id = response.data._id;
+      propShapes[inde].name = name;
       propShape.name = response.data.name;
+      propShapes[inde].color = color;
+      propShape.color = color;
+      propShapes[inde].storageArea = response.data;
       propShape.storageArea = response.data;
 
       if (!props.selectedShape) {
@@ -210,7 +211,6 @@ export default function DeliveryArea(props) {
 
   return (
     <div className={classes.content}>
-      {console.log("selectedDeliveryAreas", selectedDeliveryAreas)}
       <Form.Form onSubmit={onSubmit}>
         <Form.Row justifyContent="flex-end">
           <FormControlLabel

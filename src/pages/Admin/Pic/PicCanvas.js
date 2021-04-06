@@ -105,6 +105,7 @@ const App = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
+    setSelectedShape("");
     getShape && setShape(getShape);
     setShapes(shapesArray);
     setModal(true);
@@ -127,6 +128,10 @@ const App = (props) => {
       }
     }
     // eslint-disable-next-line
+  };
+
+  const onClear = () => {
+    setSelectedShape("");
   };
 
   const setShapesFn = (newShapes, shape, modalDecision) => {
@@ -175,11 +180,12 @@ const App = (props) => {
               shapes={shapes}
               onClick={handleClick}
               onChange={handleChange}
+              onClear={onClear}
               onPdfChange={handlePdfChange}
               pdf={pdf}
             />
           )}
-          {console.log("shapes", shapes)}
+          {console.log("shapes ", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>

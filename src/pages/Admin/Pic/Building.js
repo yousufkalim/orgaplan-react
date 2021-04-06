@@ -75,9 +75,11 @@ export default function AddSiteStep3(props) {
   async function onCreateBuilding() {
     try {
       setLoading(true);
+      const color = GLOBALS.Functions.randomColor();
       const formdata = JSON.stringify({
         name: buildingName,
         siteId: storeAdmin.site.siteId._id,
+        color,
       });
 
       // JSON.stringify Creation
@@ -94,12 +96,14 @@ export default function AddSiteStep3(props) {
       let propShape = props.shape;
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
-      propShapes[inde].name = buildingName;
-      propShapes[inde].building = response.data;
-      propShapes[inde].levels = [];
       propShape._id = response.data._id;
+      propShapes[inde].name = buildingName;
       propShape.name = buildingName;
+      propShapes[inde].color = color;
+      propShape.color = color;
+      propShapes[inde].building = response.data;
       propShape.building = response.data;
+      propShapes[inde].levels = [];
       propShape.levels = [];
 
       await GLOBALS.API({

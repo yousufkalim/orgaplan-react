@@ -96,6 +96,46 @@ const Means = () => {
   const [means, setMeans] = useState([]);
   const [meanText, setMeanText] = useState("");
 
+  const formik = useFormik({
+    initialValues: {
+      contractType: "CLIENTPERSITE",
+      contractStartDate: "",
+      contractEndDate: "",
+      functionality: "DELIVERY",
+      additionalInfo: "",
+      notificationPriorToDays: "",
+      notificationTo: [],
+    },
+    // validationSchema: addClientYup,
+    // onSubmit,
+    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnMount: false,
+  });
+
+  useEffect(() => {
+    filterMean();
+    // eslint-disable-next-line
+  }, [
+    selectedSiteDeliveryAreadIndex,
+    selectedLocationIndex,
+    selectedDropdownLevelIndex,
+    selectedDropdownStorageAreaIndex,
+    selectedStorageArea,
+    selectedTypeIndex,
+    selectedType,
+    selectedCompanyIndex,
+    selectedCompany,
+    selectedStatusIndex,
+    selectedStatus,
+    formik.values.contractStartDate,
+    formik.values.contractEndDate,
+  ]);
+  useEffect(() => {
+    getMeans();
+    // eslint-disable-next-line
+  }, []);
+
   const getMeans = async () => {
     try {
       const response = await GLOBALS.API({
@@ -107,14 +147,14 @@ const Means = () => {
 
         if (response.data.means !== null) {
           let temp = [];
-          response.data.means.map((item, index) => {
+          response.data.means.map((item) => {
             let data = [];
             data[0] = item.name;
             data[1] = item.status;
             data[2] = item.meanType;
 
             data[3] = item.location
-              .map((innerItem, index) => {
+              .map((innerItem) => {
                 if (
                   innerItem.locationType !== undefined &&
                   innerItem.locationType === "STORAGEAREA"
@@ -126,12 +166,14 @@ const Means = () => {
               .toString()
               .replace(/,/g, " ");
             data[4] = item.location
-              .map((innerItem, index) => {
+              .map((innerItem) => {
                 if (
+                  innerItem.deliveryArea &&
                   innerItem.locationType !== undefined &&
                   innerItem.locationType === "DELIVERYAREA"
-                )
+                ) {
                   return innerItem.deliveryArea.name;
+                }
                 return "";
               })
               .toString()
@@ -145,7 +187,7 @@ const Means = () => {
 
         if (response.data.site_delivery_areas !== null) {
           const temp = [];
-          response.data.site_delivery_areas.map((item, index) => {
+          response.data.site_delivery_areas.map((item) => {
             return temp.push({ label: item.name, value: item.name });
           });
           setSiteDeliveryAreas(response.data.site_delivery_areas);
@@ -154,7 +196,7 @@ const Means = () => {
 
         if (response.data.site_companies !== null) {
           const temp = [];
-          response.data.site_companies.map((item, index) => {
+          response.data.site_companies.map((item) => {
             return temp.push({
               label: item.companyId.name,
               value: item.companyId.name,
@@ -167,7 +209,7 @@ const Means = () => {
         if (response.data.site_locations !== null) {
           setLocations(response.data.site_locations);
           const temp = [];
-          response.data.site_locations.map((item, index) => {
+          response.data.site_locations.map((item) => {
             return temp.push({ label: item.name, value: item.name });
           });
           setDropdownLocations(temp);
@@ -176,16 +218,16 @@ const Means = () => {
         if (response.data.mean_types !== null) {
           setTypes(response.data.mean_types);
           const temp = [];
-          response.data.mean_types.map((item, index) => {
-            return temp.push({ label: item, value: item });
-          });
+          response.data.mean_types.map((item) =>
+            temp.push({ label: item, value: item }),
+          );
           setDropdownTypes(temp);
         }
 
         if (response.data.mean_status !== null) {
           setStatus(response.data.mean_status);
           const temp = [];
-          response.data.mean_status.map((item, index) => {
+          response.data.mean_status.map((item) => {
             return temp.push({ label: item, value: item });
           });
           setDropdownStatus(temp);
@@ -284,42 +326,6 @@ const Means = () => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    // validationSchema: addClientYup,
-    // onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
-
-  useEffect(() => {
-    filterMean();
-    // eslint-disable-next-line
-  }, [
-    selectedSiteDeliveryAreadIndex,
-    selectedLocationIndex,
-    selectedDropdownLevelIndex,
-    selectedDropdownStorageAreaIndex,
-    selectedStorageArea,
-    selectedTypeIndex,
-    selectedType,
-    selectedCompanyIndex,
-    selectedCompany,
-    selectedStatusIndex,
-    selectedStatus,
-    formik.values.contractStartDate,
-    formik.values.contractEndDate,
-  ]);
-
   const filterMean = async () => {
     try {
       setLoading(true);
@@ -331,10 +337,8 @@ const Means = () => {
       if (selectedStorageArea.length !== 0)
         params["storageArea"] =
           storageAreas[selectedDropdownStorageAreaIndex]._id;
-
       if (selectedCompany.length !== 0)
         params["company"] = company[selectedCompanyIndex].companyId._id;
-
       if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
       if (selectedStatus.length !== 0)
         params["status"] = status[selectedStatusIndex];
@@ -342,52 +346,47 @@ const Means = () => {
         params["startDate"] = formik.values.contractStartDate;
       if (!isNaN(moment(formik.values.contractEndDate)))
         params["endDate"] = formik.values.contractEndDate;
-
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
         token: store.token,
         method: "POST",
         body: JSON.stringify(params),
       });
-      if (response.success) {
-        let temp = [];
-
-        response.data.map((item, index) => {
-          let data = [];
-          data[0] = item.name;
-          data[1] = item.status;
-          data[2] = item.meanType;
-          data[3] = item.location
-            .map((innerItem, index) => {
-              if (
-                innerItem.locationType !== undefined &&
-                innerItem.locationType === "STORAGEAREA"
-              ) {
-                return innerItem.storageArea.name;
-              }
-              return "";
-            })
-            .toString()
-            .replace(/,/g, " ");
-          data[4] = item.location
-            .map((innerItem, index) => {
-              if (
-                innerItem.locationType !== undefined &&
-                innerItem.locationType === "DELIVERYAREA"
-              )
-                return innerItem.deliveryArea.name;
-              return "";
-            })
-            .toString()
-            .replace(/,/g, " ");
-          return temp.push(data);
-        });
-        setItems(temp);
-
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
+      let temp = [];
+      response.data.map((item) => {
+        let data = [];
+        data[0] = item.name;
+        data[1] = item.status;
+        data[2] = item.meanType;
+        data[3] = item.location
+          .map((innerItem) => {
+            if (
+              innerItem.locationType !== undefined &&
+              innerItem.locationType === "STORAGEAREA"
+            ) {
+              return innerItem.storageArea.name;
+            }
+            return "";
+          })
+          .toString()
+          .replace(/,/g, " ");
+        data[4] = item.location
+          .map((innerItem) => {
+            if (
+              innerItem.deliveryArea &&
+              innerItem.locationType !== undefined &&
+              innerItem.locationType === "DELIVERYAREA"
+            ) {
+              return innerItem.deliveryArea.name;
+            }
+            return "";
+          })
+          .toString()
+          .replace(/,/g, " ");
+        return temp.push(data);
+      });
+      setItems(temp);
+      setLoading(false);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -427,10 +426,6 @@ const Means = () => {
     }
   };
 
-  useEffect(() => {
-    getMeans();
-    // eslint-disable-next-line
-  }, []);
   const rows = items.map((item, index) => {
     return [
       ...item,
