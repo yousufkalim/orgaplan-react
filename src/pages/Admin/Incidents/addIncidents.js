@@ -247,6 +247,25 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
+            <FormLabel bold primary="GENERAL*: " />
+            <Form.Row width="48%">
+              <FormSelect
+                name="type"
+                id="bill"
+                placeholder="Type of Incident"
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                onChange={nameChange}
+                value={type}
+                values={[
+                  { value: "INCIDENT", label: "Incident" },
+                  { value: "MEAN", label: "Mean" },
+                  { value: "DELAY", label: "Delay" },
+                  { value: "UNEXPRECTED", label: "Unexpected delivery" },
+                ]}
+              />
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
             <FormLabel bold primary="LOCATION : " />
             <Form.Row noMargin width="48%">
               <FormSelect
@@ -269,24 +288,7 @@ export default function AddIncidents(props) {
               />
             </Form.Row>
           </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary="GENERAL: " />
-            <Form.Row width="48%">
-              <FormSelect
-                name="type"
-                id="bill"
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={nameChange}
-                value={type}
-                values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
-                ]}
-              />
-            </Form.Row>
-          </Form.Row>
+
           <Form.Row>
             <FormLabel bold primary="DESCRIPTION : " />
             <FormInput
@@ -362,7 +364,9 @@ export default function AddIncidents(props) {
                 !name ||
                 !date ||
                 !dropdownCompanies ||
-                (isBillable === "true" && !price)
+                !time ||
+                (isBillable === "true" && !price) ||
+                !type
               }
             />
           </Form.ButtonContainer>
