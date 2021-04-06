@@ -82,7 +82,7 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-
+    // console.log("this.props.shapes", this.props.shapes);
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -113,8 +113,9 @@ class App extends Component {
       const { shapes, shapeId, meanShapeId } = this.state;
 
       if (shapeId) {
+        console.log(this.state.clickedShape, "this.state.clickedShape");
         let tempArr = shapes.find((sp) => sp._id === shapeId);
-        if (tempArr.length > 0) {
+        if (tempArr) {
           tempArr.color = this.state.clickedShape.color;
           tempArr.opacity = this.state.clickedShape.opacity;
         } else {
@@ -123,7 +124,7 @@ class App extends Component {
       }
       if (meanShapeId) {
         let tempArr = shapes.find((sp) => sp._id === meanShapeId);
-        if (tempArr.length > 0) {
+        if (tempArr) {
           tempArr.color = this.state.color;
         } else {
           return;
@@ -183,6 +184,7 @@ class App extends Component {
       console.log("error", error.message);
     }
   };
+
   handleUpdateMean = () => {
     const { meanValue, meanShapeId } = this.state;
     if (meanShapeId) {
@@ -214,6 +216,7 @@ class App extends Component {
       this.props.onClick(id, orgni);
       this.setState({ meanCheck: orgni.type, clickedShape: orgni });
       tempArr.opacity = 0.5;
+
       this.setState({
         shapeName: tempArr.name,
       });
@@ -481,7 +484,7 @@ class App extends Component {
   };
   handleConvaLineMouseOut = (id) => {
     let tempArr = this.state.shapes.filter((sp) => sp._id === id);
-    tempArr[0].opacity = 1;
+    tempArr[0].opacity = this.state.clickedShape.opacity;
   };
   handleConvaLineClick = (id) => {
     // const { meanCheck } = this.state;
