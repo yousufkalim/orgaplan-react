@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import _ from "lodash";
 import moment from "moment";
 
 import GLOBALS from "../../../globals";
@@ -172,8 +173,10 @@ export default function DeliveryArea(props) {
         body: JSON.stringify(formdata),
       });
 
-      let propShapes = props.shapes;
-      let propShape = props.shape ? props.shape : props.selectedShape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;

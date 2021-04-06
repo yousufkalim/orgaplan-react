@@ -113,10 +113,9 @@ class App extends Component {
       const { shapes, shapeId, meanShapeId } = this.state;
 
       if (shapeId) {
-        console.log(this.state.clickedShape, "this.state.clickedShape");
         let tempArr = shapes.find((sp) => sp._id === shapeId);
+
         if (tempArr) {
-          tempArr.color = this.state.clickedShape.color;
           tempArr.opacity = this.state.clickedShape.opacity;
         } else {
           return;

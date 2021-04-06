@@ -48,7 +48,6 @@ export default function Canvas({
             strokeWidth={3}
             closed={isFinished}
           />
-
           {shapes && shapes.length > 0
             ? shapes.map((shape) => {
                 let flattenedPoint = [];

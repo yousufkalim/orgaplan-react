@@ -32,15 +32,15 @@ export default function AddMean(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
-  const [name, setName] = useState("Me");
-  const [meanType, setMeanType] = useState("LIFTING");
+  const [name, setName] = useState("");
+  const [meanType, setMeanType] = useState("");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [startDate, setStartDate] = useState("2021-04-06T00:00:00.000+00:00");
-  const [endDate, setEndDate] = useState("2021-04-07T00:00:00.000+00:00");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
-  const [rate, setRate] = useState("20");
+  const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
 
   const [update, setUpdate] = useState(false);
@@ -202,8 +202,8 @@ export default function AddMean(props) {
 
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
-        ? { ...props.shape }
-        : { ...props.selectedShape };
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       const formdataImage = new FormData();
