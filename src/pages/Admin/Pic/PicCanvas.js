@@ -12,6 +12,7 @@ import DeliveryArea from "./DeliveryArea";
 import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Loader from "../../../components/Loader";
+import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
@@ -70,6 +71,10 @@ const App = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
 
+  const [allLeves, setAllLevels] = useState([]);
+  const [levels, setLevels] = useState([]);
+  const [level, setLevel] = useState("");
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -113,6 +118,17 @@ const App = (props) => {
 
   const handleClick = (id, shape) => {
     setSelectedShape(shape);
+    if (shape.type === "BUILDING") {
+      setAllLevels(shape.building.levels);
+      let levs = [{ label: "Exterior", value: "Exterior" }];
+      shape.building.levels.map((le) =>
+        levs.push({
+          label: le.number,
+          value: le._id,
+        }),
+      );
+      setLevels(levs);
+    }
   };
 
   const checkShape = () => {
@@ -191,6 +207,32 @@ const App = (props) => {
               <div className={classes.infoDrawer}>
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
                 <SubHeading primary={`Type : ${selectedShape.type}`} />
+                {selectedShape.type === "BUILDING" && (
+                  <FormSelect
+                    name="level"
+                    value={level}
+                    values={levels}
+                    placeholder="Select Level"
+                    onChange={({ target: { value } }) => {
+                      setLevel(value);
+                      if (value === "Exterior") {
+                        setPdf(
+                          sitePic?.exteriorBuilding?.levels[0]?.image
+                            ? GLOBALS.Constants.BASE_URL +
+                                sitePic.exteriorBuilding.levels[0].image
+                            : undefined,
+                        );
+                      } else {
+                        const leve = allLeves.find((lev) => lev._id === value);
+                        setPdf(
+                          leve?.image
+                            ? GLOBALS.Constants.BASE_URL + leve.image
+                            : undefined,
+                        );
+                      }
+                    }}
+                  />
+                )}
                 <Form.Row>
                   <IconButton
                     disabled={loading}

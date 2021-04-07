@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
+import _ from "lodash";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -62,20 +63,33 @@ export default function AddSiteStep3(props) {
   const [buildingName, setBuildingName] = useState("");
   const [activeBuilding, setActiveBuilding] = useState("");
 
+  useEffect(() => {
+    if (props.selectedShape) {
+      setActiveBuilding(props.selectedShape.building);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const handleChange = (name, value) => {
     if (name === "buildingName") setBuildingName(value);
     else if (name === "levelNumber") setLevelNumber(value);
   };
 
-  function resetStates() {
+  const resetStates = () => {
     setBuildingName("");
     setLevelNumber("");
-  }
+  };
 
-  async function onCreateBuilding() {
+  const onCreateBuilding = async () => {
     try {
       setLoading(true);
-      const color = GLOBALS.Functions.randomColor();
+      let color;
+      if (props.selectedShape) color = props.selectedShape.building.color;
+      else color = GLOBALS.Functions.randomColor();
+
       const formdata = JSON.stringify({
         name: buildingName,
         siteId: storeAdmin.site.siteId._id,
@@ -84,16 +98,20 @@ export default function AddSiteStep3(props) {
 
       // JSON.stringify Creation
       const response = await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.BUILDINGS,
+        method: props.selectedShape ? "PUT" : "POST",
+        uri: props.selectedShape
+          ? `${GLOBALS.Constants.BUILDINGS}/${props.selectedShape._id}`
+          : GLOBALS.Constants.BUILDINGS,
         token: store.token,
         body: formdata,
       });
 
       setActiveBuilding(response.data);
       resetStates();
-      let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
@@ -106,17 +124,18 @@ export default function AddSiteStep3(props) {
       propShapes[inde].levels = [];
       propShape.levels = [];
 
-      await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-        token: store.token,
-        body: JSON.stringify({
-          picId: props.pic._id,
-          building: response.data._id,
-          ...propShape,
-        }),
-      });
-
+      if (!props.selectedShape) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            building: response.data._id,
+            ...propShape,
+          }),
+        });
+      }
       setLoading(false);
       props.setShapes(propShapes, propShape, true);
     } catch (err) {
@@ -127,9 +146,9 @@ export default function AddSiteStep3(props) {
         ),
       );
     }
-  }
+  };
 
-  async function onCreateLevel() {
+  const onCreateLevel = async () => {
     try {
       setLoading(true);
 
@@ -149,8 +168,10 @@ export default function AddSiteStep3(props) {
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels.push(response.data);
 
-      let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       propShapes[inde].levels = activeBuildingObj.levels;
@@ -168,15 +189,15 @@ export default function AddSiteStep3(props) {
         ),
       );
     }
-  }
+  };
 
-  async function onAddLevelImage(levelId, file, index) {
+  const onAddLevelImage = async (levelId, file, index) => {
     try {
       setLoading(true);
       const formdata = new FormData();
       formdata.append("image", file);
       formdata.append("levelId", levelId);
-      // FormData Creation
+
       const response = await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.LEVEL_IMAGE,
@@ -191,8 +212,10 @@ export default function AddSiteStep3(props) {
       setLoading(false);
       setUpdate((st) => !st);
 
-      let propShapes = props.shapes;
-      let propShape = props.shape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde].levels = activeBuildingObj.levels;
       propShape.levels = activeBuildingObj.levels;
@@ -207,7 +230,7 @@ export default function AddSiteStep3(props) {
         ),
       );
     }
-  }
+  };
 
   const levelRows = [];
   activeBuilding.levels?.map((level, index) =>

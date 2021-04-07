@@ -59,7 +59,11 @@ export default function Input(props) {
         onChange={props.onChange}
         className={classes.select}
       >
-        {props.placeholder && <option value="">{props.placeholder}</option>}
+        {props.placeholder && (
+          <option value="" disabled>
+            {props.placeholder}
+          </option>
+        )}
         {props.values.map((item, index) => (
           <option key={item.value + index} value={item.value}>
             {item.label}
