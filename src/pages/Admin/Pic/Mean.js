@@ -15,6 +15,7 @@ import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
+import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,7 @@ export default function AddMean(props) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
+  const [unavailabilities, setUnavailabilities] = useState([]);
   const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
 
@@ -89,19 +91,20 @@ export default function AddMean(props) {
         setMeanType(props.selectedShape.mean.meanType);
         setColor(props.selectedShape.mean.color);
         setStartDate(props.selectedShape.mean.availability.start);
-        setEndDate(props.selectedShape.mean.availability.end);
+        setEndDate(props.selectedShape.mean.availability.end || "");
         setRate(props.selectedShape.mean.pricePerHour);
-        setImage([
-          {
-            key: 0,
-            uri: props.selectedShape.mean.image,
-          },
-        ]);
+        props.selectedShape.mean.image &&
+          setImage([
+            {
+              key: 0,
+              uri: props.selectedShape.mean.image,
+            },
+          ]);
         const locaAr = props.selectedShape.mean.location.map((loc) => ({
           key:
             loc.locationType === "STORAGEAREA"
-              ? loc.storageArea
-              : loc.deliveryArea,
+              ? loc.storageArea._id
+              : loc.deliveryArea._id,
           type: loc.locationType,
           label: loc.label,
         }));
@@ -115,8 +118,10 @@ export default function AddMean(props) {
           ]);
         setAddInfo(props.selectedShape.mean.additionalInfo);
         setUpdate((st) => !st);
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -161,30 +166,16 @@ export default function AddMean(props) {
         end: endDate,
       };
 
-      // TEST DATA , CALENDAR NOT MADE YET
-      const unavailabilities = [
-        {
-          date: new Date("05/20/2021"),
-          reason: "Public Holiday",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-        {
-          date: new Date("05/28/2021"),
-          reason: "Maintenance",
-          startingHour: new Date().getTime(),
-          endingHour: new Date().getTime(),
-        },
-      ];
-
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("name", name);
       formdata.append("meanType", meanType);
       formdata.append("color", color);
-      formdata.append("image", image[0].file);
+      image[0] && image[0].file && formdata.append("image", image[0].file);
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
-      formdata.append("sheet", image[0].file);
+      techSheet[0] &&
+        techSheet[0].file &&
+        formdata.append("sheet", techSheet[0].file);
       formdata.append("unavailability", JSON.stringify(unavailabilities));
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
@@ -192,8 +183,8 @@ export default function AddMean(props) {
       const response = await GLOBALS.API({
         method: props.selectedShape ? "PUT" : "POST",
         uri: props.selectedShape
-          ? `${GLOBALS.Constants.CREATE_MEAN}/${props.selectedShape._id}`
-          : GLOBALS.Constants.CREATE_MEAN,
+          ? `${GLOBALS.Constants.MEAN}/${props.selectedShape._id}`
+          : GLOBALS.Constants.MEAN,
         headers: {
           Authorization: store.token,
         },
@@ -206,19 +197,21 @@ export default function AddMean(props) {
         : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
-      const formdataImage = new FormData();
-      formdataImage.append("image", image[0].file);
+      if (image[0] && image[0].file) {
+        const formdataImage = new FormData();
+        formdataImage.append("image", image[0].file);
 
-      const imageData = await GLOBALS.API({
-        method: "POST",
-        uri: `${GLOBALS.Constants.FILE_UPLOAD}/mean`,
-        headers: {},
-        body: formdataImage,
-      });
+        let imageData = await GLOBALS.API({
+          method: "POST",
+          uri: `${GLOBALS.Constants.FILE_UPLOAD}/mean`,
+          headers: {},
+          body: formdataImage,
+        });
+        propShapes[inde].image = imageData.image;
+        propShape.image = imageData.image;
+      }
       propShapes[inde].color = color;
       propShape.color = color;
-      propShapes[inde].image = imageData.image;
-      propShape.image = imageData.image;
       propShapes[inde].mean = response.data;
       propShape.mean = response.data;
       propShapes[inde].name = name;
@@ -350,32 +343,36 @@ export default function AddMean(props) {
             <FormMultipleUpload
               name="techSheet"
               values={techSheet}
+              fileTypes={["application/pdf"]}
               onChange={(values) => {
                 handleChange("techSheet", values);
               }}
             />
           </Form.Row>
         </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="UNAVAILABILITIES" />
-          <Form.Row noMargin width="65%">
-            <div
-              to={"/means/add-mean"}
-              style={{
-                marginLeft: "0px",
-                marginBottom: "7px",
-                width: "320px",
-                color: "#fff",
-                padding: "0.8rem 0",
-                borderRadius: "8px",
-                textAlign: "center",
-                backgroundColor: "#140772",
-              }}
-            >
-              SHOW UNAVAILABILITIES
-            </div>
-          </Form.Row>
-        </Form.Row>
+        {startDate !== "" && endDate !== "" ? (
+          <>
+            <Form.Row>
+              <FormLabel bold primary="UNAVAILABILITIES" />
+              <Form.Row noMargin width="65%">
+                <UnavailabilityTimes
+                  name="unavailabilityDates"
+                  values={unavailabilities}
+                  style={GLOBALS.Styles.inputWidth}
+                  unavailabilityDates={unavailabilities}
+                  setUnavailabilityDates={setUnavailabilities}
+                  startRange={startDate}
+                  endRange={moment(endDate).add(1, "days")}
+                  onChange={(values) =>
+                    handleChange("unavailabilityDates", values)
+                  }
+                />
+              </Form.Row>
+            </Form.Row>
+          </>
+        ) : (
+          ""
+        )}
         <Form.Row alignItems="flex-start">
           <FormLabel bold primary="HOURLY RATE :" />
           <Form.Row noMargin width="65%">
@@ -428,7 +425,8 @@ export default function AddMean(props) {
                 !meanType ||
                 !color ||
                 !startDate ||
-                !locations
+                !endDate ||
+                locations.length === 0
               }
             />
           </Form.ButtonContainer>

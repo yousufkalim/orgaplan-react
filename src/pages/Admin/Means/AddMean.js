@@ -127,6 +127,7 @@ export default function AddMean(props) {
             : { deliveryArea: ite.key };
         return { locationType: ite.type, label: ite.label, ...vals };
       });
+
       var formdata = new FormData();
       let availabilities = {
         start: startDate,
@@ -137,17 +138,19 @@ export default function AddMean(props) {
       formdata.append("name", name);
       formdata.append("meanType", meanType);
       formdata.append("color", color);
-      formdata.append("image", image[0].file);
+      image[0] && image[0].file && formdata.append("image", image[0].file);
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
-      formdata.append("sheet", image[0].file);
+      techSheet[0] &&
+        techSheet[0].file &&
+        formdata.append("sheet", techSheet[0].file);
       formdata.append("unavailability", JSON.stringify(unavailabilities));
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
 
       await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.CREATE_MEAN,
+        uri: GLOBALS.Constants.MEAN,
         headers: {
           Authorization: store.token,
         },
@@ -272,6 +275,7 @@ export default function AddMean(props) {
             <FormMultipleUpload
               name="techSheet"
               values={techSheet}
+              fileTypes={["application/pdf"]}
               onChange={(values) => {
                 handleChange("techSheet", values);
               }}
@@ -344,16 +348,15 @@ export default function AddMean(props) {
               text="VALIDATE"
               loading={loading}
               fullWidth={false}
-              onClick={async () => {
-                await createMean();
-              }}
+              onClick={createMean}
               disabled={
                 loading ||
                 !name ||
                 !meanType ||
                 !color ||
                 !startDate ||
-                !locations
+                !endDate ||
+                locations.length === 0
               }
             />
           </Form.ButtonContainer>
