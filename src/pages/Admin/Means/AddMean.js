@@ -16,14 +16,8 @@ import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-<<<<<<< HEAD
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
-=======
-import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
->>>>>>> b60a2c6135ecfae3e6bb13c97a10a8f48118740d
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,12 +50,9 @@ export default function AddMean(props) {
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
   const [meanTypes, setMeanTypes] = useState([]);
-<<<<<<< HEAD
   const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
   const [selectedMeanType, setSelectedMeanType] = useState("");
   const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
-=======
->>>>>>> b60a2c6135ecfae3e6bb13c97a10a8f48118740d
   const [unavailabilities, setUnavailabilities] = useState([]);
 
   useEffect(() => {
