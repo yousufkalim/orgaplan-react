@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import _ from "lodash";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -163,14 +164,18 @@ export default function DeliveryArea(props) {
         body: formdata,
       });
 
-      let propShapes = props.shapes;
-      let propShape = props.shape ? props.shape : props.selectedShape;
+      let propShapes = _.cloneDeep(props.shapes);
+      let propShape = props.shape
+        ? _.cloneDeep(props.shape)
+        : _.cloneDeep(props.selectedShape);
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
+      propShapes[inde].color = color;
       propShapes[inde].deliveryArea = response.data;
       propShapes[inde]._id = response.data._id;
       propShapes[inde].name = name;
       propShape._id = response.data._id;
       propShape.name = response.data.name;
+      propShape.color = response.data.color;
       propShape.deliveryArea = response.data;
 
       if (!props.selectedShape) {

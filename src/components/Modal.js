@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
   },
   headerLeft: {
     flex: 1,
-    cursor: "pointer",
     textAlign: "left",
     color: "rgba(0, 0, 0, 0.54)",
   },
@@ -33,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
   headerRight: {
     flex: 1,
     display: "grid",
-    cursor: "pointer",
     placeItems: "end",
     color: "rgba(0, 0, 0, 0.54)",
   },
+  onClose: { cursor: "pointer" },
   body: {
     width: "100%",
   },
@@ -63,7 +62,7 @@ const Modal = (props) => {
           <div className={classes.headerLeft}> </div>
           <h2 className={classes.headerTitle}>{props.title}</h2>
           <div className={classes.headerRight}>
-            <CloseIcon onClick={props.onClose} />
+            <CloseIcon onClick={props.onClose} className={classes.onClose} />
           </div>
         </div>
         <div className={classes.body}>{props.body}</div>

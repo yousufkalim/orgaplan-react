@@ -5,7 +5,7 @@ import FormSelect from "../../FormSelect";
 export default function Header({ handleElementChange, meanCheck, image }) {
   return (
     <div className=" mr-auto text-center ">
-      <div className="row">
+      <div className="row pr-4 pt-2">
         <div className="col-lg-3" />
         <div className="col-lg-3" />
         <div className="col-lg-3" />

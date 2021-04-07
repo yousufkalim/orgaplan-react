@@ -48,7 +48,6 @@ export default function Canvas({
             strokeWidth={3}
             closed={isFinished}
           />
-
           {shapes && shapes.length > 0
             ? shapes.map((shape) => {
                 let flattenedPoint = [];
@@ -77,7 +76,7 @@ export default function Canvas({
                           width={30}
                           height={30}
                           fillPatternImage={shape.image}
-                          stroke="red"
+                          stroke={shape.color}
                           meanFinish={meanFinish}
                           strokeWidth={3}
                           onClick={(e) => handleConvaCircleClick(shape._id)}
@@ -90,7 +89,7 @@ export default function Canvas({
                           width={30}
                           fill={shape.color}
                           meanFinish={meanFinish}
-                          stroke="red"
+                          stroke={shape.color}
                           strokeWidth={3}
                           onClick={(e) => handleConvaCircleClick(shape._id)}
                         />

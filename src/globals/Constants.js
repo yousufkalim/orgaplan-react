@@ -49,7 +49,7 @@ const endpoints = {
   ADMIN_PIC_SHAPE: BASE_URL_V1 + "pic/shape",
   ADMIN_PIC_BY_SITE: BASE_URL_V1 + "pic/site",
 
-  CREATE_MEAN: BASE_URL_V1 + "mean",
+  MEAN: BASE_URL_V1 + "mean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
 
   CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",

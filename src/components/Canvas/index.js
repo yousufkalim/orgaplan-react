@@ -35,7 +35,7 @@ class App extends Component {
     tempPdf: "",
     checkDisable: true,
     meanDisable: true,
-    color: "black",
+    color: "white",
     shapeId: "",
     meanShapeId: "",
     shapeName: "",
@@ -43,6 +43,7 @@ class App extends Component {
     meanValue: "",
     meanFinish: false,
     isLoading: true,
+    clickedShape: "",
   };
 
   // LifeCycle Hooks
@@ -55,7 +56,8 @@ class App extends Component {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
       await Promise.all(
-        this.props.shapes.map(async (tempShape) => {
+        this.props.shapes.map(async (tempShap) => {
+          const tempShape = _.cloneDeep(tempShap);
           if (tempShape.image && typeof tempShape.image === "string") {
             const image = await loadImage(
               `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
@@ -66,7 +68,8 @@ class App extends Component {
           return tempShape;
         }),
       );
-      this.setState({ shapes: newArray });
+      this.setState({ shapes: [] }, () => this.setState({ shapes: newArray }));
+      // this.setState({ shapes: this.props.shapes });
     } else if (prevProps.pdf !== this.props.pdf) {
       this.showPdf(this.props.pdf);
     } else {
@@ -79,7 +82,7 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-
+    // console.log("this.props.shapes", this.props.shapes);
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -107,20 +110,21 @@ class App extends Component {
   // escape function
   escFunction = (event) => {
     if (event.keyCode === 27) {
-      const { shapes, color, shapeId, meanShapeId } = this.state;
+      const { shapes, shapeId, meanShapeId } = this.state;
+
       if (shapeId) {
-        let tempArr = shapes.filter((sp) => sp._id === shapeId);
-        if (tempArr.length > 0) {
-          tempArr[0].color = color;
-          tempArr[0].opacity = 0.3;
+        let tempArr = shapes.find((sp) => sp._id === shapeId);
+
+        if (tempArr) {
+          tempArr.opacity = this.state.clickedShape.opacity;
         } else {
           return;
         }
       }
       if (meanShapeId) {
-        let tempArr = shapes.filter((sp) => sp._id === meanShapeId);
-        if (tempArr.length > 0) {
-          tempArr[0].color = "black";
+        let tempArr = shapes.find((sp) => sp._id === meanShapeId);
+        if (tempArr) {
+          tempArr.color = this.state.color;
         } else {
           return;
         }
@@ -132,6 +136,7 @@ class App extends Component {
         meanShapeId: "",
         points: [],
       });
+      this.props.onClear();
       //Do whatever when esc is pressed
     }
   };
@@ -178,6 +183,7 @@ class App extends Component {
       console.log("error", error.message);
     }
   };
+
   handleUpdateMean = () => {
     const { meanValue, meanShapeId } = this.state;
     if (meanShapeId) {
@@ -205,9 +211,11 @@ class App extends Component {
     const { shapes, shapeId } = this.state;
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
-      this.props.onClick(id, tempArr);
-      tempArr.color = "white";
-      tempArr.opacity = 0.9;
+      let orgni = _.cloneDeep(tempArr);
+      this.props.onClick(id, orgni);
+      this.setState({ meanCheck: orgni.type, clickedShape: orgni });
+      tempArr.opacity = 0.5;
+
       this.setState({
         shapeName: tempArr.name,
       });
@@ -247,17 +255,17 @@ class App extends Component {
       alert("Please first select shape");
     }
   };
-  handleUpdateShape = () => {
-    const { shapes, color, shapeId, shapeName } = this.state;
-    if (shapeId) {
-      let tempArr = shapes.filter((sp) => sp._id === shapeId);
-      tempArr[0].color = color;
-      tempArr[0].name = shapeName;
-      this.setState({ shapes: shapes, checkDisable: true, shapeName: "" });
-    } else {
-      alert("Please first select shape");
-    }
-  };
+  // handleUpdateShape = () => {
+  //   const { shapes, color, shapeId, shapeName } = this.state;
+  //   if (shapeId) {
+  //     let tempArr = shapes.filter((sp) => sp._id === shapeId);
+  //     tempArr[0].color = color;
+  //     tempArr[0].name = shapeName;
+  //     this.setState({ shapes: shapes, checkDisable: true, shapeName: "" });
+  //   } else {
+  //     alert("Please first select shape");
+  //   }
+  // };
   getMousePos = (stage) => {
     return [stage.getPointerPosition().x, stage.getPointerPosition().y];
   };
@@ -290,7 +298,6 @@ class App extends Component {
         isMouseOverStartPoint,
         isFinished,
         shapes,
-        color,
         meanCheck,
         meanFinish,
         meanPoints,
@@ -349,8 +356,8 @@ class App extends Component {
                   {
                     _id: rand,
                     type: meanCheck,
-                    color: color,
-                    opacity: 0.3,
+                    color: this.state.color,
+                    opacity: 1,
 
                     points: [...meanPoints, mousePos],
                   },
@@ -383,8 +390,8 @@ class App extends Component {
                   {
                     _id: rand,
                     type: meanCheck,
-                    color: color,
-                    opacity: 0.3,
+                    color: this.state.color,
+                    opacity: 1,
                     points,
                   },
                 ],
@@ -472,11 +479,11 @@ class App extends Component {
   };
   handleConvaLineMouseOver = (id) => {
     let tempArr = this.state.shapes.filter((sp) => sp._id === id);
-    tempArr[0].opacity = 0.9;
+    tempArr[0].opacity = 0.5;
   };
   handleConvaLineMouseOut = (id) => {
     let tempArr = this.state.shapes.filter((sp) => sp._id === id);
-    tempArr[0].opacity = 0.3;
+    tempArr[0].opacity = this.state.clickedShape.opacity;
   };
   handleConvaLineClick = (id) => {
     // const { meanCheck } = this.state;
@@ -491,15 +498,17 @@ class App extends Component {
 
   handleDisableMean = (id) => {
     const { shapes, meanShapeId } = this.state;
+    this.setState({ meanCheck: "MEAN" });
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
       this.props.onClick(id, tempArr);
+      this.setState({ clickedShape: tempArr });
       tempArr.color = "white";
       if (meanShapeId) {
         let tempArr2 = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr2) {
           if (meanShapeId !== id) {
-            tempArr2.color = "black";
+            tempArr2.color = this.state.color;
           } else {
             tempArr.color = "white";
           }
@@ -717,14 +726,13 @@ class App extends Component {
       handleConvaCircleClick,
     } = this;
     return (
-      <div className="bg-primary ">
+      <div className="bg-white">
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
         />
-
-        <div className="pt-4 pl-3">
+        <div className="py-2 px-4">
           <ConvaExample
             onClick={handleConvaClick}
             onMouseMove={handleMouseMove}
@@ -734,7 +742,6 @@ class App extends Component {
             handleConvaLineMouseOut={handleConvaLineMouseOut}
             handleConvaLineClick={handleConvaLineClick}
             handleConvaCircleClick={handleConvaCircleClick}
-            // states start
             image={image}
             curMousePos={curMousePos}
             isFinished={isFinished}
@@ -746,12 +753,11 @@ class App extends Component {
             height={height}
           />
         </div>
-
-        <div className="pt-2">
+        <div className="pl-4">
           <Button
             fullWidth={false}
             disabled={isLoading}
-            text={isLoading === true ? "LOADING......" : "Upload PDF"}
+            text={isLoading === true ? "LOADING..." : "Upload PDF"}
             onClick={() =>
               document.getElementById("upload-canvas-pdf-button").click()
             }
