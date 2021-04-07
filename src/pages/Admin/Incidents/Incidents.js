@@ -98,10 +98,6 @@ const Incidents = (props) => {
 
   async function fetchData() {
     try {
-      const params = QueryString.parse(props.location.search);
-      if (params.companyId) {
-        setCompanyId(params.companyId);
-      }
       // if (props?.location?.companyId) {
       // }
       const result = await GLOBALS.API({
@@ -131,6 +127,10 @@ const Incidents = (props) => {
         }
         if (result.data.site_buildings) {
           getBuildingLocation(result.data.site_buildings);
+        }
+        const params = QueryString.parse(props.location.search);
+        if (params.companyId) {
+          setCompanyId(params.companyId);
         }
       }
       // setLoading(false);

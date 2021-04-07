@@ -209,7 +209,12 @@ export default function Companies(props) {
               id: item.companyId._id,
             }}
           >
-            <Pencil style={{ width: 18, height: 15 }} />
+            <img
+              src={Images.pencil}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+            {/* <Pencil style={{ width: 18, height: 15 }} /> */}
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>

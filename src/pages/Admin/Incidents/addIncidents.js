@@ -48,7 +48,7 @@ export default function AddIncidents(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isBillable, seIsBillable] = useState(false);
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState("0");
   const [type, setType] = useState("");
 
   const [comment, setComment] = useState("");
@@ -249,7 +249,7 @@ export default function AddIncidents(props) {
               />
               <TimePicker
                 name="time"
-                format="HH"
+                format="HH:mm"
                 style={{ width: "48%", height: "45px", color: "#8B8989" }}
                 onChange={timeChange}
               />
@@ -330,7 +330,12 @@ export default function AddIncidents(props) {
                 name="bill"
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => seIsBillable(e.target.value)}
+                onChange={(e) => {
+                  seIsBillable(e.target.value);
+                  if (e.target.value === "false") {
+                    setPrice("0");
+                  }
+                }}
               >
                 <option value={true}>Yes</option>
                 <option value={false}>No</option>
@@ -344,6 +349,7 @@ export default function AddIncidents(props) {
                 <FormInput
                   type="number"
                   name="price"
+                  value={price}
                   onChange={nameChange}
                   disabled={isBillable === "false"}
                 />
