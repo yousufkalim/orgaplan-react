@@ -16,8 +16,8 @@ import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,12 +45,14 @@ export default function AddMean(props) {
   const [techSheet, setTechSheet] = useState([]);
   const [rate, setRate] = useState("0");
   const [addInfo, setAddInfo] = useState("");
-
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
   const [meanTypes, setMeanTypes] = useState([]);
+  const [dropdownMeanTypes, setDropdownMeanTypes] = useState([]);
+  const [selectedMeanType, setSelectedMeanType] = useState("");
+  const [selecetedMeanTypeIndex, setSelectedMeanTypeIndex] = useState(null);
   const [unavailabilities, setUnavailabilities] = useState([]);
 
   useEffect(() => {
