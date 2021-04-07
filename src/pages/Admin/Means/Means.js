@@ -551,7 +551,7 @@ const Means = () => {
                 // Reset Storage Means
                 if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
-                  getExternalMeans();
+                  getExternalMeans(); //working
                   setDisableStorageDropdow(false);
                 } else {
                   setDisableDropdown(false);
@@ -607,11 +607,9 @@ const Means = () => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
                 const item = event.target.value;
-
                 setSelectedDropdownStorageAreaIndex(index);
                 setSelectedStorageArea(item);
                 // Reset Storage Means
-
                 // filterMean();
               } else {
                 setSelectedDropdownStorageAreaIndex(0);

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import * as QueryString from "query-string";
 
 import Actions from "../../../redux/actions";
 
@@ -16,6 +17,7 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
+import { CollectionsBookmark } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,8 +50,8 @@ const Incidents = (props) => {
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
-  const [siteStorageArea, setSiteStorageArea] = useState([]);
-  const [siteComapny, setSiteComapny] = useState([]); // setselectedStatus
+  // const [siteStorageArea, setSiteStorageArea] = useState([]);
+  const [siteComapny, setSiteComapny] = useState([]);
   const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
   // const [status, setStatus] = useState([]);
@@ -62,6 +64,15 @@ const Incidents = (props) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteBuilding, setSiteBuilding] = useState([]);
+  const [allBuilding, setAllBuilding] = useState([]);
+  const [selectedLevels, setSelectedLevels] = useState([]);
+  const [dropDownLevels, setDropDownLevels] = useState([]);
+  const [selectedStorageArea, setSelectedStorageArea] = useState([]);
+  const [dropDownStorageArea, setDropDownStorageArea] = useState([]);
+  const [selectedStorageAreaValue, setSelectedStorageAreaValue] = useState("");
+  const [selectedDeliveryArea, setSelectedDeliveryArea] = useState("");
+  const [disableStorageDropdown, setDisableStorageDropdown] = useState(true);
+  const [disableLevelDropdown, setDisableLevelDropdown] = useState(true);
 
   // const [page, setPage] = useState("");
   const store = useSelector((state) => state.auth);
@@ -75,29 +86,40 @@ const Incidents = (props) => {
   useEffect(() => {
     filterIncidents();
     // eslint-disable-next-line
-  }, [nameText, companyId, selectedType, selectedStatus, startDate]);
+  }, [
+    nameText,
+    companyId,
+    selectedType,
+    selectedStatus,
+    startDate,
+    selectedStorageAreaValue,
+    selectedDeliveryArea,
+  ]);
 
   async function fetchData() {
     try {
-      if (props?.location?.companyId) {
-        setCompanyId(props?.location?.companyId);
+      const params = QueryString.parse(props.location.search);
+      if (params.companyId) {
+        setCompanyId(params.companyId);
       }
+      // if (props?.location?.companyId) {
+      // }
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
       if (result.success) {
         setIncidents(result.data.incidents);
-
         if (result.data.incidents) {
           seTatalInvoices(result.data.incidents.length);
           getIncidentsfiltered(result.data.incidents);
         }
+
         if (result.data.site_delivery_areas) {
           getDeliveryArea(result.data.site_delivery_areas);
         }
-        if (result.data.site_storage_areas) {
-          getStorageArea(result.data.site_storage_areas);
-        }
+        // if (result.data.site_storage_areas) {
+        //   getStorageArea(result.data.site_storage_areas);
+        // }
         if (result.data.type) {
           getType(result.data.type);
         }
@@ -126,12 +148,15 @@ const Incidents = (props) => {
       setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
       if (nameText.length !== 0) params["name"] = nameText;
-
       if (companyId.length !== 0) params["company"] = companyId;
-
       if (selectedType.length !== 0) params["type"] = selectedType;
       if (selectedStatus.length !== 0) params["status"] = selectedStatus;
       if (!isNaN(moment(startDate))) params["startDate"] = startDate;
+      if (selectedStorageAreaValue.length !== 0)
+        params["storageArea"] = selectedStorageAreaValue;
+      if (selectedDeliveryArea.length !== 0)
+        params["deliveryArea"] = selectedDeliveryArea;
+
       // if (!isNaN(moment(formik.values.contractEndDate)))
       // params["endDate"] = formik.values.contractEndDate;
 
@@ -160,6 +185,7 @@ const Incidents = (props) => {
   }
 
   function getBuildingLocation(data) {
+    setAllBuilding(data);
     let temp = [];
     data.map((item, index) => {
       return temp.push({
@@ -190,16 +216,16 @@ const Incidents = (props) => {
     setStatus(temp);
   }
 
-  function getStorageArea(data) {
-    let temp = [];
-    data.map((item, index) => {
-      return temp.push({
-        label: item.name,
-        value: item._id,
-      });
-    });
-    setSiteStorageArea(temp);
-  }
+  // function getStorageArea(data) {
+  //   let temp = [];
+  //   data.map((item, index) => {
+  //     return temp.push({
+  //       label: item.name,
+  //       value: item._id,
+  //     });
+  //   });
+  //   setSiteStorageArea(temp);
+  // }
 
   function getType(data) {
     let temp = [];
@@ -234,7 +260,8 @@ const Incidents = (props) => {
       data[2] = item?.name;
       data[3] = item.companyId?.name;
       data[4] = item.status;
-      data[5] = item.location?.deliveryArea?.name;
+      data[5] =
+        item.location?.deliveryArea?.name || item.location?.storageArea?.name;
       data[6] = item?.isBillable ? "Yes" : "No";
       data[7] = item?.price;
       data[8] = item?.isBillable ? "Yes" : "No";
@@ -257,6 +284,33 @@ const Incidents = (props) => {
       item[8] ? item[8] : " ",
     ];
   });
+
+  function fetchLevelesOfSelectedBuilding(buildingId) {
+    const data = allBuilding.filter((x) => x._id === buildingId)[0].levels;
+    if (data) {
+      setSelectedLevels(data);
+      let temp = [];
+      data.map((item, index) => {
+        return temp.push({
+          label: item.number,
+          value: item._id,
+        });
+      });
+      setDropDownLevels(temp);
+    }
+  }
+
+  function fetchStorageAreaOfSelectedLevels(levelId) {
+    const storagedata = selectedLevels.filter((x) => x._id === levelId)[0]
+      .storage;
+    setSelectedStorageArea(storagedata);
+    let temp = [];
+    temp.push({
+      label: storagedata.name,
+      value: storagedata._id,
+    });
+    setDropDownStorageArea(temp);
+  }
 
   return (
     <div className={classes.root}>
@@ -297,21 +351,54 @@ const Incidents = (props) => {
             values={siteDeliveryArea}
             placeholder="Delivery area"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+              if (index !== -1) {
+                setSelectedDeliveryArea(event.target.value);
+              }
+            }}
           />
           <FormSelect
             values={siteBuilding}
             placeholder="Location"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+              if (index !== -1) {
+                setDisableLevelDropdown(false);
+
+                fetchLevelesOfSelectedBuilding(event.target.value);
+              } else {
+                setDisableLevelDropdown(true);
+              }
+            }}
           />
           <FormSelect
-            values={[]}
+            values={dropDownLevels}
             placeholder="Level"
+            disabled={disableLevelDropdown}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+              if (index !== -1) {
+                setDisableStorageDropdown(false);
+                fetchStorageAreaOfSelectedLevels(event.target.value);
+              } else {
+                setDisableStorageDropdown(true);
+              }
+            }}
           />
           <FormSelect
-            values={siteStorageArea}
+            values={dropDownStorageArea}
             placeholder="Storage area"
+            disabled={disableStorageDropdown}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={(event) => {
+              const index = event.target.selectedIndex - 1;
+              if (index !== -1) {
+                setSelectedStorageAreaValue(event.target.value);
+              }
+            }}
           />
           <FormSelect
             placeholder="Type"
@@ -339,7 +426,7 @@ const Incidents = (props) => {
         <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
             placeholder="Company"
-            value={companyId} //working
+            value={companyId}
             values={siteComapny}
             onChange={(event) => {
               setCompanyId(event.target.value);

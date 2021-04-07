@@ -41,6 +41,8 @@ export default function AddIncidents(props) {
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownLocation, setDropdownLocation] = useState([]);
   const [selectedLocationType, setselectedLocationType] = useState("");
+  const [location, setLocation] = useState("");
+
   const [companyId, setCompanyId] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -90,6 +92,7 @@ export default function AddIncidents(props) {
     }
   };
   const nameChange = (e) => {
+    console.log(e.target.name);
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
@@ -108,9 +111,10 @@ export default function AddIncidents(props) {
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
-      const locationObject = {};
-      locationObject[0] = selectedLocationType;
-      locationObject[1] = e.target.value;
+      const locationObject = {
+        [selectedLocationType]: e.target.value,
+      };
+      setLocation(locationObject);
     }
     if (e.target.name === "description") setDescription(e.target.value);
     if (e.target.name === "seIsBillable") seIsBillable(e.target.value);
@@ -123,11 +127,13 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const fetchLocationDataOnTypeChange = async () => {
-    if (selectedLocationType === "STORAGEAREA") {
+    console.log("change accur");
+    if (selectedLocationType === "storageArea") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+      console.log(response);
       if (response.success) {
         if (response.data) {
           const storageValue = [
@@ -140,7 +146,7 @@ export default function AddIncidents(props) {
         }
       }
     }
-    if (selectedLocationType === "DELIVERYAREA") {
+    if (selectedLocationType === "deliveryArea") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
@@ -164,6 +170,8 @@ export default function AddIncidents(props) {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    let locationType = {};
     var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("date", date);
@@ -172,6 +180,7 @@ export default function AddIncidents(props) {
     formdata.append("description", description);
     formdata.append("isBillable", isBillable);
     formdata.append("price", price);
+    formdata.append("location", JSON.stringify(location));
     formdata.append("comment", comment);
     formdata.append("companyId", companyId);
     formdata.append("siteId", adminStore.site.siteId._id);
@@ -271,11 +280,11 @@ export default function AddIncidents(props) {
               <FormSelect
                 placeholder="Type of location"
                 name="locationType"
-                style={GLOBALS.Styles.inputWidth}
+                style={GLOBALS.Styles.inputWidth} //working
                 onChange={locationTypeChange}
                 values={[
-                  { value: "STORAGEAREA", label: "Storage Area" },
-                  { value: "DELIVERYAREA", label: "Delivery Area" },
+                  { value: "storageArea", label: "Storage Area" },
+                  { value: "deliveryArea", label: "Delivery Area" },
                 ]}
               />
               <FormSelect
@@ -364,7 +373,6 @@ export default function AddIncidents(props) {
                 !name ||
                 !date ||
                 !dropdownCompanies ||
-                !time ||
                 (isBillable === "true" && !price) ||
                 !type
               }
