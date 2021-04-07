@@ -42,7 +42,7 @@ export default function AddMean(props) {
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);
-  const [rate, setRate] = useState("");
+  const [rate, setRate] = useState("0");
   const [addInfo, setAddInfo] = useState("");
 
   const [update, setUpdate] = useState(false);
@@ -75,7 +75,8 @@ export default function AddMean(props) {
       if (response.data.site_storage_areas !== null) {
         const temp = [];
         response.data.site_storage_areas.map((item) =>
-          temp.push({ label: item.name, value: item._id }),
+          // temp.push({ label: item.name, value: item._id }),
+          console.log("storageArea", item),
         );
         setStorageAreas(temp);
       }

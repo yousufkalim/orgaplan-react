@@ -215,7 +215,7 @@ const App = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
-                      if (value === "Exterior") {
+                      if (value === "Exterior" || !value) {
                         setPdf(
                           sitePic?.exteriorBuilding?.levels[0]?.image
                             ? GLOBALS.Constants.BASE_URL +
