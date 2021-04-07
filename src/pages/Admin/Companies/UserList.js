@@ -53,6 +53,7 @@ export default function UserList(props) {
   const [dropdownRoles, setDropdownRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
   const [userId, setUserId] = useState("");
+  const [siteName, setSiteName] = useState("");
 
   useEffect(() => {
     getData();
@@ -117,6 +118,8 @@ export default function UserList(props) {
   const getData = async () => {
     try {
       console.log(props?.match?.params?.id);
+      setSiteName(adminStore.site.siteId.name);
+
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
         token: store.token,
@@ -258,10 +261,15 @@ export default function UserList(props) {
             <FormSelect
               placeholder="Company"
               name="color"
+              value={filterCompanyId}
               style={{ marginLeft: "20px", maxWidth: 250 }}
               values={dropdownCompanies}
               onChange={(e) => {
-                setFilterCompanyId(e.target.value);
+                const index = e.target.selectedIndex - 1;
+                if (index !== -1) {
+                  const item = e.target.value;
+                  setFilterCompanyId(item);
+                }
               }}
             />
           </Form.Row>
@@ -308,7 +316,7 @@ export default function UserList(props) {
             <Form.Row justifyContent="center">
               <FormInput
                 name="company"
-                value="Client 1"
+                value={siteName}
                 disabled
                 // error={lastName}
                 placeholder="Company"

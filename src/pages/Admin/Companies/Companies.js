@@ -204,6 +204,7 @@ export default function Companies(props) {
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
             to={{
+              //working
               pathname: "/companies/edit-companies",
               id: item.companyId._id,
             }}
@@ -225,18 +226,29 @@ export default function Companies(props) {
             />
           </NavLink>
         </IconButton>
-        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <img
-            src={Images.means}
-            style={{ width: 18, height: 17 }}
-            alt="Icon"
-          />
-        </IconButton>
-        <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+        {/* <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
             to={{
-              pathname: "/incidents",
-              companyId: item.companyId._id,
+              pathname: `/means`,
+              // companyId: item.companyId._id,
+            }}
+          >
+            <img
+              src={Images.means}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </NavLink>
+        </IconButton> */}
+        <IconButton
+          style={{ padding: "6px", color: "#1890ff" }}
+          onClick={() => {}}
+        >
+          <NavLink
+            to={{
+              pathname: `/incidents`,
+              search: `?companyId=${item.companyId._id}`,
+              // companyId: item.companyId._id,
             }}
           >
             <img
