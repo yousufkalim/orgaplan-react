@@ -45,7 +45,6 @@ let formats = {
 
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
-  console.log(props.history.location.mean);
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
@@ -87,8 +86,10 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-    const [disableHours, setDisableHours] = useState([]);
+  const [disableHours, setDisableHours] = useState([]);
+  const [disableDay, setDisableDay] = useState([]);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
+
   const [overlap] = React.useState("Enable");
   // const [overlapOpen, setoverlapOpen] = React.useState(false);
   // overlap functions **************
@@ -102,10 +103,12 @@ const Calender = (props) => {
   //   setoverlapOpen(true);
   // };
   // useEffect
-  // useEffect(() => {
 
-  //   dispatch(get_means());
-  // }, []);
+  useEffect(() => {
+    unavailabilityDates();
+    functionDisableDay();
+    // dispatch(get_means());
+  }, []);
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -168,133 +171,6 @@ const Calender = (props) => {
       work_week_obj.Saturday = false;
     }
   }
-  // const [workWeekstate, workWeekSetState] = useState(work_week_obj);
-  // const workWeekHandleChange = (event) => {
-  //   workWeekSetState({
-  //     ...workWeekstate,
-  //     [event.target.name]: event.target.checked,
-  //   });
-
-  //   // if (event.target.checked === true) {
-  //   //   setavailabilitieModal(true);
-  //   // }
-
-  //   // sunday Start
-  //   if (event.target.name === "Sunday" && event.target.checked === true) {
-  //     let remove = days.indexOf(0);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //     // setAvailibilityDateMin();
-  //   } else if (
-  //     event.target.name === "Sunday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(0);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // sunday End
-  //   // Monday Start
-  //   else if (event.target.name === "Monday" && event.target.checked === true) {
-  //     let remove = days.indexOf(1);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Monday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(1);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Monday End
-  //   // Tuesday Start
-  //   else if (event.target.name === "Tuesday" && event.target.checked === true) {
-  //     let remove = days.indexOf(2);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Tuesday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(2);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Tuesday End
-  //   // Wednesday Start
-  //   else if (
-  //     event.target.name === "Wednesday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(3);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Wednesday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(3);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Wednesday End
-  //   // Thursday Start
-  //   else if (
-  //     event.target.name === "Thursday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(4);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Thursday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(4);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Thursday End
-  //   // Friday Start
-  //   else if (event.target.name === "Friday" && event.target.checked === true) {
-  //     let remove = days.indexOf(5);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Friday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(5);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Friday End
-  //   // Saturday Start
-  //   else if (
-  //     event.target.name === "Saturday" &&
-  //     event.target.checked === true
-  //   ) {
-  //     let remove = days.indexOf(6);
-  //     days.splice(remove, 1);
-  //     days.sort();
-  //     setDays(days);
-  //   } else if (
-  //     event.target.name === "Saturday" &&
-  //     event.target.checked === false
-  //   ) {
-  //     days.push(6);
-  //     days.sort();
-  //     setDays(days);
-  //   }
-  //   // Saturday End
-  // };
 
   const updateEvent = () => {
     if (titleEdit !== "") {
@@ -417,14 +293,6 @@ const Calender = (props) => {
 
       if (startTime > preDateTime && startTime < endTime) {
         if (overlap === "Enable") {
-          setShow(false);
-          // var stateElement = {
-          //   title: title,
-          //   start: startTime,
-          //   end: endTime,
-          //   color: statusColor,
-          // };
-
           var DbElement = {
             startDate: startTime,
             endDate: endTime,
@@ -435,10 +303,31 @@ const Calender = (props) => {
             meanId: props.location.mean._id,
           };
           // setEvents([...events, stateElement]);
-          dispatch(add_mean(DbElement));
-          setTitle("");
-          setSelectedCompany("");
-          setAddedEvent(DbElement);
+          let flagHours = false;
+          disableHours.map((key, index) => {
+            if (
+              moment(startTime).isSame(key) ||
+              moment(endTime).isSame(key) ||
+              moment(key).isBetween(startTime, endTime)
+            ) {
+              flagHours = true;
+            }
+            return {};
+          });
+
+          if (!flagHours) {
+            dispatch(add_mean(DbElement));
+            setTitle("");
+            setSelectedCompany("");
+            setAddedEvent(DbElement);
+            setShow(false);
+          } else {
+            setAlertMsg("you can not Select Disable Hours of a Day");
+            setAlertBoxTime(true);
+            setTimeout(function () {
+              setAlertBoxTime(false);
+            }, 1000);
+          }
         } else if (
           overlap === "Disable" &&
           dateCheck2 !== -1 &&
@@ -472,34 +361,42 @@ const Calender = (props) => {
     }
   };
   const AddEvent = ({ start, end, slots }) => {
+    let flagDate, flagHours;
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
-
-    if (
-      start.getDay() === days[0] ||
-      start.getDay() === days[1] ||
-      start.getDay() === days[2] ||
-      start.getDay() === days[3] ||
-      start.getDay() === days[4] ||
-      start.getDay() === days[5] ||
-      start.getDay() === days[6]
-    ) {
-      console.log("not active day");
+    disableHours.map((key, index) => {
+      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+        flagHours = true;
+      }
+      return {};
+    });
+    disableDay.map((key, index) => {
+      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+        flagDate = true;
+        console.log(key);
+      }
+      return {};
+    });
+    if (flagDate || flagHours) {
+      setShow(false);
+      if (flagDate) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Disable Day", "error"),
+          ),
+        );
+      } else if (flagHours) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Disable hours", "error"),
+          ),
+        );
+      }
     } else {
-      // active days
-      // let beforeTime = moment(start).format("HH:mm");
-      // let afterTime = moment(end).format("HH:mm");
-      // let dateCheck = events.filter((item) => {
-      //   return (
-      //     moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
-      //     moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
-      //   );
-      // });
-      // if (dateCheck.length === 0 && overlap) {
       if (start > preDateTime && start < end) {
         if (slots.length >= 2) {
           var format = "HH:mm";
@@ -546,10 +443,6 @@ const Calender = (props) => {
           ),
         );
       }
-      // }
-      // else {
-
-      // }
     }
   };
 
@@ -673,9 +566,23 @@ const Calender = (props) => {
       </Alert>
     );
   }
+  const functionDisableDay = () => {
+    let tempDisableDay = [];
+    props.history.location.mean.unavailability.map((key, index) => {
+      if (key.dayOff === true) {
+        for (let i = 0; i <= 23; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisableDay.push(date);
+        }
+      }
+      return {};
+    });
+    setDisableDay(tempDisableDay);
+  };
   const customDayPropGetter = (date) => {
     let flagDate;
-    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+    props.history.location.mean.unavailability.map((key, index) => {
       if (key.dayOff === true) {
         if (moment(date).isSame(key.date, "day")) {
           flagDate = date;
@@ -683,6 +590,7 @@ const Calender = (props) => {
       }
       return {};
     });
+
     if (flagDate) {
       return {
         className: "special-day",
@@ -692,7 +600,7 @@ const Calender = (props) => {
       };
     }
   };
-  
+
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -793,7 +701,8 @@ const Calender = (props) => {
   };
   const unavailabilityDates = () => {
     let tempDisabledTime = [];
-    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+
+    props.history.location.mean.unavailability.map((key, index) => {
       if (key.dayOff === false) {
         for (let i = key.startHour; i <= key.endHour; i++) {
           let date = new Date(key.date);
@@ -804,6 +713,25 @@ const Calender = (props) => {
       return {};
     });
     setDisableHours(tempDisabledTime);
+  };
+  const slotPropGetter = (date) => {
+    let flagDateAndTime;
+    let newStyle = {
+      backgroundColor: "#D3D3D3 ",
+    };
+    disableHours.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        flagDateAndTime = date;
+      }
+      return {};
+    });
+
+    if (flagDateAndTime) {
+      return {
+        className: "rbc-day-slot rbc-time-slot ",
+        style: newStyle,
+      };
+    }
   };
   return (
     <>
@@ -1203,7 +1131,6 @@ const Calender = (props) => {
 
               if (index !== -1) {
                 const itemId = event.target.value;
-                console.log(event);
                 setSelectedMeanId(itemId);
               } else {
                 setSelectedMeanId("");
@@ -1230,6 +1157,7 @@ const Calender = (props) => {
             {events ? (
               <Calendar
                 popup
+                slotPropGetter={slotPropGetter}
                 selectable
                 formats={formats}
                 localizer={localizer}
