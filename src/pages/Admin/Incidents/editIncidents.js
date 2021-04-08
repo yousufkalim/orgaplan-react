@@ -53,7 +53,7 @@ export default function AddIncidents(props) {
   const [time, setTime] = useState("");
   const [status, setStatus] = useState("");
 
-  const [isBillable, setIsBillable] = useState("");
+  const [isBillable, setIsBillable] = useState(false);
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
 
@@ -365,8 +365,12 @@ export default function AddIncidents(props) {
                 name="comapnyId"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
-                  setIsBillable(e.target.value);
-                  if (e.target.value === "false") setPrice("0");
+                  if (e.target.value === "false") {
+                    setPrice("0");
+                    setIsBillable(false);
+                  } else if (e.target.value === "true") {
+                    setIsBillable(true);
+                  }
                 }}
                 value={isBillable}
                 values={[

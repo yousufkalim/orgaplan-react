@@ -54,6 +54,7 @@ const Calender = (props) => {
   const [selectedMeanId, setSelectedMeanId] = useState(
     props.history.location.mean._id,
   );
+  console.log(selectedMeanId, props.history.location.mean._id);
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([]);
@@ -300,7 +301,7 @@ const Calender = (props) => {
             siteId: adminStore.site.siteId._id,
             userId: store.user._id,
             companyId: selectedCompany,
-            meanId: props.location.mean._id,
+            meanId: selectedMeanId,
           };
           // setEvents([...events, stateElement]);
           let flagHours = false;

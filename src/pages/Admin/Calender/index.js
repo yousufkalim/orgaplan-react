@@ -51,7 +51,7 @@ let formats = {
 };
 
 const Calender = (props) => {
-  // useSelecter ,useDispatchstates
+  // useSelecter ,useDispatchstates 
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
   const adminStore = useSelector((state) => state.admin);
@@ -1173,22 +1173,51 @@ const Calender = (props) => {
           </Form.Row>
           <Form.Row>
             <Form.Row justifyContent="flex-start" noMargin>
+              {props.location.selectedShape != null    ? (
+                <>
+                  <FormSelect
+                    placeholder="Type of place"
+                    value={props.location.selectedShape.type}
+                    values={[
+                      { value: "DELIVERYAREA", label: "Delivery area" },
+                      { value: "STORAGEAREA", label: "Storage area" },
+                      { value: "BUILDING", label: "Emplacement" },
+                    ]}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={handleChangeTypeOfPlace}
+                  />
+                  
               <FormSelect
-                placeholder="Type of place"
-                values={[
-                  { value: "deliveryArea", label: "Delivery area" },
-                  { value: "storageArea", label: "Storage area" },
-                  { value: "building", label: "Emplacement" },
-                ]}
+                placeholder="place"
+                 value={props.location.selectedShape._id}
+                values={typeOfPlace}
                 style={{ marginRight: "20px", maxWidth: 250 }}
-                onChange={handleChangeTypeOfPlace}
+                onChange={(e) => setPlaceId(e.target.value)}
               />
+                </>
+              ) : (
+                <>
+                  <FormSelect
+                    placeholder="Type of place"
+                    values={[
+                      { value: "DELIVERYAREA", label: "Delivery area" },
+                      { value: "STORAGEAREA", label: "Storage area" },
+                      { value: "BUILDING", label: "Emplacement" },
+                    ]}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={handleChangeTypeOfPlace}
+                  />
+                  
               <FormSelect
                 placeholder="place"
                 values={typeOfPlace}
                 style={{ marginRight: "20px", maxWidth: 250 }}
                 onChange={(e) => setPlaceId(e.target.value)}
               />
+                </>
+              )}
+
+              
             </Form.Row>
           </Form.Row>
           <div style={{ flexBasis: "100%" }}>

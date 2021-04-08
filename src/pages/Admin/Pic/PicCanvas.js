@@ -19,7 +19,7 @@ import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 // import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
-
+import { NavLink } from "react-router-dom";
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -202,7 +202,7 @@ const App = (props) => {
               pdf={pdf}
             />
           )}
-          {console.log("shapes ", shapes)}
+          {console.log("shapes", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>
@@ -244,22 +244,17 @@ const App = (props) => {
                   >
                     <Pencil className={classes.infoIcon} />
                   </IconButton>
-                  {/* <IconButton
+                  <NavLink
                     disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    to={{
+                      pathname: "/",
+                      selectedShape: selectedShape,
                     }}
                   >
-                    <PICIcon className={classes.infoIcon} />
-                  </IconButton> */}
-                  <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Calendar className={classes.infoIcon} />
-                  </IconButton>
+                    <IconButton>
+                      <Calendar className={classes.infoIcon} />
+                    </IconButton>
+                  </NavLink>
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {
