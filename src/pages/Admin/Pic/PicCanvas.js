@@ -17,7 +17,7 @@ import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
-import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
+// import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
@@ -104,8 +104,9 @@ const App = (props) => {
     }
   };
 
-  const handlePdfChange = (pdf) => {
-    setPdf(pdf);
+  const handlePdfChange = (pdfUri, pdf) => {
+    console.log("pdf", pdfUri, pdf);
+    setPdf(pdfUri);
   };
 
   const handleChange = (shapesArray) => {
@@ -243,14 +244,14 @@ const App = (props) => {
                   >
                     <Pencil className={classes.infoIcon} />
                   </IconButton>
-                  <IconButton
+                  {/* <IconButton
                     disabled={loading}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
                     <PICIcon className={classes.infoIcon} />
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {
