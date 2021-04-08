@@ -92,7 +92,6 @@ export default function AddIncidents(props) {
     }
   };
   const nameChange = (e) => {
-    console.log(e.target.name);
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
@@ -127,13 +126,11 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const fetchLocationDataOnTypeChange = async () => {
-    console.log("change accur");
     if (selectedLocationType === "storageArea") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      console.log(response);
       if (response.success) {
         if (response.data) {
           const storageValue = [
@@ -184,7 +181,6 @@ export default function AddIncidents(props) {
     formdata.append("comment", comment);
     formdata.append("companyId", companyId);
     formdata.append("siteId", adminStore.site.siteId._id);
-    console.log(store.token);
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
@@ -331,9 +327,11 @@ export default function AddIncidents(props) {
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
-                  seIsBillable(e.target.value);
                   if (e.target.value === "false") {
                     setPrice("0");
+                    seIsBillable(false);
+                  } else if (e.target.value === "true") {
+                    seIsBillable(true);
                   }
                 }}
               >
