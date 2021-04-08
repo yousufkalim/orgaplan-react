@@ -37,7 +37,7 @@ export default function AddUser(props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-
+  const [siteName, setSiteName] = useState("");
   const [logo, setLogo] = useState([]);
 
   const [dropdownRoles, setDropdownRoles] = useState([]);
@@ -45,6 +45,7 @@ export default function AddUser(props) {
   const [disableUser, setDisableUser] = useState(false);
 
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getData();
@@ -53,6 +54,7 @@ export default function AddUser(props) {
 
   const getData = async () => {
     try {
+      setSiteName(adminStore.site.siteId.name);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
@@ -98,68 +100,44 @@ export default function AddUser(props) {
     }
   };
 
-  // const getUserCompany = async (userId) => {
-  //   try {
-  //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_USER_COMPANY}/${adminStore.site.siteId._id}/${userId}`,
-  //       token: store.token,
-  //     });
-  //     if (response.success) {
-  //       console.log(JSON.stringify(response, null, 2));
-  //       if (response.data) {
-  //         companies.forEach((item, index) => {
-  //           if (item._id === response.data._id) {
-  //             item.users.forEach((innerItem, innerIndex) => {
-  //               console.log("innser ", innerItem.userId);
-  //               if (innerItem.userId === userId) {
-  //                 // setSelectedRoleIndex(innerIndex);
-
-  //                 setSelectedRole(innerItem.role);
-  //               }
-  //             });
-  //             setSelectedCompany(item.name);
-  //           }
-  //         });
-  //       }
-  //     } else {
-  //     }
-
-  //     //   setItems(response.data.items);
-  //   } catch (err) {
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // };
   const handleSubmit = () => {};
 
   // const onSubmit = async (e) => {
 
   // }
   const onSubmit = async () => {
-    var formdata = new FormData();
-    // formdata.append("image", values.logo[0].file);
-    //formdata.append("name", values.name);
-    formdata.append("firstName", firstName);
-    formdata.append("lastName", lastName);
-    formdata.append("email", email);
-    formdata.append("phone", phone);
-    formdata.append("siteId", adminStore.site.siteId._id);
-    formdata.append("companyId", selectedCompany);
-    formdata.append("role", selectedRole);
+    try {
+      var formdata = new FormData();
+      // formdata.append("image", values.logo[0].file);
+      //formdata.append("name", values.name);
+      if (logo[0]?.file) {
+        formdata.append("image", logo[0].file);
+      }
+      formdata.append("firstName", firstName);
+      formdata.append("lastName", lastName);
+      formdata.append("email", email);
+      formdata.append("phone", phone);
+      formdata.append("siteId", adminStore.site.siteId._id);
+      formdata.append("companyId", selectedCompany);
+      formdata.append("role", selectedRole);
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.ADD_COMPANY_USER,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      props.history.goBack();
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
     // formdata.append("image", logo[0].file);
-
-    await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.ADD_COMPANY_USER,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
-    props.history.goBack();
   };
 
   return (
@@ -239,7 +217,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="INDENTITY* :" />
+            <FormLabel bold primary="IDENTITY* :" />
             <Form.Row width="48%">
               <FormInput
                 name="firstName"
@@ -333,7 +311,7 @@ export default function AddUser(props) {
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
                 placeholder="Site"
                 // onChange={formik.handleChange}
-                // value={}
+                value={siteName}
                 // error={formik.errors.site}
                 disabled={true}
               />

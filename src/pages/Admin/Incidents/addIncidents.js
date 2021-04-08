@@ -41,12 +41,14 @@ export default function AddIncidents(props) {
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownLocation, setDropdownLocation] = useState([]);
   const [selectedLocationType, setselectedLocationType] = useState("");
+  const [location, setLocation] = useState("");
+
   const [companyId, setCompanyId] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isBillable, seIsBillable] = useState(false);
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState("0");
   const [type, setType] = useState("");
 
   const [comment, setComment] = useState("");
@@ -108,9 +110,10 @@ export default function AddIncidents(props) {
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
-      const locationObject = {};
-      locationObject[0] = selectedLocationType;
-      locationObject[1] = e.target.value;
+      const locationObject = {
+        [selectedLocationType]: e.target.value,
+      };
+      setLocation(locationObject);
     }
     if (e.target.name === "description") setDescription(e.target.value);
     if (e.target.name === "seIsBillable") seIsBillable(e.target.value);
@@ -123,7 +126,7 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const fetchLocationDataOnTypeChange = async () => {
-    if (selectedLocationType === "STORAGEAREA") {
+    if (selectedLocationType === "storageArea") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
@@ -140,7 +143,7 @@ export default function AddIncidents(props) {
         }
       }
     }
-    if (selectedLocationType === "DELIVERYAREA") {
+    if (selectedLocationType === "deliveryArea") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
@@ -164,6 +167,8 @@ export default function AddIncidents(props) {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    let locationType = {};
     var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("date", date);
@@ -172,10 +177,10 @@ export default function AddIncidents(props) {
     formdata.append("description", description);
     formdata.append("isBillable", isBillable);
     formdata.append("price", price);
+    formdata.append("location", JSON.stringify(location));
     formdata.append("comment", comment);
     formdata.append("companyId", companyId);
     formdata.append("siteId", adminStore.site.siteId._id);
-    console.log(store.token);
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
@@ -240,7 +245,7 @@ export default function AddIncidents(props) {
               />
               <TimePicker
                 name="time"
-                format="HH"
+                format="HH:mm"
                 style={{ width: "48%", height: "45px", color: "#8B8989" }}
                 onChange={timeChange}
               />
@@ -271,11 +276,11 @@ export default function AddIncidents(props) {
               <FormSelect
                 placeholder="Type of location"
                 name="locationType"
-                style={GLOBALS.Styles.inputWidth}
+                style={GLOBALS.Styles.inputWidth} //working
                 onChange={locationTypeChange}
                 values={[
-                  { value: "STORAGEAREA", label: "Storage Area" },
-                  { value: "DELIVERYAREA", label: "Delivery Area" },
+                  { value: "storageArea", label: "Storage Area" },
+                  { value: "deliveryArea", label: "Delivery Area" },
                 ]}
               />
               <FormSelect
@@ -321,7 +326,14 @@ export default function AddIncidents(props) {
                 name="bill"
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => seIsBillable(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value === "false") {
+                    setPrice("0");
+                    seIsBillable(false);
+                  } else if (e.target.value === "true") {
+                    seIsBillable(true);
+                  }
+                }}
               >
                 <option value={true}>Yes</option>
                 <option value={false}>No</option>
@@ -335,6 +347,7 @@ export default function AddIncidents(props) {
                 <FormInput
                   type="number"
                   name="price"
+                  value={price}
                   onChange={nameChange}
                   disabled={isBillable === "false"}
                 />
@@ -364,7 +377,6 @@ export default function AddIncidents(props) {
                 !name ||
                 !date ||
                 !dropdownCompanies ||
-                !time ||
                 (isBillable === "true" && !price) ||
                 !type
               }

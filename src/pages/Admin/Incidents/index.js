@@ -8,6 +8,7 @@ export default function Index(props) {
   return (
     <Switch>
       <Route exact path={props.match.path + "/"} component={Incidents} />
+      {/* <Route path={props.match.path + "/:id"} component={Incidents} /> */}
       <Route
         exact
         path={props.match.path + "/add-incidents"}

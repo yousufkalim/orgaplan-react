@@ -51,8 +51,6 @@ class App extends Component {
     if (prevState.tempImage !== this.state.tempImage) {
       this.showPdf(this.state.tempImage);
     } else if (prevState.shapes !== this.state.shapes) {
-    } else if (prevState.tempPdf !== this.state.tempPdf) {
-      this.props.onPdfChange(this.state.tempPdf);
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
       await Promise.all(
@@ -468,9 +466,9 @@ class App extends Component {
       let file = e.target.files[0];
       if (file.type === "application/pdf") {
         const uri = URL.createObjectURL(file);
+        this.props.onPdfChange(uri, file);
         this.setState({ tempPdf: file });
         this.setState({ isLoading: true });
-
         this.setState({ tempImage: uri });
       } else {
         alert("You can upload only pdf file");

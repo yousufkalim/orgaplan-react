@@ -12,11 +12,12 @@ import DeliveryArea from "./DeliveryArea";
 import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Loader from "../../../components/Loader";
+import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
-import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
+// import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 import { NavLink } from "react-router-dom";
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
@@ -70,6 +71,10 @@ const App = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
 
+  const [allLeves, setAllLevels] = useState([]);
+  const [levels, setLevels] = useState([]);
+  const [level, setLevel] = useState("");
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -99,8 +104,9 @@ const App = (props) => {
     }
   };
 
-  const handlePdfChange = (pdf) => {
-    setPdf(pdf);
+  const handlePdfChange = (pdfUri, pdf) => {
+    console.log("pdf", pdfUri, pdf);
+    setPdf(pdfUri);
   };
 
   const handleChange = (shapesArray) => {
@@ -113,6 +119,17 @@ const App = (props) => {
 
   const handleClick = (id, shape) => {
     setSelectedShape(shape);
+    if (shape.type === "BUILDING") {
+      setAllLevels(shape.building.levels);
+      let levs = [{ label: "Exterior", value: "Exterior" }];
+      shape.building.levels.map((le) =>
+        levs.push({
+          label: le.number,
+          value: le._id,
+        }),
+      );
+      setLevels(levs);
+    }
   };
 
   const checkShape = () => {
@@ -185,12 +202,38 @@ const App = (props) => {
               pdf={pdf}
             />
           )}
-          {/* {console.log("shapes 1 ", shapes)} */}
+          {console.log("shapes", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
                 <SubHeading primary={`Type : ${selectedShape.type}`} />
+                {selectedShape.type === "BUILDING" && (
+                  <FormSelect
+                    name="level"
+                    value={level}
+                    values={levels}
+                    placeholder="Select Level"
+                    onChange={({ target: { value } }) => {
+                      setLevel(value);
+                      if (value === "Exterior" || !value) {
+                        setPdf(
+                          sitePic?.exteriorBuilding?.levels[0]?.image
+                            ? GLOBALS.Constants.BASE_URL +
+                                sitePic.exteriorBuilding.levels[0].image
+                            : undefined,
+                        );
+                      } else {
+                        const leve = allLeves.find((lev) => lev._id === value);
+                        setPdf(
+                          leve?.image
+                            ? GLOBALS.Constants.BASE_URL + leve.image
+                            : undefined,
+                        );
+                      }
+                    }}
+                  />
+                )}
                 <Form.Row>
                   <IconButton
                     disabled={loading}
@@ -200,14 +243,6 @@ const App = (props) => {
                     }}
                   >
                     <Pencil className={classes.infoIcon} />
-                  </IconButton>
-                  <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <PICIcon className={classes.infoIcon} />
                   </IconButton>
                   <NavLink
                     disabled={loading}
@@ -220,7 +255,6 @@ const App = (props) => {
                       <Calendar className={classes.infoIcon} />
                     </IconButton>
                   </NavLink>
-
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {

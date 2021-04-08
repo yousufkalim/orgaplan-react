@@ -19,7 +19,6 @@ import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 
 import { Images } from "../../../assets/Assets";
-import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -156,6 +155,7 @@ const Means = () => {
             data[3] = item.location
               .map((innerItem) => {
                 if (
+                  innerItem.storageArea &&
                   innerItem.locationType !== undefined &&
                   innerItem.locationType === "STORAGEAREA"
                 ) {
@@ -259,8 +259,8 @@ const Means = () => {
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
 
-          response.data.map((item, index) => {
-            item.location.map((innerItem, innerIndex) => {
+          response.data.map((item) => {
+            item.location.map((innerItem) => {
               if (innerItem.locationType === "STORAGEAREA") {
                 tempStorageAreas.push(innerItem);
                 return temp.push({
@@ -361,6 +361,7 @@ const Means = () => {
         data[3] = item.location
           .map((innerItem) => {
             if (
+              innerItem.storageArea &&
               innerItem.locationType !== undefined &&
               innerItem.locationType === "STORAGEAREA"
             ) {
@@ -410,7 +411,7 @@ const Means = () => {
         setStorageAreas(response.data);
         if (response.data !== null && response.data.length > 0) {
           const temp = [];
-          response.data.map((item, index) => {
+          response.data.map((item) => {
             return temp.push({ label: item.name, value: item.name });
           });
 
@@ -430,16 +431,6 @@ const Means = () => {
     return [
       ...item,
       <div>
-        <NavLink
-          to={{
-            pathname: "/means/edit-mean",
-            mean: means[index],
-          }}
-          style={{ color: "#959491 !important", textDecoration: "none" }}
-        >
-          <Pencil style={{ width: 18, height: 15, cursor: "pointer" }} />
-        </NavLink>
-
         <NavLink
           to={{
             pathname: "/means/calendar",
@@ -486,19 +477,6 @@ const Means = () => {
               bold
             />
             <Form.Column style={{ width: "50%" }}>
-              <Button
-                fullWidth={false}
-                component={NavLink}
-                text="ADD A MEAN"
-                to={"/means/add-mean"}
-                style={{
-                  marginLeft: "20px",
-                  marginBottom: "7px",
-                  width: "200px",
-                }}
-                disabled={loading}
-              />
-
               <Button
                 fullWidth={false}
                 component={NavLink}
@@ -551,7 +529,7 @@ const Means = () => {
                 // Reset Storage Means
                 if (locations[index].buildingType === "EXTERIOR") {
                   setDisableDropdown(true);
-                  getExternalMeans();
+                  getExternalMeans(); //working
                   setDisableStorageDropdow(false);
                 } else {
                   setDisableDropdown(false);
@@ -607,16 +585,11 @@ const Means = () => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
                 const item = event.target.value;
-
                 setSelectedDropdownStorageAreaIndex(index);
                 setSelectedStorageArea(item);
-                // Reset Storage Means
-
-                // filterMean();
               } else {
                 setSelectedDropdownStorageAreaIndex(0);
                 setSelectedStorageArea("");
-                //  filterMean();
               }
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
@@ -630,21 +603,14 @@ const Means = () => {
                 const item = event.target.value;
                 setSelectedTypeIndex(index);
                 setSelectedType(item);
-                // Reset Storage Means
-                //filterMean();
               } else {
                 setSelectedTypeIndex(0);
                 setSelectedType("");
-                // Reset Storage Means
-                //filterMean();
               }
             }}
             style={{ marginRight: "5px", maxWidth: 250 }}
           />
         </Form.Row>
-        {/* <NavLink className={classes.link} to="/sites/archives">
-          See archived sites
-        </NavLink> */}
       </Form.Row>
 
       <Form.Row alignItems="center" noMargin className="mt-3">
