@@ -49,6 +49,8 @@ const levelNumberList = [
   { value: 10, label: 10 },
 ];
 
+let propsShapesCon = [];
+let propsShapeCon = "";
 export default function AddSiteStep3(props) {
   const theme = useTheme();
   const classes = useStyles();
@@ -70,6 +72,10 @@ export default function AddSiteStep3(props) {
     } else {
       setLoading(false);
     }
+    propsShapesCon = _.cloneDeep(props.shapes);
+    propsShapeCon = props.shape
+      ? _.cloneDeep(props.shape)
+      : _.cloneDeep(props.selectedShape);
     // eslint-disable-next-line
   }, []);
 
@@ -108,11 +114,12 @@ export default function AddSiteStep3(props) {
 
       setActiveBuilding(response.data);
       resetStates();
-      let propShapes = _.cloneDeep(props.shapes);
-      let propShape = props.shape
-        ? _.cloneDeep(props.shape)
-        : _.cloneDeep(props.selectedShape);
+
+      let propShapes = _.cloneDeep(propsShapesCon);
+      let propShape = _.cloneDeep(propsShapeCon);
+
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
+
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
       propShapes[inde].name = buildingName;
@@ -137,6 +144,10 @@ export default function AddSiteStep3(props) {
         });
       }
       setLoading(false);
+
+      propsShapesCon = _.cloneDeep(propShapes);
+      propsShapeCon = _.cloneDeep(propShape);
+
       props.setShapes(propShapes, propShape, true);
     } catch (err) {
       setLoading(false);
@@ -168,14 +179,17 @@ export default function AddSiteStep3(props) {
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels.push(response.data);
 
-      let propShapes = _.cloneDeep(props.shapes);
-      let propShape = props.shape
-        ? _.cloneDeep(props.shape)
-        : _.cloneDeep(props.selectedShape);
+      let propShapes = _.cloneDeep(propsShapesCon);
+      let propShape = _.cloneDeep(propsShapeCon);
+
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       propShapes[inde].levels = activeBuildingObj.levels;
       propShape.levels = activeBuildingObj.levels;
+
+      propsShapesCon = _.cloneDeep(propShapes);
+      propsShapeCon = _.cloneDeep(propShape);
+
       props.setShapes(propShapes, propShape, true);
 
       setActiveBuilding(activeBuildingObj);
@@ -212,13 +226,17 @@ export default function AddSiteStep3(props) {
       setLoading(false);
       setUpdate((st) => !st);
 
-      let propShapes = _.cloneDeep(props.shapes);
-      let propShape = props.shape
-        ? _.cloneDeep(props.shape)
-        : _.cloneDeep(props.selectedShape);
+      let propShapes = _.cloneDeep(propsShapesCon);
+      let propShape = _.cloneDeep(propsShapeCon);
+
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
+
       propShapes[inde].levels = activeBuildingObj.levels;
       propShape.levels = activeBuildingObj.levels;
+
+      propsShapesCon = _.cloneDeep(propShapes);
+      propsShapeCon = _.cloneDeep(propShape);
+
       props.setShapes(propShapes, propShape, true);
 
       resetStates();
@@ -264,6 +282,7 @@ export default function AddSiteStep3(props) {
               hidden
               type="file"
               id={`fileinput${index}`}
+              accept="application/pdf"
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
@@ -317,6 +336,7 @@ export default function AddSiteStep3(props) {
               hidden
               type="file"
               id={`fileinput${index}`}
+              accept="application/pdf"
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (
@@ -383,7 +403,7 @@ export default function AddSiteStep3(props) {
                 <FormSelect
                   name="levelNumber"
                   value={levelNumber}
-                  // error={levelNumber}
+                  placeholder="Level Number"
                   style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)

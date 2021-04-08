@@ -105,9 +105,34 @@ const App = (props) => {
   };
 
   const handlePdfChange = (pdfUri, pdf) => {
-    console.log("pdf", pdfUri, pdf);
     setPdf(pdfUri);
+    onAddLevelImage(sitePic.exteriorBuilding.levels[0]._id, pdf);
   };
+
+  // =========================================
+  const onAddLevelImage = async (levelId, file) => {
+    try {
+      const formdata = new FormData();
+      formdata.append("image", file);
+      formdata.append("levelId", levelId);
+
+      await GLOBALS.API({
+        method: "PUT",
+        uri: GLOBALS.Constants.LEVEL_IMAGE,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  // =========================================
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
