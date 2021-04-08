@@ -75,8 +75,7 @@ export default function AddMean(props) {
       if (response.data.site_storage_areas !== null) {
         const temp = [];
         response.data.site_storage_areas.map((item) =>
-          // temp.push({ label: item.name, value: item._id }),
-          console.log("storageArea", item),
+          temp.push({ label: item.name, value: item._id }),
         );
         setStorageAreas(temp);
       }
