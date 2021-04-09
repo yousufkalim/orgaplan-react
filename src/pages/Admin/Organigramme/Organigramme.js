@@ -6,6 +6,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
+// import DeliveryRequest from "./DeliveryRequest";
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
@@ -323,6 +324,7 @@ export default function Organigramme(props) {
           </Form.Form>
         }
       />
+      {/* <DeliveryRequest /> */}
     </>
   );
 }

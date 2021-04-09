@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 import moment from "moment";
 
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
+  },
+  chip: {
+    color: theme.palette.primary.contrastText,
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -44,8 +49,9 @@ export default function DeliveryArea(props) {
 
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [deliveryAreas, setDeliveryAreas] = useState([]);
+  const [means, setMeans] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -54,10 +60,6 @@ export default function DeliveryArea(props) {
 
   async function fetchData() {
     try {
-      const means = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
       const companies = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
         token: store.token,
@@ -66,14 +68,6 @@ export default function DeliveryArea(props) {
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-
-      const meansTempArray = [];
-      means.data.map((item) =>
-        meansTempArray.push({
-          value: item._id,
-          label: item.name,
-        }),
-      );
 
       const companiesTempArray = [];
       companies.data.companies.map((item) =>
@@ -94,6 +88,12 @@ export default function DeliveryArea(props) {
       setCompanies(companiesTempArray);
       setDeliveryAreas(deliveryAreasTempArray);
       if (props.selectedShape) {
+        const means = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,
+          token: store.token,
+        });
+        setMeans(means.data.map((item) => item.name));
+
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
         setColor(props.selectedShape.color);
@@ -323,9 +323,11 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Means Allowed: " />
-          <Form.Row noMargin width="65%">
-            'Mean 1', 'Mean 2'
+          <FormLabel bold primary="Means : " />
+          <Form.Row noMargin width="65%" justifyContent="flex-start">
+            {means.map((mean, index) => (
+              <Chip key={index} label={mean} className={classes.chip} />
+            ))}
           </Form.Row>
         </Form.Row>
         <Form.Row>

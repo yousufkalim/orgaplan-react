@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 
 import GLOBALS from "../../../globals";
@@ -13,7 +14,6 @@ import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
-import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 
@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
+  },
+  chip: {
+    color: theme.palette.primary.contrastText,
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -51,21 +55,13 @@ export default function DeliveryArea(props) {
 
   async function fetchData() {
     try {
-      const means = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-
-      const meansTempArray = [];
-      means.data.map((item) =>
-        meansTempArray.push({
-          value: item._id,
-          label: item.name,
-        }),
-      );
-
-      setMeans(meansTempArray);
       if (props.selectedShape) {
+        const means = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_MEANS}/${props.selectedShape.deliveryArea._id}`,
+          token: store.token,
+        });
+        setMeans(means.data.map((item) => item.name));
+
         const addressAr = props.selectedShape.deliveryArea.addresses.map(
           (address) => ({
             _id: address._id,
@@ -299,8 +295,10 @@ export default function DeliveryArea(props) {
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary="Means: " />
-          <Form.Row noMargin width="65%">
-            'Mean 1'
+          <Form.Row noMargin width="65%" justifyContent="flex-start">
+            {means.map((mean, index) => (
+              <Chip key={index} label={mean} className={classes.chip} />
+            ))}
           </Form.Row>
         </Form.Row>
         <Form.Row>
