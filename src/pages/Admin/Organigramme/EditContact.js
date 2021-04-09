@@ -75,12 +75,6 @@ export default function EditContact(props) {
 
   async function fetchData() {
     try {
-      // const typeArray = [
-      //   { value: "Logistic ", label: "Logistic" },
-      //   { value: "Site ", label: "Site" },
-      // ];
-
-      // setDropdownType(typeArray);
       await setValues();
       setLoading(false);
     } catch (err) {
@@ -150,16 +144,6 @@ export default function EditContact(props) {
     else if (name === "role") setRole(value);
   };
 
-  // const handleChange = (name, value) => {
-  //   if (name === "email") setEmail(value);
-  //   else if (name === "phone") setPhone(value);
-  //   else if (name === "firstName") setFirstName(value);
-  //   else if (name === "lastName") setLastName(value);
-  //   else if (name === "image") setImage(value);
-  //   else if (name === "company") setCompany(value);
-  //   else if (name === "role") setRole(value);
-  // };
-
   async function onDelete() {
     try {
       if (window.confirm("Are you sure, you want to delete this?")) {
@@ -223,7 +207,7 @@ export default function EditContact(props) {
           body: formdata,
         });
         setLoading(false);
-        props.history.goBack();
+        props.history.push("/organigramme", { type: type });
       }
     } catch (err) {
       dispatch(
@@ -246,7 +230,7 @@ export default function EditContact(props) {
             <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
             <Form.Row noMargin width="55%">
               <FormSelect
-                name="type" //working
+                name="type"
                 value={type}
                 // error={companyId}
                 values={[

@@ -102,14 +102,9 @@ export default function AddUser(props) {
 
   const handleSubmit = () => {};
 
-  // const onSubmit = async (e) => {
-
-  // }
   const onSubmit = async () => {
     try {
       var formdata = new FormData();
-      // formdata.append("image", values.logo[0].file);
-      //formdata.append("name", values.name);
       if (logo[0]?.file) {
         formdata.append("image", logo[0].file);
       }
@@ -209,10 +204,6 @@ export default function AddUser(props) {
                 onChange={(e) => {
                   setPhone(e.target.value);
                 }}
-
-                // onChange={formik.handleChange}
-                // value={formik.values.phone}
-                // error={formik.errors.phone}
               />
             </Form.Row>
           </Form.Row>

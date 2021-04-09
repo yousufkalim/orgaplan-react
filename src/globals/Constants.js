@@ -10,10 +10,12 @@ const endpoints = {
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
-
+  RESEND_EMAIL_VERIFICATION: BASE_URL_V1 + "auth/request-email-verification",
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ADMIN_GET: BASE_URL_V1 + "superadmin/admins/get",
+  USER_GET: BASE_URL_V1 + "auth/get",
+
   ADMIN_DELETE: BASE_URL_V1 + "superadmin/admins/delete",
   ADMIN_REGISTRATION: BASE_URL_V1 + "superadmin/admins/complete-registeration",
   BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
