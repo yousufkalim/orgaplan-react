@@ -37,7 +37,6 @@ export default function DeliveryArea(props) {
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
-  const [selectedMeans, setSelectedMeans] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
@@ -86,7 +85,6 @@ export default function DeliveryArea(props) {
         setEndDate(props.selectedShape.deliveryArea.availability.end);
         setAddresses(addressAr);
         setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
-        setSelectedMeans(props.selectedShape.deliveryArea.means);
         setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
@@ -114,8 +112,7 @@ export default function DeliveryArea(props) {
     } else if (name === "unavailabilities") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
-    } else if (name === "means") setSelectedMeans(value);
-    else if (name === "vehicles") setVehicles(value);
+    } else if (name === "vehicles") setVehicles(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") {
@@ -149,7 +146,6 @@ export default function DeliveryArea(props) {
           end: endDate,
         },
         siteId: adminStore.site.siteId._id,
-        means: selectedMeans,
         vehicles: vehiclesAr,
         notificationPriorToDays,
         notificationTo: notificationToAr,
@@ -256,37 +252,6 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
-          <Form.Row noMargin width="65%">
-            <DeliveryAreaAddressModal
-              max={endDate}
-              min={startDate}
-              name="addresses"
-              values={addresses}
-              // error={addresses}
-              disabled={!startDate || !endDate}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
-              onChange={(values) => handleChange("addresses", values)}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="Means: " />
-          <Form.Row noMargin width="65%">
-            <FormMultiSelect
-              name="means"
-              values={means}
-              placeholder="Means"
-              value={selectedMeans}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
             <div
@@ -306,6 +271,21 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
+          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
+          <Form.Row noMargin width="65%">
+            <DeliveryAreaAddressModal
+              max={endDate}
+              min={startDate}
+              name="addresses"
+              values={addresses}
+              disabled={!startDate || !endDate}
+              style={GLOBALS.Styles.inputWidth}
+              placeholder="Enter site addresses"
+              onChange={(values) => handleChange("addresses", values)}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
           <FormLabel bold primary="Vehicles: " />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
@@ -315,6 +295,12 @@ export default function DeliveryArea(props) {
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => handleChange("vehicles", values)}
             />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="Means: " />
+          <Form.Row noMargin width="65%">
+            'Mean 1'
           </Form.Row>
         </Form.Row>
         <Form.Row>

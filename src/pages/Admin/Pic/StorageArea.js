@@ -37,7 +37,6 @@ export default function DeliveryArea(props) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]);
-  const [selectedMeans, setSelectedMeans] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
@@ -46,7 +45,6 @@ export default function DeliveryArea(props) {
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
-  const [means, setMeans] = useState([]);
   const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
@@ -93,7 +91,6 @@ export default function DeliveryArea(props) {
         }),
       );
 
-      setMeans(meansTempArray);
       setCompanies(companiesTempArray);
       setDeliveryAreas(deliveryAreasTempArray);
       if (props.selectedShape) {
@@ -103,7 +100,6 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end);
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
-        setSelectedMeans(props.selectedShape.storageArea.means);
         setUnavailabilities(props.selectedShape.storageArea.unavailabilities);
         setSelectedCompanies(props.selectedShape.storageArea.companies);
         setNotificationPriorToDays(
@@ -128,7 +124,6 @@ export default function DeliveryArea(props) {
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "deliveryAreas") setSelectedDeliveryAreas(value);
-    else if (name === "means") setSelectedMeans(value);
     else if (name === "unavailabilities") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
@@ -158,7 +153,6 @@ export default function DeliveryArea(props) {
           end: endDate,
         },
         deliveryArea: selectedDeliveryAreas,
-        means: selectedMeans,
         unavailabilities,
         companies: selectedCompanies,
         notificationPriorToDays,
@@ -220,7 +214,7 @@ export default function DeliveryArea(props) {
             control={
               <Checkbox
                 name="isFull"
-                color="error"
+                color="default"
                 checked={isFull}
                 onChange={({ target: { name, checked } }) =>
                   handleChange(name, checked)
@@ -280,36 +274,6 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Delivery Areas: " />
-          <Form.Row noMargin width="65%">
-            <FormMultiSelect
-              name="deliveryAreas"
-              values={deliveryAreas}
-              placeholder="Delivery Areas"
-              value={selectedDeliveryAreas}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="Available Means: " />
-          <Form.Row noMargin width="65%">
-            <FormMultiSelect
-              name="means"
-              values={means}
-              placeholder="Means"
-              value={selectedMeans}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
           <FormLabel bold primary="Unavailabilities: " />
           <Form.Row noMargin width="65%">
             <div
@@ -329,7 +293,22 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Companies Allowed: " />
+          <FormLabel bold primary="Delivery Areas: " />
+          <Form.Row noMargin width="65%">
+            <FormMultiSelect
+              name="deliveryAreas"
+              values={deliveryAreas}
+              placeholder="Delivery Areas"
+              value={selectedDeliveryAreas}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={({ target: { name, value } }) =>
+                handleChange(name, value)
+              }
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="Companies: " />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="companies"
@@ -341,6 +320,12 @@ export default function DeliveryArea(props) {
                 handleChange(name, value)
               }
             />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="Means Allowed: " />
+          <Form.Row noMargin width="65%">
+            'Mean 1', 'Mean 2'
           </Form.Row>
         </Form.Row>
         <Form.Row>

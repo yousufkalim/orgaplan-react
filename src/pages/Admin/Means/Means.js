@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -31,15 +30,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
     backgroundColor: theme.palette.secondary.main,
   },
-  link: {
-    marginRight: 20,
-    whiteSpace: "nowrap",
-    color: theme.palette.primary.contrastText,
-  },
-  image: {
-    height: 70,
-    borderRadius: theme.shape.borderRadius,
-  },
 }));
 
 const Means = () => {
@@ -47,93 +37,61 @@ const Means = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([]);
 
-  const [siteDeliveryAreas, setSiteDeliveryAreas] = useState([]);
-  const [dropdownDeliveryAreas, setDropdownDeliveryAreas] = useState([]);
-  const [selectedDropdownArea, setSelectedDropdownArea] = useState("");
-  const [
-    selectedSiteDeliveryAreadIndex,
-    seltSelectedSiteDeliveryAreaIndex,
-  ] = useState(null);
-
-  const [locations, setLocations] = useState([]);
-  const [dropdownLocations, setDropdownLocations] = useState([]);
-  const [selectedLocationIndex, setSelectedLocationIndex] = useState(0);
-
-  const [types, setTypes] = useState([]);
-  const [doropdownTypes, setDropdownTypes] = useState([]);
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState(0);
-  const [selectedType, setSelectedType] = useState("");
-
-  const [status, setStatus] = useState([]);
-  const [dropdownStatus, setDropdownStatus] = useState([]);
-  const [selectedStatusIndex, setSelectedStatusIndex] = useState(0);
-  const [selectedStatus, setSelectedStatus] = useState("");
-
-  const [company, setCompany] = useState([]);
-  const [dropdownCompany, setDropdownCompany] = useState([]);
-  const [selectedCompanyIndex, setSeletedCompanyIndex] = useState(0);
-  const [selectedCompany, setSelectedCompany] = useState("");
-
-  const [levels, setLevels] = useState([]);
-  const [dropdownLevels, setDropdownLevels] = useState([]);
-  const [selectedDropdownLevelIndex, setSelectedDropdownLevelIndex] = useState(
-    0,
-  );
-  const [disableDropdpwn, setDisableDropdown] = useState(true);
-  const [disableStorageDropdown, setDisableStorageDropdow] = useState(true);
-
-  const [storageAreas, setStorageAreas] = useState([]);
-  const [droprownStorageAreas, setDropdownStorageAreas] = useState([]);
-  const [
-    selectedDropdownStorageAreaIndex,
-    setSelectedDropdownStorageAreaIndex,
-  ] = useState(0);
-  const [selectedStorageArea, setSelectedStorageArea] = useState("");
   const [means, setMeans] = useState([]);
-  const [meanText, setMeanText] = useState("");
+  const [totalMeans, setTotalMeans] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const formik = useFormik({
-    initialValues: {
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    // validationSchema: addClientYup,
-    // onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
+  const [deliveryArea, setDeliveryArea] = useState("");
+  const [deliveryAreas, setDeliveryAreas] = useState([]);
+  const [building, setBuilding] = useState("");
+  const [buildings, setBuildings] = useState([]);
+  const [buildingObj, setBuildingsObj] = useState([]);
+  const [level, setLevel] = useState("");
+  const [levels, setLevels] = useState([]);
+  const [storageArea, setStorageArea] = useState("");
+  const [storageAreas, setStorageAreas] = useState([]);
+  const [type, setType] = useState("");
+  const [types, setTypes] = useState([]);
+  const [company, setCompany] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [status, setStatus] = useState("");
+  const [statuses, setStatuses] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [name, setName] = useState("");
 
-  useEffect(() => {
-    filterMean();
-    // eslint-disable-next-line
-  }, [
-    selectedSiteDeliveryAreadIndex,
-    selectedLocationIndex,
-    selectedDropdownLevelIndex,
-    selectedDropdownStorageAreaIndex,
-    selectedStorageArea,
-    selectedTypeIndex,
-    selectedType,
-    selectedCompanyIndex,
-    selectedCompany,
-    selectedStatusIndex,
-    selectedStatus,
-    formik.values.contractStartDate,
-    formik.values.contractEndDate,
-  ]);
   useEffect(() => {
     getMeans();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    filterMean();
+    // eslint-disable-next-line
+  }, [deliveryArea, storageArea, type, company, status, startDate, endDate]);
+
+  useEffect(() => {
+    let build = buildingObj.find((lo) => lo._id === building);
+    if (build) {
+      if (build.buildingType === "EXTERIOR") {
+        setLevel("");
+        setStorageArea("");
+      } else {
+        setStorageArea("");
+        setLevels(
+          build.levels.map((bu) => ({
+            label: bu.number,
+            value: bu._id,
+          })),
+        );
+      }
+    } else {
+      setLevel("");
+      setStorageArea("");
+    }
+    // eslint-disable-next-line
+  }, [building]);
 
   const getMeans = async () => {
     try {
@@ -141,183 +99,41 @@ const Means = () => {
         uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        setMeans(response.data.means);
-
-        if (response.data.means !== null) {
-          let temp = [];
-          response.data.means.map((item) => {
-            let data = [];
-            data[0] = item.name;
-            data[1] = item.status;
-            data[2] = item.meanType;
-
-            data[3] = item.location
-              .map((innerItem) => {
-                if (
-                  innerItem.storageArea &&
-                  innerItem.locationType !== undefined &&
-                  innerItem.locationType === "STORAGEAREA"
-                ) {
-                  return innerItem.storageArea.name;
-                }
-                return "";
-              })
-              .toString()
-              .replace(/,/g, " ");
-            data[4] = item.location
-              .map((innerItem) => {
-                if (
-                  innerItem.deliveryArea &&
-                  innerItem.locationType !== undefined &&
-                  innerItem.locationType === "DELIVERYAREA"
-                ) {
-                  return innerItem.deliveryArea.name;
-                }
-                return "";
-              })
-              .toString()
-              .replace(/,/g, " ");
-            temp.push(data);
-            return true;
-          });
-
-          setItems(temp);
-        }
-
-        if (response.data.site_delivery_areas !== null) {
-          const temp = [];
-          response.data.site_delivery_areas.map((item) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
-          setSiteDeliveryAreas(response.data.site_delivery_areas);
-          setDropdownDeliveryAreas(temp);
-        }
-
-        if (response.data.site_companies !== null) {
-          const temp = [];
-          response.data.site_companies.map((item) => {
-            return temp.push({
-              label: item.companyId.name,
-              value: item.companyId.name,
-            });
-          });
-          setCompany(response.data.site_companies);
-          setDropdownCompany(temp);
-        }
-
-        if (response.data.site_locations !== null) {
-          setLocations(response.data.site_locations);
-          const temp = [];
-          response.data.site_locations.map((item) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
-          setDropdownLocations(temp);
-        }
-
-        if (response.data.mean_types !== null) {
-          setTypes(response.data.mean_types);
-          const temp = [];
-          response.data.mean_types.map((item) =>
-            temp.push({ label: item, value: item }),
-          );
-          setDropdownTypes(temp);
-        }
-
-        if (response.data.mean_status !== null) {
-          setStatus(response.data.mean_status);
-          const temp = [];
-          response.data.mean_status.map((item) => {
-            return temp.push({ label: item, value: item });
-          });
-          setDropdownStatus(temp);
-        }
-      } else {
-      }
-
-      setLoading(false);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
+      setTotalMeans(response.data.total_means);
+      setDeliveryAreas(
+        response.data.site_delivery_areas.map((item) => ({
+          label: item.name,
+          value: item._id,
+        })),
       );
-    }
-  };
-
-  const getExternalMeans = async () => {
-    try {
-      setLoading(true);
-
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_EXTERIOR_MEANS}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-
-      if (response.success) {
-        const tempStorageAreas = [];
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-
-          response.data.map((item) => {
-            item.location.map((innerItem) => {
-              if (innerItem.locationType === "STORAGEAREA") {
-                tempStorageAreas.push(innerItem);
-                return temp.push({
-                  label: innerItem.storageArea.name,
-                  value: innerItem.storageArea.name,
-                });
-              }
-              return true;
-            });
-            return true;
-            //
-          });
-          setStorageAreas(tempStorageAreas);
-          setDropdownStorageAreas(temp);
-        }
-
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
+      setStorageAreas(
+        response.data.site_storage_areas.map((item) => ({
+          label: item.name,
+          value: item._id,
+          type: item.location,
+        })),
       );
-    }
-  };
-
-  const getLevels = async (buidlingId) => {
-    try {
-      setLoading(true);
-
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
-        token: store.token,
-      });
-
-      if (response.success) {
-        setLevels(response.data);
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-          response.data.map((item) =>
-            temp.push({ label: item.number, value: item.number }),
-          );
-
-          setDropdownLevels(temp);
-        }
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
+      setCompanies(
+        response.data.site_companies.map((item) => ({
+          label: item.companyId.name,
+          value: item.companyId._id,
+        })),
+      );
+      setBuildingsObj(response.data.site_locations);
+      setBuildings(
+        response.data.site_locations.map((item) => ({
+          label: item.name,
+          value: item._id,
+        })),
+      );
+      setTypes(
+        response.data.mean_types.map((item) => ({ label: item, value: item })),
+      );
+      setStatuses(
+        response.data.mean_status.map((item) => ({ label: item, value: item })),
+      );
       setLoading(false);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -330,64 +146,22 @@ const Means = () => {
     try {
       setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
-      if (meanText.length !== 0) params["name"] = meanText;
-      if (selectedDropdownArea.length !== 0)
-        params["deliveryArea"] =
-          siteDeliveryAreas[selectedSiteDeliveryAreadIndex]._id;
-      if (selectedStorageArea.length !== 0)
-        params["storageArea"] =
-          storageAreas[selectedDropdownStorageAreaIndex]._id;
-      if (selectedCompany.length !== 0)
-        params["company"] = company[selectedCompanyIndex].companyId._id;
-      if (selectedType.length !== 0) params["type"] = types[selectedTypeIndex];
-      if (selectedStatus.length !== 0)
-        params["status"] = status[selectedStatusIndex];
-      if (!isNaN(moment(formik.values.contractStartDate)))
-        params["startDate"] = formik.values.contractStartDate;
-      if (!isNaN(moment(formik.values.contractEndDate)))
-        params["endDate"] = formik.values.contractEndDate;
+      deliveryArea && (params["deliveryArea"] = deliveryArea);
+      storageArea && (params["storageArea"] = storageArea);
+      type && (params["type"] = type);
+      company && (params["company"] = company);
+      status && (params["status"] = status);
+      startDate && (params["startDate"] = startDate);
+      endDate && (params["endDate"] = endDate);
+      name && (params["name"] = name);
+
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
         token: store.token,
         method: "POST",
         body: JSON.stringify(params),
       });
-      let temp = [];
-      response.data.map((item) => {
-        let data = [];
-        data[0] = item.name;
-        data[1] = item.status;
-        data[2] = item.meanType;
-        data[3] = item.location
-          .map((innerItem) => {
-            if (
-              innerItem.storageArea &&
-              innerItem.locationType !== undefined &&
-              innerItem.locationType === "STORAGEAREA"
-            ) {
-              return innerItem.storageArea.name;
-            }
-            return "";
-          })
-          .toString()
-          .replace(/,/g, " ");
-        data[4] = item.location
-          .map((innerItem) => {
-            if (
-              innerItem.deliveryArea &&
-              innerItem.locationType !== undefined &&
-              innerItem.locationType === "DELIVERYAREA"
-            ) {
-              return innerItem.deliveryArea.name;
-            }
-            return "";
-          })
-          .toString()
-          .replace(/,/g, " ");
-        return temp.push(data);
-      });
-      setItems(temp);
-      setLoading(false);
+      setMeans(response.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -399,284 +173,296 @@ const Means = () => {
     }
   };
 
-  const getStorageAreasByLevel = async (levelId) => {
-    try {
-      setLoading(true);
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_LEVEL_ID}/${levelId}`,
-        token: store.token,
-      });
+  // const getExternalMeans = async () => {
+  //   try {
+  //     setLoading(true);
 
-      if (response.success) {
-        setStorageAreas(response.data);
-        if (response.data !== null && response.data.length > 0) {
-          const temp = [];
-          response.data.map((item) => {
-            return temp.push({ label: item.name, value: item.name });
-          });
+  //     const response = await GLOBALS.API({
+  //       uri: `${GLOBALS.Constants.GET_EXTERIOR_MEANS}/${adminStore.site.siteId._id}`,
+  //       token: store.token,
+  //     });
 
-          setDropdownStorageAreas(temp);
-        }
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
+  //     if (response.success) {
+  //       const tempStorageAreas = [];
+  //       if (response.data !== null && response.data.length > 0) {
+  //         const temp = [];
 
-  const rows = items.map((item, index) => {
-    return [
-      ...item,
-      <div>
-        <NavLink
-          to={{
-            pathname: "/means/calendar",
-            mean: means[index],
-          }}
-        >
-          <img
-            src={Images.calender}
-            style={{ width: 18, height: 15, paddingLeft: 5 }}
-            alt="Icon"
-          />
-        </NavLink>
-        <NavLink
-          to={{
-            pathname: "/means/mean-history",
-            mean: means[index],
-          }}
-        >
-          <img
-            src={Images.incidents}
-            style={{ width: 18, height: 15, paddingLeft: 5 }}
-            alt="Icon"
-          />
-        </NavLink>
-      </div>,
-    ];
-  });
+  //         response.data.map((item) => {
+  //           item.location.map((innerItem) => {
+  //             if (innerItem.locationType === "STORAGEAREA") {
+  //               tempStorageAreas.push(innerItem);
+  //               return temp.push({
+  //                 label: innerItem.storageArea.name,
+  //                 value: innerItem.storageArea.name,
+  //               });
+  //             }
+  //             return true;
+  //           });
+  //           return true;
+  //           //
+  //         });
+  //         setStorageAreas(tempStorageAreas);
+  //         // setDropdownStorageAreas(temp);
+  //       }
+
+  //       setLoading(false);
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setLoading(false);
+  //     dispatch(
+  //       Actions.notistack.enqueueSnackbar(
+  //         Actions.notistack.snackbar(err.message, "error"),
+  //       ),
+  //     );
+  //   }
+  // };
+
+  // const getLevels = async (buidlingId) => {
+  //   try {
+  //     setLoading(true);
+
+  //     const response = await GLOBALS.API({
+  //       uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
+  //       token: store.token,
+  //     });
+
+  //     if (response.success) {
+  //       // setLevels(response.data);
+  //       if (response.data !== null && response.data.length > 0) {
+  //         const temp = [];
+  //         response.data.map((item) =>
+  //           temp.push({ label: item.number, value: item.number }),
+  //         );
+
+  //         // setDropdownLevels(temp);
+  //       }
+  //       setLoading(false);
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setLoading(false);
+  //     dispatch(
+  //       Actions.notistack.enqueueSnackbar(
+  //         Actions.notistack.snackbar(err.message, "error"),
+  //       ),
+  //     );
+  //   }
+  // };
+
+  // const getStorageAreasByLevel = async (levelId) => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await GLOBALS.API({
+  //       uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_LEVEL_ID}/${levelId}`,
+  //       token: store.token,
+  //     });
+
+  //     if (response.success) {
+  //       setStorageAreas(response.data);
+  //       if (response.data !== null && response.data.length > 0) {
+  //         const temp = [];
+  //         response.data.map((item) => {
+  //           return temp.push({ label: item.name, value: item.name });
+  //         });
+
+  //         setDropdownStorageAreas(temp);
+  //       }
+  //       setLoading(false);
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const rows = means.map((item) => [
+    item.name,
+    item.status,
+    item.meanType,
+    item.location
+      .map((loca) =>
+        loca.storageArea &&
+        loca.locationType !== undefined &&
+        loca.locationType === "STORAGEAREA"
+          ? loca.storageArea.name
+          : "",
+      )
+      .join(" "),
+    item.location
+      .map((loca) =>
+        loca.deliveryArea &&
+        loca.locationType !== undefined &&
+        loca.locationType === "DELIVERYAREA"
+          ? loca.deliveryArea.name
+          : "",
+      )
+      .join(" "),
+    <div>
+      <NavLink
+        to={{
+          pathname: "/means/calendar",
+          mean: item,
+        }}
+      >
+        <img
+          src={Images.calender}
+          style={{ width: 18, height: 15, paddingLeft: 5 }}
+          alt="Icon"
+        />
+      </NavLink>
+      <NavLink
+        to={{
+          pathname: "/means/mean-history",
+          mean: item,
+        }}
+      >
+        <img
+          src={Images.incidents}
+          style={{ width: 18, height: 15, paddingLeft: 5 }}
+          alt="Icon"
+        />
+      </NavLink>
+    </div>,
+  ]);
 
   return (
     <div className={classes.root}>
-      <Form.Row alignItems="center">
-        <Heading primary="LIST OF MEANS" noWrap />
-        <div>
-          <Form.Row
-            alignItems="flex-start"
-            noMargin
-            justifyContent="flex-end"
-            style={{ paddingRight: "50px" }}
-          >
-            <SubHeading
-              noMargin
-              topPadding
-              primary={`TOTAL : ${means.length} means`}
-              bold
-            />
-            <Form.Column style={{ width: "50%" }}>
-              <Button
-                fullWidth={false}
-                component={NavLink}
-                text="MEANS REQUEST"
-                disabled={loading}
-                to={"/sites/means-request"}
-                style={{ marginLeft: "20px", width: "200px" }}
-              />
-            </Form.Column>
-          </Form.Row>
-        </div>
-      </Form.Row>
-      <Form.Row alignItems="center" noMargin>
-        <Form.Row justifyContent="flex-start" noMargin>
-          <FormSelect
-            placeholder="Delivery area"
-            values={dropdownDeliveryAreas}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-
-              if (index !== -1) {
-                const item = event.target.value;
-
-                seltSelectedSiteDeliveryAreaIndex(index);
-
-                setSelectedDropdownArea(item);
-              } else {
-                seltSelectedSiteDeliveryAreaIndex(null);
-
-                setSelectedDropdownArea("");
-              }
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormSelect
-            placeholder="Location"
-            values={dropdownLocations}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                setSelectedLocationIndex(index);
-                // Reset Levels
-                setSelectedDropdownLevelIndex(0);
-                setDropdownLevels([]);
-                // Reset Storage Area
-                setSelectedDropdownStorageAreaIndex(0);
-                setSelectedStorageArea("");
-                setDropdownStorageAreas([]);
-                setDisableStorageDropdow(true);
-                // Reset Storage Means
-                if (locations[index].buildingType === "EXTERIOR") {
-                  setDisableDropdown(true);
-                  getExternalMeans(); //working
-                  setDisableStorageDropdow(false);
-                } else {
-                  setDisableDropdown(false);
-                  getLevels(locations[index]._id);
-                }
-              } else {
-                setSelectedLocationIndex(0);
-                // Reset Levels
-                setSelectedDropdownLevelIndex(0);
-                setDropdownLevels([]);
-                // Reset Storage Area
-                setSelectedDropdownStorageAreaIndex(0);
-                setSelectedStorageArea("");
-                setDropdownStorageAreas([]);
-                // Reset Storage Means
-                setDisableStorageDropdow(true);
-              }
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormSelect
-            placeholder="Level"
-            values={dropdownLevels}
-            disabled={disableDropdpwn}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                setSelectedDropdownLevelIndex(index);
-                // Reset Storage Area
-                setSelectedDropdownStorageAreaIndex(0);
-                setSelectedStorageArea("");
-                setDropdownStorageAreas([]);
-                // Reset Storage Means
-                setDisableStorageDropdow(false);
-                getStorageAreasByLevel(levels[index]._id);
-              } else {
-                setSelectedDropdownLevelIndex(0);
-                // Reset Storage Area
-                setSelectedDropdownStorageAreaIndex(0);
-                setSelectedStorageArea("");
-                setDropdownStorageAreas([]);
-                // Reset Storage Means
-                setDisableStorageDropdow(true);
-              }
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormSelect
-            placeholder="Storage area"
-            values={droprownStorageAreas}
-            disabled={disableStorageDropdown}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                const item = event.target.value;
-                setSelectedDropdownStorageAreaIndex(index);
-                setSelectedStorageArea(item);
-              } else {
-                setSelectedDropdownStorageAreaIndex(0);
-                setSelectedStorageArea("");
-              }
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormSelect
-            placeholder="Type"
-            values={doropdownTypes}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                const item = event.target.value;
-                setSelectedTypeIndex(index);
-                setSelectedType(item);
-              } else {
-                setSelectedTypeIndex(0);
-                setSelectedType("");
-              }
-            }}
-            style={{ marginRight: "5px", maxWidth: 250 }}
+      <Form.Row alignItems="center" justifyContent="space-between">
+        <Heading primary="LIST OF MEANS" noWrap noMargin />
+        <Form.Row alignItems="center" justifyContent="flex-end" width="50%">
+          <SubHeading bold noMargin primary={`TOTAL : ${totalMeans} means`} />
+          <Button
+            fullWidth={false}
+            loading={loading}
+            disabled={loading}
+            component={NavLink}
+            text="MEANS REQUEST"
+            to={"/sites/means-request"}
+            style={{ marginLeft: "20px", width: "200px" }}
           />
         </Form.Row>
       </Form.Row>
-
-      <Form.Row alignItems="center" noMargin className="mt-3">
+      <Form.Row alignItems="center">
         <Form.Row justifyContent="flex-start" noMargin>
           <FormSelect
-            placeholder="Company"
-            values={dropdownCompany}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              const item = event.target.value;
-              if (index !== -1) {
-                setSeletedCompanyIndex(index);
-                setSelectedCompany(item);
-                //   filterMean();
-              } else {
-                setSeletedCompanyIndex(0);
-                setSelectedCompany("");
-                // filterMean();
-              }
-            }}
+            value={deliveryArea}
+            values={deliveryAreas}
+            placeholder="Select Delivery area"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setDeliveryArea(value);
+            }}
           />
           <FormSelect
-            placeholder="Status"
-            values={dropdownStatus}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                const item = event.target.value;
-                setSelectedStatusIndex(index);
-                setSelectedStatus(item);
-                // filterMean();
-              } else {
-                setSelectedStatusIndex(0);
-                setSelectedStatus("");
-                //filterMean();
-              }
+            value={building}
+            values={buildings}
+            placeholder="Location"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setBuilding(value);
             }}
+          />
+          <FormSelect
+            value={level}
+            values={levels}
+            placeholder="Level"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setLevel(value);
+            }}
+            disabled={
+              !building ||
+              buildingObj.find((lo) => lo._id === building).buildingType ===
+                "EXTERIOR"
+            }
+          />
+          <FormSelect
+            value={storageArea}
+            placeholder="Select Storage area"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setStorageArea(value);
+            }}
+            disabled={
+              !building ||
+              (buildingObj.find((lo) => lo._id === building).buildingType !==
+                "EXTERIOR" &&
+                !level)
+            }
+            values={storageAreas.filter((item) =>
+              building &&
+              buildingObj.find((lo) => lo._id === building).buildingType ===
+                "EXTERIOR"
+                ? item.type === "OUTSIDE"
+                : item.type === "INSIDE",
+            )}
+          />
+          <FormSelect
+            value={type}
+            values={types}
+            placeholder="Type"
+            style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setType(value);
+            }}
+          />
+        </Form.Row>
+      </Form.Row>
+      <Form.Row alignItems="center">
+        <Form.Row justifyContent="flex-start" noMargin>
+          <FormSelect
+            value={company}
+            values={companies}
+            placeholder="Company"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setCompany(value);
+            }}
+          />
+          <FormSelect
+            value={status}
+            values={statuses}
+            placeholder="Status"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setStatus(value);
+            }}
           />
           <FormInput
             type="date"
+            name="startDate"
+            value={startDate}
             placeholder="Start date"
-            name="contractStartDate"
-            icon
-            onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+            max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+            onChange={({ target: { value } }) => setStartDate(value)}
           />
           <FormInput
             type="date"
+            name="endDate"
+            value={endDate}
             placeholder="End date"
-            name="contractEndDate"
-            icon
-            onChange={formik.handleChange}
             style={{ marginRight: "20px", maxWidth: 250 }}
+            min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+            max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+            onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
+            value={name}
+            onClick={filterMean}
             placeholder="Mean name"
-            value={meanText}
-            onClick={() => {
-              filterMean();
-            }}
-            onChange={(event) => {
-              setMeanText(event.target.value);
-            }}
             style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setName(value);
+            }}
           />
         </Form.Row>
       </Form.Row>

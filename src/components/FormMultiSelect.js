@@ -79,7 +79,6 @@ export default function MultipleSelect(props) {
 
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
-      {/* <FormControl className={classes.formControl}> */}
       <Select
         multiple
         fullWidth
@@ -101,7 +100,6 @@ export default function MultipleSelect(props) {
           </MenuItem>
         ))}
       </Select>
-      {/* </FormControl> */}
     </div>
   );
 }
