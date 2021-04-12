@@ -59,11 +59,14 @@ export default function AddSiteStep3(props) {
   const storeAdmin = useSelector((state) => state.admin);
 
   const [update, setUpdate] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [levelNumber, setLevelNumber] = useState("");
   const [buildingName, setBuildingName] = useState("");
   const [activeBuilding, setActiveBuilding] = useState("");
+
+  const [extraBuildings, setExtraBuildings] = useState([]);
+  const [selectedBuilding, setSelectedBuilding] = useState("");
 
   useEffect(() => {
     if (props.selectedShape) {
@@ -76,8 +79,31 @@ export default function AddSiteStep3(props) {
     propsShapeCon = props.shape
       ? _.cloneDeep(props.shape)
       : _.cloneDeep(props.selectedShape);
+    fetchData();
     // eslint-disable-next-line
   }, []);
+
+  async function fetchData() {
+    try {
+      let response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.BUILDINGS_BY_SITE}/${storeAdmin.site.siteId._id}`,
+      });
+      setExtraBuildings(
+        response.data.items.filter(
+          (item) =>
+            item.buildingType !== "EXTERIOR" &&
+            !props.shapes.some((item2) => item2._id === item._id),
+        ),
+      );
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
 
   const handleChange = (name, value) => {
     if (name === "buildingName") setBuildingName(value);
@@ -250,6 +276,61 @@ export default function AddSiteStep3(props) {
     }
   };
 
+  const addExistingBuilding = async () => {
+    try {
+      setLoading(true);
+      let color;
+      if (props.selectedShape) color = props.selectedShape.building.color;
+      else color = GLOBALS.Functions.randomColor();
+
+      let buildi = extraBuildings.find((buil) => buil._id === selectedBuilding);
+      setActiveBuilding(buildi);
+      resetStates();
+
+      let propShapes = _.cloneDeep(propsShapesCon);
+      let propShape = _.cloneDeep(propsShapeCon);
+
+      let inde = propShapes.findIndex((item) => item._id === propShape._id);
+
+      propShapes[inde]._id = buildi._id;
+      propShape._id = buildi._id;
+      propShapes[inde].name = buildingName;
+      propShape.name = buildingName;
+      propShapes[inde].color = color;
+      propShape.color = color;
+      propShapes[inde].building = buildi;
+      propShape.building = buildi;
+      propShapes[inde].levels = [];
+      propShape.levels = [];
+
+      if (!props.selectedShape) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            building: buildi._id,
+            ...propShape,
+          }),
+        });
+      }
+      setLoading(false);
+
+      propsShapesCon = _.cloneDeep(propShapes);
+      propsShapeCon = _.cloneDeep(propShape);
+
+      props.setShapes(propShapes, propShape, true);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   const levelRows = [];
   activeBuilding.levels?.map((level, index) =>
     activeBuilding.name === "Exterior"
@@ -366,6 +447,39 @@ export default function AddSiteStep3(props) {
     <div>
       {!activeBuilding && (
         <Form.Form>
+          <Form.Row justifyContent="center">
+            <FormLabel noMargin bold primary="Select a Building" />
+          </Form.Row>
+          <Form.Row>
+            <Form.Row noMargin>
+              <FormLabel noMargin bold primary="Building" />
+            </Form.Row>
+            <FormSelect
+              name="buildingName"
+              value={selectedBuilding}
+              placeholder="Building Name"
+              style={GLOBALS.Styles.inputWidth}
+              onChange={async ({ target: { value } }) =>
+                setSelectedBuilding(value)
+              }
+              values={extraBuildings.map((buil) => ({
+                label: buil.name,
+                value: buil._id,
+              }))}
+            />
+          </Form.Row>
+          <Form.Row justifyContent="center">
+            <Button
+              minWidth={200}
+              text="VALIDATE"
+              fullWidth={false}
+              onClick={addExistingBuilding}
+              disabled={loading || !selectedBuilding}
+            />
+          </Form.Row>
+          <Form.Row justifyContent="center">
+            <FormLabel noMargin bold primary="OR Create a building" />
+          </Form.Row>
           <Form.Row>
             <Form.Row noMargin>
               <FormLabel noMargin bold primary="Building Name" />

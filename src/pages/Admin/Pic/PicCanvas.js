@@ -233,7 +233,6 @@ const App = (props) => {
               pdf={pdf}
             />
           )}
-          {console.log("shapes", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>
@@ -310,7 +309,7 @@ const App = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title="ADD DELIVERY AREA"
+              title={`${shape ? "ADD" : "Edit"} DELIVERY AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -332,7 +331,7 @@ const App = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title="ADD STORAGE AREA"
+              title={`${shape ? "ADD" : "Edit"} STORAGE AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -354,7 +353,7 @@ const App = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title="ADD Building"
+              title={`${shape ? "ADD" : "Edit"} BUILDING`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -374,7 +373,7 @@ const App = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title="ADD MEAN"
+              title={`${shape ? "ADD" : "Edit"} MEAN`}
               open={modal}
               onClose={() => {
                 checkShape();
