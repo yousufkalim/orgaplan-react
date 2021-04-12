@@ -217,7 +217,7 @@ export default function AddSiteStep1(props) {
           <MultiAdderInput
             name="trades"
             values={trades}
-            placeholder="Entert trades"
+            placeholder="Enter trades"
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
           />

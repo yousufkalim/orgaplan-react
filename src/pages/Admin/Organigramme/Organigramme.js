@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
+// import DeliveryRequest from "./DeliveryRequest";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -162,6 +163,103 @@ export default function Organigramme(props) {
           />
         </div>
       </div>
+      <Modal
+        title="THIERRY MARLES"
+        open={open}
+        onClose={() => modalHandler(false)}
+        body={
+          <Form.Form onSubmit={onUpdate}>
+            <Form.Row justifyContent="center">
+              <AvatarUpload
+                value={image}
+                // error={image}
+                onChange={(file) => {
+                  const uri = URL.createObjectURL(file);
+                  handleChange("image", { file, uri });
+                }}
+              />
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <FormInput
+                name="firstName"
+                value={firstName}
+                // error={firstName}
+                placeholder="First Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <FormInput
+                name="lastName"
+                value={lastName}
+                // error={lastName}
+                placeholder="Last Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <FormInput
+                name="phone"
+                placeholder="Phone Number"
+                value={phone}
+                // error={phone}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                style={GLOBALS.Styles.inputWidth}
+              />
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <FormSelect
+                name="companyId"
+                value={companyId}
+                // error={companyId}
+                values={companies}
+                placeholder={companyName}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+            </Form.Row>
+            <Form.Column alignItems="center">
+              <Form.Row justifyContent="center">
+                <Button
+                  type="submit"
+                  minWidth={200}
+                  text="VALIDATE"
+                  fullWidth={false}
+                  loading={loading}
+                  disabled={
+                    loading ||
+                    !firstName ||
+                    !lastName ||
+                    !phone ||
+                    image === "" ||
+                    !companyId
+                  }
+                />
+              </Form.Row>
+              <Form.Row justifyContent="center">
+                <Button
+                  text="DELETE"
+                  minWidth="30%"
+                  fullWidth={false}
+                  disabled={loading || true}
+                  color={theme.palette.error.main}
+                />
+              </Form.Row>
+            </Form.Column>
+          </Form.Form>
+        }
+      />
+      {/* <DeliveryRequest /> */}
     </>
   );
 }
