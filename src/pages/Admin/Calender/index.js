@@ -8,6 +8,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
@@ -52,6 +53,11 @@ let formats = {
 
 const Calender = (props) => {
   // useSelecter ,useDispatchstates
+  moment.locale("es-es", {
+    week: {
+      dow: 1, //Monday is the first day of the week.
+    },
+  });
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
   const adminStore = useSelector((state) => state.admin);
@@ -92,6 +98,7 @@ const Calender = (props) => {
   const [filterDate, setFilterDate] = useState(new Date());
   const [company, setCompany] = useState([]);
   const [typeOfPlace, setTypeOfPlace] = useState([]);
+  const [companyFilter, setCompanyFilter] = useState("");
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
   const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
@@ -109,6 +116,9 @@ const Calender = (props) => {
 
   // useEffect
   useEffect(() => {
+    if (props.location.companyId != null) {
+      setEnterprise(props.location.companyId);
+    }
     if (props.location.selectedShape != null) {
       setTypeOfPlacevalue(props.location.selectedShape.type);
       if (props.location.selectedShape.type === "DELIVERYAREA") {
@@ -538,7 +548,6 @@ const Calender = (props) => {
       );
     }
   };
-
   function handleChangeTypeOfPlace(e) {
     setTypeOfPlacevalue(e.target.value);
     if (e.target.value === "DELIVERYAREA") {
@@ -582,7 +591,6 @@ const Calender = (props) => {
       );
     }
   };
-
   const getStorageSiteBysiteId = async () => {
     try {
       const response = await GLOBALS.API({
@@ -705,6 +713,7 @@ const Calender = (props) => {
       if (response.success) {
         if (typeOfPlaning === "Deliveries") {
           let colour = "";
+
           tempEvent = response.data.Deliveries.map((key, index) => {
             if (!(key.startTime && key.endTime)) {
               return {};
@@ -742,6 +751,8 @@ const Calender = (props) => {
               start: start,
               end: end,
               color: colour,
+              means: key.means,
+              company: key.companyId,
             };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
@@ -773,7 +784,7 @@ const Calender = (props) => {
       );
     }
   };
-  console.log(events);
+
   const slotPropGetter = (date) => {
     let flagDateAndTime;
     let newStyle = {
@@ -1155,13 +1166,27 @@ const Calender = (props) => {
                   }}
                 />
               </div>
+              {props.location.companyId != null ? (
+                <>
+                  <FormSelect
+                    placeholder="Enterprise"
+                    value={enterprise}
+                    values={dropdownCompany}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setEnterprise(e.target.value)}
+                  />
+                </>
+              ) : (
+                <>
+                  <FormSelect
+                    placeholder="Enterprise"
+                    values={dropdownCompany}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setEnterprise(e.target.value)}
+                  />
+                </>
+              )}
 
-              <FormSelect
-                placeholder="Enterprise"
-                values={dropdownCompany}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-                onChange={(e) => setEnterprise(e.target.value)}
-              />
               <FormSelect
                 values={[
                   { value: "Deliveries", label: "Deliveries" },
