@@ -49,12 +49,13 @@ export default function AddIncidents(props) {
   const [time, setTime] = useState("");
   const [isBillable, seIsBillable] = useState(false);
   const [price, setPrice] = useState("0");
+  const [priceDisable, setPriceDisable] = useState("");
+
   const [type, setType] = useState("");
 
   const [comment, setComment] = useState("");
   const [image, setImage] = useState([]);
   const [companies, setCompanies] = useState([]);
-
   const [generalContractor, setGeneralContractor] = useState("");
 
   useEffect(() => {
@@ -116,7 +117,13 @@ export default function AddIncidents(props) {
       setLocation(locationObject);
     }
     if (e.target.name === "description") setDescription(e.target.value);
-    if (e.target.name === "seIsBillable") seIsBillable(e.target.value);
+    if (e.target.name === "seIsBillable") {
+      if (e.target.value === "true") {
+        seIsBillable(true);
+      } else if (e.target.value === "false") {
+        seIsBillable(false);
+      }
+    }
     if (e.target.name === "price") setPrice(e.target.value);
     if (e.target.name === "comment") setComment(e.target.value);
     if (e.target.name === "profile") setImage(e.target.value);
@@ -327,12 +334,11 @@ export default function AddIncidents(props) {
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
+                  setPriceDisable(e.target.value);
                   if (e.target.value === "false") {
                     setPrice("0");
-                    seIsBillable(false);
-                  } else if (e.target.value === "true") {
-                    seIsBillable(true);
                   }
+                  return nameChange;
                 }}
               >
                 <option value={true}>Yes</option>
@@ -349,7 +355,7 @@ export default function AddIncidents(props) {
                   name="price"
                   value={price}
                   onChange={nameChange}
-                  disabled={isBillable === "false"}
+                  disabled={priceDisable === "false"}
                 />
                 <SmallText style={{ marginLeft: 10 }} primary="€" />
               </Form.Row>

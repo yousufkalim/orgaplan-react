@@ -162,6 +162,7 @@ export default function Login(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ADMIN_GET}/${uid}`,
       });
+
       setUser(result.data);
       setEmail(result.data.email);
       setExpired(false);
@@ -217,7 +218,7 @@ export default function Login(props) {
       const uid = query.get("uid");
 
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMIN_GET}/${uid}`,
+        uri: `${GLOBALS.Constants.USER_GET}/${uid}`,
       });
       setAdmin(result.data);
       setCompany(result.data.company.name);
