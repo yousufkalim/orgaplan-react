@@ -4,16 +4,19 @@ const BASE_URL_V1 = BASE_URL + "api/v1/";
 const endpoints = {
   BASE_URL,
   BASE_URL_V1,
+  FILE_SIZE: 10485760,
 
   // Auth
   LOGIN: BASE_URL_V1 + "auth/sign-in",
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
-
+  RESEND_EMAIL_VERIFICATION: BASE_URL_V1 + "auth/request-email-verification",
   // SUPERADMIN
   ADMINS: BASE_URL_V1 + "superadmin/admins",
   ADMIN_GET: BASE_URL_V1 + "superadmin/admins/get",
+  USER_GET: BASE_URL_V1 + "auth/get",
+
   ADMIN_DELETE: BASE_URL_V1 + "superadmin/admins/delete",
   ADMIN_REGISTRATION: BASE_URL_V1 + "superadmin/admins/complete-registeration",
   BUILDINGS: BASE_URL_V1 + "superadmin/buildings",
@@ -66,10 +69,12 @@ const endpoints = {
   GET_STORAGE_AREA_BY_LEVEL_ID:
     BASE_URL_V1 + "storage-area/get_by_level_id/enterprise",
 
-  GET_STORAGE_AREA_BY_SITE_ID:
-    BASE_URL_V1 + "storage-area/get_storage_site/enterprise",
+  GET_DELIVERY_AREA_MEANS: BASE_URL_V1 + "delivery-area/delivery-area-means",
   GET_DELIVERY_AREA_BY_SITE_ID:
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
+  GET_STORAGE_AREA_MEANS: BASE_URL_V1 + "storage-area/storage-area-means",
+  GET_STORAGE_AREA_BY_SITE_ID:
+    BASE_URL_V1 + "storage-area/get_storage_site/enterprise",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
   getBookingBySiteId: BASE_URL_V1 + "mean_booking/getBookingBySiteId",

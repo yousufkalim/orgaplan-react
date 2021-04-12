@@ -3,6 +3,7 @@ import Canvas from "../../../components/Canvas";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { useSelector, useDispatch } from "react-redux";
+import _ from "lodash";
 
 import Mean from "./Mean";
 import Building from "./Building";
@@ -72,7 +73,7 @@ const App = (props) => {
   const [selectedShape, setSelectedShape] = useState("");
 
   const [allLeves, setAllLevels] = useState([]);
-  const [levels, setLevels] = useState([]);
+  const [levelsDropdown, setLevelsDropdown] = useState([]);
   const [level, setLevel] = useState("");
 
   useEffect(() => {
@@ -104,10 +105,35 @@ const App = (props) => {
     }
   };
 
+  // =========================================
   const handlePdfChange = (pdfUri, pdf) => {
-    console.log("pdf", pdfUri, pdf);
     setPdf(pdfUri);
+    onAddLevelImage(sitePic.exteriorBuilding.levels[0]._id, pdf);
   };
+
+  const onAddLevelImage = async (levelId, file) => {
+    try {
+      const formdata = new FormData();
+      formdata.append("image", file);
+      formdata.append("levelId", levelId);
+
+      await GLOBALS.API({
+        method: "PUT",
+        uri: GLOBALS.Constants.LEVEL_IMAGE,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  // =========================================
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
@@ -120,15 +146,20 @@ const App = (props) => {
   const handleClick = (id, shape) => {
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
-      setAllLevels(shape.building.levels);
+      let levelsArr = _.cloneDeep(shape.building.levels);
+
+      setAllLevels(_.cloneDeep(levelsArr));
+
       let levs = [{ label: "Exterior", value: "Exterior" }];
-      shape.building.levels.map((le) =>
+
+      levelsArr.map((le) =>
         levs.push({
           label: le.number,
           value: le._id,
         }),
       );
-      setLevels(levs);
+
+      setLevelsDropdown(levs);
     }
   };
 
@@ -202,7 +233,6 @@ const App = (props) => {
               pdf={pdf}
             />
           )}
-          {console.log("shapes", shapes)}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && (
               <div className={classes.infoDrawer}>
@@ -212,7 +242,7 @@ const App = (props) => {
                   <FormSelect
                     name="level"
                     value={level}
-                    values={levels}
+                    values={levelsDropdown}
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
@@ -279,7 +309,7 @@ const App = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title="ADD DELIVERY AREA"
+              title={`${shape ? "ADD" : "Edit"} DELIVERY AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -301,7 +331,7 @@ const App = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title="ADD STORAGE AREA"
+              title={`${shape ? "ADD" : "Edit"} STORAGE AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -323,7 +353,7 @@ const App = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title="ADD Building"
+              title={`${shape ? "ADD" : "Edit"} BUILDING`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -343,7 +373,7 @@ const App = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title="ADD MEAN"
+              title={`${shape ? "ADD" : "Edit"} MEAN`}
               open={modal}
               onClose={() => {
                 checkShape();

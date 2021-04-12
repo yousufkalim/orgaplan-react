@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import { useFormik } from "formik";
@@ -91,26 +90,15 @@ export default function CustomInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update] = useState(false);
 
-  // const [street, setStreet] = useState("");
-  // const [city, setCity] = useState("");
-  // const [postal, setPostal] = useState("");
   const [chipValues, setChipValues] = useState([]);
 
   async function onSubmit() {
     let leftValue = props.leftValue;
     let rightValue = props.rightValue;
-    // let leftId = props.leftId;
     let rightId = props.rightId;
 
     let valuesTemp = [...chipValues];
     if (leftValue) {
-      // const values = {
-      //   key: leftValue.length + Date.now().toString(),
-      //   label: leftValue,
-      //   id: leftId,
-      //   type: "DELIVERYAREA",
-      // };
-      //  valuesTemp.push(values);
     }
     if (rightValue) {
       const values = {
@@ -131,8 +119,6 @@ export default function CustomInputModal(props) {
     const newValues = chipValues.filter((chip) => chip.key !== value.key);
     setChipValues(newValues);
     if (props.chipValues !== undefined) props.chipValues(newValues);
-    //props.onChange(newValues);
-    //  setUpdate((st) => !st);
   };
 
   return (
@@ -156,8 +142,8 @@ export default function CustomInputModal(props) {
           </Grid>
           {update && ""}
           <ul className={classes.chips}>
-            {chipValues.map((data) => (
-              <li key={data.key}>
+            {chipValues.map((data, index) => (
+              <li key={index}>
                 <Chip
                   label={data.label}
                   className={classes.chip}

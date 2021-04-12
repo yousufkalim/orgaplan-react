@@ -49,7 +49,6 @@ export default function AddMean(props) {
   const [loading, setLoading] = useState(true);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
-  const [meanTypes, setMeanTypes] = useState([]);
 
   useEffect(() => {
     getData();
@@ -75,17 +74,9 @@ export default function AddMean(props) {
       if (response.data.site_storage_areas !== null) {
         const temp = [];
         response.data.site_storage_areas.map((item) =>
-          // temp.push({ label: item.name, value: item._id }),
-          console.log("storageArea", item),
+          temp.push({ label: item.name, value: item._id }),
         );
         setStorageAreas(temp);
-      }
-      if (response.data.mean_types !== null) {
-        const temp = [];
-        response.data.mean_types.map((item) =>
-          temp.push({ label: item, value: item }),
-        );
-        setMeanTypes(temp);
       }
       if (props.selectedShape) {
         setName(props.selectedShape.mean.name);
@@ -104,8 +95,8 @@ export default function AddMean(props) {
         const locaAr = props.selectedShape.mean.location.map((loc) => ({
           key:
             loc.locationType === "STORAGEAREA"
-              ? loc.storageArea._id
-              : loc.deliveryArea._id,
+              ? loc.storageArea
+              : loc.deliveryArea,
           type: loc.locationType,
           label: loc.label,
         }));
@@ -253,13 +244,13 @@ export default function AddMean(props) {
           <Form.Row
             noMargin
             width="65%"
-            style={{ gap: "20px", justifyContent: "flex-start" }}
+            style={{ justifyContent: "space-between" }}
           >
             <FormInput
               name="name"
               value={name}
-              placeholder="name"
-              style={{ width: "25%" }}
+              placeholder="Name"
+              style={{ width: "32%" }}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -268,11 +259,20 @@ export default function AddMean(props) {
               name="type"
               value={meanType}
               placeholder="Type"
-              values={meanTypes}
-              style={{ width: "25%" }}
+              values={[
+                {
+                  label: "LIFTING",
+                  value: "LIFTING",
+                },
+                {
+                  label: "ROUTING",
+                  value: "ROUTING",
+                },
+              ]}
+              style={{ width: "32%" }}
               onChange={(event) => handleChange("meanType", event.target.value)}
             />
-            <div style={{ width: "25%" }}>
+            <div style={{ width: "32%" }}>
               <ColorPicker
                 color={color}
                 handleChange={(values) => handleChange("color", values.hex)}
@@ -293,29 +293,41 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="LOCATION * :  " />
+          <FormLabel bold primary="TECHNICAL SHEET :" />
+          <Form.Row noMargin width="65%">
+            <FormMultipleUpload
+              name="techSheet"
+              values={techSheet}
+              fileTypes={["application/pdf"]}
+              onChange={(values) => {
+                handleChange("techSheet", values);
+              }}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="ACCESSIBILITY * :  " />
           <Form.Row noMargin width="65%">
             <MeanLocationModal
               name="location"
               values={locations}
-              storageAreas={storageAreas}
-              deliveryAreas={deliveryAreas}
+              deliveryAreas={deliveryAreas.filter(
+                (item) => !locations.some((item2) => item2.key === item.value),
+              )}
+              storageAreas={storageAreas.filter(
+                (item) => !locations.some((item2) => item2.key === item.value),
+              )}
               onChange={(values) => handleChange("locations", values)}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary="AVAILABILITIES * :" />
-          <Form.Row
-            noMargin
-            width="65%"
-            justifyContent="flex-start"
-            style={{ gap: "20px" }}
-          >
+          <Form.Row noMargin width="65%" justifyContent="space-between">
             <FormInput
               type="date"
               name="startDate"
-              style={{ width: "300px" }}
+              style={{ width: "49%" }}
               placeholder={`Start date`}
               min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
@@ -327,7 +339,7 @@ export default function AddMean(props) {
             <FormInput
               type="date"
               placeholder="End date"
-              style={{ width: "300px" }}
+              style={{ width: "49%" }}
               name="endDate"
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -335,19 +347,6 @@ export default function AddMean(props) {
               value={endDate}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="TECHNICAL SHEET :" />
-          <Form.Row noMargin width="65%">
-            <FormMultipleUpload
-              name="techSheet"
-              values={techSheet}
-              fileTypes={["application/pdf"]}
-              onChange={(values) => {
-                handleChange("techSheet", values);
-              }}
             />
           </Form.Row>
         </Form.Row>
@@ -377,7 +376,7 @@ export default function AddMean(props) {
         <Form.Row alignItems="flex-start">
           <FormLabel bold primary="HOURLY RATE :" />
           <Form.Row noMargin width="65%">
-            <div style={{ width: "30%", height: "100%", position: "relative" }}>
+            <div style={{ width: "49%", height: "100%", position: "relative" }}>
               <FormInput
                 type="number"
                 name="rate"
@@ -417,9 +416,7 @@ export default function AddMean(props) {
               text="VALIDATE"
               loading={loading}
               fullWidth={false}
-              onClick={async () => {
-                await createMean();
-              }}
+              onClick={createMean}
               disabled={
                 loading ||
                 !name ||

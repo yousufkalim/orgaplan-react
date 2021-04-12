@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 
 import GLOBALS from "../../../globals";
@@ -13,7 +14,6 @@ import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
-import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 
@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
     marginTop: GLOBALS.Styles.pageContentMargin,
+  },
+  chip: {
+    color: theme.palette.primary.contrastText,
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -37,7 +41,6 @@ export default function DeliveryArea(props) {
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
-  const [selectedMeans, setSelectedMeans] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
@@ -52,21 +55,13 @@ export default function DeliveryArea(props) {
 
   async function fetchData() {
     try {
-      const means = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-
-      const meansTempArray = [];
-      means.data.map((item) =>
-        meansTempArray.push({
-          value: item._id,
-          label: item.name,
-        }),
-      );
-
-      setMeans(meansTempArray);
       if (props.selectedShape) {
+        const means = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_MEANS}/${props.selectedShape.deliveryArea._id}`,
+          token: store.token,
+        });
+        setMeans(means.data.map((item) => item.name));
+
         const addressAr = props.selectedShape.deliveryArea.addresses.map(
           (address) => ({
             _id: address._id,
@@ -86,7 +81,6 @@ export default function DeliveryArea(props) {
         setEndDate(props.selectedShape.deliveryArea.availability.end);
         setAddresses(addressAr);
         setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
-        setSelectedMeans(props.selectedShape.deliveryArea.means);
         setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
@@ -114,8 +108,7 @@ export default function DeliveryArea(props) {
     } else if (name === "unavailabilities") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
-    } else if (name === "means") setSelectedMeans(value);
-    else if (name === "vehicles") setVehicles(value);
+    } else if (name === "vehicles") setVehicles(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") {
@@ -149,7 +142,6 @@ export default function DeliveryArea(props) {
           end: endDate,
         },
         siteId: adminStore.site.siteId._id,
-        means: selectedMeans,
         vehicles: vehiclesAr,
         notificationPriorToDays,
         notificationTo: notificationToAr,
@@ -256,37 +248,6 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
-          <Form.Row noMargin width="65%">
-            <DeliveryAreaAddressModal
-              max={endDate}
-              min={startDate}
-              name="addresses"
-              values={addresses}
-              // error={addresses}
-              disabled={!startDate || !endDate}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
-              onChange={(values) => handleChange("addresses", values)}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
-          <FormLabel bold primary="Means: " />
-          <Form.Row noMargin width="65%">
-            <FormMultiSelect
-              name="means"
-              values={means}
-              placeholder="Means"
-              value={selectedMeans}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.Row>
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
             <div
@@ -306,6 +267,21 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
+          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
+          <Form.Row noMargin width="65%">
+            <DeliveryAreaAddressModal
+              max={endDate}
+              min={startDate}
+              name="addresses"
+              values={addresses}
+              disabled={!startDate || !endDate}
+              style={GLOBALS.Styles.inputWidth}
+              placeholder="Enter site addresses"
+              onChange={(values) => handleChange("addresses", values)}
+            />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
           <FormLabel bold primary="Vehicles: " />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
@@ -315,6 +291,14 @@ export default function DeliveryArea(props) {
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => handleChange("vehicles", values)}
             />
+          </Form.Row>
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary="Means Allowed: " />
+          <Form.Row noMargin width="65%" justifyContent="flex-start">
+            {means.map((mean, index) => (
+              <Chip key={index} label={mean} className={classes.chip} />
+            ))}
           </Form.Row>
         </Form.Row>
         <Form.Row>

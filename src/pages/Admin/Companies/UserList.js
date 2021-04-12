@@ -19,6 +19,7 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
+import { RestoreOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,12 +49,13 @@ export default function UserList(props) {
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
   const [filterUserName, setFilterUserName] = useState("");
-  const [editModel, setEditModel] = useState("");
+  // const [editModel, setEditModel] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownRoles, setDropdownRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
   const [userId, setUserId] = useState("");
   const [siteName, setSiteName] = useState("");
+  const [fullName, setFullName] = useState("");
 
   useEffect(() => {
     getData();
@@ -65,34 +67,42 @@ export default function UserList(props) {
     // eslint-disable-next-line
   }, [filterCompanyId, filterUserName]);
 
-  useEffect(() => {
-    updateEditModel();
-    // eslint-disable-next-line
-  }, [editModel]);
+  // useEffect(() => {
+  //   updateEditModel();
+  //   // eslint-disable-next-line
+  // }, [editModel]);
 
-  async function updateEditModel() {
-    if (editModel) {
-      setEmail(editModel.userId.email);
-      setPhone(editModel.userId.phone);
-      setCompanyId(editModel.companyId._id);
-      setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
-      setUserId(editModel.userId._id);
-    }
-  }
+  // async function updateEditModel() {
+  //   if (editModel) {
+  //     if (editModel.userId.isVerified) {
+  //       handleClickOpen();
+  //       setFullName(
+  //         editModel.userId.firstName + " " + editModel.userId.lastName,
+  //       );
+  //       setEmail(editModel.userId.email);
+  //       setSelectedRole(editModel.role);
+  //       setPhone(editModel.userId.phone);
+  //       setCompanyId(editModel.companyId._id);
+  //       setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
+  //       setUserId(editModel.userId._id);
+  //     } else {
+  //       resendMail();
+  //     }
+  //   }
+  // }
 
   async function filteredUser() {
     try {
       const params = { siteId: adminStore.site.siteId._id };
       if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
       if (filterUserName.length !== 0) params["name"] = filterUserName;
-
+      //working
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_USER}`,
         token: store.token,
         method: "POST",
         body: JSON.stringify(params),
       });
-      console.log("response", response.data.users);
       if (response.success) {
         if (response.data.users) {
           const data = response.data.users.filter(
@@ -120,10 +130,10 @@ export default function UserList(props) {
       console.log(props?.match?.params?.id);
       setSiteName(adminStore.site.siteId.name);
 
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
-        token: store.token,
-      });
+      // const response = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
+      //   token: store.token,
+      // });
       const userResponse = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
@@ -148,16 +158,6 @@ export default function UserList(props) {
         }
       }
       setFilterCompanyId(props?.match?.params?.id);
-
-      // if (response.success) {
-      //   ///working
-      //   const data = response.data.users.filter(
-      //     (x) => x.companyId._id === filterCompanyId,
-      //   );
-      //   // setUserList(data);
-      //   // setUsers(response.data[0].usersArray);
-      // } else {
-      // }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -195,8 +195,19 @@ export default function UserList(props) {
     }
   };
   const handleClickOpen = () => {
-    // console.log('item', e.target.value);
     setOpen(true);
+  };
+
+  const resendMail = async (email) => {
+    //working
+    // console.log("resend mail called", email);
+    const response = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.RESEND_EMAIL_VERIFICATION}?email=${email}`,
+      token: store.token,
+      method: "POST",
+      bosy: {},
+    });
+    console.log("response", response);
   };
   // eslint-disable-next-line
   let rows = userList.map((item) => {
@@ -208,11 +219,10 @@ export default function UserList(props) {
         item.userId.isVerified ? "Inscrit" : "En attente",
         item.userId.email,
         <SmallButton
-          text="Edit"
-          // text={item.userId.isVerified ? "Edit" : "Re-Send"}
+          // text="Edit"
+          text={item.userId.isVerified ? "Edit" : "Re-Send"}
           onClick={(e) => {
-            setEditModel(item);
-            handleClickOpen();
+            updateEditModel(item);
           }}
           color={theme.palette.primary.contrastText}
           to={"/companies"}
@@ -224,7 +234,25 @@ export default function UserList(props) {
       ];
     }
   });
-
+  async function updateEditModel(editModel) {
+    // console.log(editModel);
+    if (editModel) {
+      if (editModel.userId.isVerified) {
+        handleClickOpen();
+        setFullName(
+          editModel.userId.firstName + " " + editModel.userId.lastName,
+        );
+        setEmail(editModel.userId.email);
+        setSelectedRole(editModel.role);
+        setPhone(editModel.userId.phone);
+        setCompanyId(editModel.companyId._id);
+        setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
+        setUserId(editModel.userId._id);
+      } else {
+        resendMail(editModel.userId.email);
+      }
+    }
+  }
   return (
     <>
       <div className={classes.root}>
@@ -279,7 +307,7 @@ export default function UserList(props) {
         </div>
       </div>
       <Modal
-        title="THEIRRY MARLES"
+        title={fullName}
         open={open}
         onClose={() => setOpen(false)}
         body={

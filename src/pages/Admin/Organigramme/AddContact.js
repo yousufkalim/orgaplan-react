@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -28,21 +27,6 @@ const useStyles = makeStyles((theme) => ({
     color: "#FF0000",
   },
 }));
-
-// const addAdminYup = Yup.object().shape({
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   image: Yup.array().min(1, "Required").required("Required"),
-//   companyId: Yup.string().required("Required"),
-// });
 
 export default function AddContact(props) {
   const classes = useStyles();
@@ -85,19 +69,9 @@ export default function AddContact(props) {
       ];
 
       setDropdownType(typeArray);
+      const typeOfContact = props.location.type;
+      setType(typeOfContact);
 
-      // const itemsArray = [];
-      // result.data.items.map((item) => {
-      //   if (!item.adminId) {
-      //     itemsArray.push({
-      //       value: item._id,
-      //       label: item.name,
-      //     });
-      //   }
-      //   return true;
-      // });
-
-      // setCompanies(itemsArray);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -182,11 +156,7 @@ export default function AddContact(props) {
         alert("something went wrong");
       } else {
         setLoading(true);
-        // console.log("dropwdown", type);
-        // alert("correct", type);
-
         var formdata = new FormData();
-        console.log(" adminStore.site.siteId._id", adminStore.site.siteId._id);
         formdata.append("email", email);
         formdata.append("phone", phone);
         formdata.append("firstName", firstName);
@@ -194,12 +164,10 @@ export default function AddContact(props) {
         if (image[0]?.file) {
           formdata.append("image", image[0].file);
         }
-
         formdata.append("company", company);
         formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("type", type);
         formdata.append("role", role);
-
         await GLOBALS.API({
           method: "POST",
           uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
@@ -209,8 +177,7 @@ export default function AddContact(props) {
           body: formdata,
         });
         setLoading(false);
-        props.history.goBack();
-        // props.history.push("/admins");
+        props.history.push("/organigramme", { type: type });
       }
     } catch (err) {
       dispatch(
@@ -241,7 +208,6 @@ export default function AddContact(props) {
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(e) => {
                   const index = e.target.selectedIndex - 1;
-                  console.log("index", index);
                   if (index !== -1) {
                     const item = e.target.value;
                     setType(item);
@@ -303,7 +269,6 @@ export default function AddContact(props) {
                 <FormInput
                   name="firstName"
                   value={firstName}
-                  // error={firstName}
                   placeholder="First Name"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
@@ -318,7 +283,6 @@ export default function AddContact(props) {
                 <FormInput
                   name="lastName"
                   value={lastName}
-                  // error={lastName}
                   placeholder="Last Name"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
@@ -347,7 +311,6 @@ export default function AddContact(props) {
                 <FormInput
                   name="company"
                   value={company}
-                  // error={lastName}
                   placeholder="Enterprise"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>

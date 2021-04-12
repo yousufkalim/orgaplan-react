@@ -81,7 +81,7 @@ export default function FormMultipleUpload(props) {
   const onAdd = (e) => {
     const file = e.target.files[0];
 
-    let fileSize = 10485760;
+    let fileSize = GLOBALS.Constants.FILE_SIZE;
     let fileTypes = ["image/png", "image/jpg", "image/jpeg"];
     let errorTypes = "PNG, JPEG, JPG";
 
