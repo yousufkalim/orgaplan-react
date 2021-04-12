@@ -51,7 +51,7 @@ let formats = {
 };
 
 const Calender = (props) => {
-  // useSelecter ,useDispatchstates 
+  // useSelecter ,useDispatchstates
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
   const adminStore = useSelector((state) => state.admin);
@@ -109,6 +109,19 @@ const Calender = (props) => {
 
   // useEffect
   useEffect(() => {
+    if (props.location.selectedShape != null) {
+      setTypeOfPlacevalue(props.location.selectedShape.type);
+      if (props.location.selectedShape.type === "DELIVERYAREA") {
+        getDeliveryAreaSiteBySiteId();
+      } else if (props.location.selectedShape.type === "STORAGEAREA") {
+        getStorageSiteBysiteId();
+      } else if (props.location.selectedShape.type === "BUILDING") {
+        getbuildingBysiteId();
+      }
+    }
+    if (props.location.selectedShape != null) {
+      setPlaceId(props.location.selectedShape._id);
+    }
     getfilterdata();
     unavailabilityDates();
   }, []);
@@ -413,12 +426,11 @@ const Calender = (props) => {
   };
   const handleDeleteEvent = () => {
     setpopoverShow(!popoverShow);
-    const fill = events.filter((e) => e._id !== eventID);
+    const fill = events.filter((e) => e.id !== eventID);
     setEvents(fill);
-
     dispatch(delete_mean(eventID));
-    dispatch(get_means());
   };
+
   const handlePopoverShow = (event) => {
     seteventID(event.id);
     const fill = events.filter((e) => e.id === event.id);
@@ -526,13 +538,14 @@ const Calender = (props) => {
       );
     }
   };
+
   function handleChangeTypeOfPlace(e) {
     setTypeOfPlacevalue(e.target.value);
-    if (e.target.value === "deliveryArea") {
+    if (e.target.value === "DELIVERYAREA") {
       getDeliveryAreaSiteBySiteId();
-    } else if (e.target.value === "storageArea") {
+    } else if (e.target.value === "STORAGEAREA") {
       getStorageSiteBysiteId();
-    } else if (e.target.value === "building") {
+    } else if (e.target.value === "BUILDING") {
       getbuildingBysiteId();
     } else {
       setTypeOfPlace([]);
@@ -622,6 +635,11 @@ const Calender = (props) => {
           setTypeOfPlace(temp);
         }
       } else {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
+          ),
+        );
       }
 
       //   setItems(response.data.items);
@@ -718,6 +736,7 @@ const Calender = (props) => {
 
             count++;
             return {
+              objectName: "Deliveries",
               id: key._id,
               title: key.statusReason,
               start: start,
@@ -732,14 +751,16 @@ const Calender = (props) => {
             let end = new Date(key.endDate);
             count++;
             return {
+              objectName: "Means",
               id: key._id,
               title: key.bookingReason,
               start: start,
               end: end,
-              color: "#ADD8E6",
+              companyName: key.companyId.name,
+              meanName: key.meanId.name,
             };
           });
-          setSiteMeans(`TOTAL MEANS : ${count} MEANS`);
+          setSiteMeans(`TOTAL MEANS Booking : ${count}`);
         }
         setEvents(tempEvent);
       }
@@ -752,6 +773,7 @@ const Calender = (props) => {
       );
     }
   };
+  console.log(events);
   const slotPropGetter = (date) => {
     let flagDateAndTime;
     let newStyle = {
@@ -1173,11 +1195,11 @@ const Calender = (props) => {
           </Form.Row>
           <Form.Row>
             <Form.Row justifyContent="flex-start" noMargin>
-              {props.location.selectedShape != null    ? (
+              {props.location.selectedShape != null ? (
                 <>
                   <FormSelect
                     placeholder="Type of place"
-                    value={props.location.selectedShape.type}
+                    value={typeOfPlacevalue}
                     values={[
                       { value: "DELIVERYAREA", label: "Delivery area" },
                       { value: "STORAGEAREA", label: "Storage area" },
@@ -1186,14 +1208,14 @@ const Calender = (props) => {
                     style={{ marginRight: "20px", maxWidth: 250 }}
                     onChange={handleChangeTypeOfPlace}
                   />
-                  
-              <FormSelect
-                placeholder="place"
-                 value={props.location.selectedShape._id}
-                values={typeOfPlace}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-                onChange={(e) => setPlaceId(e.target.value)}
-              />
+
+                  <FormSelect
+                    placeholder="place"
+                    value={placeId}
+                    values={typeOfPlace}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setPlaceId(e.target.value)}
+                  />
                 </>
               ) : (
                 <>
@@ -1207,17 +1229,15 @@ const Calender = (props) => {
                     style={{ marginRight: "20px", maxWidth: 250 }}
                     onChange={handleChangeTypeOfPlace}
                   />
-                  
-              <FormSelect
-                placeholder="place"
-                values={typeOfPlace}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-                onChange={(e) => setPlaceId(e.target.value)}
-              />
+
+                  <FormSelect
+                    placeholder="place"
+                    values={typeOfPlace}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setPlaceId(e.target.value)}
+                  />
                 </>
               )}
-
-              
             </Form.Row>
           </Form.Row>
           <div style={{ flexBasis: "100%" }}>

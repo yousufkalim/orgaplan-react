@@ -54,7 +54,7 @@ const Calender = (props) => {
   const [selectedMeanId, setSelectedMeanId] = useState(
     props.history.location.mean._id,
   );
-  console.log(selectedMeanId, props.history.location.mean._id);
+  const [saveSelectedMean, setSaveSelectedMean] = useState({});
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([]);
@@ -112,15 +112,13 @@ const Calender = (props) => {
   }, []);
   useEffect(() => {
     getData();
-    // eslint-disable-next-line
-  }, [addedEvent]);
+  }, []);
 
   useEffect(() => {
     if (selectedMeanId !== "") {
       onChangeMeans();
     }
-    // eslint-disable-next-line
-  }, [selectedMeanId]);
+  }, [selectedMeanId, saveSelectedMean]);
   // useEffect(() => {
   //   if (meansData.means) {
   //     const tempmeanData = meansData.means.map((key, index) => {
@@ -341,7 +339,6 @@ const Calender = (props) => {
           }, 1000);
         } else {
           setShow(false);
-
           dispatch(add_mean(DbElement));
           setTitle("");
           setSelectedCompany("");
@@ -360,6 +357,7 @@ const Calender = (props) => {
         setAlertBoxTime(false);
       }, 1000);
     }
+    setSaveSelectedMean(DbElement);
   };
   const AddEvent = ({ start, end, slots }) => {
     let flagDate, flagHours;
@@ -624,7 +622,7 @@ const Calender = (props) => {
             updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: "yellow",
+            color: "",
           };
         });
 
@@ -650,8 +648,6 @@ const Calender = (props) => {
         setDropdownCompanies(companyTemp);
       } else {
       }
-
-      //   setItems(response.data.items);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -683,7 +679,7 @@ const Calender = (props) => {
             updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: "yellow",
+            color: "",
           };
         });
 
@@ -1124,7 +1120,7 @@ const Calender = (props) => {
         />
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
           <FormSelect
-            placeholder="Mean"
+            placeholder="Select a Means"
             values={dorpdownMeans}
             value={selectedMeanId}
             onChange={(event) => {
@@ -1179,6 +1175,8 @@ const Calender = (props) => {
                   height: "430px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
+                  let { color } = events;
+
                   let newStyle = {
                     clear: "both",
                     display: "block",
@@ -1188,13 +1186,15 @@ const Calender = (props) => {
                     marginTop: "5px !important",
                     marginLeft: "5px !important",
                     lineHeight: "14px",
-                    background: "#ffefa1",
+                    background: `${color}`,
                     border: "2px solid #fff",
-                    color: "#333",
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "16px",
                   };
 
                   if (events.isMine) {
-                    newStyle.backgroundColor = "#ffcb91";
+                    newStyle.backgroundColor = "color";
                     newStyle.border = "2px solid #fff";
                   }
 
