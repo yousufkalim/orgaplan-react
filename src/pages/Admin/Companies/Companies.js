@@ -220,8 +220,8 @@ export default function Companies(props) {
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
             to={{
-              pathname: "/companies/calendar",
-              id: item.companyId._id,
+              pathname: "/",
+              companyId: item.companyId._id,
             }}
           >
             <img

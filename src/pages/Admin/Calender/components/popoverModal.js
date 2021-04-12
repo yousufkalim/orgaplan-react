@@ -32,12 +32,51 @@ const PopoverModal = ({
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <>
+                {console.log(event)}
                 <span>Company</span>
-                <span>Delivery area</span>
-                <span>Storage area</span>
+                <h5
+                  className="text-center"
+                  style={{
+                    backgroundColor: "#f7f7f7",
+                    fontSize: "16px",
+                    color: "#777",
+                    textAlign: "center",
+                    padding: "10px 20px",
+                    margin: "10px 0px",
+                  }}
+                >
+                  {event.company.name}
+                </h5>
+
                 <span>Means</span>
+                <h5
+                  style={{
+                    backgroundColor: "#f7f7f7",
+                    fontSize: "16px",
+                    color: "#777",
+                    padding: "10px 20px",
+                    margin: "10px 0px",
+                  }}
+                >
+                  <table style={{ width: "100%" }}>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                    </tr>
+                    {event.means.map((key, index) => {
+                      return (
+                        <tr>
+                          <td>{key.name}</td>
+                          <td>{key.meanType}</td>
+                        </tr>
+                      );
+                    })}
+                  </table>
+                </h5>
                 <span>Material</span>
 
+                <span>Delivery area</span>
+                <span>Storage area</span>
                 <span>Booking Reason</span>
                 <h5
                   className="text-center"

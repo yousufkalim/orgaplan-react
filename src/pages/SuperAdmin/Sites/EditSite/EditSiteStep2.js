@@ -260,19 +260,14 @@ export default function AddSiteStep2(props) {
           alignItems="center"
           justifyContent="flex-start"
         >
-          {/* <UnavailabilityTimes
-            name="unavailabilityDates"
-            values={unavailabilityDates}
-            style={GLOBALS.Styles.inputWidth}
-            onChange={(values) => handleChange("unavailabilityDates", values)}
-          /> */}
-
           <UnavailabilityTimes
             name="unavailabilityDates"
             values={unavailabilityDates}
             style={GLOBALS.Styles.inputWidth}
             unavailabilityDates={unavailabilityDates}
             setUnavailabilityDates={setUnavailabilityDates}
+            startRange={start}
+            endRange={moment(end).add(1, "days")}
             onChange={(values) => handleChange("unavailabilityDates", values)}
           />
         </Form.Row>
