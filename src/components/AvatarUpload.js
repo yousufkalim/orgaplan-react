@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 
+import GLOBALS from "../globals";
 import Actions from "../redux/actions";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
@@ -63,7 +64,7 @@ export default function FormMultipleUpload(props) {
         disabled={props.disabled}
         onChange={(e) => {
           const file = e.target.files[0];
-          let fileSize = 10000000;
+          let fileSize = GLOBALS.Constants.FILE_SIZE;
           let fileTypes = ["image/png", "image/jpg", "image/jpeg"];
           if (props.fileTypes) {
             fileTypes = props.fileTypes;

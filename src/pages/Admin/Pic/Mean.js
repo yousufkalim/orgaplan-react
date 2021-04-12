@@ -95,8 +95,8 @@ export default function AddMean(props) {
         const locaAr = props.selectedShape.mean.location.map((loc) => ({
           key:
             loc.locationType === "STORAGEAREA"
-              ? loc.storageArea._id
-              : loc.deliveryArea._id,
+              ? loc.storageArea
+              : loc.deliveryArea,
           type: loc.locationType,
           label: loc.label,
         }));
@@ -306,13 +306,17 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="LOCATION * :  " />
+          <FormLabel bold primary="ACCESSIBILITY * :  " />
           <Form.Row noMargin width="65%">
             <MeanLocationModal
               name="location"
               values={locations}
-              storageAreas={storageAreas}
-              deliveryAreas={deliveryAreas}
+              deliveryAreas={deliveryAreas.filter(
+                (item) => !locations.some((item2) => item2.key === item.value),
+              )}
+              storageAreas={storageAreas.filter(
+                (item) => !locations.some((item2) => item2.key === item.value),
+              )}
               onChange={(values) => handleChange("locations", values)}
             />
           </Form.Row>

@@ -4,6 +4,7 @@ const BASE_URL_V1 = BASE_URL + "api/v1/";
 const endpoints = {
   BASE_URL,
   BASE_URL_V1,
+  FILE_SIZE: 10485760,
 
   // Auth
   LOGIN: BASE_URL_V1 + "auth/sign-in",

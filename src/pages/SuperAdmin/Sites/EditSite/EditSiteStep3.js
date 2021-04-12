@@ -249,7 +249,7 @@ export default function AddSiteStep3(props) {
                 const file = e.target.files[0];
                 if (
                   file &&
-                  file.size <= 1000000 &&
+                  file.size <= GLOBALS.Constants.FILE_SIZE &&
                   file.type === "application/pdf"
                 ) {
                   onAddLevelImage(level._id, file, index);
@@ -302,7 +302,7 @@ export default function AddSiteStep3(props) {
                 const file = e.target.files[0];
                 if (
                   file &&
-                  file.size <= 1000000 &&
+                  file.size <= GLOBALS.Constants.FILE_SIZE &&
                   file.type === "application/pdf"
                 ) {
                   onAddLevelImage(level._id, file, index);
