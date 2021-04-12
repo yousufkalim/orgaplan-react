@@ -13,6 +13,7 @@ export const CHECK_LOGIN = "CHECK_LOGIN";
 
 // Admin
 export const SET_SITE = "SET_SITE";
+export const SET_ORGANIGRAMME_TYPE = "SET_ORGANIGRAMME_TYPE";
 export const SET_COMPANY = "SET_COMPANY";
 
 // Extra

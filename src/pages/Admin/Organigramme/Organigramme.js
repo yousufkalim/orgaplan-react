@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
 // import DeliveryRequest from "./DeliveryRequest";
 import Form from "../../../components/Form";
-import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
-import FormInput from "../../../components/FormInput";
-import FormSelect from "../../../components/FormSelect";
-import AvatarUpload from "../../../components/AvatarUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,22 +26,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Organigramme(props) {
-  const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.auth);
+  // const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [companies] = useState([]);
-  const [selectedItem] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [image, setImage] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [companyName] = useState("");
+
   const [organigramme, setOrganigrammes] = useState([]);
   const [completeOrganigramme, setCompleteOrganigrammes] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -61,21 +48,17 @@ export default function Organigramme(props) {
 
   async function fetchData() {
     try {
-      //  setSelectedClass(classes.selectedFilter);
-      //  setSelectedClasss(classes.unSelectedFilter);
-      // const admins = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.ADMINS}?page=${page}`,
-      // });
-      // const companies = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.COMPANY}`,
-      // });
       const oranigramme = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_ORGANIGRAMMES}/${adminStore.site.siteId._id}`,
       });
       if (oranigramme.success) {
         setCompleteOrganigrammes(oranigramme.data);
         setOrganigrammes(oranigramme.data);
-        setSelectedFilter("SITE");
+        if (props?.location?.state?.type) {
+          setSelectedFilter(props?.location?.state?.type);
+        } else {
+          setSelectedFilter("SITE");
+        }
       }
       setLoading(false);
     } catch (err) {
@@ -87,48 +70,6 @@ export default function Organigramme(props) {
     }
   }
 
-  const handleChange = (name, value) => {
-    if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
-  };
-
-  const onUpdate = async (e) => {
-    try {
-      e.preventDefault();
-      setLoading(true);
-      var formdata = new FormData();
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
-      formdata.append("phone", phone);
-      formdata.append("companyId", companyId);
-      formdata.append("userId", selectedItem._id);
-      image.file && formdata.append("image", image.file);
-      const result = await GLOBALS.API({
-        method: "PUT",
-        uri: GLOBALS.Constants.ADMINS,
-        headers: {
-          Authorization: store.token,
-        },
-        body: formdata,
-      });
-      const itemsArray = items.map((item) =>
-        item._id === selectedItem._id ? result.data : item,
-      );
-      setItems(itemsArray);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-  //working
   const rows = items.map((item, index) => {
     return [
       <img
@@ -164,13 +105,6 @@ export default function Organigramme(props) {
     setItems(temp);
   }
 
-  function editHandler(e, data) {
-    console.log("called", data);
-  }
-
-  const modalHandler = (btn) => {
-    setOpen(btn);
-  };
   return (
     <>
       <div className={classes.root}>
@@ -183,7 +117,10 @@ export default function Organigramme(props) {
                 component={NavLink}
                 text="ADD A CONTACT"
                 style={{ marginLeft: "20px" }}
-                to={"/organigramme/add-contact"}
+                to={{
+                  pathname: "/organigramme/add-contact",
+                  type: selectedFilter,
+                }}
               />
             </Form.Row>
           </div>
@@ -222,8 +159,6 @@ export default function Organigramme(props) {
                 pathname: "/organigramme/edit-contact",
                 data: organigramme[e],
               });
-              console.log(props);
-              return editHandler(e, organigramme[e]);
             }}
           />
         </div>
