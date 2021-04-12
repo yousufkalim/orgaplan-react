@@ -163,7 +163,7 @@ export default function Organigramme(props) {
           />
         </div>
       </div>
-      <Modal
+      {/* <Modal
         title="THIERRY MARLES"
         open={open}
         onClose={() => modalHandler(false)}
@@ -258,7 +258,7 @@ export default function Organigramme(props) {
             </Form.Column>
           </Form.Form>
         }
-      />
+      /> */}
       {/* <DeliveryRequest /> */}
     </>
   );
