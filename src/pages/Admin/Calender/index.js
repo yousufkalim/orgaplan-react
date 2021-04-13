@@ -61,6 +61,7 @@ const Calender = (props) => {
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
   const adminStore = useSelector((state) => state.admin);
+
   const store = useSelector((state) => state.auth);
   // *****
   const [isLoading, setLoading] = useState(true);
@@ -111,8 +112,10 @@ const Calender = (props) => {
     { value: "MODIFIED", label: "MODIFIED" },
     { value: "ALERTE", label: "ALERTE" },
   ]);
-  const [disableHours, setDisableHours] = useState([]);
+  const [disableHours, setDisableHours] = useState([]); 
+  const [openingHours , setOpeningHours] = useState("");
   const [overlap] = React.useState("Enable");
+  console.log(openingHours);
 
   // useEffect
   useEffect(() => {

@@ -58,7 +58,7 @@ export default function AddSiteStep2(props) {
     } else if (name === "end") setEnd(value);
     else if (name === "openingHours") {
       setUpdate((st) => !st);
-      setOpeningHours(value);
+      setOpeningHours(value); 
     } else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilityDates(value);
@@ -129,6 +129,7 @@ export default function AddSiteStep2(props) {
           dayOff: openingHours.day7Off,
         },
       ];
+ 
 
       var formdata = new FormData();
       formdata.append("name", step1.name);
@@ -227,7 +228,7 @@ export default function AddSiteStep2(props) {
             name="openingHours"
             values={openingHours}
             style={GLOBALS.Styles.inputWidth}
-            onChange={(values) => handleChange("openingHours", values)}
+            onChange={(value) => handleChange("openingHours", value)}
           />
         </Form.Row>
       </Form.Row>
