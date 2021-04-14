@@ -59,6 +59,7 @@ export default function AddSiteStep2(props) {
     else if (name === "openingHours") {
       setUpdate((st) => !st);
       setOpeningHours(value); 
+   
     } else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilityDates(value);
@@ -70,7 +71,7 @@ export default function AddSiteStep2(props) {
       setNotificationTo(value);
     }
   }
-
+ 
   async function onSubmit(e) {
     try {
       e.preventDefault();
@@ -84,7 +85,7 @@ export default function AddSiteStep2(props) {
         city: item.city,
         postal: item.postal,
       }));
-
+      
       let openingHoursArray = [
         {
           day: 1,
@@ -160,8 +161,7 @@ export default function AddSiteStep2(props) {
         "notificationPriorToDays",
         Number(notificationPriorToDays),
       );
-      formdata.append("notificationTo", JSON.stringify(notificationToArray));
-
+      formdata.append("notificationTo", JSON.stringify(notificationToArray)); 
       const data = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.SITES,

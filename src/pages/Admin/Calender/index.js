@@ -51,8 +51,7 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
-const Calender = (props) => {
-  // useSelecter ,useDispatchstates
+const Calender = (props) => { 
   moment.locale("es-es", {
     week: {
       dow: 1, //Monday is the first day of the week.
@@ -113,10 +112,9 @@ const Calender = (props) => {
     { value: "ALERTE", label: "ALERTE" },
   ]);
   const [disableHours, setDisableHours] = useState([]); 
-  const [openingHours , setOpeningHours] = useState("");
-  const [overlap] = React.useState("Enable");
-  console.log(openingHours);
-
+  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours)
+  const [overlap] = React.useState("Enable"); 
+console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
   // useEffect
   useEffect(() => {
     if (props.location.companyId != null) {
@@ -497,16 +495,7 @@ const Calender = (props) => {
     bookingEndTime = String(bookingEndTime);
     bookingEndTime = bookingEndTime.replace(/,/g, "");
     bookingEndTime = new Date(bookingEndTime);
-    /* End time*/
-    // let uniqid = Math.random();
-    // const newElement = {
-    //   p_id: bookingEvent.id,
-    //   id: uniqid,
-    //   title: bookingTitle,
-    //   start: bookingstartTime,
-    //   end: bookingEndTime,
-    //   color: statusbooking,
-    // };
+    
     if (
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
@@ -652,8 +641,7 @@ const Calender = (props) => {
           ),
         );
       }
-
-      //   setItems(response.data.items);
+ 
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -678,16 +666,26 @@ const Calender = (props) => {
   }
 
   const customDayPropGetter = (date) => {
-    let flagDate;
+    let flagDate = false;
+    let flagOpeningHoursDay = false;
+    let currentDay =  moment(date).day(); 
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
     adminStore.site.siteId.unavailabilityDates.map((key, index) => {
       if (key.dayOff === true) {
         if (moment(date).isSame(key.date, "day")) {
-          flagDate = date;
+          flagDate = true;
         }
       }
       return {};
     });
-    if (flagDate) {
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHoursDay = true;
+      }
+    });
+    if (flagDate || flagOpeningHoursDay) {
       return {
         className: "special-day",
         style: {
@@ -787,22 +785,41 @@ const Calender = (props) => {
       );
     }
   };
-
+  function inRange(x, min, max) {
+    return ((x-min)*(x-max) <= 0);
+}
+console.log(openingHours , "openingHours");
   const slotPropGetter = (date) => {
-    let flagDateAndTime;
+    let flagDateAndTime = false;
+    let flagOpeningHours = false;
+    let currentDay =  moment(date).day();  
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
     let newStyle = {
-      backgroundColor: "#D3D3D3 ",
-    };
+      backgroundColor: "#EBEBE4",
+    }; 
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHours = true;
+      }else if (key.dayOff === false && currentDay === key.day){
+            if(inRange(date.getHours(), key.startHour, key.endHour)){
+              
+            }else{
+              flagOpeningHours = true;
+            }
+      }
+    })
     disableHours.map((key, index) => {
       if (moment(date).isSame(key)) {
-        flagDateAndTime = date;
+        flagDateAndTime = true;
       }
       return {};
     });
 
-    if (flagDateAndTime) {
+    if (flagDateAndTime || flagOpeningHours) {
       return {
-        className: "rbc-day-slot rbc-time-slot ",
+        className: "rbc-day-slot rbc-time-slot",
         style: newStyle,
       };
     }
