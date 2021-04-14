@@ -594,7 +594,7 @@ const Calender = (props) => {
   const getStorageSiteBysiteId = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.getStorageSiteBysiteId}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREAS_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       if (response.success) {

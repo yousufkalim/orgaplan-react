@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import GLOBALS from "../../../../globals";
+import Actions from "../../../../redux/actions";
+
+import Loader from "../../../../components/Loader";
 import Stepper from "../../../../components/Stepper";
 import Heading from "../../../../components/Heading";
 import DeliveryRequestStep1 from "./DeliveryRequestStep1";
@@ -23,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DeliveryRequest(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
@@ -31,10 +35,14 @@ export default function DeliveryRequest(props) {
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
 
+  // Step1 Data
   const [companies, setCompanies] = useState([]);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [trades, setTrades] = useState([]);
-  const [unloadingMeans, setUnloadingMeans] = useState([]);
+  const [means, setMeans] = useState([]);
+  // Step2 Data
+  const [buildings, setBuildings] = useState([]);
+  const [storageAreas, setStorageAreas] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -42,22 +50,61 @@ export default function DeliveryRequest(props) {
   }, []);
 
   const fetchData = async () => {
-    const response = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
-      token: store.token,
-    });
-    setCompanies(
-      response.data.companies.map((company) => ({
-        label: company.companyId.name,
-        value: company.companyId._id,
-      })),
-    );
-    setTrades(
-      adminStore.site.siteId.trades.map((trade) => ({
-        label: trade,
-        value: trade,
-      })),
-    );
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const deliveryAreas = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const means = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.SITE_MEANS}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const buildings = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.BUILDINGS_BY_SITE}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      const storageAreas = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_STORAGE_AREAS_BY_SITE}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      setMeans(means.data);
+      setDeliveryAreas(
+        deliveryAreas.data.map((item) => ({
+          value: item._id,
+          label: item.name,
+        })),
+      );
+      setCompanies(
+        response.data.companies.map((company) => ({
+          label: company.companyId.name,
+          value: company.companyId._id,
+        })),
+      );
+      setTrades(
+        adminStore.site.siteId.trades.map((trade) => ({
+          label: trade,
+          value: trade,
+        })),
+      );
+      setStorageAreas(
+        storageAreas.data.map((item) => ({
+          value: item._id,
+          label: item.name,
+        })),
+      );
+      setBuildings(buildings.data.items);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
   };
 
   return (
@@ -76,7 +123,9 @@ export default function DeliveryRequest(props) {
         ]}
       />
       <div className={classes.content}>
-        {step === 1 ? (
+        {loading ? (
+          <Loader.Progress />
+        ) : step === 1 ? (
           <DeliveryRequestStep1
             {...props}
             step={step}
@@ -88,7 +137,7 @@ export default function DeliveryRequest(props) {
             companies={companies}
             deliveryAreas={deliveryAreas}
             trades={trades}
-            means={unloadingMeans}
+            means={means}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2
@@ -99,6 +148,9 @@ export default function DeliveryRequest(props) {
             step2Data={step2Data}
             setStep1Data={setStep1Data}
             setStep2Data={setStep2Data}
+            means={means}
+            storageAreas={storageAreas}
+            buildings={buildings}
           />
         ) : (
           <DeliveryRequestStep3
@@ -109,6 +161,13 @@ export default function DeliveryRequest(props) {
             step2Data={step2Data}
             setStep1Data={setStep1Data}
             setStep2Data={setStep2Data}
+            companies={companies}
+            deliveryAreas={deliveryAreas}
+            trades={trades}
+            means={means}
+            storageAreas={storageAreas}
+            buildings={buildings}
+            history={props.history}
           />
         )}
       </div>

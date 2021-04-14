@@ -178,7 +178,6 @@ const Means = () => {
   //     setLoading(true);
 
   //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_EXTERIOR_MEANS}/${adminStore.site.siteId._id}`,
   //       token: store.token,
   //     });
 
