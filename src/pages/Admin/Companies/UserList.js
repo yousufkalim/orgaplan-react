@@ -316,8 +316,9 @@ export default function UserList(props) {
               <AvatarUpload
                 value={image}
                 // error={image}
-                disabled
-                onChange={(file) => {}}
+                onChange={(value) => {
+                  setImage(value);
+                }}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
@@ -334,9 +335,10 @@ export default function UserList(props) {
               <FormInput
                 name="phone"
                 value={phone}
-                // error={lastName}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
                 placeholder="Phone"
-                disabled
                 style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
