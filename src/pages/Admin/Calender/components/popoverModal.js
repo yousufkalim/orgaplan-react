@@ -31,8 +31,7 @@ const PopoverModal = ({
         <Modal.Body>
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
-              <>
-                {console.log(event)}
+              <> 
                 <span>Company</span>
                 <h5
                   className="text-center"
@@ -74,9 +73,60 @@ const PopoverModal = ({
                   </table>
                 </h5>
                 <span>Material</span>
-
-                <span>Delivery area</span>
-                <span>Storage area</span>
+                <h5
+                  style={{
+                    backgroundColor: "#f7f7f7",
+                    fontSize: "16px",
+                    color: "#777",
+                    padding: "10px 20px",
+                    margin: "10px 0px",
+                  }}
+                >
+                  <table style={{ width: "100%" }}> 
+                    {event.materials.map((key, index) => {
+                      return (
+                        <tr>
+                          <td>{key}</td>
+                        </tr>
+                      );
+                    })}
+                  </table>
+                </h5> 
+                {event.deliveryArea!==null ? <>
+                  <span>Delivery area</span>
+                <h5
+                  className="text-center"
+                  style={{
+                    backgroundColor: "#f7f7f7",
+                    fontSize: "16px",
+                    color: "#777",
+                    textAlign: "center",
+                    padding: "10px 20px",
+                    margin: "10px 0px",
+                  }}
+                >
+                  {event.deliveryArea.name}
+                </h5>
+                </> : <>
+                </>}
+               
+                {event.storageArea!==null ? <>
+                  <span>Storage area</span>
+                <h5
+                  className="text-center"
+                  style={{
+                    backgroundColor: "#f7f7f7",
+                    fontSize: "16px",
+                    color: "#777",
+                    textAlign: "center",
+                    padding: "10px 20px",
+                    margin: "10px 0px",
+                  }}
+                >
+                  {event.storageArea.name}
+                </h5>
+                </> : <>
+                </>} 
                 <span>Booking Reason</span>
                 <h5
                   className="text-center"
