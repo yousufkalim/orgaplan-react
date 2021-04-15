@@ -175,7 +175,6 @@ export default function AddIncidents(props) {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    let locationType = {};
     var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("date", date);

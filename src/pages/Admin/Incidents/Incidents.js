@@ -255,7 +255,7 @@ const Incidents = (props) => {
     data.map((item, index) => {
       total = total + item.price;
       let data = [];
-      data[0] = item.date ? moment(item.date).format("MM/DD/yyyy") : " ";
+      data[0] = item.date ? moment(item.date).format("DD/MM/yyyy") : " ";
       data[1] = item?.type;
       data[2] = item?.name;
       data[3] = item.companyId?.name;
