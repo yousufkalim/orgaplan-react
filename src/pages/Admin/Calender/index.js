@@ -711,7 +711,7 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
           placeId: placeId,
         }),
       });
-      if (response.success) {
+      if (response.success) { 
         if (typeOfPlaning === "Deliveries") {
           let colour = "";
 
@@ -754,6 +754,10 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
               color: colour,
               means: key.means,
               company: key.companyId,
+              materials : key.materials,
+              deliveryArea : key.deliveryArea,
+              storageArea: key.storageArea,
+              building: key.building
             };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
