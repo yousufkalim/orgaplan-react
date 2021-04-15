@@ -1,8 +1,9 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Organigramme from "./Organigramme";
+
 import AddContact from "./AddContact";
 import EditContact from "./EditContact";
+import Organigramme from "./Organigramme";
 
 export default function Index(props) {
   return (
@@ -13,19 +14,11 @@ export default function Index(props) {
         path={props.match.path + "/add-contact"}
         component={AddContact}
       />
-        <Route
+      <Route
         exact
         path={props.match.path + "/edit-contact"}
         component={EditContact}
       />
-      {/* <Route exact path={props.match.path + "/zacs"} component={ZACs} /> */}
-      {/* <Route exact path={props.match.path + "/add-mean"} component={AddMean} /> */}
-      {/* <Route exact path={props.match.path + "/add-site"} component={AddSite} /> */}
-      {/* <Route
-        exact
-        path={props.match.path + "/archives"}
-        component={ArchivedSites}
-      /> */}
       <Redirect from="*" to={props.match.path + "/"} />
     </Switch>
   );

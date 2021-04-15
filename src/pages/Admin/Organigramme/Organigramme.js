@@ -259,7 +259,7 @@ export default function Organigramme(props) {
           </Form.Form>
         }
       /> */}
-      {/* <DeliveryRequest /> */}
+      {/* <DeliveryRequest history={props.history} /> */}
     </>
   );
 }

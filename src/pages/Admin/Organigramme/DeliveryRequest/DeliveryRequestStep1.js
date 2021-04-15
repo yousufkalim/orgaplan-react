@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import moment from "moment";
 
 import GLOBALS from "../../../../globals";
-import Actions from "../../../../redux/actions";
 
 import Form from "../../../../components/Form";
 import Button from "../../../../components/Button";
@@ -15,44 +13,60 @@ import FormMultiSelect from "../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 
 export default function AddSiteStep1(props) {
-  const dispatch = useDispatch();
-
-  const [loading, setLoading] = useState(false);
-
   const [company, setCompany] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [endTime, stEndTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [trades, setTrades] = useState([]);
-  const [means, setMeans] = useState("");
+  const [means, setMeans] = useState([]);
+  const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line
-  }, []);
-
-  async function fetchData() {
-    try {
-      // const response = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.ZACS}`,
-      // });
-
-      setLoading(false);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
+    if (props.step1Data) {
+      setCompany(props.step1Data.company);
+      setDeliveryArea(props.step1Data.deliveryArea);
+      setDate(props.step1Data.date);
+      setStartTime(props.step1Data.startTime);
+      setEndTime(props.step1Data.endTime);
+      setTrades(props.step1Data.trades);
+      setMaterials(props.step1Data.materials);
+      setLiftingMeans(props.step1Data.liftingMeans);
+      setUpdate((st) => !st);
     }
-  }
+    setMeans(
+      props.means.reduce((accumulator, currentValue) => {
+        if (
+          currentValue.meanType === "LIFTING" &&
+          currentValue.location.find(
+            (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+          )
+        ) {
+          accumulator.push({
+            value: currentValue._id,
+            label: currentValue.name,
+          });
+        }
+        return accumulator;
+      }, []),
+    );
+
+    // eslint-disable-next-line
+  }, [deliveryArea]);
 
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
+      company,
+      deliveryArea,
+      date,
+      startTime,
+      endTime,
       trades,
+      liftingMeans,
+      materials,
     };
     props.setStep1Data(values);
     props.setStep(2);
@@ -60,6 +74,7 @@ export default function AddSiteStep1(props) {
 
   return (
     <Form.Form onSubmit={onSubmit}>
+      {update && ""}
       <Form.Row>
         <FormLabel bold primary="COMPANY* :" />
         <FormSelect
@@ -108,7 +123,7 @@ export default function AddSiteStep1(props) {
             value={endTime}
             placeholder="End Time"
             style={{ width: "31%" }}
-            onChange={(value) => stEndTime(value)}
+            onChange={(value) => setEndTime(value)}
           />
         </Form.Row>
       </Form.Row>
@@ -126,11 +141,12 @@ export default function AddSiteStep1(props) {
         <FormLabel bold primary="UNLOADING MEANS* :" />
         <FormMultiSelect
           name="means"
-          value={means}
-          values={props.means}
+          values={means}
           placeholder="Means"
+          value={liftingMeans}
+          disabled={!deliveryArea}
           style={GLOBALS.Styles.inputWidth}
-          onChange={({ target: { value } }) => setMeans(value)}
+          onChange={({ target: { value } }) => setLiftingMeans(value)}
         />
       </Form.Row>
       <Form.Row>
@@ -140,7 +156,10 @@ export default function AddSiteStep1(props) {
           values={materials}
           placeholder="Enter Materials"
           style={GLOBALS.Styles.inputWidth}
-          onChange={(values) => setMaterials(values)}
+          onChange={(values) => {
+            setMaterials(values);
+            setUpdate((st) => !st);
+          }}
         />
       </Form.Row>
       <Form.ButtonContainer>
@@ -149,9 +168,7 @@ export default function AddSiteStep1(props) {
           minWidth={200}
           text="VALIDATE"
           fullWidth={false}
-          loading={loading}
           disabled={
-            loading ||
             !company ||
             !deliveryArea ||
             !date ||

@@ -21,10 +21,11 @@ export default function SubHeading(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.subHeading + " " + props.className}>
-      <Typography className={classes.primary} style={props.style}>
-        {props.primary}
-      </Typography>
+    <div
+      className={classes.subHeading + " " + props.className}
+      style={props.style}
+    >
+      <Typography className={classes.primary}>{props.primary}</Typography>
       {props.secondary && (
         <Typography className={classes.secondary}>{props.secondary}</Typography>
       )}
