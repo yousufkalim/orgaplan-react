@@ -171,20 +171,32 @@ export default function UserList(props) {
     try {
       e.preventDefault();
 
-      const formdata = JSON.stringify({
-        role: selectedRole,
-        siteId: adminStore.site.siteId._id,
-        email: email,
-        companyId: companyId,
-        userId: userId,
-      });
+      var formdata = new FormData();
+      formdata.append("role", selectedRole);
+      formdata.append("siteId", adminStore.site.siteId._id);
+      formdata.append("email", email);
+      formdata.append("companyId", companyId);
+      formdata.append("userId", userId);
+      formdata.append("phone", phone);
+      image.file && formdata.append("image", image.file);
+
+      // const formdata = JSON.stringify({
+      //   role: selectedRole,
+      //   siteId: adminStore.site.siteId._id,
+      //   email: email,
+      //   companyId: companyId,
+      //   userId: userId,
+      //   image: image.file,
+      // });
       await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.UPDATE_COMPANY_USER,
-        token: store.token,
+        headers: {
+          Authorization: store.token,
+        },
         body: formdata,
       });
-      getData();
+      filteredUser();
       setOpen(false);
     } catch (err) {
       dispatch(
@@ -246,7 +258,10 @@ export default function UserList(props) {
         setSelectedRole(editModel.role);
         setPhone(editModel.userId.phone);
         setCompanyId(editModel.companyId._id);
-        setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
+        setImage({
+          uri: GLOBALS.Constants.BASE_URL + editModel.userId.image,
+        });
+        // setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
         setUserId(editModel.userId._id);
       } else {
         resendMail(editModel.userId.email);
@@ -316,8 +331,9 @@ export default function UserList(props) {
               <AvatarUpload
                 value={image}
                 // error={image}
-                onChange={(value) => {
-                  setImage(value);
+                onChange={(file) => {
+                  const uri = URL.createObjectURL(file);
+                  setImage({ file, uri });
                 }}
               />
             </Form.Row>
