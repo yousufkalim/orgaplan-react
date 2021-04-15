@@ -40,7 +40,6 @@ const endpoints = {
   INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
   // LEVEL
   LEVELS: BASE_URL_V1 + "superadmin/levels",
-  LEVEL_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
   LEVELS_BUILDING: BASE_URL_V1 + "superadmin/levels/building",
   // QUOTE
   QUOTE: BASE_URL_V1 + "superadmin/quotes",
@@ -57,6 +56,9 @@ const endpoints = {
   // ZAC
   ZACS: BASE_URL_V1 + "superadmin/zacs",
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
+  // PIC
+  PIC_PDF: BASE_URL_V1 + "pic/pdf",
+  PIC_SITE: BASE_URL_V1 + "pic/site",
 
   // ================================ ADMIN ================================
   // PIC
@@ -92,7 +94,6 @@ const endpoints = {
 
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
-  GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
 
   getBookingBySiteId: BASE_URL_V1 + "mean_booking/getBookingBySiteId",
 

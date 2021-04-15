@@ -286,10 +286,9 @@ export default function Login(props) {
           initialValues={
             process.env.NODE_ENV === "development"
               ? {
-                  email: "talha28.falcon@gmail.com",
+                  // email: "talha28.falcon@gmail.com",
+                  email: "superadmin@orgaplan.fr",
                   password: "1",
-                  // email: "superadmin@orgaplan.fr",
-                  // password: "1",
                 }
               : {
                   email: "",
