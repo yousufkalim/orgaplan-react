@@ -152,6 +152,7 @@ export default function DeliveryArea(props) {
           start: startDate,
           end: endDate,
         },
+        isInside: false,
         deliveryArea: selectedDeliveryAreas,
         unavailabilities,
         companies: selectedCompanies,

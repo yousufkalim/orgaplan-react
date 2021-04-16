@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Canvas from "../../../components/Canvas";
+import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
 import { useSelector, useDispatch } from "react-redux";
+import IconButton from "@material-ui/core/IconButton";
 import _ from "lodash";
 
 import Mean from "./Mean";
@@ -12,16 +12,17 @@ import StorageArea from "./StorageArea";
 import DeliveryArea from "./DeliveryArea";
 import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
+import Canvas from "../../../components/Canvas";
 import Loader from "../../../components/Loader";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
-// import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
-import { NavLink } from "react-router-dom";
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
+// import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const App = (props) => {
+const PicCanvas = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -72,9 +73,9 @@ const App = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
 
+  const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
-  const [level, setLevel] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -83,17 +84,16 @@ const App = (props) => {
 
   const fetchData = async () => {
     try {
+      setPdf(
+        adminStore.site.siteId?.plan
+          ? GLOBALS.Constants.BASE_URL + adminStore.site.siteId?.plan
+          : undefined,
+      );
       let response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       setSitePic(response.data);
-      setPdf(
-        response.data?.exteriorBuilding?.levels[0]?.image
-          ? GLOBALS.Constants.BASE_URL +
-              response.data.exteriorBuilding.levels[0].image
-          : undefined,
-      );
       setShapes(response.data.shapes);
       setLoading(false);
     } catch (err) {
@@ -105,26 +105,29 @@ const App = (props) => {
     }
   };
 
-  // =========================================
   const handlePdfChange = (pdfUri, pdf) => {
     setPdf(pdfUri);
-    onAddLevelImage(sitePic.exteriorBuilding.levels[0]._id, pdf);
+    onAddSitePlan(pdf);
   };
 
-  const onAddLevelImage = async (levelId, file) => {
+  const onAddSitePlan = async (file) => {
     try {
       const formdata = new FormData();
       formdata.append("image", file);
-      formdata.append("levelId", levelId);
+      formdata.append("siteId", adminStore.site.siteId._id);
 
-      await GLOBALS.API({
+      const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.LEVEL_IMAGE,
+        uri: GLOBALS.Constants.PIC_PDF,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
+
+      dispatch(
+        Actions.admin.set_site({ ...adminStore.site, siteId: response.data }),
+      );
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -133,7 +136,6 @@ const App = (props) => {
       );
     }
   };
-  // =========================================
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
@@ -147,14 +149,12 @@ const App = (props) => {
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       let levelsArr = _.cloneDeep(shape.building.levels);
-
       setAllLevels(_.cloneDeep(levelsArr));
-
-      let levs = [{ label: "Exterior", value: "Exterior" }];
+      let levs = [];
 
       levelsArr.map((le) =>
         levs.push({
-          label: le.number,
+          label: le.number === 0 ? "RDC" : le.number,
           value: le._id,
         }),
       );
@@ -229,8 +229,9 @@ const App = (props) => {
               onClick={handleClick}
               onChange={handleChange}
               onClear={onClear}
-              onPdfChange={handlePdfChange}
               pdf={pdf}
+              onPdfChange={handlePdfChange}
+              level={false}
             />
           )}
           <div className={classes.infoDrawerContainer}>
@@ -246,18 +247,11 @@ const App = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
-                      if (value === "Exterior" || !value) {
-                        setPdf(
-                          sitePic?.exteriorBuilding?.levels[0]?.image
-                            ? GLOBALS.Constants.BASE_URL +
-                                sitePic.exteriorBuilding.levels[0].image
-                            : undefined,
-                        );
-                      } else {
+                      if (value) {
                         const leve = allLeves.find((lev) => lev._id === value);
                         setPdf(
-                          leve?.image
-                            ? GLOBALS.Constants.BASE_URL + leve.image
+                          leve?.plan
+                            ? GLOBALS.Constants.BASE_URL + leve.plan
                             : undefined,
                         );
                       }
@@ -397,4 +391,4 @@ const App = (props) => {
   );
 };
 
-export default App;
+export default PicCanvas;

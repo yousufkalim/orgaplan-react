@@ -729,6 +729,7 @@ class App extends Component {
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
+          level={this.props.level}
         />
         <div className="py-2 px-4">
           <ConvaExample
