@@ -1,14 +1,18 @@
-import React from "react";
-import Modal from "react-bootstrap/Modal";
+import React from "react"; 
 import moment from "moment";
 import "./sass/custom.scss";
+import { Modal, Button, Alert } from "react-bootstrap";
 const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
   handleDeleteEvent,
   handleEditEvent,
   event,
-}) => {
+  handleValidateMeans,
+  setAlertBoxTime,
+  alertBoxTime, 
+
+}) => { 
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -21,14 +25,30 @@ const PopoverModal = ({
     var dt = moment(date, ["h:mm A"]).format("HH:mm");
     return dt;
   };
-  if (event) {
-    console.log(event);
+  function Alertbox(props) {
+    return (
+      <Alert
+        show={alertBoxTime}
+        variant="danger"
+        onClose={() => setAlertBoxTime(!alertBoxTime)} 
+      >
+        {props.message}&nbsp;&nbsp;&nbsp; 
+        <a onClick={() =>{handleDeleteEvent("no")}
+           }  className="alert-link">NO</a> &nbsp;&nbsp;
+        <a  onClick={() =>{handleDeleteEvent("yes")} }  className="alert-link">YES</a>
+       
+
+      </Alert>
+    );
+  }
+  if (event) { 
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
         <Modal.Header closeButton>
           <Modal.Title className="text-center">Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        <Alertbox message="A you sure to want Delete" />
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <> 
@@ -279,15 +299,20 @@ const PopoverModal = ({
                   {getStartTime(event.end)}
                 </div>
 
+               
+                {event.status !== "VALIDATED" ? <>
                 <hr />
                 <div className="popoverfooter">
                   <div className="col-lg-2">
+                   
                     <button
                       className="btn text-primary btn-light px-3 text-center"
-                      // onClick={handleEditEvent}
+                      onClick={handleValidateMeans}
                     >
                       <i class="fas fa-pencil"></i> <span>validate</span>
                     </button>
+                   
+                 
                   </div>
                   <div className="col-lg-3">
                     <button
@@ -298,6 +323,7 @@ const PopoverModal = ({
                     </button>
                   </div>
                 </div>
+                </> : <> </>}
               </>
             )}
           </div>

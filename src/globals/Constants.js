@@ -71,7 +71,8 @@ const endpoints = {
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
-  GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
+  GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means", 
+
 
   // STORAGE AREA
   CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",
@@ -125,6 +126,7 @@ const endpoints = {
   CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  UPDATE_MEAN_STATUS :  BASE_URL_V1 + "mean_booking/updateStatus",
   GET_ALL_SITE_INCIDENTS: BASE_URL_V1 + "incidents/admin/incident_list",
 
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
