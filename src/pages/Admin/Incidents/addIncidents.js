@@ -17,6 +17,7 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,7 +50,7 @@ export default function AddIncidents(props) {
   const [time, setTime] = useState("");
   const [isBillable, setIsBillable] = useState(false);
   const [price, setPrice] = useState("0");
-  const [priceDisable, setPriceDisable] = useState("");
+  const [priceDisable, setPriceDisable] = useState("false");
 
   const [type, setType] = useState("");
 
@@ -249,6 +250,8 @@ export default function AddIncidents(props) {
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
                 name="date"
+                min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={nameChange}
                 value={date}
               />
@@ -347,7 +350,9 @@ export default function AddIncidents(props) {
                 }}
               >
                 <option value={true}>Yes</option>
-                <option value={false}>No</option>
+                <option selected value={false}>
+                  No
+                </option>
               </select>
             </Form.Row>
           </Form.Row>

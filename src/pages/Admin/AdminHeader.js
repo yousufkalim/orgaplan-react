@@ -259,6 +259,7 @@ export default function AdminHeader(props) {
               }
               alt="adminProfile"
               className={classes.avatarImg}
+              onClick={() => dispatch(Actions.admin.reset_state())}
             />
             <div>{`${storeAuth.user.firstName} ${storeAuth.user.lastName}`}</div>
           </div>
