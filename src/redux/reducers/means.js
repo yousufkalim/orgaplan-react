@@ -26,6 +26,8 @@ const reducer = (state = initialState, action) => {
         loading: false,
         error: null,
       });
+      
+
     case actionTypes.DELETE_MEANS_DATA:
       return storeUtility.updateObject(state, {
         loading: false,

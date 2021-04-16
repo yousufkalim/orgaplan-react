@@ -102,4 +102,6 @@ export const delete_mean = (id) => async (dispatch) => {
     dispatch(Notistack.enqueueSnackbar(Notistack.snackBar(message, "error")));
   }
 };
+
+ 
 // get single mean

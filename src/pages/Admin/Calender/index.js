@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
-import "./Calender.css";
-import { Modal, Button, Alert } from "react-bootstrap";
+import "./Calender.css"; 
+
+import { Modal, Button, Alert } from "react-bootstrap"; 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -111,10 +112,11 @@ const Calender = (props) => {
     { value: "MODIFIED", label: "MODIFIED" },
     { value: "ALERTE", label: "ALERTE" },
   ]);
+  const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [disableHours, setDisableHours] = useState([]); 
   const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours)
   const [overlap] = React.useState("Enable"); 
-console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
+  const [confirm ,setConfirm] = useState("");
   // useEffect
   useEffect(() => {
     if (props.location.companyId != null) {
@@ -138,7 +140,7 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
   }, []);
   useEffect(() => {
     filterBookingCalendar();
-  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans]);
+  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans, updateMeanStatus]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -435,14 +437,34 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
     setstarttimesliceEdit(getstart);
     setEndtimesliceEdit(getend);
   };
-  const handleDeleteEvent = () => {
+  const handleDeleteEvent = (confirm) => {
+   console.log(confirm);
+    if(confirm === "yes"){
+      setAlertBoxTime(true);
+      setpopoverShow(!popoverShow);
+      const fill = events.filter((e) => e.id !== eventID);
+    setEvents(fill);
+    setConfirm("");
+    dispatch(delete_mean(eventID));
+    }else if (confirm === "no"){ 
+      setAlertBoxTime(false);
+      setConfirm("");
+    }else{
+      setAlertBoxTime(true);
+      setpopoverShow(popoverShow);
+    }
+  
+    
+  };
+  const handleValidateMeans = () =>{
     setpopoverShow(!popoverShow);
     const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill);
-    dispatch(delete_mean(eventID));
-  };
+    setEvents(fill); 
+    update_mean_status(eventID);
+  }
 
   const handlePopoverShow = (event) => {
+    setAlertBoxTime(false);
     seteventID(event.id);
     const fill = events.filter((e) => e.id === event.id);
     setEvent(fill[0]);
@@ -508,7 +530,26 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
       }, 1000);
     }
   };
-
+  const update_mean_status = async (id) => {
+     
+    try {
+      const response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.UPDATE_MEAN_STATUS}/${id}`,
+        token: store.token, 
+      });
+       
+      if (response.success) { 
+        setUpdateMeanStatus(response._id);
+      }
+    }catch(err){
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
   const getfilterdata = async () => {
     try {
       const response = await GLOBALS.API({
@@ -762,7 +803,13 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
-          tempEvent = response.data.Means.map((key, index) => {
+          tempEvent = response.data.Means.map((key, index) => { 
+            let colour= ""
+            if (key.status === "VALIDATED") {
+              colour = "green";
+            }else{
+              colour = "";
+            }
             let start = new Date(key.startDate);
             let end = new Date(key.endDate);
             count++;
@@ -774,6 +821,8 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
               end: end,
               companyName: key.companyId.name,
               meanName: key.meanId.name,
+              status: key.status,
+              color : colour
             };
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
@@ -792,7 +841,6 @@ console.log(adminStore.site.siteId.unavailabilityDates ,"unavailabilty");
   function inRange(x, min, max) {
     return ((x-min)*(x-max) <= 0);
 }
-console.log(openingHours , "openingHours");
   const slotPropGetter = (date) => {
     let flagDateAndTime = false;
     let flagOpeningHours = false;
@@ -843,6 +891,10 @@ console.log(openingHours , "openingHours");
     });
     setDisableHours(tempDisabledTime);
   };
+const onConfirm = () =>{
+    // Preform your action.
+}
+
   return (
     <>
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
@@ -1158,8 +1210,12 @@ console.log(openingHours , "openingHours");
           popoverShow={popoverShow}
           handlePopoverClose={handlePopoverClose}
           handleDeleteEvent={handleDeleteEvent}
-          handleEditEvent={handleEditEvent}
+          handleEditEvent={handleEditEvent} 
+          handleValidateMeans = {handleValidateMeans}
           event={event}
+          setAlertBoxTime = {setAlertBoxTime} 
+          alertBoxTime = {alertBoxTime}
+          setConfirm = {setConfirm}
         />
 
         <div className="px-2">
