@@ -96,7 +96,6 @@ export default function UserList(props) {
       const params = { siteId: adminStore.site.siteId._id };
       if (filterCompanyId.length !== 0) params["companyId"] = filterCompanyId;
       if (filterUserName.length !== 0) params["name"] = filterUserName;
-      //working
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_USER}`,
         token: store.token,

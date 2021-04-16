@@ -204,7 +204,6 @@ export default function Companies(props) {
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
             to={{
-              //working
               pathname: "/companies/edit-companies",
               id: item.companyId._id,
             }}
