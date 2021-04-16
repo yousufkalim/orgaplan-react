@@ -444,7 +444,7 @@
     ]
   },
   "buildings": {
-    "headingsExterior": ["Type", "Plan", "Action"],
+    "headingsExterior": ["Name of building", "Plan", "Action"],
     "headings": ["Name of building", "Levels", "Action"],
     "items": [
       ["Bâtiment 1", "4"],

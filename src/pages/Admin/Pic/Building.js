@@ -190,18 +190,18 @@ export default function AddSiteStep3(props) {
       setLoading(true);
 
       // FormData Creation
-      const formdata = new FormData();
-      formdata.append("number", Number(levelNumber));
-      formdata.append("building", activeBuilding._id);
+      const formdata = JSON.stringify({
+        number: Number(levelNumber),
+        building: activeBuilding._id,
+      });
 
       const response = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.LEVELS,
-        headers: {
-          Authorization: store.token,
-        },
+        token: store.token,
         body: formdata,
       });
+
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels.push(response.data);
 
@@ -240,14 +240,16 @@ export default function AddSiteStep3(props) {
 
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.LEVEL_IMAGE,
+        uri: GLOBALS.Constants.PIC_PDF,
         headers: {
           Authorization: store.token,
         },
         body: formdata,
       });
+
       const activeBuildingObj = activeBuilding;
-      activeBuildingObj.levels[index].image = response.data.image;
+      activeBuildingObj.levels[index].plan = response.data.plan;
+
       setActiveBuilding(activeBuildingObj);
       setLoading(false);
       setUpdate((st) => !st);
@@ -333,114 +335,58 @@ export default function AddSiteStep3(props) {
 
   const levelRows = [];
   activeBuilding.levels?.map((level, index) =>
-    activeBuilding.name === "Exterior"
-      ? levelRows.push([
-          level.image,
-          <Form.Row style={{ justifyContent: "center" }}>
-            <SmallButton
-              text="Add Plan"
-              disabled={loading}
-              color={theme.palette.primary.contrastText}
-              onClick={() => {
-                if (level.image) {
-                  if (
-                    window.confirm(
-                      "Are you sure? The current file will be deleted",
-                    )
-                  ) {
-                    document.getElementById(`fileinput${index}`).click();
-                  }
-                } else {
-                  document.getElementById(`fileinput${index}`).click();
-                }
-              }}
-              style={{
-                marginLeft: 10,
-                borderRadius: 4,
-              }}
-            />
-            <input
-              hidden
-              type="file"
-              id={`fileinput${index}`}
-              accept="application/pdf"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (
-                  file &&
-                  file.size <= GLOBALS.Constants.FILE_SIZE &&
-                  file.type === "application/pdf"
-                ) {
-                  onAddLevelImage(level._id, file, index);
-                  e.target.value = "";
-                } else {
-                  dispatch(
-                    Actions.notistack.enqueueSnackbar(
-                      Actions.notistack.snackbar(
-                        "Max size can be 10MB of type: PDF",
-                        "error",
-                      ),
-                    ),
-                  );
-                }
-              }}
-            />
-          </Form.Row>,
-        ])
-      : levelRows.push([
-          level.number === 0 ? "RDC" : level.number,
-          level.image,
-          <Form.Row style={{ justifyContent: "center" }}>
-            <SmallButton
-              text="Add Plan"
-              disabled={loading}
-              color={theme.palette.primary.contrastText}
-              onClick={() => {
-                if (level.image) {
-                  if (
-                    window.confirm(
-                      "Are you sure? The current file will be deleted",
-                    )
-                  ) {
-                    document.getElementById(`fileinput${index}`).click();
-                  }
-                } else {
-                  document.getElementById(`fileinput${index}`).click();
-                }
-              }}
-              style={{
-                marginLeft: 10,
-                borderRadius: 4,
-              }}
-            />
-            <input
-              hidden
-              type="file"
-              id={`fileinput${index}`}
-              accept="application/pdf"
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (
-                  file &&
-                  file.size <= GLOBALS.Constants.FILE_SIZE &&
-                  file.type === "application/pdf"
-                ) {
-                  onAddLevelImage(level._id, file, index);
-                  e.target.value = "";
-                } else {
-                  dispatch(
-                    Actions.notistack.enqueueSnackbar(
-                      Actions.notistack.snackbar(
-                        "Max size can be 10MB of type: PDF",
-                        "error",
-                      ),
-                    ),
-                  );
-                }
-              }}
-            />
-          </Form.Row>,
-        ]),
+    levelRows.push([
+      level.number === 0 ? "RDC" : level.number,
+      level.plan,
+      <Form.Row style={{ justifyContent: "center" }}>
+        <SmallButton
+          text="Add Plan"
+          disabled={loading}
+          color={theme.palette.primary.contrastText}
+          onClick={() => {
+            if (level.plan) {
+              if (
+                window.confirm("Are you sure? The current file will be deleted")
+              ) {
+                document.getElementById(`fileinput${index}`).click();
+              }
+            } else {
+              document.getElementById(`fileinput${index}`).click();
+            }
+          }}
+          style={{
+            marginLeft: 10,
+            borderRadius: 4,
+          }}
+        />
+        <input
+          hidden
+          type="file"
+          id={`fileinput${index}`}
+          accept="application/pdf"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (
+              file &&
+              file.size <= GLOBALS.Constants.FILE_SIZE &&
+              file.type === "application/pdf"
+            ) {
+              onAddLevelImage(level._id, file, index);
+              e.target.value = "";
+            } else {
+              dispatch(
+                Actions.notistack.enqueueSnackbar(
+                  Actions.notistack.snackbar(
+                    "Max size can be 10MB of type: PDF",
+                    "error",
+                  ),
+                ),
+              );
+            }
+          }}
+        />
+      </Form.Row>,
+    ]),
   );
 
   return (

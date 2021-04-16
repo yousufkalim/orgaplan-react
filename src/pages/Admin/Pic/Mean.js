@@ -161,6 +161,7 @@ export default function AddMean(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("name", name);
       formdata.append("meanType", meanType);
+      formdata.append("isInside", false);
       formdata.append("color", color);
       image[0] && image[0].file && formdata.append("image", image[0].file);
       formdata.append("location", JSON.stringify(locationsAr));

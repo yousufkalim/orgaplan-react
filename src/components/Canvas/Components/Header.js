@@ -1,8 +1,13 @@
 import React from "react";
-import { Elements } from "./data";
+import { Elements, LevelElements } from "./data";
 import FormSelect from "../../FormSelect";
 
-export default function Header({ handleElementChange, meanCheck, image }) {
+export default function Header({
+  handleElementChange,
+  meanCheck,
+  image,
+  level,
+}) {
   return (
     <div className=" mr-auto text-center ">
       <div className="row pr-4 pt-2">
@@ -13,7 +18,7 @@ export default function Header({ handleElementChange, meanCheck, image }) {
           <FormSelect
             value={meanCheck}
             name={"levelId"}
-            values={Elements}
+            values={level ? LevelElements : Elements}
             placeholder="Add an Element"
             onChange={handleElementChange}
             disabled={image == null ? true : false}
