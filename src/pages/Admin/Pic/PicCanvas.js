@@ -14,6 +14,7 @@ import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Canvas from "../../../components/Canvas";
 import Loader from "../../../components/Loader";
+import Button from "../../../components/Button";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
@@ -58,13 +59,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let selectedShapeReserver;
 const PicCanvas = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
-  const [sitePic, setSitePic] = useState([]);
+  const [sitePic, setSitePic] = useState("");
+  const [levelPic, setlevelPic] = useState("");
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
@@ -78,11 +81,11 @@ const PicCanvas = (props) => {
   const [levelsDropdown, setLevelsDropdown] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    fetchSitePic();
     // eslint-disable-next-line
   }, []);
 
-  const fetchData = async () => {
+  const fetchSitePic = async () => {
     try {
       setPdf(
         adminStore.site.siteId?.plan
@@ -105,9 +108,27 @@ const PicCanvas = (props) => {
     }
   };
 
+  const fetchLevelPic = async (levelId) => {
+    try {
+      let response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_BY_LEVEL}/${levelId}`,
+        token: store.token,
+      });
+      setlevelPic(response.data);
+      setShapes(response.data.shapes);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   const handlePdfChange = (pdfUri, pdf) => {
     setPdf(pdfUri);
-    onAddSitePlan(pdf);
+    level ? onAddLevelPlan(pdf) : onAddSitePlan(pdf);
   };
 
   const onAddSitePlan = async (file) => {
@@ -118,7 +139,7 @@ const PicCanvas = (props) => {
 
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.PIC_PDF,
+        uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
           Authorization: store.token,
         },
@@ -137,8 +158,52 @@ const PicCanvas = (props) => {
     }
   };
 
+  const onAddLevelPlan = async (file) => {
+    try {
+      const formdata = new FormData();
+      formdata.append("image", file);
+      formdata.append("levelId", level);
+
+      const response = await GLOBALS.API({
+        method: "PUT",
+        uri: GLOBALS.Constants.ADMIN_PIC_PDF,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+
+      const buildingIndex = sitePic.shapes.findIndex(
+        (shp) => shp._id === response.data.building,
+      );
+      let buildingFind = sitePic.shapes[buildingIndex];
+      if (buildingFind) {
+        let buildingCloned = _.cloneDeep(buildingFind);
+
+        let levelIn = buildingCloned.building.levels.findIndex(
+          (lev) => lev._id === level,
+        );
+        buildingCloned.building.levels[levelIn].plan = response.data.plan;
+        let sitePicCloned = _.cloneDeep(sitePic);
+        sitePicCloned.shapes[buildingIndex] = buildingCloned;
+
+        let levelsArr = _.cloneDeep(buildingCloned.building.levels);
+        setSitePic(sitePicCloned);
+        setSelectedShape(buildingCloned);
+        setAllLevels(_.cloneDeep(levelsArr));
+      }
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
+    level && (selectedShapeReserver = selectedShape);
     setSelectedShape("");
     getShape && setShape(getShape);
     setShapes(shapesArray);
@@ -164,6 +229,7 @@ const PicCanvas = (props) => {
   };
 
   const checkShape = () => {
+    level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
       if (!shape.name) {
         let shp = shapes.filter(
@@ -191,6 +257,9 @@ const PicCanvas = (props) => {
       } else if (selectedShape) {
         setSelectedShape(shape);
       }
+      if (selectedShapeReserver) {
+        setSelectedShape(selectedShapeReserver);
+      }
     }
   };
 
@@ -198,15 +267,27 @@ const PicCanvas = (props) => {
   const onDeleteShape = async () => {
     try {
       if (window.confirm("Are you sure you want to delete this shape?")) {
-        let response = await GLOBALS.API({
-          method: "DELETE",
-          uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${selectedShape._id}`,
-          token: store.token,
-        });
-        setSitePic(response.data);
-        setShapes(response.data.shapes);
-        setSelectedShape("");
-        setLoading(false);
+        if (level) {
+          let response = await GLOBALS.API({
+            method: "DELETE",
+            uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE}/${levelPic._id}/${selectedShape._id}`,
+            token: store.token,
+          });
+          setlevelPic(response.data);
+          setShapes(response.data.shapes);
+          setSelectedShape("");
+          setLoading(false);
+        } else {
+          let response = await GLOBALS.API({
+            method: "DELETE",
+            uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${selectedShape._id}`,
+            token: store.token,
+          });
+          setSitePic(response.data);
+          setShapes(response.data.shapes);
+          setSelectedShape("");
+          setLoading(false);
+        }
       }
     } catch (err) {
       dispatch(
@@ -231,10 +312,26 @@ const PicCanvas = (props) => {
               onClear={onClear}
               pdf={pdf}
               onPdfChange={handlePdfChange}
-              level={false}
+              level={level ? true : false}
             />
           )}
           <div className={classes.infoDrawerContainer}>
+            {selectedShape && selectedShape.type === "BUILDING" && level && (
+              <Button
+                text="Show Exterior"
+                onClick={() => {
+                  setPdf(
+                    adminStore.site.siteId?.plan
+                      ? GLOBALS.Constants.BASE_URL +
+                          adminStore.site.siteId?.plan
+                      : undefined,
+                  );
+                  setShapes(sitePic.shapes);
+                  setLevel("");
+                  selectedShapeReserver = null;
+                }}
+              />
+            )}
             {selectedShape && (
               <div className={classes.infoDrawer}>
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
@@ -248,6 +345,7 @@ const PicCanvas = (props) => {
                     onChange={({ target: { value } }) => {
                       setLevel(value);
                       if (value) {
+                        fetchLevelPic(value);
                         const leve = allLeves.find((lev) => lev._id === value);
                         setPdf(
                           leve?.plan
@@ -312,7 +410,8 @@ const PicCanvas = (props) => {
               body={
                 <DeliveryArea
                   shape={shape}
-                  pic={sitePic}
+                  pic={level ? levelPic : sitePic}
+                  level={level}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
@@ -334,7 +433,8 @@ const PicCanvas = (props) => {
               body={
                 <StorageArea
                   shape={shape}
-                  pic={sitePic}
+                  pic={level ? levelPic : sitePic}
+                  level={level}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
@@ -356,7 +456,8 @@ const PicCanvas = (props) => {
               body={
                 <Building
                   shape={shape}
-                  pic={sitePic}
+                  pic={level ? levelPic : sitePic}
+                  level={level}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
@@ -376,7 +477,8 @@ const PicCanvas = (props) => {
               body={
                 <Mean
                   shape={shape}
-                  pic={sitePic}
+                  pic={level ? levelPic : sitePic}
+                  level={level}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}

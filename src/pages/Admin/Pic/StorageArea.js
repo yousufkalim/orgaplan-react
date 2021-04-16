@@ -159,6 +159,8 @@ export default function DeliveryArea(props) {
         notificationPriorToDays,
         notificationTo: notificationToAr,
       };
+      props.level && (formdata["level"] = props.level);
+
       let response = await GLOBALS.API({
         method: props.selectedShape ? "PUT" : "POST",
         uri: props.selectedShape
@@ -183,16 +185,29 @@ export default function DeliveryArea(props) {
       propShape.storageArea = response.data;
 
       if (!props.selectedShape) {
-        await GLOBALS.API({
-          method: "POST",
-          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-          token: store.token,
-          body: JSON.stringify({
-            picId: props.pic._id,
-            deliveryArea: response.data._id,
-            ...propShape,
-          }),
-        });
+        if (props.level) {
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE,
+            token: store.token,
+            body: JSON.stringify({
+              picId: props.pic._id,
+              mean: response.data._id,
+              ...propShape,
+            }),
+          });
+        } else {
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+            token: store.token,
+            body: JSON.stringify({
+              picId: props.pic._id,
+              deliveryArea: response.data._id,
+              ...propShape,
+            }),
+          });
+        }
       }
 
       setLoading(false);

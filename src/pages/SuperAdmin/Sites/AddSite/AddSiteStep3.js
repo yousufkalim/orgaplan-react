@@ -104,7 +104,7 @@ export default function AddSiteStep3(props) {
       // FormData Creation
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.PIC_PDF,
+        uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
           Authorization: store.token,
         },
@@ -200,7 +200,7 @@ export default function AddSiteStep3(props) {
       // FormData Creation
       const response = await GLOBALS.API({
         method: "PUT",
-        uri: GLOBALS.Constants.PIC_PDF,
+        uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
           Authorization: store.token,
         },
