@@ -250,7 +250,10 @@ export default function AdminHeader(props) {
           >
             <MenuIcon color="primary" />
           </Fab>
-          <div className={classes.profileImage}>
+          <div
+            className={classes.profileImage}
+            onClick={() => dispatch(Actions.admin.reset_state())}
+          >
             <img
               src={
                 storeAuth.user.image
