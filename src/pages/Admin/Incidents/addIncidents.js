@@ -49,6 +49,8 @@ export default function AddIncidents(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isBillable, setIsBillable] = useState(false);
+  const [isPaid, setIsPaid] = useState("");
+
   const [price, setPrice] = useState("0");
   const [priceDisable, setPriceDisable] = useState("false");
 
@@ -187,6 +189,7 @@ export default function AddIncidents(props) {
     formdata.append("description", description);
     formdata.append("isBillable", isBillable);
     formdata.append("price", price);
+    formdata.append("isPaid", isPaid);
     formdata.append("location", JSON.stringify(location));
     formdata.append("comment", comment);
     formdata.append("companyId", companyId);
@@ -331,6 +334,7 @@ export default function AddIncidents(props) {
               />
             </Form.Row>
           </Form.Row>
+
           <Form.Row>
             <FormLabel bold primary="BILLABLE* : " />
             <Form.Row width="48%">
@@ -339,11 +343,11 @@ export default function AddIncidents(props) {
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setPriceDisable(e.target.value);
                   if (e.target.value === "false") {
                     setPrice("0");
                     setIsBillable(false);
+                    setIsPaid("");
                   } else if (e.target.value === "true") {
                     setIsBillable(true);
                   }
@@ -356,6 +360,30 @@ export default function AddIncidents(props) {
               </select>
             </Form.Row>
           </Form.Row>
+
+          <Form.Row>
+            <FormLabel bold primary="Paid: " />
+            <Form.Row width="48%">
+              <select
+                name="paid"
+                disabled={priceDisable === "false"}
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                onChange={(e) => {
+                  if (e.target.value === "false") {
+                    setIsPaid(false);
+                  } else if (e.target.value === "true") {
+                    setIsPaid(true);
+                  }
+                }}
+              >
+                <option value={true}>Yes</option>
+                <option selected value={false}>
+                  No
+                </option>
+              </select>
+            </Form.Row>
+          </Form.Row>
+
           <Form.Row>
             <FormLabel bold primary="AMOUNT :" />
             <Form.Row width="48%" noMargin alignItems="center">
