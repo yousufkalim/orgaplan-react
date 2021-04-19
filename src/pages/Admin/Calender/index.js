@@ -1010,7 +1010,7 @@ const Calender = (props) => {
               open={addDelivery}
               onClose={() => setAddDelivery(false)}
               body={
-                <DeliveryRequest history={props.history} date={deliverDate} start={deliverStartHours} end= {deliverEndHours} /> 
+                <DeliveryRequest history={props.history} date={deliverDate} start={deliverStartHours} end= {deliverEndHours} setAddDelivery = {setAddDelivery} /> 
               }
             />
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>

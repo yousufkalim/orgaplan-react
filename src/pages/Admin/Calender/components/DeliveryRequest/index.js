@@ -169,6 +169,7 @@ export default function DeliveryRequest(props) {
             storageAreas={storageAreas}
             buildings={buildings}
             history={props.history}
+            setAddDelivery = {props.setAddDelivery}
           />
         )}
       </div>
