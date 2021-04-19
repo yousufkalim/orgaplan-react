@@ -287,9 +287,8 @@ export default function Login(props) {
             process.env.NODE_ENV === "development"
               ? {
                   email: "talha28.falcon@gmail.com",
-                  password: "1",
                   // email: "superadmin@orgaplan.fr",
-                  // password: "1",
+                  password: "1",
                 }
               : {
                   email: "",

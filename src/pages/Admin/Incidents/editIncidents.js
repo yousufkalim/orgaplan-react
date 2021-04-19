@@ -249,16 +249,6 @@ export default function AddIncidents(props) {
                   { value: "UNEXPRECTED", label: "Unexp" },
                 ]}
               />
-              <RadioButton
-                onChange={nameChange}
-                name="status"
-                style={GLOBALS.Styles.inputWidth}
-                value={status}
-                items={[
-                  { value: "open", label: "Ouvert" },
-                  { value: "close", label: "Ferme" },
-                ]}
-              ></RadioButton>
             </Form.Row>
           </Form.Row>
 

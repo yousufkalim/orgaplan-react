@@ -17,6 +17,7 @@ import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import moment from "moment";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -47,9 +48,9 @@ export default function AddIncidents(props) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [isBillable, seIsBillable] = useState(false);
+  const [isBillable, setIsBillable] = useState(false);
   const [price, setPrice] = useState("0");
-  const [priceDisable, setPriceDisable] = useState("");
+  const [priceDisable, setPriceDisable] = useState("false");
 
   const [type, setType] = useState("");
 
@@ -93,6 +94,7 @@ export default function AddIncidents(props) {
     }
   };
   const nameChange = (e) => {
+    console.log("called");
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
@@ -117,11 +119,13 @@ export default function AddIncidents(props) {
       setLocation(locationObject);
     }
     if (e.target.name === "description") setDescription(e.target.value);
-    if (e.target.name === "seIsBillable") {
+    if (e.target.name === "bill") {
+      alert(e.target.value);
+
       if (e.target.value === "true") {
-        seIsBillable(true);
+        setIsBillable(true);
       } else if (e.target.value === "false") {
-        seIsBillable(false);
+        setIsBillable(false);
       }
     }
     if (e.target.name === "price") setPrice(e.target.value);
@@ -175,7 +179,6 @@ export default function AddIncidents(props) {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    let locationType = {};
     var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("date", date);
@@ -247,6 +250,8 @@ export default function AddIncidents(props) {
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
                 name="date"
+                min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+                max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={nameChange}
                 value={date}
               />
@@ -334,15 +339,20 @@ export default function AddIncidents(props) {
                 id="bill"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
+                  console.log(e.target.value);
                   setPriceDisable(e.target.value);
                   if (e.target.value === "false") {
                     setPrice("0");
+                    setIsBillable(false);
+                  } else if (e.target.value === "true") {
+                    setIsBillable(true);
                   }
-                  return nameChange;
                 }}
               >
                 <option value={true}>Yes</option>
-                <option value={false}>No</option>
+                <option selected value={false}>
+                  No
+                </option>
               </select>
             </Form.Row>
           </Form.Row>

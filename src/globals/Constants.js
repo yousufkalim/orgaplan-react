@@ -40,7 +40,6 @@ const endpoints = {
   INVOICE_DELETE: BASE_URL_V1 + "superadmin/invoices/delete",
   // LEVEL
   LEVELS: BASE_URL_V1 + "superadmin/levels",
-  LEVEL_IMAGE: BASE_URL_V1 + "superadmin/levels/image",
   LEVELS_BUILDING: BASE_URL_V1 + "superadmin/levels/building",
   // QUOTE
   QUOTE: BASE_URL_V1 + "superadmin/quotes",
@@ -59,11 +58,19 @@ const endpoints = {
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
 
   // ================================ ADMIN ================================
-  // PIC
-  ADMIN_PIC: BASE_URL_V1 + "pic",
-  ADMIN_PIC_GET: BASE_URL_V1 + "pic/get",
-  ADMIN_PIC_SHAPE: BASE_URL_V1 + "pic/shape",
-  ADMIN_PIC_BY_SITE: BASE_URL_V1 + "pic/site",
+  // SITE PIC
+  ADMIN_PIC: BASE_URL_V1 + "site-pic",
+  ADMIN_PIC_PDF: BASE_URL_V1 + "site-pic/pdf",
+  ADMIN_PIC_GET: BASE_URL_V1 + "site-pic/get",
+  ADMIN_PIC_SITE: BASE_URL_V1 + "site-pic/site",
+  ADMIN_PIC_SHAPE: BASE_URL_V1 + "site-pic/shape",
+  ADMIN_PIC_BY_SITE: BASE_URL_V1 + "site-pic/site",
+
+  // LEVEL PIC
+  ADMIN_LEVEL_PIC: BASE_URL_V1 + "level-pic",
+  ADMIN_LEVEL_PIC_GET: BASE_URL_V1 + "level-pic/get",
+  ADMIN_LEVEL_PIC_SHAPE: BASE_URL_V1 + "level-pic/shape",
+  ADMIN_LEVEL_PIC_BY_LEVEL: BASE_URL_V1 + "level-pic/level",
 
   // MEANS
   MEAN: BASE_URL_V1 + "mean",
@@ -93,7 +100,6 @@ const endpoints = {
 
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
-  GET_LEVELS: BASE_URL_V1 + "level/get_levels_by_building",
 
   getBookingBySiteId: BASE_URL_V1 + "mean_booking/getBookingBySiteId",
 

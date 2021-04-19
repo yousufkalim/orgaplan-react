@@ -39,6 +39,16 @@ export const Elements = [
     value: "DELIVERYAREA",
   },
 ];
+export const LevelElements = [
+  {
+    label: "Mean",
+    value: "MEAN",
+  },
+  {
+    label: "Storage_Area",
+    value: "STORAGEAREA",
+  },
+];
 
 export const Levels = [
   {

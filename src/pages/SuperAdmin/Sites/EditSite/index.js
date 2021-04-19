@@ -124,7 +124,6 @@ export default function EditSite(props) {
       </IconButton>
       <Heading primary="EDIT A SITE" />
       <Stepper
-        disabled
         step={step}
         setStep={setStep}
         steps={["Step 1: General Information", "Step 2: Dates", "Text 1: PIC"]}

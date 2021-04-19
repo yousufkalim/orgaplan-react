@@ -260,12 +260,10 @@ export default function Sites(props) {
                   role={site.role}
                   site={site.siteId}
                   key={site.siteId._id}
-                  onClick={() => {
-                    if (window.confirm("Are you sure?")) {
-                      dispatch(Actions.admin.set_site(site));
-                    } else
-                      console.log(JSON.stringify(site.siteId._id, null, 2));
-                  }}
+                  onClick={() =>
+                    window.confirm("Are you sure?") &&
+                    dispatch(Actions.admin.set_site(site))
+                  }
                 />
               ))}
               {company.type === "MASTERCLIENT" &&

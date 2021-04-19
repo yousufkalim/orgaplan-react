@@ -51,6 +51,7 @@ export default function AddMean(props) {
   const [storageAreas, setStorageAreas] = useState([]);
 
   useEffect(() => {
+    console.log("props", props.level);
     getData();
     // eslint-disable-next-line
   }, []);
@@ -161,6 +162,8 @@ export default function AddMean(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("name", name);
       formdata.append("meanType", meanType);
+      formdata.append("isInside", false);
+      props.level && formdata.append("level", props.level);
       formdata.append("color", color);
       image[0] && image[0].file && formdata.append("image", image[0].file);
       formdata.append("location", JSON.stringify(locationsAr));
@@ -212,16 +215,29 @@ export default function AddMean(props) {
       propShape._id = response.data._id;
 
       if (!props.selectedShape) {
-        await GLOBALS.API({
-          method: "POST",
-          uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
-          token: store.token,
-          body: JSON.stringify({
-            picId: props.pic._id,
-            mean: response.data._id,
-            ...propShape,
-          }),
-        });
+        if (props.level) {
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE,
+            token: store.token,
+            body: JSON.stringify({
+              picId: props.pic._id,
+              mean: response.data._id,
+              ...propShape,
+            }),
+          });
+        } else {
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+            token: store.token,
+            body: JSON.stringify({
+              picId: props.pic._id,
+              mean: response.data._id,
+              ...propShape,
+            }),
+          });
+        }
       }
       setLoading(false);
       props.setShapes(propShapes, propShape);
