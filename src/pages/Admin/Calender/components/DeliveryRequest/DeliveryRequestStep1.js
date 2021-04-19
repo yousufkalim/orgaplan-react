@@ -107,6 +107,7 @@ export default function AddSiteStep1(props) {
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
             onChange={({ target: { value } }) => setDate(value)}
+            disabled = "disabled"
           />
           <TimeInput
             format="HH:mm"

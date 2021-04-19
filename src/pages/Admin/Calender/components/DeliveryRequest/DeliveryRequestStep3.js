@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DeliveryRequestStep3(props) {
+export default function DeliveryRequestStep3(props) { 
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -96,8 +96,8 @@ export default function DeliveryRequestStep3(props) {
         body: formdata,
       });
 
-      setLoading(false);
-      props.history.goBack();
+      setLoading(false);  
+      props.setAddDelivery(false);
     } catch (err) {
       setLoading(false);
       dispatch(
