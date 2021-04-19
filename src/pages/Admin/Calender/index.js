@@ -124,7 +124,8 @@ const Calender = (props) => {
   const [deliverStartHours , setDeliverStartHours] = useState("");
   const [deliverEndHours , setDeliverEndHours] = useState("");
 
-
+// console.log("openingHours" ,openingHours);
+// console.log("unavailabilityDates" ,adminStore.site.siteId.unavailabilityDates)
   // useEffect
   useEffect(() => {
     if (props.location.companyId != null) {
@@ -377,7 +378,7 @@ const Calender = (props) => {
         flagHours = true;
       }
       return {};
-    });
+    }); 
     disableDay.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         disableDayFlag = true; 
@@ -413,14 +414,14 @@ const Calender = (props) => {
             }
       }
     })
-    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag ||pastdayFlag) { 
+    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag ||pastdayFlag || flagHours) { 
       if (flagDate || disableDayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
           ),
         );
-      } else if (flagOpeningHoursDay || flagOpeningHours) {
+      } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
@@ -865,6 +866,7 @@ const Calender = (props) => {
           let colour = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
+            console.log(key);
             if (!(key.startTime && key.endTime)) {
               return {};
             }
@@ -897,11 +899,12 @@ const Calender = (props) => {
             return {
               objectName: "Deliveries",
               id: key._id,
-              title: key.statusReason,
+              title: key.comment,
               start: start,
               end: end,
               color: colour,
-              means: key.means,
+              liftingMeans: key.liftingMeans,
+              routingMeans: key.routingMeans,
               company: key.companyId,
               materials : key.materials,
               deliveryArea : key.deliveryArea,
