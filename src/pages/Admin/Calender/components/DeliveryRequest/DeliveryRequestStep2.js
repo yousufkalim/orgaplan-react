@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import GLOBALS from "../../../../globals";
+import GLOBALS from "../../../../../globals";
 
-import Form from "../../../../components/Form";
-import Button from "../../../../components/Button";
-import FormLabel from "../../../../components/FormLabel";
-import FormSelect from "../../../../components/FormSelect";
-import FormMultiSelect from "../../../../components/FormMultiSelect";
+import Form from "../../../../../components/Form";
+import Button from "../../../../../components/Button";
+import FormLabel from "../../../../../components/FormLabel";
+import FormSelect from "../../../../../components/FormSelect";
+import FormMultiSelect from "../../../../../components/FormMultiSelect";
 
 export default function AddSiteStep1(props) {
   const [building, setBuilding] = useState("");

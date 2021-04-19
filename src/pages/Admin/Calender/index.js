@@ -23,7 +23,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SubHeading from "../../../components/SubHeading";
-
+import Loader from "../../../components/Loader";
+import FullScreenModal from "../../../components/FullScreenModal";
 import {
   get_means,
   add_mean,
@@ -32,6 +33,7 @@ import {
 } from "../../../redux/actions/means";
 import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
+import DeliveryRequest from "./components/DeliveryRequest";
 let view = {
   month: true,
   day: true,
@@ -58,10 +60,10 @@ const Calender = (props) => {
       dow: 1, //Monday is the first day of the week.
     },
   });
+
   const dispatch = useDispatch();
   const meansData = useSelector((state) => state.means);
-  const adminStore = useSelector((state) => state.admin);
-
+  const adminStore = useSelector((state) => state.admin); 
   const store = useSelector((state) => state.auth);
   // *****
   const [isLoading, setLoading] = useState(true);
@@ -113,10 +115,16 @@ const Calender = (props) => {
     { value: "ALERTE", label: "ALERTE" },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
-  const [disableHours, setDisableHours] = useState([]); 
   const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours)
-  const [overlap] = React.useState("Enable"); 
-  const [confirm ,setConfirm] = useState("");
+  const [overlap] = React.useState("Enable");  
+  const [addDelivery , setAddDelivery] = useState(false); 
+  const [disableHours, setDisableHours] = useState([]); 
+  const [disableDay, setDisableDay] = useState([]);
+  const [deliverDate , setDeliverDate] = useState("");
+  const [deliverStartHours , setDeliverStartHours] = useState("");
+  const [deliverEndHours , setDeliverEndHours] = useState("");
+
+
   // useEffect
   useEffect(() => {
     if (props.location.companyId != null) {
@@ -137,6 +145,7 @@ const Calender = (props) => {
     }
     getfilterdata();
     unavailabilityDates();
+    functionDisableDay();
   }, []);
   useEffect(() => {
     filterBookingCalendar();
@@ -341,7 +350,96 @@ const Calender = (props) => {
       }, 1000);
     }
   };
+  const AddDeliveryRequest = ({ start, end}) =>{ 
+    setAddDelivery(false);
+    setDeliverStartHours(start.getHours());
+    setDeliverEndHours(end.getHours()); 
+    start.setHours(0);
+    setDeliverDate(start); 
+    let flagDate = false;
+    let flagOpeningHoursDay = false;
+    let flagHours = false;
+    let flagOpeningHours = false;
+    let disableDayFlag = false;
+    let pastdayFlag = false;
+
+    let preDateTime = new Date();
+    let milliseconds = Date.parse(preDateTime);
+    milliseconds = milliseconds - 1 * 60 * 1000;
+    preDateTime = new Date(milliseconds);
+    if (start > preDateTime && start < end){
+
+    }else{
+      pastdayFlag = true;
+    }
+    disableHours.map((key, index) => {
+      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+        flagHours = true;
+      }
+      return {};
+    });
+    disableDay.map((key, index) => {
+      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+        disableDayFlag = true; 
+      }
+      return {};
+    });
+    
+    let currentDay =  moment(start).day(); 
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        if (moment(start).isSame(key.date, "day")) {
+          flagDate = true;
+        }
+      }
+      return {};
+    });
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHoursDay = true;
+      }
+    });
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHours = true;
+      }else if (key.dayOff === false && currentDay === key.day){
+            if(inRange(start.getHours(), key.startHour, key.endHour)){
+              
+            }else{
+              flagOpeningHours = true;
+            }
+      }
+    })
+    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag ||pastdayFlag) { 
+      if (flagDate || disableDayFlag) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Disable Day", "error"),
+          ),
+        );
+      } else if (flagOpeningHoursDay || flagOpeningHours) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Disable hours", "error"),
+          ),
+        );
+      }else if (pastdayFlag){
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Bookings can't be made in past time.", "error"),
+          ),
+        );
+      }
+    }else{
+      setAddDelivery(true);
+    }
+    
+  }
   const AddEvent = ({ start, end, slots }) => {
+  
     setAlertBoxTime(false);
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
@@ -438,17 +536,14 @@ const Calender = (props) => {
     setEndtimesliceEdit(getend);
   };
   const handleDeleteEvent = (confirm) => {
-   console.log(confirm);
     if(confirm === "yes"){
       setAlertBoxTime(true);
       setpopoverShow(!popoverShow);
       const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill);
-    setConfirm("");
+    setEvents(fill); 
     dispatch(delete_mean(eventID));
     }else if (confirm === "no"){ 
-      setAlertBoxTime(false);
-      setConfirm("");
+      setAlertBoxTime(false); 
     }else{
       setAlertBoxTime(true);
       setpopoverShow(popoverShow);
@@ -705,7 +800,20 @@ const Calender = (props) => {
       </Alert>
     );
   }
-
+  const functionDisableDay = () => {
+    let tempDisableDay = [];
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        for (let i = 0; i <= 23; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisableDay.push(date);
+        }
+      }
+      return {};
+    });
+    setDisableDay(tempDisableDay);
+  };
   const customDayPropGetter = (date) => {
     let flagDate = false;
     let flagOpeningHoursDay = false;
@@ -853,10 +961,9 @@ const Calender = (props) => {
     }; 
     openingHours.map((key, index)=>{
       if (key.dayOff === true && currentDay === key.day){
-        flagOpeningHours = true;
+            flagOpeningHours = true;
       }else if (key.dayOff === false && currentDay === key.day){
-            if(inRange(date.getHours(), key.startHour, key.endHour)){
-              
+            if(inRange(date.getHours(), key.startHour, key.endHour)){ 
             }else{
               flagOpeningHours = true;
             }
@@ -891,12 +998,18 @@ const Calender = (props) => {
     });
     setDisableHours(tempDisabledTime);
   };
-const onConfirm = () =>{
-    // Preform your action.
-}
+ 
 
   return (
-    <>
+    <> 
+       <FullScreenModal
+              title={`Delivery Request`}
+              open={addDelivery}
+              onClose={() => setAddDelivery(false)}
+              body={
+                <DeliveryRequest history={props.history} date={deliverDate} start={deliverStartHours} end= {deliverEndHours} /> 
+              }
+            />
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
@@ -1214,11 +1327,13 @@ const onConfirm = () =>{
           handleValidateMeans = {handleValidateMeans}
           event={event}
           setAlertBoxTime = {setAlertBoxTime} 
-          alertBoxTime = {alertBoxTime}
-          setConfirm = {setConfirm}
+          alertBoxTime = {alertBoxTime} 
         />
 
-        <div className="px-2">
+        
+          <div style={{ flexBasis: "100%" }}>
+          
+          <div className="px-2">
           <Form.Row alignItems="center">
             <Form.Row noMargin>
               <Heading primary="PLANNING" noWrap />
@@ -1345,8 +1460,8 @@ const onConfirm = () =>{
               )}
             </Form.Row>
           </Form.Row>
-          <div style={{ flexBasis: "100%" }}>
-            {events ? (
+          </div>
+          {events ? (
               <Calendar
                 slotPropGetter={slotPropGetter}
                 popup
@@ -1362,6 +1477,7 @@ const onConfirm = () =>{
                 // onSelectEvent={bookingSlot}
                 onSelecting={true}
                 // onSelectSlot={AddEvent}
+                onSelectSlot={AddDeliveryRequest}
                 // onSelectSlot={AddAvailability}
                 startAccessor="start"
                 endAccessor="end"
@@ -1406,11 +1522,10 @@ const onConfirm = () =>{
                 }}
               />
             ) : (
-              <h1>Loading.....</h1>
+              <Loader.Progress />
             )}
-          </div>
-        </div>
-      </div>
+    
+          </div> </div>
     </>
   );
 };

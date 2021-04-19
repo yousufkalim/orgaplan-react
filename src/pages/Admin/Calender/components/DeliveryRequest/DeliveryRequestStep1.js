@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-import GLOBALS from "../../../../globals";
+import GLOBALS from "../../../../../globals";
 
-import Form from "../../../../components/Form";
-import Button from "../../../../components/Button";
-import FormInput from "../../../../components/FormInput";
-import FormLabel from "../../../../components/FormLabel";
-import TimeInput from "../../../../components/TimeInput";
-import FormSelect from "../../../../components/FormSelect";
-import FormMultiSelect from "../../../../components/FormMultiSelect";
-import MultiAdderInput from "../../../../components/MultiAdderInput";
+import Form from "../../../../../components/Form";
+import Button from "../../../../../components/Button";
+import FormInput from "../../../../../components/FormInput";
+import FormLabel from "../../../../../components/FormLabel";
+import TimeInput from "../../../../../components/TimeInput";
+import FormSelect from "../../../../../components/FormSelect";
+import FormMultiSelect from "../../../../../components/FormMultiSelect";
+import MultiAdderInput from "../../../../../components/MultiAdderInput";
 
 export default function AddSiteStep1(props) {
   const [company, setCompany] = useState("");
@@ -23,7 +23,7 @@ export default function AddSiteStep1(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
-
+  
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -55,7 +55,7 @@ export default function AddSiteStep1(props) {
 
     // eslint-disable-next-line
   }, [deliveryArea]);
-
+  console.log(props.date, props.start, props.end);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
