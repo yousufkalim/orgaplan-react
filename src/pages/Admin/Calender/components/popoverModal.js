@@ -82,7 +82,15 @@ const PopoverModal = ({
                       <th>Name</th>
                       <th>Type</th>
                     </tr>
-                    {event.means.map((key, index) => {
+                    {event.liftingMeans.map((key, index) => {
+                      return (
+                        <tr>
+                          <td>{key.name}</td>
+                          <td>{key.meanType}</td>
+                        </tr>
+                      );
+                    })}
+                    {event.routingMeans.map((key, index) => {
                       return (
                         <tr>
                           <td>{key.name}</td>
@@ -106,7 +114,7 @@ const PopoverModal = ({
                     {event.materials.map((key, index) => {
                       return (
                         <tr>
-                          <td>{key}</td>
+                          <td> {key} </td>
                         </tr>
                       );
                     })}

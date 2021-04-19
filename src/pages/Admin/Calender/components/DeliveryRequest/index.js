@@ -138,10 +138,7 @@ export default function DeliveryRequest(props) {
             companies={companies}
             deliveryAreas={deliveryAreas}
             trades={trades}
-            means={means} 
-            setDate={date}
-            setStartTime = {start}
-            setEndTime = {end} 
+            means={means}  
           />  
         ) : step === 2 ? (
           <DeliveryRequestStep2

@@ -12,18 +12,17 @@ import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
 
-export default function AddSiteStep1(props) {
+export default function AddSiteStep1(props) { 
   const [company, setCompany] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
-  const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [date, setDate] = useState(props.date);
+  const [startTime, setStartTime] = useState(moment(props.date).set('hour', props.start));
+  const [endTime, setEndTime] = useState(moment(props.date).set('hour', props.end));
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
-  const [update, setUpdate] = useState(false);
-  
+  const [update, setUpdate] = useState(false); 
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -55,7 +54,7 @@ export default function AddSiteStep1(props) {
 
     // eslint-disable-next-line
   }, [deliveryArea]);
-  console.log(props.date, props.start, props.end);
+  
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
