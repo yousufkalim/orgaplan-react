@@ -233,81 +233,26 @@ export default function AddSiteStep3(props) {
   }
 
   // Rendering
-  const buildingRows = [
-    [
-      "Exterior",
-      "-",
-      <Form.Row style={{ justifyContent: "center" }}>
-        <SmallButton
-          text="Add Plan"
-          disabled={loading}
-          color={theme.palette.primary.contrastText}
-          onClick={() => {
-            if (site.plan) {
-              if (
-                window.confirm("Are you sure? The current file will be deleted")
-              ) {
-                document.getElementById(`fileinput-exterior`).click();
-              }
-            } else {
-              document.getElementById(`fileinput-exterior`).click();
-            }
-          }}
-          style={{
-            marginLeft: 10,
-            borderRadius: 4,
-          }}
-        />
-        <input
-          hidden
-          type="file"
-          id={`fileinput-exterior`}
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (
-              file &&
-              file.size <= GLOBALS.Constants.FILE_SIZE &&
-              file.type === "application/pdf"
-            ) {
-              onAddExteriorImage(file);
-              e.target.value = "";
-            } else {
-              dispatch(
-                Actions.notistack.enqueueSnackbar(
-                  Actions.notistack.snackbar(
-                    "Max size can be 10MB of type: PDF",
-                    "error",
-                  ),
-                ),
-              );
-            }
-          }}
-        />
-      </Form.Row>,
-    ],
-  ];
-  buildings.map((building) =>
-    buildingRows.push([
-      building.name,
-      building.levels.length,
-      <Form.Row style={{ justifyContent: "center" }}>
-        <SmallButton
-          text="Modify"
-          onClick={() => {
-            setActiveBuilding(building);
-            setLevelModal((st) => !st);
-          }}
-          color={theme.palette.primary.contrastText}
-          style={{
-            marginLeft: 10,
-            borderRadius: 4,
-          }}
-        />
-      </Form.Row>,
-    ]),
-  );
+  const buildingRows = buildings.map((building) => [
+    building.name,
+    building.levels.length,
+    <Form.Row style={{ justifyContent: "center" }}>
+      <SmallButton
+        text="Modify"
+        onClick={() => {
+          setActiveBuilding(building);
+          setLevelModal((st) => !st);
+        }}
+        color={theme.palette.primary.contrastText}
+        style={{
+          marginLeft: 10,
+          borderRadius: 4,
+        }}
+      />
+    </Form.Row>,
+  ]);
   const levelRows = [];
-  activeBuilding.levels?.map((level, index) =>
+  activeBuilding?.levels?.map((level, index) =>
     levelRows.push([
       level.number === 0 ? "RDC" : level.number,
       level.plan,
@@ -374,6 +319,66 @@ export default function AddSiteStep3(props) {
           />
         </Form.Row>
         <div className={classes.content}>
+          <Form.Row alignItems="center">
+            <Form.Row
+              width="80%"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
+              <FormLabel bold primary="Exterior: " />
+              &nbsp;
+              <FormLabel primary={site?.plan} />
+            </Form.Row>
+            <Form.Row width="20%" alignItems="center" justifyContent="flex-end">
+              <SmallButton
+                text="Add Plan"
+                disabled={loading}
+                color={theme.palette.primary.contrastText}
+                onClick={() => {
+                  if (site.plan) {
+                    if (
+                      window.confirm(
+                        "Are you sure? The current file will be deleted",
+                      )
+                    ) {
+                      document.getElementById(`fileinput-exterior`).click();
+                    }
+                  } else {
+                    document.getElementById(`fileinput-exterior`).click();
+                  }
+                }}
+                style={{
+                  marginLeft: 10,
+                  borderRadius: 4,
+                }}
+              />
+              <input
+                hidden
+                type="file"
+                id={`fileinput-exterior`}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (
+                    file &&
+                    file.size <= GLOBALS.Constants.FILE_SIZE &&
+                    file.type === "application/pdf"
+                  ) {
+                    onAddExteriorImage(file);
+                    e.target.value = "";
+                  } else {
+                    dispatch(
+                      Actions.notistack.enqueueSnackbar(
+                        Actions.notistack.snackbar(
+                          "Max size can be 10MB of type: PDF",
+                          "error",
+                        ),
+                      ),
+                    );
+                  }
+                }}
+              />
+            </Form.Row>
+          </Form.Row>
           <Table
             rows={buildingRows}
             headers={GLOBALS.Data.buildings.headings}

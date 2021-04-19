@@ -10,7 +10,6 @@ import Form from "../../../../components/Form";
 import Modal from "../../../../components/Modal";
 import Table from "../../../../components/Table";
 import Button from "../../../../components/Button";
-import Heading from "../../../../components/Heading";
 import FormLabel from "../../../../components/FormLabel";
 import FormInput from "../../../../components/FormInput";
 import FormSelect from "../../../../components/FormSelect";
@@ -251,7 +250,7 @@ export default function AddSiteStep3(props) {
     </Form.Row>,
   ]);
   const levelRows = [];
-  activeBuilding.levels?.map((level, index) =>
+  activeBuilding?.levels?.map((level, index) =>
     levelRows.push([
       level.number === 0 ? "RDC" : level.number,
       level.plan,
