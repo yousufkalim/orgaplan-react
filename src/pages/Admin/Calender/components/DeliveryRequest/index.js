@@ -3,16 +3,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import { useDispatch, useSelector } from "react-redux";
 
-import GLOBALS from "../../../../globals";
-import Actions from "../../../../redux/actions";
+import GLOBALS from "../../../../../globals";
+import Actions from "../../../../../redux/actions";
 
-import Loader from "../../../../components/Loader";
-import Stepper from "../../../../components/Stepper";
-import Heading from "../../../../components/Heading";
+import Loader from "../../../../../components/Loader";
+import Stepper from "../../../../../components/Stepper";
+import Heading from "../../../../../components/Heading";
 import DeliveryRequestStep1 from "./DeliveryRequestStep1";
 import DeliveryRequestStep2 from "./DeliveryRequestStep2";
 import DeliveryRequestStep3 from "./DeliveryRequestStep3";
-import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.svg";
+import { ReactComponent as BackArrow } from "../../../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryRequest(props) {
+ const {date,start,end}=props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -137,8 +138,11 @@ export default function DeliveryRequest(props) {
             companies={companies}
             deliveryAreas={deliveryAreas}
             trades={trades}
-            means={means}
-          />
+            means={means} 
+            setDate={date}
+            setStartTime = {start}
+            setEndTime = {end} 
+          />  
         ) : step === 2 ? (
           <DeliveryRequestStep2
             {...props}

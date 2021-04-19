@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 
-import GLOBALS from "../../../../globals";
-import Actions from "../../../../redux/actions";
+import GLOBALS from "../../../../../globals";
+import Actions from "../../../../../redux/actions";
 
-import Form from "../../../../components/Form";
-import Button from "../../../../components/Button";
-import FormLabel from "../../../../components/FormLabel";
-import FormInput from "../../../../components/FormInput";
-import FormCheckbox from "../../../../components/FormCheckbox";
+import Form from "../../../../../components/Form";
+import Button from "../../../../../components/Button";
+import FormLabel from "../../../../../components/FormLabel";
+import FormInput from "../../../../../components/FormInput";
+import FormCheckbox from "../../../../../components/FormCheckbox";
 
 const useStyles = makeStyles((theme) => ({
   content: {

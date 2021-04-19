@@ -360,7 +360,7 @@ const Calender = (props) => {
     setSaveSelectedMean(DbElement);
   };
   const AddEvent = ({ start, end, slots }) => {
-    let flagDate, flagHours;
+    let flagDate = false, flagHours = false;
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
     let preDateTime = new Date();
