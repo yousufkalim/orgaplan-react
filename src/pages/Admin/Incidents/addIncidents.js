@@ -48,11 +48,11 @@ export default function AddIncidents(props) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [isBillable, setIsBillable] = useState(false);
+  const [isBillable, setIsBillable] = useState(true);
   const [isPaid, setIsPaid] = useState("");
 
   const [price, setPrice] = useState("0");
-  const [priceDisable, setPriceDisable] = useState("false");
+  const [priceDisable, setPriceDisable] = useState("true");
 
   const [type, setType] = useState("");
 
@@ -353,10 +353,10 @@ export default function AddIncidents(props) {
                   }
                 }}
               >
-                <option value={true}>Yes</option>
-                <option selected value={false}>
-                  No
+                <option selected value={true}>
+                  Yes
                 </option>
+                <option value={false}>No</option>
               </select>
             </Form.Row>
           </Form.Row>
