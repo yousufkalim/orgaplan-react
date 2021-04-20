@@ -143,5 +143,8 @@ const endpoints = {
   GET_ALL_USERS: BASE_URL_V1 + "users", 
   updateDeliveryStatus : BASE_URL_V1 + "delivery/updateStatus", 
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  delete_Delivery : BASE_URL_V1 + "delivery"
+
 };
 export default endpoints;

@@ -11,7 +11,8 @@ const PopoverModal = ({
   handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime, 
-  handleValidateDelivery
+  handleValidateDelivery,
+  handleDeleteDelivery
 
 }) => { 
   const getStartDate = (start) => {
@@ -34,14 +35,25 @@ const PopoverModal = ({
         onClose={() => setAlertBoxTime(!alertBoxTime)} 
       >
         {props.message}&nbsp;&nbsp;&nbsp; 
+       {handleDeleteDelivery ? <>
+        <a onClick={() =>{handleDeleteDelivery("no")}
+           }  className="alert-link">NO</a> &nbsp;&nbsp;
+        <a  onClick={() =>{handleDeleteDelivery("yes")} }  className="alert-link">YES</a>
+       
+       </> : <>
+
         <a onClick={() =>{handleDeleteEvent("no")}
            }  className="alert-link">NO</a> &nbsp;&nbsp;
         <a  onClick={() =>{handleDeleteEvent("yes")} }  className="alert-link">YES</a>
+       
+       </> }
        
 
       </Alert>
     );
   }
+
+ 
   if (event) { 
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
@@ -220,7 +232,7 @@ const PopoverModal = ({
                   <div className="col-lg-4">
                     <button
                       className="btn text-success btn-light"
-                      // onClick={handleDeleteEvent}
+                      //onClick={handleDeleteEvent}
                     >
                       <i class="fas fa-trash"></i> <span>More Info</span>
                     </button>
@@ -228,7 +240,7 @@ const PopoverModal = ({
                   <div className="col-lg-3">
                     <button
                       className="btn text-danger btn-light"
-                      // onClick={handleDeleteEvent}
+                       onClick={handleDeleteDelivery}
                     >
                       <i class="fas fa-trash"></i> <span>Refuse</span>
                     </button>

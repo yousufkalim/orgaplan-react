@@ -552,6 +552,21 @@ const Calender = (props) => {
   
     
   };
+  const handleDeleteDelivery = (confirm) =>{
+      console.log("handleDeleteDelivery");
+    if(confirm === "yes"){
+        setAlertBoxTime(true);
+        setpopoverShow(!popoverShow);
+        const fill = events.filter((e) => e.id !== eventID);
+        setEvents(fill); 
+        delete_Delivery(eventID);
+      }else if (confirm === "no"){ 
+        setAlertBoxTime(false); 
+      }else{
+        setAlertBoxTime(true);
+        setpopoverShow(popoverShow);
+      }
+  }
   const handleValidateMeans = () =>{
     setpopoverShow(!popoverShow);
     const fill = events.filter((e) => e.id !== eventID);
@@ -672,6 +687,22 @@ const Calender = (props) => {
       );
     }
   }
+   const delete_Delivery =  async (id) => {
+    try { 
+  
+      const result = await GLOBALS.API({
+        method: "DELETE",
+        token: store.token, 
+        uri: GLOBALS.Constants.delete_Delivery + "/" + id,
+      }); 
+    } catch (err) { 
+        dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar(err.message, "error"),
+            ),
+          );
+    }
+  };
   const getfilterdata = async () => {
     try {
       const response = await GLOBALS.API({
@@ -803,8 +834,7 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
           ),
         );
-      }
- 
+      } 
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -813,8 +843,7 @@ const Calender = (props) => {
         ),
       );
     }
-  };
-
+  }; 
   function Alertbox(props) {
     return (
       <Alert
@@ -1359,6 +1388,7 @@ const Calender = (props) => {
           setAlertBoxTime = {setAlertBoxTime} 
           alertBoxTime = {alertBoxTime} 
           handleValidateDelivery = {handleValidateDelivery}
+          handleDeleteDelivery = {handleDeleteDelivery}
         />
 
         
