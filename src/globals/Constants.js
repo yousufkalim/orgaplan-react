@@ -140,8 +140,8 @@ const endpoints = {
   getDeliveryAreaSiteBySiteId:
     BASE_URL_V1 + "delivery-area/get_delivery_area_site/enterprise",
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
-  FILTER_USER: BASE_URL_V1 + "users/filter",
-
-  GET_ALL_USERS: BASE_URL_V1 + "users",
+  FILTER_USER: BASE_URL_V1 + "users/filter", 
+  GET_ALL_USERS: BASE_URL_V1 + "users", 
+  updateDeliveryStatus : BASE_URL_V1 + "delivery/updateStatus"
 };
 export default endpoints;
