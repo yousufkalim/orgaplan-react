@@ -62,7 +62,7 @@ const Means = () => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    getMeans();
+    fetchData();
     // eslint-disable-next-line
   }, []);
 
@@ -73,27 +73,22 @@ const Means = () => {
 
   useEffect(() => {
     let build = buildingObj.find((lo) => lo._id === building);
-    if (build) {
-      if (build.buildingType === "EXTERIOR") {
-        setLevel("");
-        setStorageArea("");
-      } else {
-        setStorageArea("");
-        setLevels(
-          build.levels.map((bu) => ({
-            label: bu.number,
-            value: bu._id,
-          })),
-        );
-      }
-    } else {
+    if (building === "Exterior" || !build) {
       setLevel("");
       setStorageArea("");
+    } else {
+      setStorageArea("");
+      setLevels(
+        build.levels.map((bu) => ({
+          label: bu.number,
+          value: bu._id,
+        })),
+      );
     }
     // eslint-disable-next-line
   }, [building]);
 
-  const getMeans = async () => {
+  const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
@@ -110,7 +105,7 @@ const Means = () => {
         response.data.site_storage_areas.map((item) => ({
           label: item.name,
           value: item._id,
-          type: item.location,
+          level: item.level,
         })),
       );
       setCompanies(
@@ -172,114 +167,6 @@ const Means = () => {
       );
     }
   };
-
-  // const getExternalMeans = async () => {
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await GLOBALS.API({
-  //       token: store.token,
-  //     });
-
-  //     if (response.success) {
-  //       const tempStorageAreas = [];
-  //       if (response.data !== null && response.data.length > 0) {
-  //         const temp = [];
-
-  //         response.data.map((item) => {
-  //           item.location.map((innerItem) => {
-  //             if (innerItem.locationType === "STORAGEAREA") {
-  //               tempStorageAreas.push(innerItem);
-  //               return temp.push({
-  //                 label: innerItem.storageArea.name,
-  //                 value: innerItem.storageArea.name,
-  //               });
-  //             }
-  //             return true;
-  //           });
-  //           return true;
-  //           //
-  //         });
-  //         setStorageAreas(tempStorageAreas);
-  //         // setDropdownStorageAreas(temp);
-  //       }
-
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // };
-
-  // const getLevels = async (buidlingId) => {
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_LEVELS}/${buidlingId}`,
-  //       token: store.token,
-  //     });
-
-  //     if (response.success) {
-  //       // setLevels(response.data);
-  //       if (response.data !== null && response.data.length > 0) {
-  //         const temp = [];
-  //         response.data.map((item) =>
-  //           temp.push({ label: item.number, value: item.number }),
-  //         );
-
-  //         // setDropdownLevels(temp);
-  //       }
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //     dispatch(
-  //       Actions.notistack.enqueueSnackbar(
-  //         Actions.notistack.snackbar(err.message, "error"),
-  //       ),
-  //     );
-  //   }
-  // };
-
-  // const getStorageAreasByLevel = async (levelId) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await GLOBALS.API({
-  //       uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_LEVEL_ID}/${levelId}`,
-  //       token: store.token,
-  //     });
-
-  //     if (response.success) {
-  //       setStorageAreas(response.data);
-  //       if (response.data !== null && response.data.length > 0) {
-  //         const temp = [];
-  //         response.data.map((item) => {
-  //           return temp.push({ label: item.name, value: item.name });
-  //         });
-
-  //         setDropdownStorageAreas(temp);
-  //       }
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //   }
-  // };
 
   const rows = means.map((item) => [
     item.name,
@@ -361,7 +248,10 @@ const Means = () => {
           />
           <FormSelect
             value={building}
-            values={buildings}
+            values={[
+              ...[{ label: "Exterior", value: "Exterior" }],
+              ...buildings,
+            ]}
             placeholder="Location"
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
@@ -373,14 +263,10 @@ const Means = () => {
             values={levels}
             placeholder="Level"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            disabled={!building || building === "Exterior"}
             onChange={({ target: { value } }) => {
               setLevel(value);
             }}
-            disabled={
-              !building ||
-              buildingObj.find((lo) => lo._id === building).buildingType ===
-                "EXTERIOR"
-            }
           />
           <FormSelect
             value={storageArea}
@@ -389,18 +275,11 @@ const Means = () => {
             onChange={({ target: { value } }) => {
               setStorageArea(value);
             }}
-            disabled={
-              !building ||
-              (buildingObj.find((lo) => lo._id === building).buildingType !==
-                "EXTERIOR" &&
-                !level)
-            }
+            disabled={!building || (building !== "Exterior" && !level)}
             values={storageAreas.filter((item) =>
-              building &&
-              buildingObj.find((lo) => lo._id === building).buildingType ===
-                "EXTERIOR"
-                ? item.type === "OUTSIDE"
-                : item.type === "INSIDE",
+              building && building === "Exterior"
+                ? !item.level
+                : item.level === level,
             )}
           />
           <FormSelect
