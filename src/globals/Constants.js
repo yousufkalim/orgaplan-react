@@ -139,8 +139,12 @@ const endpoints = {
   UPDATE_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
   BOOKINGS_BY_SITE: BASE_URL_V1 + "mean_booking/getBookingBySiteId",
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
-  updateDeliveryStatus : BASE_URL_V1 + "delivery/updateStatus",
-
+  FILTER_USER: BASE_URL_V1 + "users/filter", 
+  GET_ALL_USERS: BASE_URL_V1 + "users", 
+  updateDeliveryStatus : BASE_URL_V1 + "delivery/updateStatus", 
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  delete_Delivery : BASE_URL_V1 + "delivery"
+
 };
 export default endpoints;

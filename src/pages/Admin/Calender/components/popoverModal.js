@@ -10,10 +10,12 @@ const PopoverModal = ({
   event,
   handleValidateMeans,
   setAlertBoxTime,
-  alertBoxTime,
+  alertBoxTime, 
   handleValidateDelivery,
+  handleDeleteDelivery,
   onEditDelivery,
 }) => {
+
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -33,28 +35,21 @@ const PopoverModal = ({
         variant="danger"
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
-        {props.message}&nbsp;&nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteEvent("no");
-          }}
-          className="alert-link"
-        >
-          NO
-        </a>{" "}
-        &nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteEvent("yes");
-          }}
-          className="alert-link"
-        >
-          YES
-        </a>
+        {props.message}&nbsp;&nbsp;&nbsp; 
+       {handleDeleteDelivery ? <>
+        <a onClick={() =>{handleDeleteDelivery("no")}
+           }  className="alert-link">NO</a> &nbsp;&nbsp;
+        <a  onClick={() =>{handleDeleteDelivery("yes")} }  className="alert-link">YES</a>
+       </> : <>
+        <a onClick={() =>{handleDeleteEvent("no")}
+           }  className="alert-link">NO</a> &nbsp;&nbsp;
+        <a  onClick={() =>{handleDeleteEvent("yes")} }  className="alert-link">YES</a>
+       </> }
       </Alert>
     );
   }
-  if (event) {
+
+  if (event) { 
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
         <Modal.Header closeButton>
@@ -224,39 +219,35 @@ const PopoverModal = ({
                   <span>{getStartDate(event.end)}</span> -{" "}
                   {getStartTime(event.end)}
                 </div>
-                {event.status === "PENDING" ? (
-                  <>
-                    <hr />
-                    <div className="popoverfooter">
-                      <div className="col-lg-2">
-                        <button
-                          className="btn text-primary btn-light px-3 text-center"
-                          onClick={handleValidateDelivery}
-                        >
-                          <i class="fas fa-pencil"></i> <span>validate</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-4">
-                        <button
-                          className="btn text-success btn-light"
-                          onClick={onEditDelivery}
-                        >
-                          <i class="fas fa-trash"></i> <span>More Info</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-3">
-                        <button
-                          className="btn text-danger btn-light"
-                          // onClick={handleDeleteEvent}
-                        >
-                          <i class="fas fa-trash"></i> <span>Refuse</span>
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
+                {event.status === "PENDING" ? <>
+                <hr />
+                <div className="popoverfooter">
+                  <div className="col-lg-2">
+                    <button
+                      className="btn text-primary btn-light px-3 text-center"
+                      onClick={handleValidateDelivery}
+                    >
+                      <i class="fas fa-pencil"></i> <span>validate</span>
+                    </button>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      className="btn text-success btn-light"
+                      //onClick={handleDeleteEvent}
+                    >
+                      <i class="fas fa-trash"></i> <span>More Info</span>
+                    </button>
+                  </div>
+                  <div className="col-lg-3">
+                    <button
+                      className="btn text-danger btn-light"
+                       onClick={handleDeleteDelivery}
+                    >
+                      <i class="fas fa-trash"></i> <span>Refuse</span>
+                    </button>
+                  </div>
+                </div>
+                </> : <></> }
               </>
             ) : (
               <>
