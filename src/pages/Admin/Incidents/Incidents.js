@@ -157,9 +157,6 @@ const Incidents = (props) => {
       if (selectedDeliveryArea.length !== 0)
         params["deliveryArea"] = selectedDeliveryArea;
 
-      // if (!isNaN(moment(formik.values.contractEndDate)))
-      // params["endDate"] = formik.values.contractEndDate;
-
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_INCIDENT}`,
         token: store.token,
@@ -216,17 +213,6 @@ const Incidents = (props) => {
     setStatus(temp);
   }
 
-  // function getStorageArea(data) {
-  //   let temp = [];
-  //   data.map((item, index) => {
-  //     return temp.push({
-  //       label: item.name,
-  //       value: item._id,
-  //     });
-  //   });
-  //   setSiteStorageArea(temp);
-  // }
-
   function getType(data) {
     let temp = [];
     data.map((item, index) => {
@@ -264,7 +250,7 @@ const Incidents = (props) => {
         item.location?.deliveryArea?.name || item.location?.storageArea?.name;
       data[6] = item?.isBillable ? "Yes" : "No";
       data[7] = item?.price;
-      data[8] = item?.isBillable ? "Yes" : "No";
+      data[8] = item?.isPaid ? "Yes" : "No";
       return temp.push(data);
     });
     seTatalPrice(total);
