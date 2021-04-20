@@ -11,6 +11,7 @@ const PopoverModal = ({
   handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime, 
+  handleValidateDelivery
 
 }) => { 
   const getStartDate = (start) => {
@@ -205,15 +206,23 @@ const PopoverModal = ({
                   <span>{getStartDate(event.end)}</span> -{" "}
                   {getStartTime(event.end)}
                 </div>
-
+                {event.status === "PENDING" ? <>
                 <hr />
                 <div className="popoverfooter">
                   <div className="col-lg-2">
                     <button
                       className="btn text-primary btn-light px-3 text-center"
-                      // onClick={handleEditEvent}
+                      onClick={handleValidateDelivery}
                     >
                       <i class="fas fa-pencil"></i> <span>validate</span>
+                    </button>
+                  </div>
+                  <div className="col-lg-4">
+                    <button
+                      className="btn text-success btn-light"
+                      // onClick={handleDeleteEvent}
+                    >
+                      <i class="fas fa-trash"></i> <span>More Info</span>
                     </button>
                   </div>
                   <div className="col-lg-3">
@@ -225,6 +234,9 @@ const PopoverModal = ({
                     </button>
                   </div>
                 </div>
+                </> : <></> }
+                
+             
               </>
             ) : (
               <>

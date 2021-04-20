@@ -150,7 +150,7 @@ const Calender = (props) => {
   }, []);
   useEffect(() => {
     filterBookingCalendar();
-  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans, updateMeanStatus]);
+  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans, updateMeanStatus,addDelivery]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -558,6 +558,12 @@ const Calender = (props) => {
     setEvents(fill); 
     update_mean_status(eventID);
   }
+  const handleValidateDelivery = () =>{
+    setpopoverShow(!popoverShow);
+    const fill = events.filter((e) => e.id !== eventID);
+    setEvents(fill); 
+    update_delivery_status(eventID);
+  }
 
   const handlePopoverShow = (event) => {
     setAlertBoxTime(false);
@@ -632,6 +638,26 @@ const Calender = (props) => {
       const response = await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.UPDATE_MEAN_STATUS}/${id}`,
+        token: store.token, 
+      });
+       
+      if (response.success) { 
+        setUpdateMeanStatus(response._id);
+      }
+    }catch(err){
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+  const update_delivery_status = async (id) => {
+     
+    try {
+      const response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.updateDeliveryStatus}/${id}`,
         token: store.token, 
       });
        
@@ -909,7 +935,8 @@ const Calender = (props) => {
               materials : key.materials,
               deliveryArea : key.deliveryArea,
               storageArea: key.storageArea,
-              building: key.building
+              building: key.building,
+              status : key.status
             };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
@@ -1331,6 +1358,7 @@ const Calender = (props) => {
           event={event}
           setAlertBoxTime = {setAlertBoxTime} 
           alertBoxTime = {alertBoxTime} 
+          handleValidateDelivery = {handleValidateDelivery}
         />
 
         
