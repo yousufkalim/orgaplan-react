@@ -12,29 +12,46 @@ import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
 
-export default function AddSiteStep1(props) { 
+export default function AddSiteStep1(props) {
   const [company, setCompany] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
   const [date, setDate] = useState(props.date);
-  const [startTime, setStartTime] = useState(moment(props.date).set('hour', props.start));
-  const [endTime, setEndTime] = useState(moment(props.date).set('hour', props.end));
+  const [startTime, setStartTime] = useState(
+    moment(props.date).set("hour", props.start),
+  );
+  const [endTime, setEndTime] = useState(
+    moment(props.date).set("hour", props.end),
+  );
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
-  const [update, setUpdate] = useState(false); 
+  const [update, setUpdate] = useState(false);
+
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
       setDeliveryArea(props.step1Data.deliveryArea);
       setDate(props.step1Data.date);
-      setStartTime(props.step1Data.startTime);
-      setEndTime(props.step1Data.endTime);
+      props.step1Data.startTime &&
+        setStartTime(
+          moment(props.step1Data.date).set("hour", props.step1Data.startTime),
+        );
+      props.step1Data.endTime &&
+        setEndTime(
+          moment(props.step1Data.date).set("hour", props.step1Data.endTime),
+        );
       setTrades(props.step1Data.trades);
-      setMaterials(props.step1Data.materials);
+      setMaterials(
+        props.step1Data.materials &&
+          props.step1Data.materials.map((item, i) => ({ key: i, label: item })),
+      );
       setLiftingMeans(props.step1Data.liftingMeans);
       setUpdate((st) => !st);
     }
+  }, [props.step1Data]);
+
+  useEffect(() => {
     setMeans(
       props.means.reduce((accumulator, currentValue) => {
         if (
@@ -51,21 +68,20 @@ export default function AddSiteStep1(props) {
         return accumulator;
       }, []),
     );
-
     // eslint-disable-next-line
   }, [deliveryArea]);
-  
+
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
       company,
       deliveryArea,
       date,
-      startTime,
-      endTime,
+      startTime: moment(startTime).hours(),
+      endTime: moment(endTime).hours(),
       trades,
       liftingMeans,
-      materials,
+      materials: materials.map((item) => item.label),
     };
     props.setStep1Data(values);
     props.setStep(2);
@@ -103,14 +119,15 @@ export default function AddSiteStep1(props) {
             type="date"
             name="date"
             value={date}
+            disabled={true}
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
             onChange={({ target: { value } }) => setDate(value)}
-            disabled = "disabled"
           />
           <TimeInput
             format="HH:mm"
+            disabled={true}
             name="startTime"
             value={startTime}
             placeholder="Start Time"
@@ -120,6 +137,7 @@ export default function AddSiteStep1(props) {
           <TimeInput
             name="endTime"
             format="HH:mm"
+            disabled={true}
             value={endTime}
             placeholder="End Time"
             style={{ width: "31%" }}

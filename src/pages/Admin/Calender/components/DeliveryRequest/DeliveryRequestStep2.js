@@ -16,6 +16,18 @@ export default function AddSiteStep1(props) {
   const [storageArea, setStorageArea] = useState("");
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
+  const [rendered, setRendered] = useState(false);
+
+  useEffect(() => {
+    if (props.step2Data) {
+      if (props.step2Data.building) {
+        setBuilding(props.step2Data.building);
+      } else if (props.eventId) {
+        setBuilding("Exterior");
+      }
+    }
+    // eslint-disable-next-line
+  }, [props.step2Data]);
 
   useEffect(() => {
     setBuildings(
@@ -60,6 +72,12 @@ export default function AddSiteStep1(props) {
           })),
         );
       }
+      if (props.step2Data && !rendered) {
+        setLevel(props.step2Data.level);
+        setStorageArea(props.step2Data.storageArea);
+        setRoutingMeans(props.step2Data.routingMeans);
+        setRendered(true);
+      }
     }
     // eslint-disable-next-line
   }, [building]);
@@ -83,7 +101,7 @@ export default function AddSiteStep1(props) {
         <FormSelect
           name="location"
           value={building}
-          values={buildings}
+          values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
           placeholder="Select a location"
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
@@ -95,9 +113,9 @@ export default function AddSiteStep1(props) {
           name="level"
           value={level}
           values={levels}
-          disabled={!building}
           placeholder="Select a Level"
           style={GLOBALS.Styles.inputWidth}
+          disabled={!building || building === "Exterior"}
           onChange={({ target: { value } }) => setLevel(value)}
         />
       </Form.Row>
@@ -105,11 +123,15 @@ export default function AddSiteStep1(props) {
         <FormLabel bold primary="STORAGE AREA* :" />
         <Form.Row noMargin width="48%">
           <FormSelect
-            disabled={!level}
             name="storageArea"
             value={storageArea}
             placeholder="Storage Area"
-            values={props.storageAreas}
+            values={props.storageAreas.filter((item) =>
+              building && building === "Exterior"
+                ? !item.level
+                : item.level === level,
+            )}
+            disabled={!building || (building !== "Exterior" && !level)}
             onChange={({ target: { value } }) => setStorageArea(value)}
           />
         </Form.Row>
@@ -134,7 +156,10 @@ export default function AddSiteStep1(props) {
           text="VALIDATE"
           fullWidth={false}
           disabled={
-            !building || !level || !storageArea || routingMeans.length === 0
+            !building ||
+            (building !== "Exterior" && !level) ||
+            !storageArea ||
+            routingMeans.length === 0
           }
         />
       </Form.ButtonContainer>
