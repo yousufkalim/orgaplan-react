@@ -53,13 +53,15 @@ const Means = () => {
   const [storageAreas, setStorageAreas] = useState([]);
   const [type, setType] = useState("");
   const [types, setTypes] = useState([]);
-  const [company, setCompany] = useState("");
-  const [companies, setCompanies] = useState([]);
   const [status, setStatus] = useState("");
   const [statuses, setStatuses] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [name, setName] = useState("");
+
+  const [company, setCompany] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [bookingMeans, setBookingMeans] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -69,7 +71,12 @@ const Means = () => {
   useEffect(() => {
     filterMean();
     // eslint-disable-next-line
-  }, [deliveryArea, storageArea, type, company, status, startDate, endDate]);
+  }, [deliveryArea, storageArea, type, status, startDate, endDate]);
+
+  useEffect(() => {
+    company && fetchBookings();
+    // eslint-disable-next-line
+  }, [company]);
 
   useEffect(() => {
     let build = buildingObj.find((lo) => lo._id === building);
@@ -168,55 +175,130 @@ const Means = () => {
     }
   };
 
-  const rows = means.map((item) => [
-    item.name,
-    item.status,
-    item.meanType,
-    item.location
-      .map((loca) =>
-        loca.storageArea &&
-        loca.locationType !== undefined &&
-        loca.locationType === "STORAGEAREA"
-          ? loca.storageArea.name
-          : "",
-      )
-      .join(" "),
-    item.location
-      .map((loca) =>
-        loca.deliveryArea &&
-        loca.locationType !== undefined &&
-        loca.locationType === "DELIVERYAREA"
-          ? loca.deliveryArea.name
-          : "",
-      )
-      .join(" "),
-    <div>
-      <NavLink
-        to={{
-          pathname: "/means/calendar",
-          mean: item,
-        }}
-      >
-        <img
-          src={Images.calender}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
-      </NavLink>
-      <NavLink
-        to={{
-          pathname: "/means/mean-history",
-          mean: item,
-        }}
-      >
-        <img
-          src={Images.incidents}
-          style={{ width: 18, height: 15, paddingLeft: 5 }}
-          alt="Icon"
-        />
-      </NavLink>
-    </div>,
-  ]);
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.BOOKINGS_BY_SITE}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      setBookingMeans(response.data.bookings.map((item) => item.meanId));
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const rows = means.reduce((accum, item) => {
+    if (company) {
+      if (bookingMeans.find((loc) => loc && item._id === loc))
+        accum.push([
+          item.name,
+          item.status,
+          item.meanType,
+          item.location
+            .map((loca) =>
+              loca.storageArea &&
+              loca.locationType !== undefined &&
+              loca.locationType === "STORAGEAREA"
+                ? loca.storageArea.name
+                : "",
+            )
+            .join(" "),
+          item.location
+            .map((loca) =>
+              loca.deliveryArea &&
+              loca.locationType !== undefined &&
+              loca.locationType === "DELIVERYAREA"
+                ? loca.deliveryArea.name
+                : "",
+            )
+            .join(" "),
+          <div>
+            <NavLink
+              to={{
+                pathname: "/means/calendar",
+                mean: item,
+              }}
+            >
+              <img
+                src={Images.calender}
+                style={{ width: 18, height: 15, paddingLeft: 5 }}
+                alt="Icon"
+              />
+            </NavLink>
+            <NavLink
+              to={{
+                pathname: "/means/mean-history",
+                mean: item,
+              }}
+            >
+              <img
+                src={Images.incidents}
+                style={{ width: 18, height: 15, paddingLeft: 5 }}
+                alt="Icon"
+              />
+            </NavLink>
+          </div>,
+        ]);
+    } else {
+      accum.push([
+        item.name,
+        item.status,
+        item.meanType,
+        item.location
+          .map((loca) =>
+            loca.storageArea &&
+            loca.locationType !== undefined &&
+            loca.locationType === "STORAGEAREA"
+              ? loca.storageArea.name
+              : "",
+          )
+          .join(" "),
+        item.location
+          .map((loca) =>
+            loca.deliveryArea &&
+            loca.locationType !== undefined &&
+            loca.locationType === "DELIVERYAREA"
+              ? loca.deliveryArea.name
+              : "",
+          )
+          .join(" "),
+        <div>
+          <NavLink
+            to={{
+              pathname: "/means/calendar",
+              mean: item,
+            }}
+          >
+            <img
+              src={Images.calender}
+              style={{ width: 18, height: 15, paddingLeft: 5 }}
+              alt="Icon"
+            />
+          </NavLink>
+          <NavLink
+            to={{
+              pathname: "/means/mean-history",
+              mean: item,
+            }}
+          >
+            <img
+              src={Images.incidents}
+              style={{ width: 18, height: 15, paddingLeft: 5 }}
+              alt="Icon"
+            />
+          </NavLink>
+        </div>,
+      ]);
+    }
+    return accum;
+  }, []);
 
   return (
     <div className={classes.root}>
