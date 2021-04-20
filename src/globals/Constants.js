@@ -12,8 +12,10 @@ const endpoints = {
   USER_GET: BASE_URL_V1 + "auth/get",
   LOGIN: BASE_URL_V1 + "auth/sign-in",
   REGISTER_USER: BASE_URL_V1 + "auth/sign-up",
-  GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
+  RESET_PASSWORD: BASE_URL_V1 + "auth/reset-password",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
+  GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
+  REQUEST_PASSWORD_RESET: BASE_URL_V1 + "auth/request-password-reset",
   RESEND_EMAIL_VERIFICATION: BASE_URL_V1 + "auth/request-email-verification",
 
   // ================================ SUPERADMIN ================================
