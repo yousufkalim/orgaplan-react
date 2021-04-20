@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
@@ -12,19 +11,7 @@ import FormLabel from "../../../../../components/FormLabel";
 import FormInput from "../../../../../components/FormInput";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    padding: 15,
-    marginTop: 10,
-    width: "100%",
-    overflow: "hidden",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.secondary.main,
-  },
-}));
-
-export default function DeliveryRequestStep3(props) { 
-  const classes = useStyles();
+export default function DeliveryRequestStep3(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -67,7 +54,7 @@ export default function DeliveryRequestStep3(props) {
     try {
       e.preventDefault();
       setLoading(true);
-      const formdata = JSON.stringify({
+      const formdata = {
         siteId: adminStore.site.siteId._id,
         companyId: props.step1Data.company,
         userId: store.user._id,
@@ -79,25 +66,29 @@ export default function DeliveryRequestStep3(props) {
         trades: props.step1Data.trades,
         liftingMeans: props.step1Data.liftingMeans,
         routingMeans: props.step2Data.routingMeans,
-        materials: props.step1Data.materials.map((item) => item.label),
-        building: props.step2Data.building,
-        level: props.step2Data.level,
+        materials: props.step1Data.materials,
         date: props.step1Data.date,
-        startTime: moment(props.step1Data.startTime).format("HH"),
-        endTime: moment(props.step1Data.endTime).format("HH"),
+        startTime: props.step1Data.startTime,
+        endTime: props.step1Data.endTime,
         type: "SCHEDULED",
-        status: "VALIDATED",
-      });
+        status: props.eventId ? "MODIFIED" : "VALIDATED",
+      };
+
+      props.step2Data.building !== "Exterior" &&
+        (formdata["building"] = props.step2Data.building);
+      props.step2Data.level && (formdata["level"] = props.step2Data.level);
 
       await GLOBALS.API({
-        method: "POST",
-        uri: GLOBALS.Constants.DELIVERY,
+        method: props.eventId ? "PUT" : "POST",
+        uri: props.eventId
+          ? `${GLOBALS.Constants.DELIVERY}/${props.eventId}`
+          : GLOBALS.Constants.DELIVERY,
         token: store.token,
-        body: formdata,
+        body: JSON.stringify(formdata),
       });
 
-      setLoading(false);  
-      props.setAddDelivery(false);
+      setLoading(false);
+      props.onClose();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -109,100 +100,97 @@ export default function DeliveryRequestStep3(props) {
   };
 
   return (
-    <div className={classes.content}>
-      <Form.Form onSubmit={onSubmit}>
-        <Form.Row>
-          <FormLabel
-            bold
-            primary="IDENTITY :"
-            style={GLOBALS.Styles.inputWidth}
+    <Form.Form onSubmit={onSubmit}>
+      <Form.Row>
+        <FormLabel
+          bold
+          primary="IDENTITY :"
+          style={GLOBALS.Styles.inputWidth}
+        />
+        <FormLabel primary={company} style={GLOBALS.Styles.inputWidth} />
+      </Form.Row>
+      <Form.Row>
+        <FormLabel
+          bold
+          primary="DATE AND TIME :"
+          style={GLOBALS.Styles.inputWidth}
+        />
+        <FormLabel
+          primary={`${
+            props.step1Data.date &&
+            moment(props.step1Data.date).format("DD-MM-YYYY")
+          } between ${moment(props.step1Data.startTime).format(
+            "HH",
+          )}h and ${moment(props.step1Data.endTime).format("HH")}h`}
+          style={GLOBALS.Styles.inputWidth}
+        />
+      </Form.Row>
+      <Form.Row>
+        <FormLabel
+          bold
+          primary="DELIVERY AREA / MEAN :"
+          style={GLOBALS.Styles.inputWidth}
+        />
+        <FormLabel
+          primary={`${deliveryArea} / ${liftingMeans.join(", ")}`}
+          style={GLOBALS.Styles.inputWidth}
+        />
+      </Form.Row>
+      <Form.Row>
+        <FormLabel
+          bold
+          primary="STORAGE AREA / MEAN :"
+          style={GLOBALS.Styles.inputWidth}
+        />
+        <FormLabel
+          primary={`${storageArea} / ${routingMeans.join(", ")}`}
+          style={GLOBALS.Styles.inputWidth}
+        />
+      </Form.Row>
+      <Form.Row>
+        <FormLabel
+          bold
+          primary="MATERIALS DELIVERED :"
+          style={GLOBALS.Styles.inputWidth}
+        />
+        <FormLabel
+          primary={props.step1Data.materials.join(", ")}
+          style={GLOBALS.Styles.inputWidth}
+        />
+      </Form.Row>
+      <Form.Row alignItems="flex-start">
+        <FormLabel bold primary="COMMENTS:" />
+        <FormInput
+          textArea
+          rows={3}
+          name="comments"
+          value={comments}
+          placeholder="Comments"
+          style={GLOBALS.Styles.inputWidth}
+          onChange={({ target: { value } }) => setComments(value)}
+        />
+      </Form.Row>
+      <Form.Row>
+        <div />
+        <Form.Row style={GLOBALS.Styles.inputWidth} noMargin>
+          <FormCheckbox
+            name="receiveSummary"
+            checked={receiveSummary}
+            label="Receive Summary by e-mail"
+            onChange={({ target: { checked } }) => setReceiveSummary(checked)}
           />
-          <FormLabel primary={company} style={GLOBALS.Styles.inputWidth} />
         </Form.Row>
-        <Form.Row>
-          <FormLabel
-            bold
-            primary="DATE AND TIME :"
-            style={GLOBALS.Styles.inputWidth}
-          />
-          <FormLabel
-            primary={`${props.step1Data.date} between ${moment(
-              props.step1Data.startTime,
-            ).format("HH")}h and ${moment(props.step1Data.endTime).format(
-              "HH",
-            )}h`}
-            style={GLOBALS.Styles.inputWidth}
-          />
-        </Form.Row>
-        <Form.Row>
-          <FormLabel
-            bold
-            primary="DELIVERY AREA / MEAN :"
-            style={GLOBALS.Styles.inputWidth}
-          />
-          <FormLabel
-            primary={`${deliveryArea} / ${liftingMeans.join(", ")}`}
-            style={GLOBALS.Styles.inputWidth}
-          />
-        </Form.Row>
-        <Form.Row>
-          <FormLabel
-            bold
-            primary="STORAGE AREA / MEAN :"
-            style={GLOBALS.Styles.inputWidth}
-          />
-          <FormLabel
-            primary={`${storageArea} / ${routingMeans.join(", ")}`}
-            style={GLOBALS.Styles.inputWidth}
-          />
-        </Form.Row>
-        <Form.Row>
-          <FormLabel
-            bold
-            primary="MATERIALS DELIVERED :"
-            style={GLOBALS.Styles.inputWidth}
-          />
-          <FormLabel
-            primary={props.step1Data.materials
-              .map((item) => item.label)
-              .join(" ")}
-            style={GLOBALS.Styles.inputWidth}
-          />
-        </Form.Row>
-        <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="COMMENTS:" />
-          <FormInput
-            textArea
-            rows={3}
-            name="comments"
-            value={comments}
-            placeholder="Comments"
-            style={GLOBALS.Styles.inputWidth}
-            onChange={({ target: { value } }) => setComments(value)}
-          />
-        </Form.Row>
-        <Form.Row>
-          <div />
-          <Form.Row style={GLOBALS.Styles.inputWidth} noMargin>
-            <FormCheckbox
-              name="receiveSummary"
-              checked={receiveSummary}
-              label="Receive Summary by e-mail"
-              onChange={({ target: { checked } }) => setReceiveSummary(checked)}
-            />
-          </Form.Row>
-        </Form.Row>
-        <Form.ButtonContainer>
-          <Button
-            type="submit"
-            minWidth={200}
-            text="VALIDATE"
-            fullWidth={false}
-            loading={loading}
-            disabled={loading}
-          />
-        </Form.ButtonContainer>
-      </Form.Form>
-    </div>
+      </Form.Row>
+      <Form.ButtonContainer>
+        <Button
+          type="submit"
+          minWidth={200}
+          text="VALIDATE"
+          fullWidth={false}
+          loading={loading}
+          disabled={loading}
+        />
+      </Form.ButtonContainer>
+    </Form.Form>
   );
 }

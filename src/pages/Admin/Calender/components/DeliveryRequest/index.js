@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryRequest(props) {
- const {date,start,end}=props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -95,9 +94,44 @@ export default function DeliveryRequest(props) {
         storageAreas.data.map((item) => ({
           value: item._id,
           label: item.name,
+          level: item.level,
         })),
       );
       setBuildings(buildings.data.items);
+      props.eventId && fetchEvent();
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const fetchEvent = async () => {
+    try {
+      setLoading(true);
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DELIVERY}/${props.eventId}`,
+        token: store.token,
+      });
+      setStep1Data({
+        company: response.data.companyId,
+        deliveryArea: response.data.deliveryArea,
+        date: response.data.date,
+        startTime: response.data.startTime,
+        endTime: response.data.endTime,
+        trades: response.data.trades,
+        liftingMeans: response.data.liftingMeans,
+        materials: response.data.materials,
+      });
+      setStep2Data({
+        building: response.data.building,
+        level: response.data.level,
+        storageArea: response.data.storageArea,
+        routingMeans: response.data.routingMeans,
+      });
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -138,8 +172,8 @@ export default function DeliveryRequest(props) {
             companies={companies}
             deliveryAreas={deliveryAreas}
             trades={trades}
-            means={means}  
-          />  
+            means={means}
+          />
         ) : step === 2 ? (
           <DeliveryRequestStep2
             {...props}
@@ -152,6 +186,7 @@ export default function DeliveryRequest(props) {
             means={means}
             storageAreas={storageAreas}
             buildings={buildings}
+            eventId={props.eventId}
           />
         ) : (
           <DeliveryRequestStep3
@@ -169,7 +204,8 @@ export default function DeliveryRequest(props) {
             storageAreas={storageAreas}
             buildings={buildings}
             history={props.history}
-            setAddDelivery = {props.setAddDelivery}
+            onClose={props.onClose}
+            eventId={props.eventId}
           />
         )}
       </div>

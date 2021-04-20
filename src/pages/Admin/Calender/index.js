@@ -1028,18 +1028,32 @@ const Calender = (props) => {
     });
     setDisableHours(tempDisabledTime);
   };
+
  
 
   return (
     <> 
        <FullScreenModal
-              title={`Delivery Request`}
-              open={addDelivery}
-              onClose={() => setAddDelivery(false)}
-              body={
-                <DeliveryRequest history={props.history} date={deliverDate} start={deliverStartHours} end= {deliverEndHours} setAddDelivery = {setAddDelivery} /> 
-              }
-            />
+        open={addDelivery}
+        title={`Delivery Request`}
+        onClose={() => {
+          setAddDelivery(false); 
+          seteventID('')
+        }}
+        body={
+          <DeliveryRequest 
+            date={deliverDate}
+            end={deliverEndHours}
+            history={props.history}
+            start={deliverStartHours}
+            eventId={eventID}
+            onClose={() => {
+              setAddDelivery(false);
+              seteventID('')
+            }}
+          />
+        }
+      />
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
@@ -1359,6 +1373,7 @@ const Calender = (props) => {
           setAlertBoxTime = {setAlertBoxTime} 
           alertBoxTime = {alertBoxTime} 
           handleValidateDelivery = {handleValidateDelivery}
+          onEditDelivery = {() => {setpopoverShow(false);setAddDelivery(true)}}
         />
 
         
