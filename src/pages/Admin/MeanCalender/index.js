@@ -54,6 +54,8 @@ const Calender = (props) => {
   const [selectedMeanId, setSelectedMeanId] = useState(
     props.history.location.mean._id,
   );
+  const [meanAvailabilityStart , setMeanAvailabilityStart] = useState(props.history.location.mean.availability.start);
+  const [meanAvailabilityEnd , setMeanAvailabilityEnd] = useState(props.history.location.mean.availability.end);
   const [saveSelectedMean, setSaveSelectedMean] = useState({});
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
@@ -375,8 +377,7 @@ const Calender = (props) => {
     });
     disableDay.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        flagDate = true;
-        console.log(key);
+        flagDate = true; 
       }
       return {};
     });
@@ -395,8 +396,8 @@ const Calender = (props) => {
           ),
         );
       }
-    } else {
-      if (start > preDateTime && start < end) {
+    } else { 
+      if (moment(start).isBetween(moment(meanAvailabilityStart).subtract(1, 'day'), moment(meanAvailabilityEnd),null, '[]','day')) {
         if (slots.length >= 2) {
           var format = "HH:mm";
           let time = moment(start, format);
@@ -436,7 +437,7 @@ const Calender = (props) => {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Bookings can't be made in past time.",
+              "Mean not Available",
               "error",
             ),
           ),
@@ -453,8 +454,7 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     setShowEdit(true);
     setAlertBoxTime(false);
-    const fill = events.filter((e) => e._id === eventID);
-    console.log(fill);
+    const fill = events.filter((e) => e._id === eventID); 
     setTitleEdit(fill[0].title);
     let getstart = String(fill[0].start);
     let getend = String(fill[0].end);
@@ -578,26 +578,21 @@ const Calender = (props) => {
       return {};
     });
     setDisableDay(tempDisableDay);
-  };
+  }; 
   const customDayPropGetter = (date) => {
-    let flagDate;
-    props.history.location.mean.unavailability.map((key, index) => {
-      if (key.dayOff === true) {
-        if (moment(date).isSame(key.date, "day")) {
-          flagDate = date;
-        }
-      }
-      return {};
-    });
+    // let flagDate;
+   if (!moment(date).isBetween(moment(meanAvailabilityStart), moment(meanAvailabilityEnd).add(1, 'day'),null, '[]','day')){
+    return {
+      className: "special-day",
+      style: {
+        backgroundColor: "#EBEBE4",
+      },
+    };
+   }
 
-    if (flagDate) {
-      return {
-        className: "special-day",
-        style: {
-          backgroundColor: "#EBEBE4",
-        },
-      };
-    }
+    // if (flagDate) {
+      
+    // }
   };
 
   const getData = async () => {
