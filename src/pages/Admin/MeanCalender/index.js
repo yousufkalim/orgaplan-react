@@ -291,8 +291,9 @@ const Calender = (props) => {
       milliseconds = milliseconds - 1 * 60 * 1000;
       preDateTime = new Date(milliseconds);
       /*check not in previous day End  */
-
-      if (startTime > preDateTime && startTime < endTime) {
+      let startMean= moment(meanAvailabilityStart).set({hour:0});
+      let endMean= moment(meanAvailabilityEnd).set({hour:0});
+      if (moment(startTime).isBetween(startMean ,  endMean ,null, '[]' ,'day')){
         if (overlap === "Enable") {
           var DbElement = {
             startDate: startTime,
@@ -396,8 +397,10 @@ const Calender = (props) => {
           ),
         );
       }
-    } else { 
-      if (moment(start).isBetween(moment(meanAvailabilityStart).subtract(1, 'day'), moment(meanAvailabilityEnd),null, '[]','day')) {
+    } else {  
+        let startMean= moment(meanAvailabilityStart).set({hour:0});
+        let endMean= moment(meanAvailabilityEnd).set({hour:0});
+        if (moment(start).isBetween(startMean ,  endMean ,null, '[]' ,'day')){
         if (slots.length >= 2) {
           var format = "HH:mm";
           let time = moment(start, format);
