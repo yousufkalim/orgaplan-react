@@ -108,6 +108,7 @@ const endpoints = {
   CREATE_COMPANY: BASE_URL_V1 + "company",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/company_user",
 
+  UPDATE_USER: BASE_URL_V1 + "users/update",
   GET_ALL_USERS: BASE_URL_V1 + "users",
   FILTER_USER: BASE_URL_V1 + "users/filter",
   GET_ADD_USER: BASE_URL_V1 + "users/add_user",
