@@ -41,18 +41,12 @@ export default function Companies(props) {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [selectedItem] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [image, setImage] = useState("");
-  const [companyId, setCompanyId] = useState("");
+
   const [nameOfResponsible, setNameOfResponsible] = useState("");
   const [nameOfCompany, setNameOfCompany] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getData();
@@ -68,49 +62,6 @@ export default function Companies(props) {
       });
       setCompanies(response.data.companies);
       setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-  const handleChange = (name, value) => {
-    if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "image") setImage(value);
-    else if (name === "companyId") setCompanyId(value);
-  };
-
-  const onUpdate = async (e) => {
-    try {
-      e.preventDefault();
-      setLoading(true);
-      var formdata = new FormData();
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
-      formdata.append("phone", phone);
-      formdata.append("companyId", companyId);
-      formdata.append("userId", selectedItem._id);
-      image.file && formdata.append("image", image.file);
-
-      const result = await GLOBALS.API({
-        method: "PUT",
-        uri: GLOBALS.Constants.ADMINS,
-        headers: {
-          Authorization: store.token,
-        },
-        body: formdata,
-      });
-      const itemsArray = items.map((item) =>
-        item._id === selectedItem._id ? result.data : item,
-      );
-      setItems(itemsArray);
-      setLoading(false);
-      setModal(false);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -167,6 +118,9 @@ export default function Companies(props) {
         ),
       );
     }
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   const rows = companies.map((item) => {
@@ -325,110 +279,71 @@ export default function Companies(props) {
           </Form.Row>
           <Button
             fullWidth={true}
-            component={NavLink}
             text="ACCESS REQUEST TO ZONES"
             style={{ width: "330px" }}
-            to={"/admins/add-admin"}
+            onClick={handleClickOpen}
           />
         </Form.Row>
         <div className={classes.content}>
           <Table headers={GLOBALS.Data.companies.headings} rows={rows} />
         </div>
       </div>
+
       <Modal
-        title="EDIT ADMIN"
-        open={selectedItem ? modal : false}
-        onClose={() => setModal((st) => !st)}
+        // title={fullName}
+        open={open}
+        onClose={() => setOpen(false)}
         body={
-          <Form.Form onSubmit={onUpdate}>
-            <Form.Row justifyContent="center">
-              <AvatarUpload
-                value={image}
-                // error={image}
-                onChange={(file) => {
-                  const uri = URL.createObjectURL(file);
-                  handleChange("image", { file, uri });
-                }}
-              />
-            </Form.Row>
-            <Form.Row justifyContent="center">
-              <FormInput
-                name="firstName"
-                value={firstName}
-                // error={firstName}
-                placeholder="First Name"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-            <Form.Row justifyContent="center">
-              <FormInput
-                name="lastName"
-                value={lastName}
-                // error={lastName}
-                placeholder="Last Name"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-            <Form.Row justifyContent="center">
-              <FormInput
-                name="phone"
-                placeholder="Phone Number"
-                value={phone}
-                // error={phone}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                style={GLOBALS.Styles.inputWidth}
-              />
-            </Form.Row>
-            <Form.Row justifyContent="center">
-              <FormSelect
-                name="companyId"
-                value={companyId}
-                // error={companyId}
-                values={companies}
-                placeholder="Company Name"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </Form.Row>
-            <Form.Column alignItems="center">
-              <Form.Row justifyContent="center">
-                <Button
-                  type="submit"
-                  minWidth={200}
-                  text="VALIDATE"
-                  fullWidth={false}
-                  loading={loading}
-                  disabled={
-                    loading ||
-                    !firstName ||
-                    !lastName ||
-                    !phone ||
-                    image === "" ||
-                    !companyId
-                  }
-                />
-              </Form.Row>
-              <Form.Row justifyContent="center">
-                <Button
-                  text="DELETE"
-                  minWidth="30%"
-                  fullWidth={false}
-                  disabled={loading || true}
-                  color={theme.palette.error.main}
-                />
-              </Form.Row>
-            </Form.Column>
-          </Form.Form>
+          <div className={classes.content}>
+            <Table headers={GLOBALS.Data.companies.headings} rows={rows} />
+          </div>
+          //   <Form.Form>
+          //     <Form.Row justifyContent="center">
+          //       <FormInput
+          //         name="email"
+          //         // value={email}
+          //         // error={firstName}
+          //         disabled
+          //         placeholder="Email"
+          //         style={GLOBALS.Styles.inputWidth}
+          //       />
+          //     </Form.Row>
+          //     <Form.Row justifyContent="center">
+          //       <FormInput
+          //         name="phone"
+          //         // value={phone}
+          //         // onChange={(e) => {
+          //         //   setPhone(e.target.value);
+          //         // }}
+          //         placeholder="Phone"
+          //         style={GLOBALS.Styles.inputWidth}
+          //       />
+          //     </Form.Row>
+
+          //     <Form.Row justifyContent="center">
+          //       <FormInput
+          //         name="company"
+          //         // value={siteName}
+          //         disabled
+          //         // error={lastName}
+          //         placeholder="Company"
+          //         style={GLOBALS.Styles.inputWidth}
+          //       />
+          //     </Form.Row>
+
+          //     <Form.Row justifyContent="center">
+          //       <Form.Row noMargin width="80%"></Form.Row>
+          //     </Form.Row>
+
+          //     <Form.ButtonContainer>
+          //       <Button
+          //         type="submit"
+          //         minWidth={200}
+          //         text="VALIDATE"
+          //         fullWidth={false}
+          //       />
+          //     </Form.ButtonContainer>
+          //   </Form.Form>
         }
       />
     </>
