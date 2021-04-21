@@ -15,6 +15,7 @@ const endpoints = {
   RESET_PASSWORD: BASE_URL_V1 + "auth/reset-password",
   VALIDATE_TOKEN: BASE_URL_V1 + "auth/validate-token",
   GET_PROFILE: BASE_URL_V1 + "auth/get-profile-by-jwt",
+  UPDATE_PASSWORD: BASE_URL_V1 + "auth/update-password",
   REQUEST_PASSWORD_RESET: BASE_URL_V1 + "auth/request-password-reset",
   RESEND_EMAIL_VERIFICATION: BASE_URL_V1 + "auth/request-email-verification",
 
@@ -139,12 +140,8 @@ const endpoints = {
   UPDATE_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
   BOOKINGS_BY_SITE: BASE_URL_V1 + "mean_booking/getBookingBySiteId",
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
-  FILTER_USER: BASE_URL_V1 + "users/filter", 
-  GET_ALL_USERS: BASE_URL_V1 + "users", 
-  updateDeliveryStatus : BASE_URL_V1 + "delivery/updateStatus", 
+  updateDeliveryStatus: BASE_URL_V1 + "delivery/updateStatus",
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
-  getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
-  delete_Delivery : BASE_URL_V1 + "delivery"
-
+  delete_Delivery: BASE_URL_V1 + "delivery",
 };
 export default endpoints;
