@@ -124,8 +124,8 @@ const Calender = (props) => {
   const [deliverStartHours , setDeliverStartHours] = useState("");
   const [deliverEndHours , setDeliverEndHours] = useState("");
 
-// console.log("openingHours" ,openingHours);
-// console.log("unavailabilityDates" ,adminStore.site.siteId.unavailabilityDates)
+//   console.log("openingHours" ,openingHours);
+//   console.log("unavailabilityDates" ,adminStore.site.start)
   // useEffect
   useEffect(() => {
     if (props.location.companyId != null) {
@@ -351,11 +351,13 @@ const Calender = (props) => {
       }, 1000);
     }
   };
+  
   const AddDeliveryRequest = ({ start, end}) =>{ 
+    
     setAddDelivery(false);
     setDeliverStartHours(start.getHours());
     setDeliverEndHours(end.getHours()); 
-    start.setHours(0);
+    // start.setHours(0);
     setDeliverDate(start); 
     let flagDate = false;
     let flagOpeningHoursDay = false;
@@ -368,10 +370,10 @@ const Calender = (props) => {
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
-    if (start > preDateTime && start < end){
-
+    if (moment(adminStore.site.siteId.start).isSameOrBefore(moment(start) ,'day')){ 
+       
     }else{
-      pastdayFlag = true;
+        pastdayFlag = true;
     }
     disableHours.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
@@ -403,19 +405,21 @@ const Calender = (props) => {
         flagOpeningHoursDay = true;
       }
     });
+    
     openingHours.map((key, index)=>{
       if (key.dayOff === true && currentDay === key.day){
-        flagOpeningHours = true;
+         flagOpeningHours = true;
       }else if (key.dayOff === false && currentDay === key.day){
-            if(inRange(start.getHours(), key.startHour, key.endHour)){
+            if(inRange(start.getHours(), key.startHour, key.endHour) && inRange(end.getHours(), key.startHour, key.endHour)){
               
             }else{
               flagOpeningHours = true;
             }
       }
     })
-    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag ||pastdayFlag || flagHours) { 
-      if (flagDate || disableDayFlag) {
+    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag || pastdayFlag || flagHours) { 
+     
+        if (flagDate || disableDayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
@@ -552,8 +556,7 @@ const Calender = (props) => {
   
     
   };
-  const handleDeleteDelivery = (confirm) =>{
-      console.log("handleDeleteDelivery");
+  const handleDeleteDelivery = (confirm) =>{ 
     if(confirm === "yes"){
         setAlertBoxTime(true);
         setpopoverShow(!popoverShow);
@@ -921,7 +924,7 @@ const Calender = (props) => {
           let colour = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
-            console.log(key);
+              
             if (!(key.startTime && key.endTime)) {
               return {};
             }
