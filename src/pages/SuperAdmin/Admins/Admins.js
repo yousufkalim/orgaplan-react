@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   error: {
-    color: "red"
-  }
+    color: "red",
+  },
 }));
 
 export default function Admins(props) {
@@ -114,8 +114,7 @@ export default function Admins(props) {
       } else {
         setPhoneError("");
       }
-    }
-    else if (name === "image") {
+    } else if (name === "image") {
       setUpdate((st) => !st);
       setImage(value);
     } else if (name === "companyId") setCompanyId(value);
@@ -287,69 +286,64 @@ export default function Admins(props) {
               />
             </Form.Row>
             <Form.Row justifyContent="center">
-            <div style={{width: "50%"}}>
-
-              <FormInput
-                name="firstName"
-                value={firstName}
-                // error={firstName}
-                placeholder="First Name"
-                style={{width: "100%"}}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </div>
-            </Form.Row>
-            <Form.Row justifyContent="center">
-            <div style={{width: "50%"}}>
-
-              <FormInput
-                name="lastName"
-                value={lastName}
-                // error={lastName}
-                placeholder="Last Name"
-                style={{width: "100%"}}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </div>
-            </Form.Row>
-            <Form.Row justifyContent="center">
-                <div style={{width: "50%"}}>
+              <div style={{ width: "50%" }}>
                 <FormInput
-                name="phone"
-                placeholder="Phone Number"
-                value={phone}
-                // error={phone}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                style={{width: "100%"}}
-              />
-               {phoneError && (
-                  <div className={classes.error}>
-                    {phoneError}
-                  </div>
-                )}
-                </div>
+                  name="firstName"
+                  value={firstName}
+                  // error={firstName}
+                  placeholder="First Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </div>
             </Form.Row>
             <Form.Row justifyContent="center">
-            <div style={{width: "50%"}}>
-
-              <FormSelect
-                name="companyId"
-                value={companyId}
-                // error={companyId}
-                values={companies}
-                placeholder={companyName}
-                style={{width: "100%"}}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-              />
-            </div>
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="lastName"
+                  value={lastName}
+                  // error={lastName}
+                  placeholder="Last Name"
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </div>
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <div style={{ width: "50%" }}>
+                <FormInput
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={phone}
+                  // error={phone}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                  style={{ width: "100%" }}
+                />
+                {phoneError && (
+                  <div className={classes.error}>{phoneError}</div>
+                )}
+              </div>
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <div style={{ width: "50%" }}>
+                <FormSelect
+                  name="companyId"
+                  value={companyId}
+                  // error={companyId}
+                  values={companies}
+                  placeholder={companyName}
+                  style={{ width: "100%" }}
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </div>
             </Form.Row>
             <Form.Column alignItems="center">
               <Form.Row justifyContent="center">
@@ -374,10 +368,15 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={loading ||  (!phone || phone.length !== 10 || phone.charAt(0) !== "0" )||
-                  !firstName ||
-                  !lastName ||
-                  !companyId}
+                  disabled={
+                    loading ||
+                    !phone ||
+                    phone.length !== 10 ||
+                    phone.charAt(0) !== "0" ||
+                    !firstName ||
+                    !lastName ||
+                    !companyId
+                  }
                   loading={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}
