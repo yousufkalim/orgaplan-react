@@ -369,12 +369,10 @@ const Calender = (props) => {
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds);
-    if (moment(adminStore.site.siteId.start).isSameOrBefore(moment(start) ,'day')){ 
-       
-    }else{
+    preDateTime = new Date(milliseconds); 
+    if (!moment(start).isBetween(moment(adminStore.site.siteId.start), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
         pastdayFlag = true;
-    }
+    } 
     disableHours.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         flagHours = true;
@@ -434,7 +432,7 @@ const Calender = (props) => {
       }else if (pastdayFlag){
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Bookings can't be made in past time.", "error"),
+            Actions.notistack.snackbar("Site Date is Out of Range", "error"),
           ),
         );
       }
