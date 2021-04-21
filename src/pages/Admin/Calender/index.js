@@ -112,7 +112,7 @@ const Calender = (props) => {
     { value: "PENDING", label: "PENDING" },
     { value: "VALIDATED", label: "VALIDATED" },
     { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERTE", label: "ALERTE" },
+    { value: "ALERT", label: "ALERT" },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours)
@@ -922,19 +922,21 @@ const Calender = (props) => {
           let colour = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
-              
             if (!(key.startTime && key.endTime)) {
               return {};
             }
-            if (key.status === "PENDING") {
-              colour = "yellow";
-            } else if (key.status === "VALIDATED") {
-              colour = "green";
-            } else if (key.status === "MODIFIED") {
-              colour = "orange";
-            } else if (key.status === "ALERTE") {
-              colour = "red";
-            }
+            if (key.alert === true && status === "ALERT" ) {
+                colour = "red";
+              } else {
+                if (key.status === "PENDING") {
+                    colour = "yellow";
+                  } else if (key.status === "VALIDATED") {
+                    colour = "green";
+                  } else if (key.status === "MODIFIED") {
+                    colour = "orange";
+                  } 
+              }
+           
             /* start time converstion */
             let start = new Date(key.date);
             let startHours = key.startTime.slice(0, 2);
@@ -1474,7 +1476,7 @@ const Calender = (props) => {
                       { value: "PENDING", label: "PENDING" },
                       { value: "VALIDATED", label: "VALIDATED" },
                       { value: "MODIFIED", label: "MODIFIED" },
-                      { value: "ALERTE", label: "ALERTE" },
+                      { value: "ALERT", label: "ALERT" },
                     ]);
                   } else if (e.target.value === "Means") {
                     setDeliveriesMeansStatus([
