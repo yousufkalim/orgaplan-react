@@ -88,8 +88,8 @@ export default function AddAdmin(props) {
       setPhone(value);
       if (value.charAt(0) !== "0") {
         setPhoneError("Telephone shoud starts with 0");
-      } else if (value.charAt(0) === "0" && value.length !== 10) {
-        setPhoneError("Telephone must have 10 digits");
+      } else if (value.charAt(0) === "0" && value.length > 25) {
+        setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
       }
@@ -166,6 +166,7 @@ export default function AddAdmin(props) {
                   name="phone"
                   value={phone}
                   type="number"
+                  maxlength="25"
                   // error={phone}
                   placeholder="Phone Number"
                   style={{ width: "100%" }}

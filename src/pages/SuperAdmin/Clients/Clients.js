@@ -432,6 +432,7 @@ export default function Clients(props) {
               <FormInput
                 name="phone"
                 value={phone}
+                maxlength="25"
                 // error={phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
