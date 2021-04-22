@@ -143,7 +143,7 @@ export default function Input(props) {
           }}
           disabledDate={(d) =>
             (props.min && d.isBefore(props.min)) ||
-            (props.max && d.isAfter(props.max))
+            (props.max && d.isSameOrAfter(props.max))
           }
         />
       ) : (

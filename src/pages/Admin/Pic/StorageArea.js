@@ -41,7 +41,7 @@ export default function DeliveryArea(props) {
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]); 
+  const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]);
   const [unavailability, setUnavailabilities] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
@@ -292,18 +292,16 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="Unavailabilities: " />
           <Form.Row noMargin width="65%">
-          <UnavailabilityTimes
-                  name="unavailabilityDates"
-                  values={unavailability}
-                  style={GLOBALS.Styles.inputWidth}
-                  unavailabilityDates={unavailability}
-                  setUnavailabilityDates={setUnavailabilities}
-                  startRange={startDate}
-                  endRange={moment(endDate).add(1, "days")}
-                  onChange={(values) =>
-                    handleChange("unavailabilityDates", values)
-                  }
-                />
+            <UnavailabilityTimes
+              name="unavailabilityDates"
+              values={unavailability}
+              style={GLOBALS.Styles.inputWidth}
+              unavailabilityDates={unavailability}
+              setUnavailabilityDates={setUnavailabilities}
+              startRange={startDate}
+              endRange={moment(endDate).add(1, "days")}
+              onChange={(values) => handleChange("unavailabilityDates", values)}
+            />
           </Form.Row>
         </Form.Row>
         <Form.Row>
