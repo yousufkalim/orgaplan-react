@@ -700,7 +700,7 @@ export default function AddCompanies(props) {
               <div style={{ width: "40%", height: "100%" }}>
                 <FormInput
                   name="phone"
-                  type="tel"
+                  type="number"
                   style={{ width: "100%", height: "45px", color: "#8B8989" }}
                   placeholder="Téléphone"
                   onChange={inputChange}

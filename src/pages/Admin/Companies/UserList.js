@@ -327,6 +327,8 @@ export default function UserList(props) {
             <Form.Row justifyContent="center">
               <FormInput
                 name="phone"
+                type="number"
+                maxlength="25"
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);

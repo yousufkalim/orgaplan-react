@@ -251,6 +251,8 @@ export default function VerifyClient(props) {
               <FormInput
                 disabled
                 name="phone"
+                type="number"
+                maxlength="25"
                 placeholder="Phone Number"
                 value={phone}
                 // error={phone}

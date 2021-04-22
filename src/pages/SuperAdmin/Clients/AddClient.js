@@ -280,6 +280,7 @@ export default function AddClient(props) {
               <FormInput
                 name="phone"
                 value={phone}
+                type="number"
                 maxlength="25"
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}

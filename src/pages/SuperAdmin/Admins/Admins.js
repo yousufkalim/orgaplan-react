@@ -320,6 +320,7 @@ export default function Admins(props) {
               <div style={{ width: "50%" }}>
                 <FormInput
                   name="phone"
+                  type="number"
                   placeholder="Phone Number"
                   value={phone}
                   // error={phone}
