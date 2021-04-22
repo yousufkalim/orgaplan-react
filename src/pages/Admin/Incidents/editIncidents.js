@@ -59,9 +59,10 @@ export default function AddIncidents(props) {
 
   const [comment, setComment] = useState("");
   const [image, setImage] = useState([]);
-
+  const [priceDisable, setPriceDisable] = useState("true");
   const [companies, setCompanies] = useState([]);
   const [generalContractor, setGeneralContractor] = useState("");
+  const [isPaid, setIsPaid] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -123,13 +124,14 @@ export default function AddIncidents(props) {
   const setValues = () => {
     const incident = props?.location?.data;
     setName(incident.name);
-    setCompanyId(incident?.companyId?._id); //working
+    setCompanyId(incident?.companyId?._id);
     setDate(incident?.date);
     setIsBillable(incident?.isBillable);
     setPrice(incident?.price);
     setType(incident?.type);
     setStatus(incident?.status);
     setDescription(incident?.description);
+    setIsPaid(incident.isPaid);
   };
   const nameChange = (e) => {
     if (e.target.name === "name") setName(e.target.value);
@@ -199,6 +201,8 @@ export default function AddIncidents(props) {
       formdata.append("type", type);
       formdata.append("comment", comment);
       formdata.append("companyId", companyId);
+      formdata.append("isPaid", isPaid);
+
       formdata.append("siteId", adminStore.site.siteId._id);
       await GLOBALS.API({
         method: "PUT",
@@ -352,9 +356,11 @@ export default function AddIncidents(props) {
             <FormLabel bold primary="BILLABLE* : " />
             <Form.Row width="48%">
               <FormSelect
+                key="1abc"
                 name="comapnyId"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
+                  setPriceDisable(e.target.value);
                   if (e.target.value === "false") {
                     setPrice("0");
                     setIsBillable(false);
@@ -370,6 +376,30 @@ export default function AddIncidents(props) {
               />
             </Form.Row>
           </Form.Row>
+
+          <Form.Row>
+            <FormLabel bold primary="Paid : " />
+            <Form.Row width="48%">
+              <FormSelect
+                disabled={priceDisable === "false" || priceDisable === false}
+                name="paid"
+                style={{ width: "40%", height: "45px", color: "#8B8989" }}
+                onChange={(e) => {
+                  if (e.target.value === "false") {
+                    setIsPaid(false);
+                  } else if (e.target.value === "true") {
+                    setIsPaid(true);
+                  }
+                }}
+                value={isPaid}
+                values={[
+                  { value: true, label: "Yes" },
+                  { value: false, label: "No" },
+                ]}
+              />
+            </Form.Row>
+          </Form.Row>
+
           <Form.Row>
             <FormLabel bold primary="AMOUNT :" />
             <Form.Row width="48%" noMargin alignItems="center">
@@ -379,7 +409,7 @@ export default function AddIncidents(props) {
                   name="price"
                   onChange={nameChange}
                   value={price}
-                  disabled={isBillable === "No"}
+                  disabled={priceDisable === "false" || priceDisable === false}
                 />
                 <SmallText style={{ marginLeft: 10 }} primary="€" />
               </Form.Row>
@@ -403,7 +433,7 @@ export default function AddIncidents(props) {
               minWidth={200}
               text="VALIDER"
               fullWidth={false}
-              disabled={!name || !date || !dropdownCompanies || !isBillable}
+              disabled={!name || !date || !dropdownCompanies}
             />
           </Form.ButtonContainer>
         </Form.Form>

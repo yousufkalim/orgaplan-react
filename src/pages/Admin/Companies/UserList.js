@@ -80,10 +80,11 @@ export default function UserList(props) {
       });
       if (response.success) {
         if (response.data.users) {
-          const data = response.data.users.filter(
-            (x) => x.companyId._id === filterCompanyId && x.userId !== null,
-          );
-          setUserList(data);
+          const data = response.data.users.filter((x) => {
+            return x.companyId._id === filterCompanyId && x.userId !== null;
+          });
+          const callculateData = data.filter((x) => x.role !== "ADMIN");
+          setUserList(callculateData);
         } else {
           setUserList([]);
         }
@@ -174,18 +175,33 @@ export default function UserList(props) {
   };
 
   const resendMail = async (email) => {
-    //working
-    // console.log("resend mail called", email);
-    const response = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.RESEND_EMAIL_VERIFICATION}?email=${email}`,
-      token: store.token,
-      method: "POST",
-      bosy: {},
-    });
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.RESEND_EMAIL_VERIFICATION}?email=${email}`,
+        token: store.token,
+        method: "POST",
+        bosy: {},
+      });
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            GLOBALS.I18n.t("emailSentSuccess"),
+            "success",
+          ),
+        ),
+      );
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
   };
   // eslint-disable-next-line
   let rows = userList.map((item) => {
-    if (item.companyId && item.userId) {
+    // console.log(item.role !== "ADMIN");
+    if ((item.companyId && item.userId) || item.role !== "ADMIN") {
       return [
         item.userId.firstName + " " + item.userId.lastName,
         item.companyId.name,
@@ -292,7 +308,6 @@ export default function UserList(props) {
             <Form.Row justifyContent="center">
               <AvatarUpload
                 value={image}
-                // error={image}
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
                   setImage({ file, uri });
@@ -333,26 +348,24 @@ export default function UserList(props) {
             </Form.Row>
 
             <Form.Row justifyContent="center">
-              <Form.Row noMargin width="80%">
-                <FormSelect
-                  placeholder="RÔLE : "
-                  name="color"
-                  style={GLOBALS.Styles.inputWidth}
-                  values={dropdownRoles}
-                  value={selectedRole}
-                  onChange={(event) => {
-                    const index = event.target.selectedIndex - 1;
+              <FormSelect
+                placeholder="RÔLE : "
+                name="color"
+                style={GLOBALS.Styles.inputWidth}
+                values={dropdownRoles}
+                value={selectedRole}
+                onChange={(event) => {
+                  const index = event.target.selectedIndex - 1;
 
-                    if (index !== -1) {
-                      const item = event.target.value;
+                  if (index !== -1) {
+                    const item = event.target.value;
 
-                      setSelectedRole(item);
-                    } else {
-                      setSelectedRole("");
-                    }
-                  }}
-                />
-              </Form.Row>
+                    setSelectedRole(item);
+                  } else {
+                    setSelectedRole("");
+                  }
+                }}
+              />
             </Form.Row>
 
             <Form.ButtonContainer>
