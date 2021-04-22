@@ -244,11 +244,11 @@ export default function Sites(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_USER_SITES}/${store.user._id}`,
       });
-      const adminCompany = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
-      });
-      dispatch(Actions.admin.set_company(adminCompany.data));
-      setCompany(adminCompany.data);
+      // const adminCompany = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
+      // });
+      // dispatch(Actions.admin.set_company(adminCompany.data));
+      // setCompany(adminCompany.data);
       setItems(result.data.sites);
       setLoading(false);
     } catch (err) {

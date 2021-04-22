@@ -104,6 +104,8 @@ export default function AddUser(props) {
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
+
       var formdata = new FormData();
       if (logo[0]?.file) {
         formdata.append("image", logo[0].file);
@@ -123,7 +125,9 @@ export default function AddUser(props) {
         },
         body: formdata,
       });
+
       props.history.goBack();
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -152,6 +156,7 @@ export default function AddUser(props) {
                 style={{
                   ...GLOBALS.Styles.inputWidth,
                   marginRight: "10px",
+                  marginTop: "-17px",
                 }}
                 onSelect={(event) => {
                   users.forEach((item, index) => {
@@ -274,9 +279,6 @@ export default function AddUser(props) {
                 placeholder="RÔLE : "
                 name="color"
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
                 values={dropdownRoles}
                 value={selectedRole}
                 onChange={(event) => {
@@ -317,6 +319,8 @@ export default function AddUser(props) {
               onClick={() => {
                 onSubmit();
               }}
+              // loading={loading}
+
               // loading={formik.isSubmitting}
               // disabled={formik.isSubmitting}
             />
