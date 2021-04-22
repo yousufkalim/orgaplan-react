@@ -95,15 +95,15 @@ export default function AddContact(props) {
     } else if (name === "phone") {
       setPhone(value);
       if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
+        setPhoneError("Telephone should starts with 0");
         // if(value.length !== 10){
         //   setPhoneError("Telephone must have 10 digits")
         // }
         // else{
         //   setPhoneError("");
         // }
-      } else if (value.charAt(0) === "0" && value.length !== 10) {
-        setPhoneError("Telephone must have 10 digits");
+      } else if (value.charAt(0) === "0" && value.length > 25) {
+        setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
       }
@@ -245,6 +245,7 @@ export default function AddContact(props) {
                   name="phone"
                   value={phone}
                   type="number"
+                  maxlength="25"
                   // error={lastName}
                   placeholder="Téléphone"
                   style={{ width: "100%" }}

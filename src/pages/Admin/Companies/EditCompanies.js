@@ -398,8 +398,9 @@ export default function EditCompany(props) {
         setEmailError(false);
       }
     }
+    var phoneformat = /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/;
     if (phone !== "") {
-      if (phone.length !== 10) {
+      if (!phone.match(phoneformat)) {
         setPhoneError(true);
       } else {
         setPhoneError(false);
@@ -670,7 +671,7 @@ export default function EditCompany(props) {
                 />
                 {phoneError === true && (
                   <div className={classes.error}>
-                    Telephone should be 10 digits
+                    Telephone must have 10 to 25 digits
                   </div>
                 )}
               </div>
