@@ -45,7 +45,7 @@ export default function AddUser(props) {
   const [disableUser, setDisableUser] = useState(false);
 
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getData();
@@ -319,8 +319,16 @@ export default function AddUser(props) {
               onClick={() => {
                 onSubmit();
               }}
-              // loading={loading}
-
+              loading={loading}
+              disabled={
+                loading ||
+                !firstName ||
+                !lastName ||
+                !email ||
+                !phone ||
+                !selectedCompany ||
+                !selectedRole
+              }
               // loading={formik.isSubmitting}
               // disabled={formik.isSubmitting}
             />
