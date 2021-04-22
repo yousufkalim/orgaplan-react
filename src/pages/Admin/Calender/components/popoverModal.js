@@ -247,7 +247,7 @@ const PopoverModal = ({
                       <div className="col-lg-3">
                         <button
                           className="btn text-danger btn-light"
-                          // onClick={handleDeleteEvent}
+                          onClick={handleDeleteEvent}
                         >
                           <i class="fas fa-trash"></i> <span>Refuse</span>
                         </button>

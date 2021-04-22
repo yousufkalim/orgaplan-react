@@ -16,7 +16,7 @@ import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
-
+import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
@@ -38,7 +38,7 @@ export default function DeliveryArea(props) {
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
-  const [unavailabilities, setUnavailabilities] = useState([]);
+  const [unavailability, setUnavailabilities] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
   const [vehicles, setVehicles] = useState([]);
@@ -105,7 +105,7 @@ export default function DeliveryArea(props) {
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
-    } else if (name === "unavailabilities") {
+    } else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
     } else if (name === "vehicles") setVehicles(value);
@@ -135,7 +135,7 @@ export default function DeliveryArea(props) {
       const formdata = JSON.stringify({
         name,
         addresses: addressesAr,
-        unavailabilities,
+        unavailability,
         color: color,
         availability: {
           start: startDate,
@@ -154,8 +154,7 @@ export default function DeliveryArea(props) {
           : GLOBALS.Constants.CREATE_DELIVERY_AREA,
         token: store.token,
         body: formdata,
-      });
-
+      }); 
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
@@ -250,20 +249,18 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
-            <div
-              style={{
-                marginLeft: "0px",
-                marginBottom: "7px",
-                width: "320px",
-                color: "#fff",
-                padding: "0.8rem 0",
-                borderRadius: "8px",
-                textAlign: "center",
-                backgroundColor: "#140772",
-              }}
-            >
-              SHOW UNAVAILABILITIES
-            </div>
+          <UnavailabilityTimes
+                  name="unavailabilityDates"
+                  values={unavailability}
+                  style={GLOBALS.Styles.inputWidth}
+                  unavailabilityDates={unavailability}
+                  setUnavailabilityDates={setUnavailabilities}
+                  startRange={startDate}
+                  endRange={moment(endDate).add(1, "days")}
+                  onChange={(values) =>
+                    handleChange("unavailabilityDates", values)
+                  }
+                />
           </Form.Row>
         </Form.Row>
         <Form.Row>

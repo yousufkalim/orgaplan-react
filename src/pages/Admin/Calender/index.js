@@ -365,14 +365,19 @@ const Calender = (props) => {
     let flagOpeningHours = false;
     let disableDayFlag = false;
     let pastdayFlag = false;
+    let betweenDay = false;
 
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds); 
-    if (!moment(start).isBetween(moment(adminStore.site.siteId.start), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
+    preDateTime = new Date(milliseconds);  
+    if (start < preDateTime && start < end) {
         pastdayFlag = true;
+    }
+    if (!moment(start).isBetween(moment(adminStore.site.siteId.start), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
+        betweenDay = true;
     } 
+   
     disableHours.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         flagHours = true;
@@ -415,9 +420,9 @@ const Calender = (props) => {
             }
       }
     })
-    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag || pastdayFlag || flagHours) { 
+    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag || pastdayFlag || flagHours || betweenDay ) { 
      
-        if (flagDate || disableDayFlag) {
+        if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
@@ -429,12 +434,18 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Disable hours", "error"),
           ),
         );
-      }else if (pastdayFlag){
+      }else if (betweenDay){
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Site Date is Out of Range", "error"),
           ),
         );
+      } else if (pastdayFlag) {
+        dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar("Booking can't be in Previous day", "error"),
+            ),
+          );
       }
     }else{
       setAddDelivery(true);
@@ -538,7 +549,7 @@ const Calender = (props) => {
     setstarttimesliceEdit(getstart);
     setEndtimesliceEdit(getend);
   };
-  const handleDeleteEvent = (confirm) => {
+  const handleDeleteEvent = (confirm) => { 
     if(confirm === "yes"){
       setAlertBoxTime(true);
       setpopoverShow(!popoverShow);
@@ -1404,8 +1415,7 @@ const Calender = (props) => {
           event={event}
           setAlertBoxTime = {setAlertBoxTime} 
           alertBoxTime = {alertBoxTime} 
-          handleValidateDelivery = {handleValidateDelivery}
-
+          handleValidateDelivery = {handleValidateDelivery} 
           handleDeleteDelivery = {handleDeleteDelivery}
 
           onEditDelivery = {() => {setpopoverShow(false);setAddDelivery(true)}}
