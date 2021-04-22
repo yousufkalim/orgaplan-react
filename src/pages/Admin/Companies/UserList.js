@@ -174,9 +174,9 @@ export default function UserList(props) {
   const resendMail = async (email) => {
     try {
       await GLOBALS.API({
-        method: "POST",
-        token: store.token,
         uri: `${GLOBALS.Constants.RESEND_EMAIL_VERIFICATION}?email=${email}`,
+        token: store.token,
+        method: "POST",
       });
       dispatch(
         Actions.notistack.enqueueSnackbar(

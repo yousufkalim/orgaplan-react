@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -12,14 +12,10 @@ import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
-import FormInput from "../../../components/FormInput";
-import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
-import AvatarUpload from "../../../components/AvatarUpload";
 import uploadIcon from "../../../assets/images/upload.png";
 import { Images } from "../../../assets/Assets";
-import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Companies(props) {
-  const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);

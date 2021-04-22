@@ -172,7 +172,7 @@ export default function AddUser(props) {
                     value={email}
                     onChange={(e) => {
                       users.forEach((item, index) => {
-                        if (item.email != e.target.value) {
+                        if (item.email !== e.target.value) {
                           setEmail(e.target.value);
                           setFirstName("");
                           setLastName("");
