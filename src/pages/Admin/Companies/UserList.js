@@ -67,30 +67,6 @@ export default function UserList(props) {
     // eslint-disable-next-line
   }, [filterCompanyId, filterUserName]);
 
-  // useEffect(() => {
-  //   updateEditModel();
-  //   // eslint-disable-next-line
-  // }, [editModel]);
-
-  // async function updateEditModel() {
-  //   if (editModel) {
-  //     if (editModel.userId.isVerified) {
-  //       handleClickOpen();
-  //       setFullName(
-  //         editModel.userId.firstName + " " + editModel.userId.lastName,
-  //       );
-  //       setEmail(editModel.userId.email);
-  //       setSelectedRole(editModel.role);
-  //       setPhone(editModel.userId.phone);
-  //       setCompanyId(editModel.companyId._id);
-  //       setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
-  //       setUserId(editModel.userId._id);
-  //     } else {
-  //       resendMail();
-  //     }
-  //   }
-  // }
-
   async function filteredUser() {
     try {
       const params = { siteId: adminStore.site.siteId._id };
@@ -129,10 +105,6 @@ export default function UserList(props) {
       console.log(props?.match?.params?.id);
       setSiteName(adminStore.site.siteId.name);
 
-      // const response = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.GET_COMPANY_USERS}/${adminStore.site.siteId._id}/${props.match.params.id}`,
-      //   token: store.token,
-      // });
       const userResponse = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
         token: store.token,
@@ -179,14 +151,6 @@ export default function UserList(props) {
       formdata.append("phone", phone);
       image.file && formdata.append("image", image.file);
 
-      // const formdata = JSON.stringify({
-      //   role: selectedRole,
-      //   siteId: adminStore.site.siteId._id,
-      //   email: email,
-      //   companyId: companyId,
-      //   userId: userId,
-      //   image: image.file,
-      // });
       await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.UPDATE_COMPANY_USER,
@@ -218,7 +182,6 @@ export default function UserList(props) {
       method: "POST",
       bosy: {},
     });
-    console.log("response", response);
   };
   // eslint-disable-next-line
   let rows = userList.map((item) => {
