@@ -8,19 +8,19 @@ import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
+import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import TextField from "@material-ui/core/TextField";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
-import Actions from "../../../redux/actions";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
-import ColorPicker from "../../../components/ColorPcker";
+import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -460,12 +460,9 @@ export default function AddCompanies(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY * :" />
-            <Form.Row
-              width="55%"
-              style={{ gap: "20px", justifyContent: "flex-start" }}
-            >
-              <div style={{ width: "35%", height: "100%" }}>
+            <FormLabel bold primary="IDENTITY* :" />
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <Autocomplete
                   id="free-solo-demo"
                   freeSolo
@@ -485,10 +482,6 @@ export default function AddCompanies(props) {
                         setName(item.companyId.name);
                       }
                     });
-
-                    //                  let fileClone = [{ uri: mean.image }];
-                    // setImage(fileClone);
-
                     if (companyId.length !== 0) {
                       setCompanyId(companyId);
                       setFieldsEnabled(false);
@@ -522,15 +515,15 @@ export default function AddCompanies(props) {
                 {nameError && (
                   <div className={classes.error}>Please enter name</div>
                 )}
-              </div>
-              <div style={{ width: "35%", height: "100%" }}>
+              </Form.Column>
+              <div style={GLOBALS.Styles.inputWidth}>
                 <ColorPicker color={color} handleChange={handleChangecolor} />
               </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IMAGE * :" />
-            <Form.Row width="55%">
+            <FormLabel bold primary="IMAGE* :" />
+            <Form.Row width="48%" noMargin>
               <FormMultipleUpload
                 name="images"
                 enabled={!fieldsEnabled}
@@ -550,107 +543,60 @@ export default function AddCompanies(props) {
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
-            <Form.Row width="55%">
-              <RadioButton
-                name="contractType"
-                value={companyType}
-                // error={contractType}
-                style={{ width: "70%" }}
-                defaultValue={`generalcontractor`}
-                onChange={({ target: { name, value } }) =>
-                  setCompanyType(value)
-                }
-                items={[
-                  {
-                    value: "generalcontractor",
-                    label: "General Contractor",
-                  },
-                  { value: "subcontractor", label: "Subcontractor" },
-                ]}
-              />
-
-              {/* <input
-                    className={classes.radioBtn}
-                    type="radio"
-                    onChange={(e) => {
-                      setCompanyType("generalcontractor");
-                    }}
-                    id="generalcontractor"
-                    name="companyType"
-                    value={companyType}
-                  />
-                  <label for="generalcontractor" className={classes.radioLabel}>
-                    General Contractor
-                  </label>
-                  <input
-                    className={classes.radioBtn}
-                    type="radio"
-                    id="subcontractor"
-                    name="companyType"
-                    onChange={(e) => {
-                      setCompanyType("subcontractor");
-                    }}
-                    value={companyType}
-                    defaultChecked
-                  />
-                  <label for="subcontractor" className={classes.radioLabel}>
-                    Sub contractor
-                  </label> */}
-              {companyTypeError === true && (
-                <div className={classes.error}>Please select company</div>
-              )}
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin>
+                <RadioButton
+                  name="contractType"
+                  value={companyType}
+                  style={{ width: "70%" }}
+                  defaultValue={`generalcontractor`}
+                  onChange={({ target: { name, value } }) =>
+                    setCompanyType(value)
+                  }
+                  items={[
+                    {
+                      value: "generalcontractor",
+                      label: "General Contractor",
+                    },
+                    { value: "subcontractor", label: "Subcontractor" },
+                  ]}
+                />
+                {companyTypeError === true && (
+                  <div className={classes.error}>Please select company</div>
+                )}
+              </Form.Column>
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="GENERAL CONTRACTOR : " />
-            <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
-              <div style={{ width: "100%", height: "100%" }}>
+            <FormLabel bold primary="GENERAL CONTRACTOR :" />
+            <Form.Row noMargin width="48%">
+              <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
                   placeholder="Company"
-                  values={dropdownCompanies}
                   value={selectedCompany}
+                  values={dropdownCompanies}
                   disabled={companyType === "generalcontractor" ? true : false}
                   onChange={(event) => {
                     const index = event.target.selectedIndex - 1;
-
                     if (index !== -1) {
                       const item = event.target.value;
-
                       setSelectedCompanyIndex(index);
-
                       setSelectedCompany(item);
                     } else {
                       setSelectedCompanyIndex(null);
-
                       setSelectedCompany("");
                     }
                   }}
-                  style={{ marginRight: "20px", maxWidth: 250 }}
                 />
-                {/* <select
-                  name="contract"
-                  disabled={companyType === "generalcontractor" ? true : false}
-                  id="contract"
-                  type={contract}
-                  style={{
-                    width: "40%",
-                    height: "45px",
-                    color: "#8B8989",
-                    padding: "0px 10px",
-                  }}
-                  onChange={inputChange}
-                >
-                
-                </select> */}
                 {contractError === true && (
                   <div className={classes.error}>Please select contract</div>
                 )}
-              </div>
+              </Form.Column>
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TRADES : " />
-            <Form.Row noMargin width="55%" style={{ gap: "20px" }}>
+            <FormLabel bold primary="TRADES :" />
+            <Form.Row noMargin width="48%">
               <CustomInputModal
                 name="trades"
                 values={dropdownTrades}
@@ -663,14 +609,11 @@ export default function AddCompanies(props) {
                     valuesTemp.push(item);
                   });
                   setListOfTrades(valuesTemp);
-
-                  // setSiteParams(values);
                 }}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
                   if (index !== -1) {
                     const item = event.target.value;
-
                     setSelectedTrade(item);
                   } else {
                     setSelectedTrade("");
@@ -680,108 +623,90 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDEMTITY OF RESPONSIBLE* : " />
-            <Form.Row
-              width="55%"
-              style={{ gap: "20px", justifyContent: "flex-start" }}
-            >
-              <div style={{ width: "40%", height: "100%" }}>
+            <FormLabel bold primary="IDENTITY OF RESPONSIBLE* :" />
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="email"
-                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
-                  placeholder="Adresse e-mail"
-                  onChange={inputChange}
                   value={email}
+                  onChange={inputChange}
+                  placeholder="Adresse e-mail"
                 />
                 {emailError === true && (
                   <div className={classes.error}>Please enter valid email</div>
                 )}
-              </div>
-              <div style={{ width: "40%", height: "100%" }}>
+              </Form.Column>
+              <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="phone"
-                  type="tel"
-                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
-                  placeholder="Téléphone"
-                  onChange={inputChange}
-                  value={phone}
                   maxlength="25"
+                  type="number"
+                  value={phone}
+                  onChange={inputChange}
+                  placeholder="Téléphone"
                 />
                 {phoneError && (
                   <div className={classes.error}>{phoneError}</div>
                 )}
-              </div>
+              </Form.Column>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel />
-            <Form.Row
-              width="55%"
-              style={{ gap: "20px", justifyContent: "flex-start" }}
-            >
-              <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="fname"
-                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
-                  placeholder="First Name"
-                  maxLength="30"
-                  onChange={(e) => setFname(e.target.value)}
-                  value={fname}
-                />
-              </div>
-              <div style={{ width: "35%", height: "100%" }}>
-                <FormInput
-                  name="lname"
-                  style={{ width: "100%", height: "45px", color: "#8B8989" }}
-                  placeholder="Last Name"
-                  onChange={(e) => setLname(e.target.value)}
-                  value={lname}
-                />
-              </div>
+            <Form.Row width="48%" noMargin>
+              <FormInput
+                name="fname"
+                value={fname}
+                maxLength="30"
+                placeholder="First Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(e) => setFname(e.target.value)}
+              />
+              <FormInput
+                name="lname"
+                value={lname}
+                placeholder="Last Name"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(e) => setLname(e.target.value)}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Website : " />
-            <Form.Row width="55%">
-              <div style={{ width: "50%" }}>
+            <FormLabel bold primary="WEBSITE :" />
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="website"
-                  style={{ width: "100%" }}
+                  value={website}
                   placeholder="http://"
                   onChange={inputChange}
-                  value={website}
                 />
                 {websiteError && (
                   <div className={classes.error}>{websiteError}</div>
                 )}
-              </div>
+              </Form.Column>
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
-            <Form.Row width="55%">
+            <Form.Row width="48%" noMargin>
               <FormInput
                 textArea
                 rows={3}
+                name="addInfo"
                 maxLength="300"
-                style={{ width: "90%" }}
+                value={addInfo}
                 onChange={(e) => setAddInfo(e.target.value)}
                 placeholder="Informations complémentaires"
-                name="addInfo"
-                value={addInfo}
               />
             </Form.Row>
           </Form.Row>
-
           <Form.ButtonContainer>
             <Button
               minWidth={200}
               text="VALIDATE"
-              onClick={() => {
-                onSubmit();
-              }}
               fullWidth={false}
-              // loading={formik.isSubmitting}
+              onClick={onSubmit}
               disabled={!name || !color || !companyType}
             />
           </Form.ButtonContainer>
