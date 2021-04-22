@@ -353,15 +353,16 @@ export default function AddCompanies(props) {
         setEmailError(false);
       }
     }
+
     if (e.target.name === "phone") {
       setPhone(e.target.value);
       if (e.target.value.charAt(0) !== "0") {
         setPhoneError("Telephone shoud starts with 0");
       } else if (
         e.target.value.charAt(0) === "0" &&
-        e.target.value.length !== 10
+        e.target.value.length > 25
       ) {
-        setPhoneError("Telephone must have 10 digits");
+        setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
       }
@@ -389,6 +390,7 @@ export default function AddCompanies(props) {
   const submitHandler = (e) => {
     // eslint-disable-next-line
     var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    var phoneformat = /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/;
     e.preventDefault();
     if (name === "" || name === null) {
       setNameError(true);
@@ -413,7 +415,7 @@ export default function AddCompanies(props) {
       }
     }
     if (phone !== "") {
-      if (phone.length !== 10) {
+      if (!phone.match(phoneformat)) {
         setPhoneError(true);
       } else {
         setPhoneError(false);
@@ -637,6 +639,7 @@ export default function AddCompanies(props) {
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="phone"
+                  maxlength="25"
                   type="number"
                   value={phone}
                   onChange={inputChange}

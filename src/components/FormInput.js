@@ -160,6 +160,7 @@ export default function Input(props) {
           required={props.required}
           disabled={props.disabled}
           placeholder={props.placeholder}
+          maxlength={props.maxlength}
         />
       )}
       {props.error !== "" && (
