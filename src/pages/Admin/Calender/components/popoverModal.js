@@ -94,12 +94,15 @@ const PopoverModal = ({
                     <tr>
                       <th>Name</th>
                       <th>Type</th>
+                      <th>Reason</th>
+
                     </tr>
                     {event.liftingMeans.map((key, index) => {
                       return (
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
+                          <td>{key.alerts? key.alerts.reason : null}</td> 
                         </tr>
                       );
                     })}
@@ -108,6 +111,8 @@ const PopoverModal = ({
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
+                          <td>{key.alerts? key.alerts.reason : null}</td> 
+                          
                         </tr>
                       );
                     })}
@@ -147,7 +152,7 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {event.deliveryArea.name}
+                      {" Name:  " + event.deliveryArea.name } <br />  {event.deliveryArea.alert ? " Reason:  " + event.deliveryArea.alert.reason : null} 
                     </h5>
                   </>
                 ) : (
@@ -168,7 +173,13 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {event.storageArea.name}
+                      
+                         { " Name:  " + event.storageArea.name} <br /> 
+                         {event.storageArea.alert ? event.storageArea.alert.map((item , index)=>{
+                            return (
+                              `Reason ${index+1}   :   ${item.reason} `
+                            )
+                         }) : null}
                     </h5>
                   </>
                 ) : (
