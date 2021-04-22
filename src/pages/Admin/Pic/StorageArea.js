@@ -18,7 +18,7 @@ import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
 import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
-
+import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
@@ -41,8 +41,8 @@ export default function DeliveryArea(props) {
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]);
-  const [unavailabilities, setUnavailabilities] = useState([]);
+  const [selectedDeliveryAreas, setSelectedDeliveryAreas] = useState([]); 
+  const [unavailability, setUnavailabilities] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
@@ -100,7 +100,7 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end);
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
-        setUnavailabilities(props.selectedShape.storageArea.unavailabilities);
+        setUnavailabilities(props.selectedShape.storageArea.unavailability);
         setSelectedCompanies(props.selectedShape.storageArea.companies);
         setNotificationPriorToDays(
           props.selectedShape.storageArea.notificationPriorToDays,
@@ -124,7 +124,7 @@ export default function DeliveryArea(props) {
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
     else if (name === "deliveryAreas") setSelectedDeliveryAreas(value);
-    else if (name === "unavailabilities") {
+    else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
     } else if (name === "companies") setSelectedCompanies(value);
@@ -154,7 +154,7 @@ export default function DeliveryArea(props) {
         },
         isInside: props.level ? true : false,
         deliveryArea: selectedDeliveryAreas,
-        unavailabilities,
+        unavailability,
         companies: selectedCompanies,
         notificationPriorToDays,
         notificationTo: notificationToAr,
@@ -292,20 +292,18 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="Unavailabilities: " />
           <Form.Row noMargin width="65%">
-            <div
-              style={{
-                marginLeft: "0px",
-                marginBottom: "7px",
-                width: "320px",
-                color: "#fff",
-                padding: "0.8rem 0",
-                borderRadius: "8px",
-                textAlign: "center",
-                backgroundColor: "#140772",
-              }}
-            >
-              SHOW UNAVAILABILITIES
-            </div>
+          <UnavailabilityTimes
+                  name="unavailabilityDates"
+                  values={unavailability}
+                  style={GLOBALS.Styles.inputWidth}
+                  unavailabilityDates={unavailability}
+                  setUnavailabilityDates={setUnavailabilities}
+                  startRange={startDate}
+                  endRange={moment(endDate).add(1, "days")}
+                  onChange={(values) =>
+                    handleChange("unavailabilityDates", values)
+                  }
+                />
           </Form.Row>
         </Form.Row>
         <Form.Row>
