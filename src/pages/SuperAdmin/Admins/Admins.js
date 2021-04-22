@@ -278,7 +278,6 @@ export default function Admins(props) {
             <Form.Row justifyContent="center">
               <AvatarUpload
                 value={image}
-                // error={image}
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
                   handleChange("image", { file, uri });
@@ -290,7 +289,6 @@ export default function Admins(props) {
                 <FormInput
                   name="firstName"
                   value={firstName}
-                  // error={firstName}
                   placeholder="First Name"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
@@ -304,7 +302,6 @@ export default function Admins(props) {
                 <FormInput
                   name="lastName"
                   value={lastName}
-                  // error={lastName}
                   placeholder="Last Name"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
@@ -317,13 +314,12 @@ export default function Admins(props) {
               <div style={{ width: "50%" }}>
                 <FormInput
                   name="phone"
-                  placeholder="Phone Number"
                   value={phone}
-                  // error={phone}
+                  style={{ width: "100%" }}
+                  placeholder="Phone Number"
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
-                  style={{ width: "100%" }}
                 />
                 {phoneError && (
                   <div className={classes.error}>{phoneError}</div>
@@ -335,7 +331,6 @@ export default function Admins(props) {
                 <FormSelect
                   name="companyId"
                   value={companyId}
-                  // error={companyId}
                   values={companies}
                   placeholder={companyName}
                   style={{ width: "100%" }}
@@ -368,15 +363,7 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={
-                    loading ||
-                    !phone ||
-                    phone.length !== 10 ||
-                    phone.charAt(0) !== "0" ||
-                    !firstName ||
-                    !lastName ||
-                    !companyId
-                  }
+                  disabled={loading}
                   loading={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}
