@@ -15,7 +15,6 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
-import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
