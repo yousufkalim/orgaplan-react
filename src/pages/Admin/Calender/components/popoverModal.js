@@ -6,6 +6,7 @@ const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
   handleDeleteEvent,
+  handleDeleteDelivery,
   handleEditEvent,
   event,
   handleValidateMeans,
@@ -34,6 +35,26 @@ const PopoverModal = ({
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
         {props.message}&nbsp;&nbsp;&nbsp;
+        {handleDeleteDelivery ? <>
+          <a
+          onClick={() => {
+            handleDeleteDelivery("no");
+          }}
+          className="alert-link"
+        >
+          NO
+        </a>{" "}
+        &nbsp;&nbsp;
+        <a
+          onClick={() => {
+            handleDeleteDelivery("yes");
+          }}
+          className="alert-link"
+        >
+          YES
+        </a>
+        </> : <>
+        
         <a
           onClick={() => {
             handleDeleteEvent("no");
@@ -51,6 +72,8 @@ const PopoverModal = ({
         >
           YES
         </a>
+        </>} 
+     
       </Alert>
     );
   }
@@ -61,7 +84,7 @@ const PopoverModal = ({
           <Modal.Title className="text-center">Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="A you sure to want Delete" />
+          <Alertbox message="Are you sure to want Delete" />
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <>
@@ -258,7 +281,7 @@ const PopoverModal = ({
                       <div className="col-lg-3">
                         <button
                           className="btn text-danger btn-light"
-                          onClick={handleDeleteEvent}
+                          onClick={handleDeleteDelivery}
                         >
                           <i class="fas fa-trash"></i> <span>Refuse</span>
                         </button>

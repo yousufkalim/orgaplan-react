@@ -123,8 +123,9 @@ const Calender = (props) => {
   const [deliverDate , setDeliverDate] = useState("");
   const [deliverStartHours , setDeliverStartHours] = useState("");
   const [deliverEndHours , setDeliverEndHours] = useState("");
-
-//   console.log("openingHours" ,openingHours);
+  const [siteAvailabilityStart , setMeanAvailabilityStart] = useState(adminStore.site.siteId.start);
+  const [siteAvailabilityEnd , setMeanAvailabilityEnd] = useState(adminStore.site.siteId.end);
+  //   console.log("openingHours" ,openingHours);
 //   console.log("unavailabilityDates" ,adminStore.site.start)
   // useEffect
   useEffect(() => {
@@ -150,7 +151,7 @@ const Calender = (props) => {
   }, []);
   useEffect(() => {
     filterBookingCalendar();
-  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans, updateMeanStatus,addDelivery]);
+  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans,updateMeanStatus,addDelivery]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -572,6 +573,12 @@ const Calender = (props) => {
         const fill = events.filter((e) => e.id !== eventID);
         setEvents(fill); 
         delete_Delivery(eventID);
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Delivery Deleted", "success"),
+          ),
+        );
+        setSiteMeans("");
       }else if (confirm === "no"){ 
         setAlertBoxTime(false); 
       }else{
@@ -885,6 +892,7 @@ const Calender = (props) => {
   const customDayPropGetter = (date) => {
     let flagDate = false;
     let flagOpeningHoursDay = false;
+    let betweenDate = false;
     let currentDay =  moment(date).day(); 
     if(currentDay === 0){ // disorder of days of Opening Hours component
       currentDay=7;
@@ -902,7 +910,10 @@ const Calender = (props) => {
         flagOpeningHoursDay = true;
       }
     });
-    if (flagDate || flagOpeningHoursDay) {
+    if (!moment(date).isBetween(moment(siteAvailabilityStart), moment(siteAvailabilityEnd).add(1, 'day'),null, '[]','day')){
+      betweenDate = true;
+}
+    if (flagDate || flagOpeningHoursDay || betweenDate) {
       return {
         className: "special-day",
         style: {
@@ -1421,8 +1432,7 @@ const Calender = (props) => {
           onEditDelivery = {() => {setpopoverShow(false);setAddDelivery(true)}}
 
         />  
-        <div style={{ flexBasis: "100%" }}>
-          
+        <div style={{ flexBasis: "100%" }}> 
           <div className="px-2">
           <Form.Row alignItems="center">
             <Form.Row noMargin>
@@ -1465,6 +1475,7 @@ const Calender = (props) => {
                 <>
                   <FormSelect
                     placeholder="Enterprise"
+                    value={enterprise}
                     values={dropdownCompany}
                     style={{ marginRight: "20px", maxWidth: 250 }}
                     onChange={(e) => setEnterprise(e.target.value)}
@@ -1472,7 +1483,8 @@ const Calender = (props) => {
                 </>
               )}
 
-              <FormSelect
+              <FormSelect 
+                value= {typeOfPlaning}
                 values={[
                   { value: "Deliveries", label: "Deliveries" },
                   { value: "Means", label: "Means" },
@@ -1497,6 +1509,7 @@ const Calender = (props) => {
               />
               <FormSelect
                 placeholder="Status"
+                value= {status}
                 values={deliveriesMeansStatus}
                 onChange={(e) => setStatus(e.target.value)}
                 style={{ marginRight: "5px", maxWidth: 250 }}
@@ -1531,6 +1544,7 @@ const Calender = (props) => {
                 <>
                   <FormSelect
                     placeholder="Type of place"
+                    value= {typeOfPlacevalue}
                     values={[
                       { value: "DELIVERYAREA", label: "Delivery area" },
                       { value: "STORAGEAREA", label: "Storage area" },
@@ -1542,6 +1556,7 @@ const Calender = (props) => {
 
                   <FormSelect
                     placeholder="place"
+                    value= {placeId}
                     values={typeOfPlace}
                     style={{ marginRight: "20px", maxWidth: 250 }}
                     onChange={(e) => setPlaceId(e.target.value)}
