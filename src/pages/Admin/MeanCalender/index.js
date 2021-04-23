@@ -50,7 +50,8 @@ const Calender = (props) => {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin); 
   const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours);
-  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const [dorpdownMeans, setDropdownMeans] = useState([]); 
+  const [propsSite , setPropsSite] = useState(adminStore.site.siteId); 
   const [propsMean , setPropsMean] = useState(
     props.history.location.mean ?
     props.history.location.mean :
@@ -106,7 +107,8 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [disableHours, setDisableHours] = useState([]);
+  const [disableHoursMean, setdisableHoursMean] = useState([]); 
+  const [disableHoursSiteUnavailabilityDates, setDisableHoursSiteUnavailabilityDates] = useState(adminStore.site.siteId.unavailabilityDates); 
   const [disableDay, setDisableDay] = useState([]);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
 
@@ -325,7 +327,7 @@ const Calender = (props) => {
           };
           // setEvents([...events, stateElement]);
           let flagHours = false;
-          disableHours.map((key, index) => {
+          disableHoursMean.map((key, index) => {
             if (
               moment(startTime).isSame(key) ||
               moment(endTime).isSame(key) ||
@@ -404,7 +406,7 @@ const Calender = (props) => {
     if (start < preDateTime && start < end) {
       pastdayFlag = true;
     }
-    disableHours.map((key, index) => {
+    disableHoursMean.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         flagHours = true;
       }
@@ -775,33 +777,57 @@ const Calender = (props) => {
       );
     }
   };
+  console.log(propsSite);
   const unavailabilityDates = () => {
-    let tempDisabledTime = []; 
+    let tempDisabledTimeMean = []; 
     propsMean.unavailability.map((key, index) => {
       if (key.dayOff === false) {
         for (let i = key.startHour; i <= key.endHour; i++) {
           let date = new Date(key.date);
           date.setHours(i);
-          tempDisabledTime.push(date);
+          tempDisabledTimeMean.push(date);
         }
       }
       return {};
-    }) 
-    setDisableHours(tempDisabledTime);
-  };
-  const slotPropGetter = (date) => {
-    let flagDateAndTime; 
-    let newStyle = {
-      backgroundColor: "#EBEBE4",
-    };
-    disableHours.map((key, index) => {
-      if (moment(date).isSame(key)) {
-        flagDateAndTime = date;
+    })  
+    setdisableHoursMean(tempDisabledTimeMean);
+
+    let tempDisabledTimeSite  = []; 
+    propsSite.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === false) {
+        for (let i = key.startHour; i <= key.endHour; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisabledTimeSite.push(date);
+        }
       }
       return {};
     });
+    setDisableHoursSiteUnavailabilityDates(tempDisabledTimeSite);
+  };
+ 
+  const slotPropGetter = (date) => {
+    let flagDateAndTime = false; 
+    let disableHoursSiteUnavailabilityDatesFlag = false;
+    let newStyle = {
+      backgroundColor: "#EBEBE4",
+    };
+    disableHoursMean.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        flagDateAndTime = true;
 
-    if (flagDateAndTime) {
+      }
+      return {};
+    });
+    
+    disableHoursSiteUnavailabilityDates.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        disableHoursSiteUnavailabilityDatesFlag = true;
+
+      }
+      return {};
+    });
+    if (flagDateAndTime || disableHoursSiteUnavailabilityDatesFlag) {
       return {
         className: "rbc-day-slot rbc-time-slot ",
         style: newStyle,
