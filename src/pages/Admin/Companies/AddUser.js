@@ -5,16 +5,17 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
+import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import TextField from "@material-ui/core/TextField";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
-import Actions from "../../../redux/actions";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -45,7 +46,7 @@ export default function AddUser(props) {
   const [disableUser, setDisableUser] = useState(false);
 
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getData();
@@ -63,34 +64,24 @@ export default function AddUser(props) {
         uri: `${GLOBALS.Constants.GET_ALL_USERS}`,
         token: store.token,
       });
-      if (userResponse.success) {
-        setUsers(userResponse.data);
-      }
-      if (response.success) {
-        // setRoles(response.data.site_companies.companies);
-        // console.log("setUsers", response.data.users);
-        // setUsers(response.data.users);
-        if (response.data.site_companies != null) {
-          const companyTemp = [];
-          response.data.site_companies.companies.map((item, index) => {
-            return companyTemp.push({
-              label: item.companyId.name,
-              value: item.companyId._id,
-            });
+      setUsers(userResponse.data);
+      if (response.data.site_companies != null) {
+        const companyTemp = [];
+        response.data.site_companies.companies.map((item, index) => {
+          return companyTemp.push({
+            label: item.companyId.name,
+            value: item.companyId._id,
           });
-          setDropdownCompanies(companyTemp);
-        }
-        if (response.data.roles != null) {
-          const rolesTemp = [];
-          response.data.roles.map((item, index) => {
-            return rolesTemp.push({ label: item, value: item });
-          });
-          setDropdownRoles(rolesTemp);
-        }
-      } else {
+        });
+        setDropdownCompanies(companyTemp);
       }
-
-      //   setItems(response.data.items);
+      if (response.data.roles != null) {
+        const rolesTemp = [];
+        response.data.roles.map((item, index) => {
+          return rolesTemp.push({ label: item, value: item });
+        });
+        setDropdownRoles(rolesTemp);
+      }
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -100,14 +91,12 @@ export default function AddUser(props) {
     }
   };
 
-  const handleSubmit = () => {};
-
   const onSubmit = async () => {
     try {
+      setLoading(true);
+
       var formdata = new FormData();
-      if (logo[0]?.file) {
-        formdata.append("image", logo[0].file);
-      }
+      logo[0]?.file && formdata.append("image", logo[0].file);
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
@@ -115,6 +104,7 @@ export default function AddUser(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("companyId", selectedCompany);
       formdata.append("role", selectedRole);
+
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.ADD_COMPANY_USER,
@@ -123,6 +113,8 @@ export default function AddUser(props) {
         },
         body: formdata,
       });
+
+      setLoading(false);
       props.history.goBack();
     } catch (err) {
       setLoading(false);
@@ -132,7 +124,6 @@ export default function AddUser(props) {
         ),
       );
     }
-    // formdata.append("image", logo[0].file);
   };
 
   return (
@@ -142,7 +133,7 @@ export default function AddUser(props) {
       </IconButton>
       <Heading primary="ADD USER" />
       <div className={classes.content}>
-        <Form.Form onSubmit={handleSubmit}>
+        <Form.Form>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO* :" />
             <Form.Row width="48%">
@@ -152,6 +143,7 @@ export default function AddUser(props) {
                 style={{
                   ...GLOBALS.Styles.inputWidth,
                   marginRight: "10px",
+                  marginTop: "-17px",
                 }}
                 onSelect={(event) => {
                   users.forEach((item, index) => {
@@ -179,9 +171,8 @@ export default function AddUser(props) {
                     name="email"
                     value={email}
                     onChange={(e) => {
-                      //  console.log(e.target.value)
                       users.forEach((item, index) => {
-                        if (item.email != e.target.value) {
+                        if (item.email !== e.target.value) {
                           setEmail(e.target.value);
                           setFirstName("");
                           setLastName("");
@@ -190,7 +181,6 @@ export default function AddUser(props) {
                           setDisableUser(true);
                         }
                       });
-                      // setEmail(e.target.value);
                     }}
                   />
                 )}
@@ -212,36 +202,25 @@ export default function AddUser(props) {
             <Form.Row width="48%">
               <FormInput
                 name="firstName"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="FIRST NAME"
                 value={firstName}
                 disabled={disableUser}
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                }}
-                // error={formik.errors.firstName}
+                placeholder="FIRST NAME"
+                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
+                onChange={(e) => setFirstName(e.target.value)}
               />
               <FormInput
                 name="lastName"
-                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
-                placeholder="LAST NAME"
                 value={lastName}
-                onChange={(e) => {
-                  console.log(e);
-                  setLastName(e.target.value);
-                }}
-                // onChange={formik.handleChange}
-                // value={formik.values.lastName}
-                // error={formik.errors.name}
+                disabled={disableUser}
+                placeholder="LAST NAME"
+                style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
+                onChange={(e) => setLastName(e.target.value)}
               />
               <FormMultipleUpload
                 name="logo"
-                style={GLOBALS.Styles.inputWidth}
-                // error={formik.errors.logo}
                 values={logo}
-                onChange={(values) => {
-                  setLogo(values);
-                }}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(values) => setLogo(values)}
               />
             </Form.Row>
           </Form.Row>
@@ -254,7 +233,6 @@ export default function AddUser(props) {
                 value={selectedCompany}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
-
                   if (index !== -1) {
                     const item = event.target.value;
 
@@ -271,17 +249,13 @@ export default function AddUser(props) {
             <FormLabel bold primary="RÔLE : " />
             <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="RÔLE : "
                 name="color"
+                placeholder="RÔLE : "
                 style={GLOBALS.Styles.inputWidth}
-                // onChange={formik.handleChange}
-                // value={formik.values.color}
-                // error={formik.errors.color}
                 values={dropdownRoles}
                 value={selectedRole}
                 onChange={(event) => {
                   const index = event.target.selectedIndex - 1;
-
                   if (index !== -1) {
                     const item = event.target.value;
 
@@ -293,32 +267,34 @@ export default function AddUser(props) {
               />
             </Form.Row>
           </Form.Row>
-
           <Form.Row>
             <FormLabel bold primary="CONSTRUCTION SITE : " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="site"
-                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                placeholder="Site"
-                // onChange={formik.handleChange}
-                value={siteName}
-                // error={formik.errors.site}
                 disabled={true}
+                value={siteName}
+                placeholder="Site"
+                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
               />
             </Form.Row>
           </Form.Row>
-
           <Form.ButtonContainer>
             <Button
               minWidth={200}
               text="CONTINUER"
               fullWidth={false}
-              onClick={() => {
-                onSubmit();
-              }}
-              // loading={formik.isSubmitting}
-              // disabled={formik.isSubmitting}
+              onClick={onSubmit}
+              loading={loading}
+              disabled={
+                loading ||
+                !firstName ||
+                !lastName ||
+                !email ||
+                !phone ||
+                !selectedCompany ||
+                !selectedRole
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

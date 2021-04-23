@@ -144,10 +144,6 @@ export default function DeliveryRequest(props) {
 
   return (
     <div className={classes.root}>
-      <IconButton onClick={() => props.history.goBack()}>
-        <BackArrow style={{ width: 30, height: 30 }} />
-      </IconButton>
-      <Heading primary="Delivery Request" />
       <Stepper
         step={step}
         setStep={setStep}

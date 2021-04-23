@@ -17,7 +17,6 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import FormInput from "../../../components/FormInput";
-import { CollectionsBookmark } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,7 +66,7 @@ const Incidents = (props) => {
   const [allBuilding, setAllBuilding] = useState([]);
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [dropDownLevels, setDropDownLevels] = useState([]);
-  const [selectedStorageArea, setSelectedStorageArea] = useState([]);
+  // const [selectedStorageArea, setSelectedStorageArea] = useState([]);
   const [dropDownStorageArea, setDropDownStorageArea] = useState([]);
   const [selectedStorageAreaValue, setSelectedStorageAreaValue] = useState("");
   const [selectedDeliveryArea, setSelectedDeliveryArea] = useState("");
@@ -289,7 +288,6 @@ const Incidents = (props) => {
   function fetchStorageAreaOfSelectedLevels(levelId) {
     const storagedata = selectedLevels.filter((x) => x._id === levelId)[0]
       .storage;
-    setSelectedStorageArea(storagedata);
     let temp = [];
     temp.push({
       label: storagedata.name,

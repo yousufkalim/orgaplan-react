@@ -61,7 +61,7 @@ export default function Input(props) {
       >
         {props.placeholder && <option value="">{props.placeholder}</option>}
         {props.values.map((item, index) => (
-          <option key={item.value + index} value={item.value}>
+          <option key={Date.now() + index} value={item.value}>
             {item.label}
           </option>
         ))}
