@@ -381,8 +381,15 @@ const Calender = (props) => {
     }
     setSaveSelectedMean(DbElement);
   };
+  function inRange(x, min, max) {
+    return ((x-min)*(x-max) <= 0);
+  }
   const AddEvent = ({ start, end, slots }) => {
-    let flagDate = false, flagHours = false , pastdayFlag = false;
+    let flagDate = false; 
+    let flagHours = false;
+    let pastdayFlag = false;
+    let flagOpeningHours = false;
+    let flagOpeningHoursDay = false;
 
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
@@ -390,6 +397,10 @@ const Calender = (props) => {
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
+    let currentDay =  moment(start).day(); 
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
     if (start < preDateTime && start < end) {
       pastdayFlag = true;
     }
@@ -405,7 +416,24 @@ const Calender = (props) => {
       }
       return {};
     });
-    if (flagDate || flagHours || pastdayFlag) {
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHoursDay = true;
+      }
+    });
+    
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+         flagOpeningHours = true;
+      }else if (key.dayOff === false && currentDay === key.day){
+            if(inRange(start.getHours(), key.startHour, key.endHour) && inRange(end.getHours(), key.startHour, key.endHour)){
+              
+            }else{
+              flagOpeningHours = true;
+            }
+      }
+    })
+    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay) {
       setShow(false);
       if (flagDate) {
         dispatch(
@@ -413,7 +441,7 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Disable Day", "error"),
           ),
         );
-      } else if (flagHours) {
+      } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
@@ -758,14 +786,13 @@ const Calender = (props) => {
         }
       }
       return {};
-    })
-     
+    }) 
     setDisableHours(tempDisabledTime);
   };
   const slotPropGetter = (date) => {
-    let flagDateAndTime;
+    let flagDateAndTime; 
     let newStyle = {
-      backgroundColor: "#D3D3D3 ",
+      backgroundColor: "#EBEBE4",
     };
     disableHours.map((key, index) => {
       if (moment(date).isSame(key)) {

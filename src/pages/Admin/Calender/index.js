@@ -1021,7 +1021,7 @@ const Calender = (props) => {
   };
   function inRange(x, min, max) {
     return ((x-min)*(x-max) <= 0);
-}
+  }
   const slotPropGetter = (date) => {
     let flagDateAndTime = false;
     let flagOpeningHours = false;
