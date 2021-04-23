@@ -43,19 +43,37 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
-const Calender = (props) => {
-  // useSelecter ,useDispatchstates
+const Calender = (props) => { 
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
   const store = useSelector((state) => state.auth);
-  const adminStore = useSelector((state) => state.admin);
-  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const adminStore = useSelector((state) => state.admin); 
+  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours);
+  const [dorpdownMeans, setDropdownMeans] = useState([]); 
+  const [propsSite , setPropsSite] = useState(adminStore.site.siteId); 
+  const [propsMean , setPropsMean] = useState(
+    props.history.location.mean ?
+    props.history.location.mean :
+    props.location.selectedShape.mean
+
+     );
   const [selectedMeanId, setSelectedMeanId] = useState(
-    props.history.location.mean._id,
+    props.location.mean?
+    props.location.mean._id :
+    props.location.selectedShape.mean._id
   );
-  const [meanAvailabilityStart , setMeanAvailabilityStart] = useState(props.history.location.mean.availability.start);
-  const [meanAvailabilityEnd , setMeanAvailabilityEnd] = useState(props.history.location.mean.availability.end);
+  const [meanAvailabilityStart , setMeanAvailabilityStart] = useState(
+    props.history.location.mean ? 
+    props.history.location.mean.availability.start:
+    props.history.location.selectedShape.mean.availability.start
+  );
+  const [meanAvailabilityEnd , setMeanAvailabilityEnd] = useState(
+    props.history.location.mean?
+    props.history.location.mean.availability.end :
+    props.history.location.selectedShape.mean.availability.end
+
+  );
   const [saveSelectedMean, setSaveSelectedMean] = useState({});
   // *****
   const [alertBoxTime, setAlertBoxTime] = useState(false);
@@ -89,7 +107,8 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [disableHours, setDisableHours] = useState([]);
+  const [disableHoursMean, setdisableHoursMean] = useState([]); 
+  const [disableHoursSiteUnavailabilityDates, setDisableHoursSiteUnavailabilityDates] = useState(adminStore.site.siteId.unavailabilityDates); 
   const [disableDay, setDisableDay] = useState([]);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
 
@@ -112,7 +131,9 @@ const Calender = (props) => {
     functionDisableDay();
     // dispatch(get_means());
   }, []);
-  useEffect(() => {
+ 
+   useEffect(() => {
+   
     getData();
   }, []);
 
@@ -306,7 +327,7 @@ const Calender = (props) => {
           };
           // setEvents([...events, stateElement]);
           let flagHours = false;
-          disableHours.map((key, index) => {
+          disableHoursMean.map((key, index) => {
             if (
               moment(startTime).isSame(key) ||
               moment(endTime).isSame(key) ||
@@ -362,15 +383,30 @@ const Calender = (props) => {
     }
     setSaveSelectedMean(DbElement);
   };
+  function inRange(x, min, max) {
+    return ((x-min)*(x-max) <= 0);
+  }
   const AddEvent = ({ start, end, slots }) => {
-    let flagDate = false, flagHours = false;
+    let flagDate = false; 
+    let flagHours = false;
+    let pastdayFlag = false;
+    let flagOpeningHours = false;
+    let flagOpeningHoursDay = false;
+
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
-    disableHours.map((key, index) => {
+    let currentDay =  moment(start).day(); 
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
+    if (start < preDateTime && start < end) {
+      pastdayFlag = true;
+    }
+    disableHoursMean.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         flagHours = true;
       }
@@ -382,7 +418,24 @@ const Calender = (props) => {
       }
       return {};
     });
-    if (flagDate || flagHours) {
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+        flagOpeningHoursDay = true;
+      }
+    });
+    
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+         flagOpeningHours = true;
+      }else if (key.dayOff === false && currentDay === key.day){
+            if(inRange(start.getHours(), key.startHour, key.endHour) && inRange(end.getHours(), key.startHour, key.endHour)){
+              
+            }else{
+              flagOpeningHours = true;
+            }
+      }
+    })
+    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay) {
       setShow(false);
       if (flagDate) {
         dispatch(
@@ -390,10 +443,16 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Disable Day", "error"),
           ),
         );
-      } else if (flagHours) {
+      } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
+          ),
+        );
+      }else if (pastdayFlag){
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar("Booking can't be allowed in past day ", "error"),
           ),
         );
       }
@@ -570,7 +629,7 @@ const Calender = (props) => {
   }
   const functionDisableDay = () => {
     let tempDisableDay = [];
-    props.history.location.mean.unavailability.map((key, index) => {
+    propsMean.unavailability.map((key, index) => {
       if (key.dayOff === true) {
         for (let i = 0; i <= 23; i++) {
           let date = new Date(key.date);
@@ -582,26 +641,45 @@ const Calender = (props) => {
     });
     setDisableDay(tempDisableDay);
   }; 
-  const customDayPropGetter = (date) => {
-    // let flagDate;
+  const customDayPropGetter = (date) => { 
+    let unavailability = false;
+    let flagOpeningHoursDay = false;
+    let betweenDate = false;
+    let currentDay =  moment(date).day(); 
+    if(currentDay === 0){ // disorder of days of Opening Hours component
+      currentDay=7;
+    } 
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        if (moment(date).isSame(key.date, "day")) {
+          unavailability = true;
+        }
+      }
+      return {};
+    });
+    openingHours.map((key, index)=>{
+      if (key.dayOff === true && currentDay === key.day){
+            flagOpeningHoursDay = true;
+      }
+    }); 
    if (!moment(date).isBetween(moment(meanAvailabilityStart), moment(meanAvailabilityEnd).add(1, 'day'),null, '[]','day')){
-    return {
-      className: "special-day",
-      style: {
-        backgroundColor: "#EBEBE4",
-      },
-    };
+          betweenDate = true;
    }
 
-    // if (flagDate) {
-      
-    // }
+     if (unavailability || flagOpeningHoursDay  || betweenDate) {
+      return {
+        className: "special-day",
+        style: {
+          backgroundColor: "#EBEBE4",
+        },
+      };
+      }
   };
 
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${props.location.mean._id}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${propsMean._id}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
 
@@ -699,34 +777,57 @@ const Calender = (props) => {
       );
     }
   };
+  console.log(propsSite);
   const unavailabilityDates = () => {
-    let tempDisabledTime = [];
-
-    props.history.location.mean.unavailability.map((key, index) => {
+    let tempDisabledTimeMean = []; 
+    propsMean.unavailability.map((key, index) => {
       if (key.dayOff === false) {
         for (let i = key.startHour; i <= key.endHour; i++) {
           let date = new Date(key.date);
           date.setHours(i);
-          tempDisabledTime.push(date);
+          tempDisabledTimeMean.push(date);
+        }
+      }
+      return {};
+    })  
+    setdisableHoursMean(tempDisabledTimeMean);
+
+    let tempDisabledTimeSite  = []; 
+    propsSite.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === false) {
+        for (let i = key.startHour; i <= key.endHour; i++) {
+          let date = new Date(key.date);
+          date.setHours(i);
+          tempDisabledTimeSite.push(date);
         }
       }
       return {};
     });
-    setDisableHours(tempDisabledTime);
+    setDisableHoursSiteUnavailabilityDates(tempDisabledTimeSite);
   };
+ 
   const slotPropGetter = (date) => {
-    let flagDateAndTime;
+    let flagDateAndTime = false; 
+    let disableHoursSiteUnavailabilityDatesFlag = false;
     let newStyle = {
-      backgroundColor: "#D3D3D3 ",
+      backgroundColor: "#EBEBE4",
     };
-    disableHours.map((key, index) => {
+    disableHoursMean.map((key, index) => {
       if (moment(date).isSame(key)) {
-        flagDateAndTime = date;
+        flagDateAndTime = true;
+
       }
       return {};
     });
+    
+    disableHoursSiteUnavailabilityDates.map((key, index) => {
+      if (moment(date).isSame(key)) {
+        disableHoursSiteUnavailabilityDatesFlag = true;
 
-    if (flagDateAndTime) {
+      }
+      return {};
+    });
+    if (flagDateAndTime || disableHoursSiteUnavailabilityDatesFlag) {
       return {
         className: "rbc-day-slot rbc-time-slot ",
         style: newStyle,

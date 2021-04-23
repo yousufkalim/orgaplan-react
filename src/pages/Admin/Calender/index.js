@@ -115,7 +115,7 @@ const Calender = (props) => {
     { value: "ALERT", label: "ALERT" },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
-  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours)
+  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = React.useState("Enable");  
   const [addDelivery , setAddDelivery] = useState(false); 
   const [disableHours, setDisableHours] = useState([]); 
@@ -1021,7 +1021,7 @@ const Calender = (props) => {
   };
   function inRange(x, min, max) {
     return ((x-min)*(x-max) <= 0);
-}
+  }
   const slotPropGetter = (date) => {
     let flagDateAndTime = false;
     let flagOpeningHours = false;
@@ -1420,10 +1420,8 @@ const Calender = (props) => {
 
           onEditDelivery = {() => {setpopoverShow(false);setAddDelivery(true)}}
 
-        />
-
-        
-          <div style={{ flexBasis: "100%" }}>
+        />  
+        <div style={{ flexBasis: "100%" }}>
           
           <div className="px-2">
           <Form.Row alignItems="center">

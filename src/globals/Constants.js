@@ -127,6 +127,9 @@ const endpoints = {
   FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
   GET_COMPANY_AUTOFILL: BASE_URL_V1 + "company-sites/autofill",
   GET_GENERAL_CONTRACTOR: BASE_URL_V1 + "company-sites/general-contractor",
+  GET_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request",
+  ACCEPT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/accept",
+  REJECT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/reject",
 
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",
