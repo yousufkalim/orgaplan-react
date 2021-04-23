@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Companies(props) {
+  const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -42,6 +44,7 @@ export default function Companies(props) {
   const [nameOfCompany, setNameOfCompany] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [storageAreaRequest, setStorageAreaRequest] = useState([]);
 
   useEffect(() => {
     getData();
@@ -114,9 +117,98 @@ export default function Companies(props) {
       );
     }
   };
-  const handleClickOpen = () => {
+  const handleClickOpen = async () => {
+    await fetchAccessToZone();
     setOpen(true);
   };
+  const fetchAccessToZone = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_STORAGE_AREA}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      setStorageAreaRequest(response.data);
+      // setCompanies(response.data.companies);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const onAccept = async (id) => {
+    try {
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ACCEPT_SITE_STORAGE_AREA}}/${id}`,
+        token: store.token,
+        method: "POST",
+      });
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            GLOBALS.I18n.t("emailSentSuccess"),
+            "success",
+          ),
+        ),
+      );
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  const onReject = async (id) => {
+    try {
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.REJECT_SITE_STORAGE_AREA}/${id}`,
+        token: store.token,
+        method: "POST",
+      });
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            GLOBALS.I18n.t("emailSentSuccess"),
+            "success",
+          ),
+        ),
+      );
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
+  const requestRows = storageAreaRequest.map((item) => {
+    return [
+      item.companyId.name,
+      item.requestDate ? moment(item.requestDate).format("DD/MM/yyyy") : " ",
+      item.storageAreaId.name,
+      // <div>
+      //   <Button
+      //     onClick={() => onAccept(item._id)}
+      //     type="submit"
+      //     text="ACCEPT"
+      //     fullWidth={false}
+      //   />{" "}
+      //   <Button
+      //     type="submit"
+      //     color={theme.palette.error.main}
+      //     text="REJECT"
+      //     fullWidth={false}
+      //     onClick={() => onReject(item._id)}
+      //   />
+      // </div>,
+    ];
+  });
 
   const rows = companies.map((item) => {
     return [
@@ -285,60 +377,16 @@ export default function Companies(props) {
       </div>
 
       <Modal
-        // title={fullName}
+        title="Access to storage area"
         open={open}
         onClose={() => setOpen(false)}
         body={
           <div className={classes.content}>
-            <Table headers={GLOBALS.Data.companies.headings} rows={rows} />
+            <Table
+              headers={GLOBALS.Data.accessToStorageArea.headings}
+              rows={requestRows}
+            />
           </div>
-          //   <Form.Form>
-          //     <Form.Row justifyContent="center">
-          //       <FormInput
-          //         name="email"
-          //         // value={email}
-          //         // error={firstName}
-          //         disabled
-          //         placeholder="Email"
-          //         style={GLOBALS.Styles.inputWidth}
-          //       />
-          //     </Form.Row>
-          //     <Form.Row justifyContent="center">
-          //       <FormInput
-          //         name="phone"
-          //         // value={phone}
-          //         // onChange={(e) => {
-          //         //   setPhone(e.target.value);
-          //         // }}
-          //         placeholder="Phone"
-          //         style={GLOBALS.Styles.inputWidth}
-          //       />
-          //     </Form.Row>
-
-          //     <Form.Row justifyContent="center">
-          //       <FormInput
-          //         name="company"
-          //         // value={siteName}
-          //         disabled
-          //         // error={lastName}
-          //         placeholder="Company"
-          //         style={GLOBALS.Styles.inputWidth}
-          //       />
-          //     </Form.Row>
-
-          //     <Form.Row justifyContent="center">
-          //       <Form.Row noMargin width="80%"></Form.Row>
-          //     </Form.Row>
-
-          //     <Form.ButtonContainer>
-          //       <Button
-          //         type="submit"
-          //         minWidth={200}
-          //         text="VALIDATE"
-          //         fullWidth={false}
-          //       />
-          //     </Form.ButtonContainer>
-          //   </Form.Form>
         }
       />
     </>

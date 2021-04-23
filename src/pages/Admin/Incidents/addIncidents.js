@@ -49,7 +49,7 @@ export default function AddIncidents(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isBillable, setIsBillable] = useState(true);
-  const [isPaid, setIsPaid] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
 
   const [price, setPrice] = useState("0");
   const [priceDisable, setPriceDisable] = useState("true");
@@ -96,7 +96,6 @@ export default function AddIncidents(props) {
     }
   };
   const nameChange = (e) => {
-    console.log("called");
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
@@ -182,6 +181,8 @@ export default function AddIncidents(props) {
     e.preventDefault();
 
     var formdata = new FormData();
+    if (image[0]?.file) formdata.append("photos", image[0].file);
+
     formdata.append("name", name);
     formdata.append("date", date);
     formdata.append("time", time);
@@ -237,6 +238,7 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 values={dropdownCompanies}
                 placeholder="Nom de I'enterprise"
+                value={companyId}
                 style={GLOBALS.Styles.inputWidth}
               />
               <SmallText

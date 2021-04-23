@@ -106,7 +106,7 @@ const endpoints = {
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
 
   CREATE_COMPANY: BASE_URL_V1 + "company",
-  GET_COMPANY_USERS: BASE_URL_V1 + "company/company_user",
+  GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
 
   UPDATE_USER: BASE_URL_V1 + "users/update",
   GET_ALL_USERS: BASE_URL_V1 + "users",
@@ -123,10 +123,13 @@ const endpoints = {
   DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
 
   GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
+  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/site",
   FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
-  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/add_company",
   GET_COMPANY_AUTOFILL: BASE_URL_V1 + "company-sites/autofill",
   GET_GENERAL_CONTRACTOR: BASE_URL_V1 + "company-sites/general-contractor",
+  GET_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request",
+  ACCEPT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/accept",
+  REJECT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/reject",
 
   GET_ALL_SITE_INCIDENT: BASE_URL_V1 + "incidents",
   FILTER_INCIDENT: BASE_URL_V1 + "incidents/filter",

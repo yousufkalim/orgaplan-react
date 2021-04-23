@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "./Companies.css";
-import { useFormik } from "formik";
-import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector, useDispatch } from "react-redux";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
-import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -14,12 +12,12 @@ import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
+import SmallText from "../../../components/SmallText";
 import FormSelect from "../../../components/FormSelect";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
+import FormMultiSelect from "../../../components/FormMultiSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-import CustomInputModal from "../../../components/CustomInputModalSingleSelect";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,69 +31,62 @@ const useStyles = makeStyles((theme) => ({
   error: {
     color: "red",
   },
-  radioLabel: {
-    marginLeft: "7px",
-    color: "#7E7878",
-    marginRight: "50px",
+  autoComplete: {
+    "& .MuiFormControl-marginNormal": {
+      marginTop: "0 !important",
+      marginBottom: "0 !important",
+    },
+    "& .MuiOutlinedInput-root ": {
+      borderRadius: "0 !important",
+    },
+    '& .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"]': {
+      padding: "4px !important",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "1px solid #707070 !important",
+    },
+    "& .MuiFormLabel-root": {
+      marginTop: -5,
+    },
   },
-  radioBtn: {},
 }));
 
-const addClientYup = Yup.object().shape({
-  images: Yup.array().min(1, "Required").required("Required"),
-  name: Yup.string().required("Required"),
-  color: Yup.string().required("Required"),
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().required("Required"),
-  phone: Yup.number()
-    .test(
-      "len",
-      "Must be exactly 10 characters",
-      (val) => val && val.toString().length === 10,
-    )
-    .required("Required"),
-  contractType: Yup.string().required("Required"),
-  contractStartDate: Yup.string().required("Required"),
-  contractEndDate: Yup.string().required("Required"),
-  functionality: Yup.string().required("Required"),
-  additionalInfo: Yup.string(),
-  notificationPriorToDays: Yup.number(),
-  notificationTo: Yup.array(),
-});
-
 export default function AddCompanies(props) {
-  const dispatch = useDispatch();
-
   const classes = useStyles();
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [color, setColor] = useState("#d71313");
-  const [companyType, setCompanyType] = useState("generalcontractor");
-  const [companyTypeError, setCompanyTypeError] = useState("");
-  const [contract, setContract] = useState("");
-  const [contractError, setContractError] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [phone, setPhone] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [website, setWebsite] = useState("");
-  const [websiteError, setWebsiteError] = useState("");
-  const [addInfo, setAddInfo] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [companies, setCompanies] = useState([]);
-  const [dropdownCompanies, setDropdownCompanies] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState("");
-  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState(null);
 
-  const [dropdownTrades, setDropdownTrades] = useState([]);
-  const [selectedTrade, setSelectedTrade] = useState("");
-  const [listOfTrades, setListOfTrades] = useState([]);
-  const [fieldsEnabled, setFieldsEnabled] = useState(true);
+  const [name, setName] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [color, setColor] = useState("#d71313");
+  const [image, setImage] = useState([]);
+  const [companyType, setCompanyType] = useState("generalcontractor");
+  const [contractor, setContractor] = useState("");
+  const [generalContractorId, setGeneralContractorId] = useState("");
+  const [generatlContractorName, setGeneralContractorName] = useState("");
+  const [trades, setTrades] = useState([]);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [website, setWebsite] = useState("");
+  const [addInfo, setAddInfo] = useState("");
+
+  const [nameError, setNameError] = useState("");
+  const [companyTypeError, setCompanyTypeError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
+  const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Dropdowns
+  const [allTrades, setAllTrades] = useState([]);
+  const [allCompanies, setAllCompanies] = useState([]);
+
+  // All Data
+  const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
     getData();
@@ -104,45 +95,29 @@ export default function AddCompanies(props) {
 
   useEffect(() => {
     getCompanyAutoFill();
+    // }, [companyId]);
     // eslint-disable-next-line
-  }, [companyId]);
+  }, []);
 
-  const getData = async () => {
+  async function getData() {
     try {
-      //formik.setFieldValue("site", adminStore.site.siteId.name);
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ADD_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        setCompanies(response.data.site_companies);
-        if (response.data.site_companies !== null) {
-          const companyTemp = [];
-
-          response.data.site_companies.map((item, index) => {
-            return companyTemp.push({
-              label: item.companyId.name,
-              value: item.companyId.name,
-            });
-          });
-          setDropdownCompanies(companyTemp);
-        }
-
-        if (response.data.site_trades !== null) {
-          const tradesTemp = [];
-
-          response.data.site_trades.map((item, index) => {
-            return tradesTemp.push({
-              label: item,
-              value: item,
-            });
-          });
-          setDropdownTrades(tradesTemp);
-        }
-      } else {
-      }
-
-      //   setItems(response.data.items);
+      setCompanies(response.data);
+      setAllCompanies(
+        response.data.map((item) => ({
+          label: item.companyId.name,
+          value: item.companyId._id,
+        })),
+      );
+      setAllTrades(
+        adminStore.site.siteId.trades.map((trade) => ({
+          label: trade,
+          value: trade,
+        })),
+      );
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -150,50 +125,46 @@ export default function AddCompanies(props) {
         ),
       );
     }
-  };
+  }
 
-  const getCompanyAutoFill = async () => {
-    if (companyId.length === 0) return;
+  async function getCompanyAutoFill() {
+    if (name) return;
     try {
       //formik.setFieldValue("site", adminStore.site.siteId.name);
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_COMPANY_AUTOFILL}/${adminStore.site.siteId._id}/${companyId}`,
-        token: store.token,
-      });
-      if (response.success) {
-        if (response.data.site_companies.length !== 0) {
-          const company = response.data.site_companies[0].companyId;
-          const trades = response.data.site_companies[0].trades;
-          if (company.incharge !== undefined) {
-            const incharge = company.incharge;
-            setFname(incharge.firstName);
-            setLname(incharge.lastName);
-            setEmail(incharge.email);
-            setPhone(incharge.phone);
-          } else {
-            setFname("");
-            setLname("");
-            setEmail("");
-            setPhone("");
-          }
-          if (company.color !== undefined) setColor(company.color);
-          if (company.website !== undefined) setWebsite(company.website);
-          else setWebsite("");
-          if (company.description !== undefined)
-            setAddInfo(company.description);
-          else setAddInfo("");
-          if (trades !== undefined) {
-            const tradesTemp = [];
-            trades.forEach((item, index) => {
-              tradesTemp.push({ key: item, label: item });
-            });
-            setListOfTrades(tradesTemp);
-          }
-        }
-        await getGeneralContractor();
-      } else {
-      }
-
+      // const response = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.GET_COMPANY_AUTOFILL}/${adminStore.site.siteId._id}/${name}`,
+      //   token: store.token,
+      // });
+      // if (response.data.site_companies.length !== 0) {
+      //   const company = response.data.site_companies[0].companyId;
+      //   const trades = response.data.site_companies[0].trades;
+      //   if (company.incharge !== undefined) {
+      //     const incharge = company.incharge;
+      //     setFirstName(incharge.firstName);
+      //     setLastName(incharge.lastName);
+      //     setEmail(incharge.email);
+      //     setPhone(incharge.phone);
+      //   } else {
+      //     setFirstName("");
+      //     setLastName("");
+      //     setEmail("");
+      //     setPhone("");
+      //   }
+      //   if (company.color !== undefined) setColor(company.color);
+      //   if (company.website !== undefined) setWebsite(company.website);
+      //   else setWebsite("");
+      //   if (company.description !== undefined)
+      //     setAddInfo(company.description);
+      //   else setAddInfo("");
+      //   if (trades !== undefined) {
+      //     const tradesTemp = [];
+      //     trades.forEach((item, index) => {
+      //       tradesTemp.push({ key: item, label: item });
+      //     });
+      //     setListOfTrades(tradesTemp);
+      //   }
+      // }
+      // await getGeneralContractor();
       //   setItems(response.data.items);
     } catch (err) {
       dispatch(
@@ -202,313 +173,190 @@ export default function AddCompanies(props) {
         ),
       );
     }
-  };
+  }
 
-  const getGeneralContractor = async () => {
+  async function onSubmit() {
     try {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_GENERAL_CONTRACTOR}/${adminStore.site.siteId._id}/${companyId}`,
-        token: store.token,
-      });
-      if (response.data.companies.length === 0) {
-        await setCompanyType("generalcontractor");
-
-        setSelectedCompany("");
-        setSelectedCompanyIndex(null);
+      if (emailError || phoneError || websiteError || !image[0]) {
+        alert("something went wrong");
       } else {
-        await setCompanyType("subcontractor");
-
-        const company = response.data.companies[0].companyId;
-        let companyIndex = null;
-        let companyValue = null;
-        companies.forEach((item, index) => {
-          if (item.companyId._id === company._id) {
-            companyIndex = index;
-            companyValue = item.companyId.name;
-          }
-        });
-        if (companyIndex !== null && companyValue !== null) {
-          setSelectedCompany(companyValue);
-          setSelectedCompanyIndex(companyIndex);
-        } else {
-          setSelectedCompany("");
-          setSelectedCompanyIndex(null);
-        }
-      }
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
-
-  const onSubmit = async () => {
-    if (emailError || phoneError || websiteError) {
-      alert("something went wrong");
-    } else {
-      const values = formik.values;
-      const isSubContractor = companyType === "subcontractor";
-      let parentCompanyId = undefined;
-      if (
-        companies.length !== 0 &&
-        isSubContractor &&
-        companies[selectedCompanyIndex].companyId !== undefined
-      )
-        parentCompanyId = companies[selectedCompanyIndex].companyId._id;
-
-      const trades = [];
-
-      listOfTrades.forEach((item) => {
-        trades.push(item.label);
-      });
-
-      var formdata = new FormData();
-      formdata.append("logo", values.images[0]?.file);
-      formdata.append("name", name);
-      formdata.append("color", color);
-      formdata.append("website", website);
-      formdata.append("description", addInfo);
-      formdata.append("trades", JSON.stringify(trades));
-      formdata.append("siteId", adminStore.site.siteId._id);
-
-      if (isSubContractor) {
-        if (parentCompanyId === undefined)
-          alert("You need to select a general contractor");
-        formdata.append("parentCompanyId", parentCompanyId);
-      }
-      if (
-        fname.length !== 0 &&
-        lname.length !== 0 &&
-        email.length !== 0 &&
-        phone.length !== 0
-      ) {
+        setLoading(true);
         const incharge = {
-          firstName: fname,
-          lastName: lname,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           phone: phone,
         };
+        var formdata = new FormData();
+        image[0].file && formdata.append("logo", image[0].file);
+        formdata.append("name", name);
+        formdata.append("color", color);
+        formdata.append("website", website);
+        formdata.append("description", addInfo);
+        formdata.append("trades", JSON.stringify(trades));
+        formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("incharge", JSON.stringify(incharge));
-      }
+        generalContractorId &&
+          formdata.append("parentCompanyId", generalContractorId);
+        companyId && formdata.append("companyId", companyId);
 
-      const response = await GLOBALS.API({
-        method: "POST",
-
-        uri: GLOBALS.Constants.CREATE_COMPANY,
-        headers: {
-          Authorization: store.token,
-        },
-        body: formdata,
-      });
-      if (response.success) {
+        const response = await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.CREATE_COMPANY,
+          headers: {
+            Authorization: store.token,
+          },
+          body: formdata,
+        });
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(response.message, "success"),
           ),
         );
+        setLoading(false);
+        props.history.goBack();
       }
-
-      formik.setSubmitting(false);
-      props.history.goBack();
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
-  };
+  }
 
-  const inputChange = (e) => {
-    if (e.target.name === "name") {
-      setName(e.target.value);
-      if (e.target.name === "" || name === null) {
+  function inputChange(name, value) {
+    console.log("name", name, value);
+    if (name === "name") {
+      setName(value);
+      if (name === "" || name === null) {
         setNameError(true);
       } else {
         setNameError(false);
       }
-    }
-    if (e.target.name === "color") {
-      setColor(e.target.value);
-      if (e.target.value === "" || e.target.value === null) {
+    } else if (name === "color") setColor(value);
+    else if (name === "companyType") {
+      setCompanyType(value);
+      if (!value) {
+        setCompanyTypeError(true);
       } else {
+        setCompanyTypeError(false);
       }
-    }
-
-    if (e.target.name === "contract") {
-      setContract(e.target.value);
-      if (
-        e.target.value === "" ||
-        e.target.value === null ||
-        e.target.value === undefined
-      ) {
-        setContractError(true);
-      } else {
-        setContractError(false);
+    } else if (name === "contractor") {
+      setContractor(value);
+      if (value) {
+        companies.map((com) => {
+          let subc = com.subContractors.find((sub) => sub._id === value);
+          if (subc) {
+            setGeneralContractorId(subc._id);
+            setGeneralContractorName(subc.name);
+          }
+          return true;
+        });
       }
-    }
-    if (e.target.name === "email") {
-      setEmail(e.target.value);
+    } else if (name === "email") {
+      setEmail(value);
       // eslint-disable-next-line
       var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!e.target.value.match(mailformat)) {
+      if (!value.match(mailformat)) {
         setEmailError(true);
       } else {
         setEmailError(false);
       }
-    }
-
-    if (e.target.name === "phone") {
-      setPhone(e.target.value);
-      if (e.target.value.charAt(0) !== "0") {
+    } else if (name === "phone") {
+      setPhone(value);
+      if (value.charAt(0) !== "0") {
         setPhoneError("Telephone shoud starts with 0");
-      } else if (
-        e.target.value.charAt(0) === "0" &&
-        e.target.value.length > 25
-      ) {
+      } else if (value.charAt(0) === "0" && value.length > 25) {
         setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
       }
-    }
-
-    if (e.target.name === "images") {
-    }
-    if (e.target.name === "trades") {
-    }
-
-    if (e.target.name === "addInfo") {
-      setAddInfo(e.target.value);
-    }
-    if (e.target.name === "website") {
-      setWebsite(e.target.value);
+    } else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "image") {
+      setImage(value);
+      setUpdate((st) => !st);
+    } else if (name === "trades") {
+      setTrades(value);
+    } else if (name === "addInfo") {
+      setAddInfo(value);
+    } else if (name === "website") {
+      setWebsite(value);
       const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-      if (!e.target.value.match(web)) {
+      if (!value.match(web)) {
         setWebsiteError("Invalid Url");
       } else {
         setWebsiteError("");
       }
     }
-  };
-
-  const submitHandler = (e) => {
-    // eslint-disable-next-line
-    var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    var phoneformat = /^(?:(?:(?:\+|00)33[ ]?(?:\(0\)[ ]?)?)|0){1}[1-9]{1}([ .-]?)(?:\d{2}\1?){3}\d{2}$/;
-    e.preventDefault();
-    if (name === "" || name === null) {
-      setNameError(true);
-    }
-    if (color === "" || color === null) {
-    }
-    if (
-      companyType === "" ||
-      companyType === null ||
-      companyType === undefined
-    ) {
-      setCompanyTypeError(true);
-    }
-    if (contract === "" || contract === null || contract === undefined) {
-      setContractError(true);
-    }
-    if (email !== "") {
-      if (!email.match(mailformat)) {
-        setEmailError(true);
-      } else {
-        setEmailError(false);
-      }
-    }
-    if (phone !== "") {
-      if (!phone.match(phoneformat)) {
-        setPhoneError(true);
-      } else {
-        setPhoneError(false);
-      }
-    } else {
-    }
-  };
-  const formik = useFormik({
-    initialValues: {
-      images: [],
-      name: "",
-      color: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      contractType: "CLIENTPERSITE",
-      contractStartDate: "",
-      contractEndDate: "",
-      functionality: "DELIVERY",
-      additionalInfo: "",
-      notificationPriorToDays: "",
-      notificationTo: [],
-    },
-    validationSchema: addClientYup,
-    //    onSubmit,
-    validateOnBlur: false,
-    validateOnChange: false,
-    validateOnMount: false,
-  });
-
-  const handleChangecolor = (color) => {
-    setColor(color.hex);
-  };
+  }
 
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
+      {update && ""}
       <Heading primary="ADD A COMPANY" />
       <div className={classes.content}>
-        <Form.Form onSubmit={submitHandler}>
+        <Form.Form>
           <Form.Row>
             <FormLabel bold primary="IDENTITY* :" />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <Autocomplete
-                  id="free-solo-demo"
                   freeSolo
-                  disabled={!fieldsEnabled}
-                  style={{
-                    width: "100%",
-                    marginRight: "10px",
-                  }}
-                  className="company-autocomplete"
-                  onSelect={(event) => {
-                    let companyId = "";
-                    let logo = null;
-                    companies.forEach((item, index) => {
-                      if (item.companyId.name === event.target.value) {
-                        companyId = item.companyId._id;
-                        logo = item.companyId.logo;
-                        setName(item.companyId.name);
+                  fullWidth
+                  // disabled={!fieldsEnabled}
+                  className={classes.autoComplete}
+                  onChange={(e, option) => {
+                    if (option) {
+                      let comp = companies.find(
+                        (com) => com.companyId._id === option.value,
+                      );
+                      if (comp) {
+                        setCompanyId(option.value);
+                        if (comp.companyId.incharge) {
+                          setEmailError("");
+                          setPhoneError("");
+                          setWebsiteError("");
+                          setEmail(comp.companyId.incharge.email);
+                          setPhone(comp.companyId.incharge.phone);
+                          setFirstName(comp.companyId.incharge.firstName);
+                          setLastName(comp.companyId.incharge.lastName);
+                        }
+                        comp.companyId.logo &&
+                          setImage([
+                            { key: image.length, uri: comp.companyId.logo },
+                          ]);
                       }
-                    });
-                    if (companyId.length !== 0) {
-                      setCompanyId(companyId);
-                      setFieldsEnabled(false);
-                      formik.setFieldValue("images", [{ uri: logo }]);
                     }
                   }}
-                  options={companies.map(
-                    (option) =>
-                      option.companyId.name !== undefined &&
-                      option.companyId.name,
-                  )}
+                  inputValue={name}
+                  onInputChange={(e, value) => {
+                    if (companyId) {
+                      setEmail("");
+                      setPhone("");
+                      setFirstName("");
+                      setLastName("");
+                      setImage([]);
+                    }
+                    inputChange("name", value);
+                    setCompanyId("");
+                  }}
+                  getOptionLabel={(option) => option.label}
+                  options={companies.map((option) => ({
+                    label: option.companyId.name,
+                    value: option.companyId._id,
+                  }))}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Name"
-                      margin="normal"
-                      variant="outlined"
                       name="name"
-                      style={{ width: "100%" }}
-                      disabled={!fieldsEnabled}
-                      onChange={(event) => {
-                        console.log(event);
-                        setName(event.target.value);
-                        formik.setFieldValue("email", event.target.value);
-                      }}
-                      value={formik.values.email}
-                      error={formik.errors.email}
+                      label="Name"
+                      variant="outlined"
                     />
                   )}
                 />
@@ -517,41 +365,32 @@ export default function AddCompanies(props) {
                 )}
               </Form.Column>
               <div style={GLOBALS.Styles.inputWidth}>
-                <ColorPicker color={color} handleChange={handleChangecolor} />
+                <ColorPicker
+                  color={color}
+                  handleChange={(color) => inputChange("color", color.hex)}
+                />
               </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="IMAGE* :" />
-            <Form.Row width="48%" noMargin>
-              <FormMultipleUpload
-                name="images"
-                enabled={!fieldsEnabled}
-                style={{ width: "60%" }}
-                values={formik.values.images}
-                onChange={(values) =>
-                  inputChange({
-                    target: {
-                      type: "text",
-                      name: "images",
-                      value: values,
-                    },
-                  })
-                }
-              />
-            </Form.Row>
+            <FormMultipleUpload
+              name="image"
+              values={image}
+              // enabled={companyId}
+              style={GLOBALS.Styles.inputWidth}
+              onChange={(values) => inputChange("image", values)}
+            />
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TYPE OF COMPANY* :" />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin>
                 <RadioButton
-                  name="contractType"
+                  name="companyType"
                   value={companyType}
-                  style={{ width: "70%" }}
-                  defaultValue={`generalcontractor`}
                   onChange={({ target: { name, value } }) =>
-                    setCompanyType(value)
+                    inputChange(name, value)
                   }
                   items={[
                     {
@@ -568,69 +407,53 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="GENERAL CONTRACTOR :" />
+            <FormLabel bold primary="GENERAL CONTRACTOR* :" />
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
+                  name="contractor"
+                  value={contractor}
+                  values={allCompanies}
                   placeholder="Company"
-                  value={selectedCompany}
-                  values={dropdownCompanies}
-                  disabled={companyType === "generalcontractor" ? true : false}
-                  onChange={(event) => {
-                    const index = event.target.selectedIndex - 1;
-                    if (index !== -1) {
-                      const item = event.target.value;
-                      setSelectedCompanyIndex(index);
-                      setSelectedCompany(item);
-                    } else {
-                      setSelectedCompanyIndex(null);
-                      setSelectedCompany("");
-                    }
+                  disabled={companyType === "generalcontractor"}
+                  onChange={({ target: { name, value } }) => {
+                    inputChange(name, value);
                   }}
                 />
-                {contractError === true && (
-                  <div className={classes.error}>Please select contract</div>
-                )}
               </Form.Column>
+              <SmallText
+                noMargin
+                style={{ marginLeft: 10 }}
+                primary={generatlContractorName}
+              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="TRADES :" />
             <Form.Row noMargin width="48%">
-              <CustomInputModal
+              <FormMultiSelect
                 name="trades"
-                values={dropdownTrades}
-                value={selectedTrade}
-                placeholder="Select Trades"
-                chipDefaultValues={listOfTrades}
-                chipValues={(values) => {
-                  const valuesTemp = [];
-                  values.forEach((item, index) => {
-                    valuesTemp.push(item);
-                  });
-                  setListOfTrades(valuesTemp);
-                }}
-                onChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-                    setSelectedTrade(item);
-                  } else {
-                    setSelectedTrade("");
-                  }
-                }}
+                value={trades}
+                values={allTrades}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  inputChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY OF RESPONSIBLE* :" />
+            <FormLabel bold primary="IDENTITY OF RESPONSIBLE :" />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="email"
                   value={email}
-                  onChange={inputChange}
+                  disabled={companyId}
                   placeholder="Adresse e-mail"
+                  onChange={({ target: { name, value } }) =>
+                    inputChange(name, value)
+                  }
                 />
                 {emailError === true && (
                   <div className={classes.error}>Please enter valid email</div>
@@ -639,11 +462,14 @@ export default function AddCompanies(props) {
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
                   name="phone"
-                  maxlength="25"
                   type="number"
                   value={phone}
-                  onChange={inputChange}
+                  maxLength="25"
+                  disabled={companyId}
                   placeholder="Téléphone"
+                  onChange={({ target: { name, value } }) =>
+                    inputChange(name, value)
+                  }
                 />
                 {phoneError && (
                   <div className={classes.error}>{phoneError}</div>
@@ -655,19 +481,25 @@ export default function AddCompanies(props) {
             <FormLabel />
             <Form.Row width="48%" noMargin>
               <FormInput
-                name="fname"
-                value={fname}
                 maxLength="30"
+                name="firstName"
+                value={firstName}
+                disabled={companyId}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={(e) => setFname(e.target.value)}
+                onChange={({ target: { name, value } }) =>
+                  inputChange(name, value)
+                }
               />
               <FormInput
-                name="lname"
-                value={lname}
+                name="lastName"
+                value={lastName}
+                disabled={companyId}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={(e) => setLname(e.target.value)}
+                onChange={({ target: { name, value } }) =>
+                  inputChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -679,7 +511,9 @@ export default function AddCompanies(props) {
                   name="website"
                   value={website}
                   placeholder="http://"
-                  onChange={inputChange}
+                  onChange={({ target: { name, value } }) =>
+                    inputChange(name, value)
+                  }
                 />
                 {websiteError && (
                   <div className={classes.error}>{websiteError}</div>
@@ -696,8 +530,10 @@ export default function AddCompanies(props) {
                 name="addInfo"
                 maxLength="300"
                 value={addInfo}
-                onChange={(e) => setAddInfo(e.target.value)}
                 placeholder="Informations complémentaires"
+                onChange={({ target: { name, value } }) =>
+                  inputChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -706,8 +542,15 @@ export default function AddCompanies(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
+              loading={loading}
               onClick={onSubmit}
-              disabled={!name || !color || !companyType}
+              disabled={
+                loading ||
+                !name ||
+                !color ||
+                image.length === 0 ||
+                (companyType !== "generalcontractor" && !contractor)
+              }
             />
           </Form.ButtonContainer>
         </Form.Form>

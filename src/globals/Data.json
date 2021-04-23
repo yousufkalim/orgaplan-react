@@ -854,5 +854,23 @@
         "name@email.com"
       ]
     ]
+  },
+    "accessToStorageArea": {
+    "headings": [
+      "Company",
+      "Regested Date",
+      "Stoeage Area",
+      "Action"
+    ],
+    "items": [
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "],
+      ["ContructBTP", "Thierry Marles", "y", " "]
+    ]
   }
 }
