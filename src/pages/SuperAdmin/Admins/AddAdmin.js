@@ -98,7 +98,6 @@ export default function AddAdmin(props) {
     else if (name === "image") {
       setUpdate((st) => !st);
       setImage(value);
-      console.log("updated image");
     } else if (name === "companyId") setCompanyId(value);
   };
 
@@ -186,7 +185,6 @@ export default function AddAdmin(props) {
               <FormInput
                 name="firstName"
                 value={firstName}
-                // error={firstName}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -196,7 +194,6 @@ export default function AddAdmin(props) {
               <FormInput
                 name="lastName"
                 value={lastName}
-                // error={lastName}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -209,7 +206,6 @@ export default function AddAdmin(props) {
             <FormLabel bold primary="PROFILE*: " />
             <FormMultipleUpload
               name="image"
-              // error={image}
               values={image}
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => handleChange("image", values)}

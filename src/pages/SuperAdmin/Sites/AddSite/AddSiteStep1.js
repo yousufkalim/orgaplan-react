@@ -174,8 +174,7 @@ export default function AddSiteStep1(props) {
               name="adminId"
               value={adminId}
               values={admins}
-              // error={adminId}
-              // placeholder="Admin"
+              placeholder="Admin"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -184,7 +183,7 @@ export default function AddSiteStep1(props) {
             <SmallText
               noMargin
               primary={clientName}
-              style={{ marginLeft: 10 }}
+              style={{ marginLeft: 20 }}
             />
           </Form.Row>
         </Form.Row>
