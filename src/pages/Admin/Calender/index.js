@@ -996,6 +996,7 @@ const Calender = (props) => {
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => { 
+          
             let colour= ""
             if (key.status === "VALIDATED") {
               colour = "green";
@@ -1025,7 +1026,7 @@ const Calender = (props) => {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
+          Actions.notistack.snackbar(err.message , "error"),
         ),
       );
     }
