@@ -131,6 +131,15 @@ export default function AddIncidents(props) {
     setStatus(incident?.status);
     setDescription(incident?.description);
     setIsPaid(incident.isPaid);
+    setImage([{ key: 0, file: undefined, uri: incident.photos[0] }]);
+    if (incident?.isBillable) {
+      setPriceDisable("true");
+    } else {
+      setPriceDisable("false");
+    }
+  };
+  const handleChange = (name, value) => {
+    if (name === "image") setImage(value);
   };
   const nameChange = (e) => {
     if (e.target.name === "name") setName(e.target.value);
@@ -201,6 +210,7 @@ export default function AddIncidents(props) {
       formdata.append("comment", comment);
       formdata.append("companyId", companyId);
       formdata.append("isPaid", isPaid);
+      if (image[0]?.file) formdata.append("photos", image[0].file);
 
       formdata.append("siteId", adminStore.site.siteId._id);
       await GLOBALS.API({
@@ -347,7 +357,9 @@ export default function AddIncidents(props) {
                 name="profile"
                 values={image}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
+                onChange={(values) => {
+                  handleChange("image", values);
+                }}
               />
             </Form.Row>
           </Form.Row>
