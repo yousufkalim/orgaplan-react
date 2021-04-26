@@ -118,7 +118,7 @@ export default function Input(props) {
           minLength={props.minLength}
           className={classes.textArea}
           placeholder={props.placeholder}
-          style={props.disabled && { cursor: "not-allowed" }}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       ) : props.type === "date" ? (
         <DatePicker
@@ -164,7 +164,7 @@ export default function Input(props) {
           disabled={props.disabled}
           maxLength={props.maxLength}
           placeholder={props.placeholder}
-          style={props.disabled && { cursor: "not-allowed" }}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       )}
       {props.error !== "" && (

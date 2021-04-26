@@ -3,6 +3,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Input from "@material-ui/core/Input";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -81,6 +83,7 @@ export default function MultipleSelect(props) {
         disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
+        displayEmpty={props.placeholder}
       >
         {props.values.map((item) => (
           <MenuItem
@@ -89,6 +92,7 @@ export default function MultipleSelect(props) {
             style={getStyles(item.label, props.value, theme)}
           >
             {item.label}
+            {/* <ListItemText primary={item.label} /> */}
           </MenuItem>
         ))}
       </Select>
