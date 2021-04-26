@@ -105,11 +105,13 @@ const endpoints = {
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
 
-  CREATE_COMPANY: BASE_URL_V1 + "company",
+  ADMIN_COMPANY: BASE_URL_V1 + "company",
+  ADMIN_SITE_COMPANY: BASE_URL_V1 + "company/site",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
+  ADMIN_COMPANY_EXCLUDE_SITE: BASE_URL_V1 + "company/site-exclude",
 
-  UPDATE_USER: BASE_URL_V1 + "users/update",
   GET_ALL_USERS: BASE_URL_V1 + "users",
+  UPDATE_USER: BASE_URL_V1 + "users/update",
   FILTER_USER: BASE_URL_V1 + "users/filter",
   GET_ADD_USER: BASE_URL_V1 + "users/add_user",
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",

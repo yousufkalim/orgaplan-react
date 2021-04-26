@@ -12,7 +12,6 @@ import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
-import SmallText from "../../../components/SmallText";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
@@ -62,9 +61,7 @@ export default function AddCompanies(props) {
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
   const [companyType, setCompanyType] = useState("generalcontractor");
-  const [contractor, setContractor] = useState("");
-  const [generalContractorId, setGeneralContractorId] = useState("");
-  const [generatlContractorName, setGeneralContractorName] = useState("");
+  const [parentCompanyId, setParentCompanyId] = useState("");
   const [trades, setTrades] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -83,31 +80,37 @@ export default function AddCompanies(props) {
 
   // Dropdowns
   const [allTrades, setAllTrades] = useState([]);
-  const [allCompanies, setAllCompanies] = useState([]);
 
   // All Data
-  const [companies, setCompanies] = useState([]);
+  const [allSiteCompanies, setAllSiteCompanies] = useState([]);
+
+  const [nonSiteCompanies, setNonSiteCompanies] = useState([]);
+  const [allNonSiteCompanies, setAllNonSiteCompanies] = useState([]);
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    getCompanyAutoFill();
-    // }, [companyId]);
-    // eslint-disable-next-line
-  }, []);
-
   async function getData() {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_COMPANY}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.ADMIN_COMPANY_EXCLUDE_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      setCompanies(response.data);
-      setAllCompanies(
+      const siteCo = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+      setNonSiteCompanies(response.data);
+      setAllNonSiteCompanies(
         response.data.map((item) => ({
+          label: item.name,
+          value: item._id,
+        })),
+      );
+      setAllSiteCompanies(
+        siteCo.data.map((item) => ({
           label: item.companyId.name,
           value: item.companyId._id,
         })),
@@ -118,54 +121,6 @@ export default function AddCompanies(props) {
           value: trade,
         })),
       );
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  }
-
-  async function getCompanyAutoFill() {
-    if (name) return;
-    try {
-      //formik.setFieldValue("site", adminStore.site.siteId.name);
-      // const response = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.GET_COMPANY_AUTOFILL}/${adminStore.site.siteId._id}/${name}`,
-      //   token: store.token,
-      // });
-      // if (response.data.site_companies.length !== 0) {
-      //   const company = response.data.site_companies[0].companyId;
-      //   const trades = response.data.site_companies[0].trades;
-      //   if (company.incharge !== undefined) {
-      //     const incharge = company.incharge;
-      //     setFirstName(incharge.firstName);
-      //     setLastName(incharge.lastName);
-      //     setEmail(incharge.email);
-      //     setPhone(incharge.phone);
-      //   } else {
-      //     setFirstName("");
-      //     setLastName("");
-      //     setEmail("");
-      //     setPhone("");
-      //   }
-      //   if (company.color !== undefined) setColor(company.color);
-      //   if (company.website !== undefined) setWebsite(company.website);
-      //   else setWebsite("");
-      //   if (company.description !== undefined)
-      //     setAddInfo(company.description);
-      //   else setAddInfo("");
-      //   if (trades !== undefined) {
-      //     const tradesTemp = [];
-      //     trades.forEach((item, index) => {
-      //       tradesTemp.push({ key: item, label: item });
-      //     });
-      //     setListOfTrades(tradesTemp);
-      //   }
-      // }
-      // await getGeneralContractor();
-      //   setItems(response.data.items);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -196,13 +151,12 @@ export default function AddCompanies(props) {
         formdata.append("trades", JSON.stringify(trades));
         formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("incharge", JSON.stringify(incharge));
-        generalContractorId &&
-          formdata.append("parentCompanyId", generalContractorId);
         companyId && formdata.append("companyId", companyId);
+        parentCompanyId && formdata.append("parentCompanyId", parentCompanyId);
 
         const response = await GLOBALS.API({
           method: "POST",
-          uri: GLOBALS.Constants.CREATE_COMPANY,
+          uri: GLOBALS.Constants.ADMIN_COMPANY,
           headers: {
             Authorization: store.token,
           },
@@ -227,7 +181,6 @@ export default function AddCompanies(props) {
   }
 
   function inputChange(name, value) {
-    console.log("name", name, value);
     if (name === "name") {
       setName(value);
       if (name === "" || name === null) {
@@ -243,18 +196,8 @@ export default function AddCompanies(props) {
       } else {
         setCompanyTypeError(false);
       }
-    } else if (name === "contractor") {
-      setContractor(value);
-      if (value) {
-        companies.map((com) => {
-          let subc = com.subContractors.find((sub) => sub._id === value);
-          if (subc) {
-            setGeneralContractorId(subc._id);
-            setGeneralContractorName(subc.name);
-          }
-          return true;
-        });
-      }
+    } else if (name === "parentCompanyId") {
+      setParentCompanyId(value);
     } else if (name === "email") {
       setEmail(value);
       // eslint-disable-next-line
@@ -309,32 +252,32 @@ export default function AddCompanies(props) {
                 <Autocomplete
                   freeSolo
                   fullWidth
+                  inputValue={name}
                   // disabled={!fieldsEnabled}
+                  options={allNonSiteCompanies}
                   className={classes.autoComplete}
+                  getOptionLabel={(option) => option.label}
                   onChange={(e, option) => {
                     if (option) {
-                      let comp = companies.find(
-                        (com) => com.companyId._id === option.value,
+                      let comp = nonSiteCompanies.find(
+                        (com) => com._id === option.value,
                       );
                       if (comp) {
                         setCompanyId(option.value);
-                        if (comp.companyId.incharge) {
+                        if (comp.incharge) {
                           setEmailError("");
                           setPhoneError("");
                           setWebsiteError("");
-                          setEmail(comp.companyId.incharge.email);
-                          setPhone(comp.companyId.incharge.phone);
-                          setFirstName(comp.companyId.incharge.firstName);
-                          setLastName(comp.companyId.incharge.lastName);
+                          setEmail(comp.incharge.email);
+                          setPhone(comp.incharge.phone);
+                          setFirstName(comp.incharge.firstName);
+                          setLastName(comp.incharge.lastName);
                         }
-                        comp.companyId.logo &&
-                          setImage([
-                            { key: image.length, uri: comp.companyId.logo },
-                          ]);
+                        comp.logo &&
+                          setImage([{ key: image.length, uri: comp.logo }]);
                       }
                     }
                   }}
-                  inputValue={name}
                   onInputChange={(e, value) => {
                     if (companyId) {
                       setEmail("");
@@ -346,11 +289,6 @@ export default function AddCompanies(props) {
                     inputChange("name", value);
                     setCompanyId("");
                   }}
-                  getOptionLabel={(option) => option.label}
-                  options={companies.map((option) => ({
-                    label: option.companyId.name,
-                    value: option.companyId._id,
-                  }))}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -411,21 +349,16 @@ export default function AddCompanies(props) {
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
-                  name="contractor"
-                  value={contractor}
-                  values={allCompanies}
                   placeholder="Company"
+                  name="parentCompanyId"
+                  value={parentCompanyId}
+                  values={allSiteCompanies}
                   disabled={companyType === "generalcontractor"}
                   onChange={({ target: { name, value } }) => {
                     inputChange(name, value);
                   }}
                 />
               </Form.Column>
-              <SmallText
-                noMargin
-                style={{ marginLeft: 10 }}
-                primary={generatlContractorName}
-              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -549,7 +482,7 @@ export default function AddCompanies(props) {
                 !name ||
                 !color ||
                 image.length === 0 ||
-                (companyType !== "generalcontractor" && !contractor)
+                (companyType !== "generalcontractor" && !parentCompanyId)
               }
             />
           </Form.ButtonContainer>

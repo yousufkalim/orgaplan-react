@@ -243,12 +243,7 @@ export default function Companies(props) {
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <NavLink
-            to={{
-              pathname: "/companies/edit-companies",
-              id: item.companyId._id,
-            }}
-          >
+          <NavLink to={`/companies/edit/${item.companyId._id}`}>
             <img
               src={Images.pencil}
               style={{ width: 18, height: 17 }}
@@ -323,8 +318,8 @@ export default function Companies(props) {
                 fullWidth={false}
                 component={NavLink}
                 text="ADD A COMPANY"
+                to={"/companies/add"}
                 style={{ marginLeft: "20px" }}
-                to={"/companies/add-companies"}
               />
             </Form.Row>
           </div>
