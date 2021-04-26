@@ -143,18 +143,18 @@ export default function Companies(props) {
   const onAccept = async (id) => {
     try {
       await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ACCEPT_SITE_STORAGE_AREA}}/${id}`,
+        uri: `${GLOBALS.Constants.ACCEPT_SITE_STORAGE_AREA}/${id}`,
         token: store.token,
-        method: "POST",
       });
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(
-            GLOBALS.I18n.t("emailSentSuccess"),
+            GLOBALS.I18n.t("storageAreaAccept"),
             "success",
           ),
         ),
       );
+      await fetchAccessToZone();
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -168,16 +168,17 @@ export default function Companies(props) {
       await GLOBALS.API({
         uri: `${GLOBALS.Constants.REJECT_SITE_STORAGE_AREA}/${id}`,
         token: store.token,
-        method: "POST",
       });
+
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(
-            GLOBALS.I18n.t("emailSentSuccess"),
+            GLOBALS.I18n.t("storageAreaRequestReject"),
             "success",
           ),
         ),
       );
+      await fetchAccessToZone();
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -192,21 +193,21 @@ export default function Companies(props) {
       item.companyId.name,
       item.requestDate ? moment(item.requestDate).format("DD/MM/yyyy") : " ",
       item.storageAreaId.name,
-      // <div>
-      //   <Button
-      //     onClick={() => onAccept(item._id)}
-      //     type="submit"
-      //     text="ACCEPT"
-      //     fullWidth={false}
-      //   />{" "}
-      //   <Button
-      //     type="submit"
-      //     color={theme.palette.error.main}
-      //     text="REJECT"
-      //     fullWidth={false}
-      //     onClick={() => onReject(item._id)}
-      //   />
-      // </div>,
+      <div>
+        <Button
+          onClick={() => onAccept(item._id)}
+          type="submit"
+          text="ACCEPT"
+          fullWidth={false}
+        />{" "}
+        <Button
+          type="submit"
+          color={theme.palette.error.main}
+          text="REJECT"
+          fullWidth={false}
+          onClick={() => onReject(item._id)}
+        />
+      </div>,
     ];
   });
 
