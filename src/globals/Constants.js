@@ -105,11 +105,14 @@ const endpoints = {
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
 
-  CREATE_COMPANY: BASE_URL_V1 + "company",
+  ADMIN_COMPANY: BASE_URL_V1 + "company",
+  ADMIN_SITE_COMPANY: BASE_URL_V1 + "company/site",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
+  ADMIN_SITE_COMPANY_FILTER: BASE_URL_V1 + "company/filter",
+  ADMIN_COMPANY_EXCLUDE_SITE: BASE_URL_V1 + "company/site-exclude",
 
-  UPDATE_USER: BASE_URL_V1 + "users/update",
   GET_ALL_USERS: BASE_URL_V1 + "users",
+  UPDATE_USER: BASE_URL_V1 + "users/update",
   FILTER_USER: BASE_URL_V1 + "users/filter",
   GET_ADD_USER: BASE_URL_V1 + "users/add_user",
   ADD_USER_ADMIN: BASE_URL_V1 + "users/admin/add_user",
@@ -122,11 +125,6 @@ const endpoints = {
   PUT_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/update",
   DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
 
-  GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
-  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/site",
-  FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
-  GET_COMPANY_AUTOFILL: BASE_URL_V1 + "company-sites/autofill",
-  GET_GENERAL_CONTRACTOR: BASE_URL_V1 + "company-sites/general-contractor",
   GET_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request",
   ACCEPT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/accept",
   REJECT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/reject",

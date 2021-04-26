@@ -49,7 +49,7 @@ export default function DeliveryRequest(props) {
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       const deliveryAreas = await GLOBALS.API({

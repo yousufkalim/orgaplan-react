@@ -42,11 +42,11 @@ export default function DeliveryRequestStep3(props) {
     let liftMea = props.means.filter((item) =>
       props.step1Data.liftingMeans.includes(item._id),
     );
-    setLiftingMeans(liftMea.map((item) => item.name));
+    liftMea && setLiftingMeans(liftMea.map((item) => item.name));
     let routMeans = props.means.filter((item) =>
       props.step2Data.routingMeans.includes(item._id),
     );
-    setRoutingMeans(routMeans.map((item) => item.name));
+    routMeans && setRoutingMeans(routMeans.map((item) => item.name));
     // eslint-disable-next-line
   }, [props]);
 

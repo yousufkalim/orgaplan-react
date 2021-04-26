@@ -35,11 +35,6 @@ export default function MultipleSelect(props) {
   const borderColor = props.error ? error : theme.palette.grey[100];
 
   const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
     root: {
       position: "relative",
       width: "100%",
@@ -67,12 +62,9 @@ export default function MultipleSelect(props) {
       [theme.breakpoints.down("sm")]: {
         width: 225,
       },
-    },
-    error: {
-      color: error,
-      fontWeight: 400,
-      position: "absolute",
-      fontSize: theme.typography.pxToRem(12),
+      "& .Mui-disabled": {
+        cursor: "not-allowed",
+      },
     },
   }));
   const classes = useStyles();
