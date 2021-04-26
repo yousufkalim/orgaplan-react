@@ -37,6 +37,8 @@ export default i18n.use(initReactI18next).init({
         passwordInvalid: "Password is invalid!",
         passwordNotMatched: "Password must match!",
         required: "Required",
+        storageAreaRequestAccept: "Request accept successfuly",
+        storageAreaRequestReject: "Request rejected",
       },
     },
   },
