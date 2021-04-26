@@ -314,7 +314,7 @@ const Calender = (props) => {
       /*check not in previous day End  */
       let startMean= moment(meanAvailabilityStart).set({hour:0});
       let endMean= moment(meanAvailabilityEnd).set({hour:0});
-      if (moment(startTime).isBetween(startMean ,  endMean ,null, '[]' ,'day')){
+      if (moment(startTime).isBetween(startMean ,  endMean.add(1, 'day') ,null, '[]' ,'day')){
         if (overlap === "Enable") {
           var DbElement = {
             startDate: startTime,
@@ -399,7 +399,7 @@ const Calender = (props) => {
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
-    let currentDay =  moment(start).day(); 
+    let currentDay =  moment(start).day();
     if(currentDay === 0){ // disorder of days of Opening Hours component
       currentDay=7;
     } 
