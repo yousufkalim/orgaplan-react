@@ -15,6 +15,7 @@ import TimePicker from "react-time-picker";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 import {
   add_mean,
@@ -312,9 +313,12 @@ const Calender = (props) => {
       milliseconds = milliseconds - 1 * 60 * 1000;
       preDateTime = new Date(milliseconds);
       /*check not in previous day End  */
+      // if (start < preDateTime && start < end) {
+      //   pastdayFlag = true;
+      // }
       let startMean= moment(meanAvailabilityStart).set({hour:0});
       let endMean= moment(meanAvailabilityEnd).set({hour:0});
-      if (moment(startTime).isBetween(startMean ,  endMean.add(1, 'day') ,null, '[]' ,'day')){
+      if (moment(startTime).isBetween(startMean ,  endMean.add(1, 'day') ,null, '[]' ,'day') && startTime > preDateTime && startTime < endTime){
         if (overlap === "Enable") {
           var DbElement = {
             startDate: startTime,
@@ -392,6 +396,7 @@ const Calender = (props) => {
     let pastdayFlag = false;
     let flagOpeningHours = false;
     let flagOpeningHoursDay = false;
+    let unavailabilitySite = false;
 
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
@@ -435,9 +440,17 @@ const Calender = (props) => {
             }
       }
     })
-    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay) {
+    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+      if (key.dayOff === true) {
+        if (moment(start).isSame(key.date, "day")) {
+          unavailabilitySite = true;
+        }
+      }
+      return {};
+    }); 
+    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay || unavailabilitySite) {
       setShow(false);
-      if (flagDate) {
+      if (flagDate || unavailabilitySite) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
@@ -775,8 +788,7 @@ const Calender = (props) => {
         ),
       );
     }
-  };
-  console.log(propsSite);
+  }; 
   const unavailabilityDates = () => {
     let tempDisabledTimeMean = []; 
     propsMean.unavailability.map((key, index) => {
@@ -1251,6 +1263,14 @@ const Calender = (props) => {
               }}
             />
           </div>
+          <div style={{ textAlign: "right",
+                          width: "46%"}}>
+           <FiberManualRecordIcon   style={{ color: "#265985" }} /><span style = {{ display: "inline-block",
+    paddingRight:"14px"}}> PENDING</span>
+         
+           <FiberManualRecordIcon   style={{ color: "green" }} /><span  style = {{ display: "inline-block",
+    paddingRight:"14px"}}>  VALIDATED</span>
+        </div>
         </div>
         <div className="d-flex px-2">
           <div style={{ flexBasis: "100%" }}>
