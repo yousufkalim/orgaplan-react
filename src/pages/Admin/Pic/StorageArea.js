@@ -61,7 +61,7 @@ export default function DeliveryArea(props) {
   async function fetchData() {
     try {
       const companies = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       const deliveryAreas = await GLOBALS.API({
@@ -72,8 +72,8 @@ export default function DeliveryArea(props) {
       const companiesTempArray = [];
       companies.data.companies.map((item) =>
         companiesTempArray.push({
-          value: item.companyId._id,
-          label: item.companyId.name,
+          value: item._id,
+          label: item.name,
         }),
       );
 

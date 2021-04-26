@@ -11,12 +11,13 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import Table from "../../../components/Table";
+import Loader from "../../../components/Loader";
+import { Images } from "../../../assets/Assets";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import uploadIcon from "../../../assets/images/upload.png";
-import { Images } from "../../../assets/Assets";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,17 +49,16 @@ export default function Companies(props) {
 
   useEffect(() => {
     getData();
-
     // eslint-disable-next-line
   }, []);
 
   const getData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      setCompanies(response.data.companies);
+      setCompanies(response.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -70,46 +70,24 @@ export default function Companies(props) {
     }
   };
 
-  const getSubContractors = (subcontractors) => {
-    if (subcontractors && subcontractors.length > 0) {
-      const value = subcontractors
-        .map((item) => {
-          if (item.name !== undefined) return item.name;
-          return "N/A";
-        })
-        .toString()
-        .replace(/,/g, " ");
-      return value;
-    }
-    return "N/A";
-  };
-
   const filterCompany = async () => {
     try {
-      setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
       if (nameOfCompany.length !== 0) params["companyName"] = nameOfCompany;
       if (nameOfResponsible.length !== 0)
         params["responsibleName"] = nameOfResponsible;
 
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.FILTER_COMPANY_SITES}`,
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY_FILTER}`,
         token: store.token,
         method: "POST",
         body: JSON.stringify(params),
       });
-      if (response.success) {
-        const companies = response.data.companies.filter((x) => {
-          return x.companyId !== null || undefined;
-        });
-        setCompanies(companies);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-      setLoading(false);
+      const companies = response.data.companies.filter((x) => {
+        return x.companyId !== null || undefined;
+      });
+      setCompanies(companies);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -128,10 +106,7 @@ export default function Companies(props) {
         token: store.token,
       });
       setStorageAreaRequest(response.data);
-      // setCompanies(response.data.companies);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -139,7 +114,6 @@ export default function Companies(props) {
       );
     }
   };
-
   const onAccept = async (id) => {
     try {
       await GLOBALS.API({
@@ -215,7 +189,7 @@ export default function Companies(props) {
     return [
       <img src={Images.site} alt="Icon" />,
       item.companyId.name,
-      getSubContractors(item.subContractors),
+      item.parentCompanyId ? item.parentCompanyId.name : "N/A",
       item.companyId.incharge !== undefined
         ? item.companyId.incharge.firstName +
           " " +
@@ -227,7 +201,6 @@ export default function Companies(props) {
       item.companyId.incharge !== undefined
         ? item.companyId.incharge.email
         : "N/A",
-
       <div>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
           <NavLink
@@ -250,7 +223,6 @@ export default function Companies(props) {
               style={{ width: 18, height: 17 }}
               alt="Icon"
             />
-            {/* <Pencil style={{ width: 18, height: 15 }} /> */}
           </NavLink>
         </IconButton>
         <IconButton style={{ padding: "6px" }} onClick={() => {}}>
@@ -267,20 +239,6 @@ export default function Companies(props) {
             />
           </NavLink>
         </IconButton>
-        {/* <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-          <NavLink
-            to={{
-              pathname: `/means`,
-              // companyId: item.companyId._id,
-            }}
-          >
-            <img
-              src={Images.means}
-              style={{ width: 18, height: 17 }}
-              alt="Icon"
-            />
-          </NavLink>
-        </IconButton> */}
         <IconButton
           style={{ padding: "6px", color: "#1890ff" }}
           onClick={() => {}}
@@ -289,7 +247,6 @@ export default function Companies(props) {
             to={{
               pathname: `/incidents`,
               search: `?companyId=${item.companyId._id}`,
-              // companyId: item.companyId._id,
             }}
           >
             <img
@@ -307,13 +264,14 @@ export default function Companies(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
-          <Heading primary="LIST OF COMPANIES" noWrap />
+          <Heading primary="LIST OF COMPANIES" noWrap noMargin />
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
+                bold
+                noMargin
                 disableMargin
                 primary={`Total : ${companies.length} COMPANIES`}
-                bold
               />
               <Button
                 fullWidth={false}
@@ -330,9 +288,7 @@ export default function Companies(props) {
             <SearchInput
               placeholder="Name of responsible"
               value={nameOfResponsible}
-              onClick={() => {
-                filterCompany();
-              }}
+              onClick={filterCompany}
               onChange={(event) => {
                 setNameOfResponsible(event.target.value);
               }}
@@ -341,34 +297,35 @@ export default function Companies(props) {
               style={{ marginLeft: "20px" }}
               placeholder="Name of company"
               value={nameOfCompany}
-              onClick={() => {
-                filterCompany();
-              }}
+              onClick={filterCompany}
               onChange={(event) => {
                 setNameOfCompany(event.target.value);
               }}
             />
-            <a href="#companies">
-              <img
-                style={{
-                  width: "1.3rem",
-                  marginLeft: "20px",
-                  marginTop: "10px",
-                }}
-                src={uploadIcon}
-                alt="File Upload Icon"
-              />
-            </a>
+            <img
+              style={{
+                width: "1.3rem",
+                marginLeft: "20px",
+                marginTop: "10px",
+              }}
+              src={uploadIcon}
+              alt="File Upload Icon"
+            />
           </Form.Row>
           <Button
+            noWrap
             fullWidth={true}
-            text="ACCESS REQUEST TO ZONES"
-            style={{ width: "330px" }}
             onClick={handleClickOpen}
+            style={{ width: "330px" }}
+            text="ACCESS REQUEST TO ZONES"
           />
         </Form.Row>
         <div className={classes.content}>
-          <Table headers={GLOBALS.Data.companies.headings} rows={rows} />
+          {loading ? (
+            <Loader.Progress />
+          ) : (
+            <Table headers={GLOBALS.Data.companies.headings} rows={rows} />
+          )}
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
@@ -9,10 +8,8 @@ import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
-import TextField from "@material-ui/core/TextField";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
-import SmallText from "../../../components/SmallText";
 import FormSelect from "../../../components/FormSelect";
 import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
@@ -58,13 +55,10 @@ export default function AddCompanies(props) {
   const adminStore = useSelector((state) => state.admin);
 
   const [name, setName] = useState("");
-  const [companyId, setCompanyId] = useState("");
   const [color, setColor] = useState("#d71313");
   const [image, setImage] = useState([]);
   const [companyType, setCompanyType] = useState("generalcontractor");
-  const [contractor, setContractor] = useState("");
-  const [generalContractorId, setGeneralContractorId] = useState("");
-  const [generatlContractorName, setGeneralContractorName] = useState("");
+  const [parentCompanyId, setParentCompanyId] = useState("");
   const [trades, setTrades] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -83,10 +77,9 @@ export default function AddCompanies(props) {
 
   // Dropdowns
   const [allTrades, setAllTrades] = useState([]);
-  const [allCompanies, setAllCompanies] = useState([]);
 
   // All Data
-  const [companies, setCompanies] = useState([]);
+  const [allSiteCompanies, setAllSiteCompanies] = useState([]);
 
   useEffect(() => {
     getData();
@@ -95,18 +88,12 @@ export default function AddCompanies(props) {
 
   async function getData() {
     try {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADD_COMPANY}/${adminStore.site.siteId._id}`,
+      const siteCo = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      const companyRequested = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ADMIN_COMPANY}/${props.match.params.companyId}`,
-        token: store.token,
-      });
-      console.log("companyRequested", companyRequested);
-      setCompanies(response.data);
-      setAllCompanies(
-        response.data.map((item) => ({
+      setAllSiteCompanies(
+        siteCo.data.map((item) => ({
           label: item.companyId.name,
           value: item.companyId._id,
         })),
@@ -117,6 +104,30 @@ export default function AddCompanies(props) {
           value: trade,
         })),
       );
+      let company = siteCo.data.find(
+        (item) => item.companyId._id === props.match.params.id,
+      );
+      console.log("company", company);
+      setName(company.companyId.name);
+      setColor(company.color);
+      setTrades(company.trades);
+      company.companyId.incharge.firstName &&
+        setFirstName(company.companyId.incharge.firstName);
+      company.companyId.incharge.lastName &&
+        setLastName(company.companyId.incharge.lastName);
+      company.companyId.incharge.email &&
+        setEmail(company.companyId.incharge.email);
+      company.companyId.incharge.phone &&
+        setPhone(company.companyId.incharge.phone);
+      company.companyId.website && setPhone(company.companyId.website);
+      company.companyId.description &&
+        setAddInfo(company.companyId.description);
+      company.companyId.logo &&
+        setImage([{ key: 0, uri: company.companyId.logo }]);
+
+      company.parentCompanyId && setCompanyType("subcontractor");
+      company.parentCompanyId &&
+        setParentCompanyId(company.parentCompanyId._id);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -132,38 +143,28 @@ export default function AddCompanies(props) {
         alert("something went wrong");
       } else {
         setLoading(true);
-        const incharge = {
-          firstName: firstName,
-          lastName: lastName,
+
+        var formdata = {
           email: email,
-          phone: phone,
+          description: addInfo,
+          siteId: adminStore.site.siteId._id,
+          parentCompanyId:
+            companyType === "generalcontractor" ? undefined : parentCompanyId,
         };
-        var formdata = new FormData();
-        image[0].file && formdata.append("logo", image[0].file);
-        formdata.append("name", name);
-        formdata.append("color", color);
-        formdata.append("website", website);
-        formdata.append("description", addInfo);
-        formdata.append("trades", JSON.stringify(trades));
-        formdata.append("siteId", adminStore.site.siteId._id);
-        formdata.append("incharge", JSON.stringify(incharge));
-        generalContractorId &&
-          formdata.append("parentCompanyId", generalContractorId);
-        companyId && formdata.append("companyId", companyId);
 
         const response = await GLOBALS.API({
           method: "PUT",
-          uri: GLOBALS.Constants.ADMIN_COMPANY,
-          headers: {
-            Authorization: store.token,
-          },
-          body: formdata,
+          token: store.token,
+          body: JSON.stringify(formdata),
+          uri: `${GLOBALS.Constants.ADMIN_COMPANY}/${props.match.params.id}`,
         });
+
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(response.message, "success"),
           ),
         );
+
         setLoading(false);
         props.history.goBack();
       }
@@ -178,7 +179,6 @@ export default function AddCompanies(props) {
   }
 
   function inputChange(name, value) {
-    console.log("name", name, value);
     if (name === "name") {
       setName(value);
       if (name === "" || name === null) {
@@ -194,18 +194,8 @@ export default function AddCompanies(props) {
       } else {
         setCompanyTypeError(false);
       }
-    } else if (name === "contractor") {
-      setContractor(value);
-      if (value) {
-        companies.map((com) => {
-          let subc = com.subContractors.find((sub) => sub._id === value);
-          if (subc) {
-            setGeneralContractorId(subc._id);
-            setGeneralContractorName(subc.name);
-          }
-          return true;
-        });
-      }
+    } else if (name === "parentCompanyId") {
+      setParentCompanyId(value);
     } else if (name === "email") {
       setEmail(value);
       // eslint-disable-next-line
@@ -257,59 +247,14 @@ export default function AddCompanies(props) {
             <FormLabel bold primary="IDENTITY* :" />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
-                <Autocomplete
-                  freeSolo
-                  fullWidth
-                  // disabled={!fieldsEnabled}
-                  className={classes.autoComplete}
-                  onChange={(e, option) => {
-                    if (option) {
-                      let comp = companies.find(
-                        (com) => com.companyId._id === option.value,
-                      );
-                      if (comp) {
-                        setCompanyId(option.value);
-                        if (comp.companyId.incharge) {
-                          setEmailError("");
-                          setPhoneError("");
-                          setWebsiteError("");
-                          setEmail(comp.companyId.incharge.email);
-                          setPhone(comp.companyId.incharge.phone);
-                          setFirstName(comp.companyId.incharge.firstName);
-                          setLastName(comp.companyId.incharge.lastName);
-                        }
-                        comp.companyId.logo &&
-                          setImage([
-                            { key: image.length, uri: comp.companyId.logo },
-                          ]);
-                      }
-                    }
-                  }}
-                  inputValue={name}
-                  onInputChange={(e, value) => {
-                    if (companyId) {
-                      setEmail("");
-                      setPhone("");
-                      setFirstName("");
-                      setLastName("");
-                      setImage([]);
-                    }
-                    inputChange("name", value);
-                    setCompanyId("");
-                  }}
-                  getOptionLabel={(option) => option.label}
-                  options={companies.map((option) => ({
-                    label: option.companyId.name,
-                    value: option.companyId._id,
-                  }))}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      name="name"
-                      label="Name"
-                      variant="outlined"
-                    />
-                  )}
+                <FormInput
+                  name="name"
+                  value={name}
+                  disabled={true}
+                  placeholder="Name"
+                  onChange={({ target: { name, value } }) =>
+                    inputChange(name, value)
+                  }
                 />
                 {nameError && (
                   <div className={classes.error}>Please enter name</div>
@@ -318,6 +263,7 @@ export default function AddCompanies(props) {
               <div style={GLOBALS.Styles.inputWidth}>
                 <ColorPicker
                   color={color}
+                  disabled={true}
                   handleChange={(color) => inputChange("color", color.hex)}
                 />
               </div>
@@ -328,7 +274,7 @@ export default function AddCompanies(props) {
             <FormMultipleUpload
               name="image"
               values={image}
-              // enabled={companyId}
+              disabled={true}
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => inputChange("image", values)}
             />
@@ -362,21 +308,18 @@ export default function AddCompanies(props) {
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
-                  name="contractor"
-                  value={contractor}
-                  values={allCompanies}
                   placeholder="Company"
+                  name="parentCompanyId"
+                  value={parentCompanyId}
+                  values={allSiteCompanies.filter(
+                    (item) => item.value !== props.match.params.id,
+                  )}
                   disabled={companyType === "generalcontractor"}
                   onChange={({ target: { name, value } }) => {
                     inputChange(name, value);
                   }}
                 />
               </Form.Column>
-              <SmallText
-                noMargin
-                style={{ marginLeft: 10 }}
-                primary={generatlContractorName}
-              />
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -385,6 +328,7 @@ export default function AddCompanies(props) {
               <FormMultiSelect
                 name="trades"
                 value={trades}
+                disabled={true}
                 values={allTrades}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -400,7 +344,6 @@ export default function AddCompanies(props) {
                 <FormInput
                   name="email"
                   value={email}
-                  disabled={companyId}
                   placeholder="Adresse e-mail"
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
@@ -416,7 +359,7 @@ export default function AddCompanies(props) {
                   type="number"
                   value={phone}
                   maxLength="25"
-                  disabled={companyId}
+                  disabled={true}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
@@ -433,9 +376,9 @@ export default function AddCompanies(props) {
             <Form.Row width="48%" noMargin>
               <FormInput
                 maxLength="30"
+                disabled={true}
                 name="firstName"
                 value={firstName}
-                disabled={companyId}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -444,8 +387,8 @@ export default function AddCompanies(props) {
               />
               <FormInput
                 name="lastName"
+                disabled={true}
                 value={lastName}
-                disabled={companyId}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -461,6 +404,7 @@ export default function AddCompanies(props) {
                 <FormInput
                   name="website"
                   value={website}
+                  disabled={true}
                   placeholder="http://"
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
@@ -500,7 +444,7 @@ export default function AddCompanies(props) {
                 !name ||
                 !color ||
                 image.length === 0 ||
-                (companyType !== "generalcontractor" && !contractor)
+                (companyType !== "generalcontractor" && !parentCompanyId)
               }
             />
           </Form.ButtonContainer>

@@ -108,6 +108,7 @@ const endpoints = {
   ADMIN_COMPANY: BASE_URL_V1 + "company",
   ADMIN_SITE_COMPANY: BASE_URL_V1 + "company/site",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
+  ADMIN_SITE_COMPANY_FILTER: BASE_URL_V1 + "company/filter",
   ADMIN_COMPANY_EXCLUDE_SITE: BASE_URL_V1 + "company/site-exclude",
 
   GET_ALL_USERS: BASE_URL_V1 + "users",
@@ -124,11 +125,6 @@ const endpoints = {
   PUT_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/update",
   DELETE_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/delete",
 
-  GET_SITE_COMPANIES: BASE_URL_V1 + "company-sites",
-  GET_ADD_COMPANY: BASE_URL_V1 + "company-sites/site",
-  FILTER_COMPANY_SITES: BASE_URL_V1 + "company-sites/filter",
-  GET_COMPANY_AUTOFILL: BASE_URL_V1 + "company-sites/autofill",
-  GET_GENERAL_CONTRACTOR: BASE_URL_V1 + "company-sites/general-contractor",
   GET_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request",
   ACCEPT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/accept",
   REJECT_SITE_STORAGE_AREA: BASE_URL_V1 + "storage-area-request/reject",
