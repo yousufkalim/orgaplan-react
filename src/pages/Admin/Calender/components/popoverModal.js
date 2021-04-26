@@ -35,7 +35,7 @@ const PopoverModal = ({
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
         {props.message}&nbsp;&nbsp;&nbsp;
-        {handleDeleteDelivery ? <>
+        {event.objectName === "Deliveries" ? <>
           <a
           onClick={() => {
             handleDeleteDelivery("no");
@@ -84,7 +84,7 @@ const PopoverModal = ({
           <Modal.Title className="text-center">Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="Are you sure to want Delete" />
+          <Alertbox message="Are you sure to Delete" />
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <>
