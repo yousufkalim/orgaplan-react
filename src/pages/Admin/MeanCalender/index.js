@@ -458,8 +458,8 @@ const Calender = (props) => {
       }
     } else {  
         let startMean= moment(meanAvailabilityStart).set({hour:0});
-        let endMean= moment(meanAvailabilityEnd).set({hour:0});
-        if (moment(start).isBetween(startMean ,  endMean ,null, '[]' ,'day')){
+        let endMean= moment(meanAvailabilityEnd).set({hour:0}); 
+        if (moment(start).isBetween(startMean,endMean.add(1, 'day') ,null, '[]' ,'day')){
         if (slots.length >= 2) {
           var format = "HH:mm";
           let time = moment(start, format);
@@ -494,8 +494,7 @@ const Calender = (props) => {
           setstarttimeslice(getstart);
           setEndtimeslice(getend);
         }
-      } else {
-        console.log("disable time clicked");
+      } else { 
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(

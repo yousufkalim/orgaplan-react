@@ -375,7 +375,7 @@ const Calender = (props) => {
     if (start < preDateTime && start < end) {
         pastdayFlag = true;
     }
-    if (!moment(start).isBetween(moment(adminStore.site.siteId.start), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
+    if (!moment(start).isBetween(moment(adminStore.site.siteId.start).set({hours : 0}), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
         betweenDay = true;
     } 
    
@@ -420,7 +420,7 @@ const Calender = (props) => {
               flagOpeningHours = true;
             }
       }
-    })
+    }) 
     if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag || pastdayFlag || flagHours || betweenDay ) { 
      
         if (flagDate || disableDayFlag || betweenDay) {
