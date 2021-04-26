@@ -151,7 +151,7 @@ const Calender = (props) => {
   }, []);
   useEffect(() => {
     filterBookingCalendar();
-  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans,updateMeanStatus,addDelivery]);
+  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans,updateMeanStatus,addDelivery,popoverShow]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -550,12 +550,12 @@ const Calender = (props) => {
     setstarttimesliceEdit(getstart);
     setEndtimesliceEdit(getend);
   };
-  const handleDeleteEvent = (confirm) => { 
+  const handleDeleteEvent = (confirm) => {  
     if(confirm === "yes"){
       setAlertBoxTime(true);
       setpopoverShow(!popoverShow);
       const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill); 
+  //  setEvents(fill); 
     dispatch(delete_mean(eventID));
     }else if (confirm === "no"){ 
       setAlertBoxTime(false); 
