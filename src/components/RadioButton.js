@@ -10,6 +10,9 @@ import Form from "./Form";
 const useStyles = makeStyles((theme) => ({
   container: {
     width: "100%",
+    "& .MuiTypography-body1": {
+      color: theme.palette.primary.contrastText,
+    },
   },
   root: {
     "&:hover": {

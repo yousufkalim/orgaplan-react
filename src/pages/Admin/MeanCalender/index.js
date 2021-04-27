@@ -15,7 +15,7 @@ import TimePicker from "react-time-picker";
 import DatePicker from "react-datepicker";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 import {
   add_mean,
@@ -44,36 +44,34 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
-const Calender = (props) => { 
+const Calender = (props) => {
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
   const store = useSelector((state) => state.auth);
-  const adminStore = useSelector((state) => state.admin); 
-  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours);
-  const [dorpdownMeans, setDropdownMeans] = useState([]); 
-  const [propsSite , setPropsSite] = useState(adminStore.site.siteId); 
-  const [propsMean , setPropsMean] = useState(
-    props.history.location.mean ?
-    props.history.location.mean :
-    props.location.selectedShape.mean
-
-     );
+  const adminStore = useSelector((state) => state.admin);
+  const [openingHours] = useState(adminStore.site.siteId.openingHours);
+  const [dorpdownMeans, setDropdownMeans] = useState([]);
+  const [propsSite] = useState(adminStore.site.siteId);
+  const [propsMean] = useState(
+    props.history.location.mean
+      ? props.history.location.mean
+      : props.location.selectedShape.mean,
+  );
   const [selectedMeanId, setSelectedMeanId] = useState(
-    props.location.mean?
-    props.location.mean._id :
-    props.location.selectedShape.mean._id
+    props.location.mean
+      ? props.location.mean._id
+      : props.location.selectedShape.mean._id,
   );
-  const [meanAvailabilityStart , setMeanAvailabilityStart] = useState(
-    props.history.location.mean ? 
-    props.history.location.mean.availability.start:
-    props.history.location.selectedShape.mean.availability.start
+  const [meanAvailabilityStart] = useState(
+    props.history.location.mean
+      ? props.history.location.mean.availability.start
+      : props.history.location.selectedShape.mean.availability.start,
   );
-  const [meanAvailabilityEnd , setMeanAvailabilityEnd] = useState(
-    props.history.location.mean?
-    props.history.location.mean.availability.end :
-    props.history.location.selectedShape.mean.availability.end
-
+  const [meanAvailabilityEnd] = useState(
+    props.history.location.mean
+      ? props.history.location.mean.availability.end
+      : props.history.location.selectedShape.mean.availability.end,
   );
   const [saveSelectedMean, setSaveSelectedMean] = useState({});
   // *****
@@ -82,7 +80,6 @@ const Calender = (props) => {
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
-  const [addedEvent, setAddedEvent] = useState({});
   const [show, setShow] = useState(false);
   let [startTime, setStartTime] = useState("");
   let [endTime, setEndTime] = useState("");
@@ -108,8 +105,11 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [disableHoursMean, setdisableHoursMean] = useState([]); 
-  const [disableHoursSiteUnavailabilityDates, setDisableHoursSiteUnavailabilityDates] = useState(adminStore.site.siteId.unavailabilityDates); 
+  const [disableHoursMean, setdisableHoursMean] = useState([]);
+  const [
+    disableHoursSiteUnavailabilityDates,
+    setDisableHoursSiteUnavailabilityDates,
+  ] = useState(adminStore.site.siteId.unavailabilityDates);
   const [disableDay, setDisableDay] = useState([]);
   // const [statusbooking, setStatusbooking] = useState("#FFFF00");
 
@@ -130,18 +130,19 @@ const Calender = (props) => {
   useEffect(() => {
     unavailabilityDates();
     functionDisableDay();
-    // dispatch(get_means());
+    // eslint-disable-next-line
   }, []);
- 
-   useEffect(() => {
-   
+
+  useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     if (selectedMeanId !== "") {
       onChangeMeans();
     }
+    // eslint-disable-next-line
   }, [selectedMeanId, saveSelectedMean]);
   // useEffect(() => {
   //   if (meansData.means) {
@@ -318,9 +319,19 @@ const Calender = (props) => {
       // if (start < preDateTime && start < end) {
       //   pastdayFlag = true;
       // }
-      let startMean= moment(meanAvailabilityStart).set({hour:0});
-      let endMean= moment(meanAvailabilityEnd).set({hour:0});
-      if (moment(startTime).isBetween(startMean ,  endMean.add(1, 'day') ,null, '[]' ,'day') && startTime > preDateTime && startTime < endTime){
+      let startMean = moment(meanAvailabilityStart).set({ hour: 0 });
+      let endMean = moment(meanAvailabilityEnd).set({ hour: 0 });
+      if (
+        moment(startTime).isBetween(
+          startMean,
+          endMean.add(1, "day"),
+          null,
+          "[]",
+          "day",
+        ) &&
+        startTime > preDateTime &&
+        startTime < endTime
+      ) {
         if (overlap === "Enable") {
           var DbElement = {
             startDate: startTime,
@@ -361,7 +372,6 @@ const Calender = (props) => {
             dispatch(add_mean(DbElement));
             setTitle("");
             setSelectedCompany("");
-            setAddedEvent(DbElement);
             setShow(false);
           }
         } else if (
@@ -397,10 +407,10 @@ const Calender = (props) => {
     setSaveSelectedMean(DbElement);
   };
   function inRange(x, min, max) {
-    return ((x-min)*(x-max) <= 0);
+    return (x - min) * (x - max) <= 0;
   }
   const AddEvent = ({ start, end, slots }) => {
-    let flagDate = false; 
+    let flagDate = false;
     let flagHours = false;
     let pastdayFlag = false;
     let flagOpeningHours = false;
@@ -414,10 +424,11 @@ const Calender = (props) => {
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
     preDateTime = new Date(milliseconds);
-    let currentDay =  moment(start).day();
-    if(currentDay === 0){ // disorder of days of Opening Hours component
-      currentDay=7;
-    } 
+    let currentDay = moment(start).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
     if (start < preDateTime && start < end) {
       pastdayFlag = true;
     }
@@ -429,27 +440,31 @@ const Calender = (props) => {
     });
     disableDay.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        flagDate = true; 
+        flagDate = true;
       }
       return {};
     });
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
         flagOpeningHoursDay = true;
       }
+      return {};
     });
-    
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
-         flagOpeningHours = true;
-      }else if (key.dayOff === false && currentDay === key.day){
-            if(inRange(start.getHours(), key.startHour, key.endHour) && inRange(end.getHours(), key.startHour, key.endHour)){
-              
-            }else{
-              flagOpeningHours = true;
-            }
+
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
+        flagOpeningHours = true;
+      } else if (key.dayOff === false && currentDay === key.day) {
+        if (
+          inRange(start.getHours(), key.startHour, key.endHour) &&
+          inRange(end.getHours(), key.startHour, key.endHour)
+        ) {
+        } else {
+          flagOpeningHours = true;
+        }
       }
-    })
+      return {};
+    });
     adminStore.site.siteId.unavailabilityDates.map((key, index) => {
       if (key.dayOff === true) {
         if (moment(start).isSame(key.date, "day")) {
@@ -474,22 +489,34 @@ const Calender = (props) => {
           ),
         );
       } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay || disableHoursSiteUnavailabilityDatesFlag) {
+
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
           ),
         );
-      }else if (pastdayFlag){
+      } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Booking can't be allowed in past day ", "error"),
+            Actions.notistack.snackbar(
+              "Booking can't be allowed in past day ",
+              "error",
+            ),
           ),
         );
       }
-    } else {  
-        let startMean= moment(meanAvailabilityStart).set({hour:0});
-        let endMean= moment(meanAvailabilityEnd).set({hour:0}); 
-        if (moment(start).isBetween(startMean,endMean.add(1, 'day') ,null, '[]' ,'day')){
+    } else {
+      let startMean = moment(meanAvailabilityStart).set({ hour: 0 });
+      let endMean = moment(meanAvailabilityEnd).set({ hour: 0 });
+      if (
+        moment(start).isBetween(
+          startMean,
+          endMean.add(1, "day"),
+          null,
+          "[]",
+          "day",
+        )
+      ) {
         if (slots.length >= 2) {
           var format = "HH:mm";
           let time = moment(start, format);
@@ -524,13 +551,10 @@ const Calender = (props) => {
           setstarttimeslice(getstart);
           setEndtimeslice(getend);
         }
-      } else { 
+      } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(
-              "Mean not Available",
-              "error",
-            ),
+            Actions.notistack.snackbar("Mean not Available", "error"),
           ),
         );
       }
@@ -545,7 +569,7 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     setShowEdit(true);
     setAlertBoxTime(false);
-    const fill = events.filter((e) => e._id === eventID); 
+    const fill = events.filter((e) => e._id === eventID);
     setTitleEdit(fill[0].title);
     let getstart = String(fill[0].start);
     let getend = String(fill[0].end);
@@ -633,7 +657,6 @@ const Calender = (props) => {
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
     ) {
-      console.log("Add time in array ");
     } else {
       setAlertBoxTime(true);
       setTimeout(function () {
@@ -669,15 +692,16 @@ const Calender = (props) => {
       return {};
     });
     setDisableDay(tempDisableDay);
-  }; 
-  const customDayPropGetter = (date) => { 
+  };
+  const customDayPropGetter = (date) => {
     let unavailability = false;
     let flagOpeningHoursDay = false;
     let betweenDate = false;
-    let currentDay =  moment(date).day(); 
-    if(currentDay === 0){ // disorder of days of Opening Hours component
-      currentDay=7;
-    } 
+    let currentDay = moment(date).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
     adminStore.site.siteId.unavailabilityDates.map((key, index) => {
       if (key.dayOff === true) {
         if (moment(date).isSame(key.date, "day")) {
@@ -686,23 +710,32 @@ const Calender = (props) => {
       }
       return {};
     });
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
-            flagOpeningHoursDay = true;
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
+        flagOpeningHoursDay = true;
       }
-    }); 
-   if (!moment(date).isBetween(moment(meanAvailabilityStart), moment(meanAvailabilityEnd).add(1, 'day'),null, '[]','day')){
-          betweenDate = true;
-   }
+      return {};
+    });
+    if (
+      !moment(date).isBetween(
+        moment(meanAvailabilityStart),
+        moment(meanAvailabilityEnd).add(1, "day"),
+        null,
+        "[]",
+        "day",
+      )
+    ) {
+      betweenDate = true;
+    }
 
-     if (unavailability || flagOpeningHoursDay  || betweenDate) {
+    if (unavailability || flagOpeningHoursDay || betweenDate) {
       return {
         className: "special-day",
         style: {
           backgroundColor: "#EBEBE4",
         },
       };
-      }
+    }
   };
 
   const getData = async () => {
@@ -771,10 +804,10 @@ const Calender = (props) => {
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
-          let colour= ""
+          let colour = "";
           if (key.status === "VALIDATED") {
             colour = "green";
-          }else{
+          } else {
             colour = "";
           }
           return {
@@ -797,7 +830,6 @@ const Calender = (props) => {
         setEvents(tempmeanData);
       } else {
       }
- 
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -805,9 +837,9 @@ const Calender = (props) => {
         ),
       );
     }
-  }; 
+  };
   const unavailabilityDates = () => {
-    let tempDisabledTimeMean = []; 
+    let tempDisabledTimeMean = [];
     propsMean.unavailability.map((key, index) => {
       if (key.dayOff === false) {
         for (let i = key.startHour; i <= key.endHour; i++) {
@@ -817,10 +849,10 @@ const Calender = (props) => {
         }
       }
       return {};
-    })  
+    });
     setdisableHoursMean(tempDisabledTimeMean);
 
-    let tempDisabledTimeSite  = []; 
+    let tempDisabledTimeSite = [];
     propsSite.unavailabilityDates.map((key, index) => {
       if (key.dayOff === false) {
         for (let i = key.startHour; i <= key.endHour; i++) {
@@ -833,9 +865,9 @@ const Calender = (props) => {
     });
     setDisableHoursSiteUnavailabilityDates(tempDisabledTimeSite);
   };
- 
+
   const slotPropGetter = (date) => {
-    let flagDateAndTime = false; 
+    let flagDateAndTime = false;
     let disableHoursSiteUnavailabilityDatesFlag = false;
     let newStyle = {
       backgroundColor: "#EBEBE4",
@@ -843,15 +875,13 @@ const Calender = (props) => {
     disableHoursMean.map((key, index) => {
       if (moment(date).isSame(key)) {
         flagDateAndTime = true;
-
       }
       return {};
     });
-    
+
     disableHoursSiteUnavailabilityDates.map((key, index) => {
       if (moment(date).isSame(key)) {
         disableHoursSiteUnavailabilityDatesFlag = true;
-
       }
       return {};
     });
@@ -1281,14 +1311,19 @@ const Calender = (props) => {
               }}
             />
           </div>
-          <div style={{ textAlign: "right",
-                          width: "46%"}}>
-           <FiberManualRecordIcon   style={{ color: "#265985" }} /><span style = {{ display: "inline-block",
-    paddingRight:"14px"}}> PENDING</span>
-         
-           <FiberManualRecordIcon   style={{ color: "green" }} /><span  style = {{ display: "inline-block",
-    paddingRight:"14px"}}>  VALIDATED</span>
-        </div>
+          <div style={{ textAlign: "right", width: "46%" }}>
+            <FiberManualRecordIcon style={{ color: "#265985" }} />
+            <span style={{ display: "inline-block", paddingRight: "14px" }}>
+              {" "}
+              PENDING
+            </span>
+
+            <FiberManualRecordIcon style={{ color: "green" }} />
+            <span style={{ display: "inline-block", paddingRight: "14px" }}>
+              {" "}
+              VALIDATED
+            </span>
+          </div>
         </div>
         <div className="d-flex px-2">
           <div style={{ flexBasis: "100%" }}>
@@ -1321,7 +1356,6 @@ const Calender = (props) => {
                   let newStyle = {
                     clear: "both",
                     display: "block",
-                    fontSize: "13px",
                     borderRadius: "4px",
                     padding: "5px",
                     marginTop: "5px !important",

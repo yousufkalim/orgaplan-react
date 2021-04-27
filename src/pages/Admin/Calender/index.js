@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
-import "./Calender.css"; 
+import "./Calender.css";
 
-import { Modal, Button, Alert } from "react-bootstrap"; 
+import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -14,14 +14,12 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
 import TimePicker from "react-time-picker";
-import SearchInput from "../../../components/SearchInput";
 import { addDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import Heading from "../../../components/Heading";
-import FormInput from "../../../components/FormInput";
 import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import FullScreenModal from "../../../components/FullScreenModal";
@@ -54,7 +52,7 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
-const Calender = (props) => { 
+const Calender = (props) => {
   moment.locale("es-es", {
     week: {
       dow: 1, //Monday is the first day of the week.
@@ -62,20 +60,19 @@ const Calender = (props) => {
   });
 
   const dispatch = useDispatch();
-  const meansData = useSelector((state) => state.means);
-  const adminStore = useSelector((state) => state.admin); 
+  const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   // *****
   const [isLoading, setLoading] = useState(true);
   const [siteMeans, setSiteMeans] = useState("");
   const [alertBoxTime, setAlertBoxTime] = useState(false);
-  const [days, setDays] = useState([]);
+  const [days] = useState([]);
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
   const [show, setShow] = useState(false);
-  let [startTime, setStartTime] = useState("");
-  let [endTime, setEndTime] = useState("");
+  let [startTime] = useState("");
+  let [endTime] = useState("");
   let [starttimeslice, setstarttimeslice] = useState("");
   let [Endtimeslice, setEndtimeslice] = useState("");
   const [title, setTitle] = useState("");
@@ -89,19 +86,16 @@ const Calender = (props) => {
   let [endtimesliceEdit, setEndtimesliceEdit] = useState("");
   const [statusColorEdit, setStatusColorEdit] = useState("");
   const [bookingslot, setbookingslot] = useState(false);
-  const [bookingEvent, setbookingEvent] = useState();
+  const [bookingEvent] = useState();
   const [bookingTitle, setBookingTitle] = useState();
-  let [bookingstartTime, setBookingstartTime] = useState("");
-  let [bookingEndTime, setBookingEndTime] = useState("");
+  let [bookingstartTime] = useState("");
+  let [bookingEndTime] = useState("");
   let [bookingstartTimeslice, setBookingstartTimeslice] = useState("");
   let [bookingendTimeslice, setBookingendTimeslice] = useState("");
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
-  const [cdate, setCdate] = useState("");
   const [filterDate, setFilterDate] = useState(new Date());
-  const [company, setCompany] = useState([]);
   const [typeOfPlace, setTypeOfPlace] = useState([]);
-  const [companyFilter, setCompanyFilter] = useState("");
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
   const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
@@ -115,19 +109,17 @@ const Calender = (props) => {
     { value: "ALERT", label: "ALERT" },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
-  const [openingHours , setOpeningHours] = useState(adminStore.site.siteId.openingHours);
-  const [overlap] = React.useState("Enable");  
-  const [addDelivery , setAddDelivery] = useState(false); 
-  const [disableHours, setDisableHours] = useState([]); 
+  const [openingHours] = useState(adminStore.site.siteId.openingHours);
+  const [overlap] = useState("Enable");
+  const [addDelivery, setAddDelivery] = useState(false);
+  const [disableHours, setDisableHours] = useState([]);
   const [disableDay, setDisableDay] = useState([]);
-  const [deliverDate , setDeliverDate] = useState("");
-  const [deliverStartHours , setDeliverStartHours] = useState("");
-  const [deliverEndHours , setDeliverEndHours] = useState("");
-  const [siteAvailabilityStart , setMeanAvailabilityStart] = useState(adminStore.site.siteId.start);
-  const [siteAvailabilityEnd , setMeanAvailabilityEnd] = useState(adminStore.site.siteId.end);
-  //   console.log("openingHours" ,openingHours);
-//   console.log("unavailabilityDates" ,adminStore.site.start)
-  // useEffect
+  const [deliverDate, setDeliverDate] = useState("");
+  const [deliverStartHours, setDeliverStartHours] = useState("");
+  const [deliverEndHours, setDeliverEndHours] = useState("");
+  const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
+  const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
+  const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -148,10 +140,22 @@ const Calender = (props) => {
     getfilterdata();
     unavailabilityDates();
     functionDisableDay();
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     filterBookingCalendar();
-  }, [enterprise, typeOfPlaning, status, typeOfPlacevalue, placeId, siteMeans,updateMeanStatus,addDelivery,popoverShow]);
+    // eslint-disable-next-line
+  }, [
+    enterprise,
+    typeOfPlaning,
+    status,
+    typeOfPlacevalue,
+    placeId,
+    siteMeans,
+    updateMeanStatus,
+    addDelivery,
+    popoverShow,
+  ]);
 
   // !!!!!!
   const handleClose = () => setShow(false);
@@ -293,9 +297,6 @@ const Calender = (props) => {
       let dateCheck3 = events.findIndex((item) => {
         return startTime > item.end;
       });
-
-      let uniqid = Math.random();
-
       /*check not in previous day  Start */
       let preDateTime = new Date();
       let milliseconds = Date.parse(preDateTime);
@@ -352,14 +353,13 @@ const Calender = (props) => {
       }, 1000);
     }
   };
-  
-  const AddDeliveryRequest = ({ start, end}) =>{ 
-    
+
+  const AddDeliveryRequest = ({ start, end }) => {
     setAddDelivery(false);
     setDeliverStartHours(start.getHours());
-    setDeliverEndHours(end.getHours()); 
+    setDeliverEndHours(end.getHours());
     // start.setHours(0);
-    setDeliverDate(start); 
+    setDeliverDate(start);
     let flagDate = false;
     let flagOpeningHoursDay = false;
     let flagHours = false;
@@ -371,31 +371,40 @@ const Calender = (props) => {
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds);  
+    preDateTime = new Date(milliseconds);
     if (start < preDateTime && start < end) {
-        pastdayFlag = true;
+      pastdayFlag = true;
     }
-    if (!moment(start).isBetween(moment(adminStore.site.siteId.start).set({hours : 0}), moment(adminStore.site.siteId.end), null, '()' ,'days')){ 
-        betweenDay = true;
-    } 
-   
+    if (
+      !moment(start).isBetween(
+        moment(adminStore.site.siteId.start).set({ hours: 0 }),
+        moment(adminStore.site.siteId.end),
+        null,
+        "()",
+        "days",
+      )
+    ) {
+      betweenDay = true;
+    }
+
     disableHours.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
         flagHours = true;
       }
       return {};
-    }); 
+    });
     disableDay.map((key, index) => {
       if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        disableDayFlag = true; 
+        disableDayFlag = true;
       }
       return {};
     });
-    
-    let currentDay =  moment(start).day(); 
-    if(currentDay === 0){ // disorder of days of Opening Hours component
-      currentDay=7;
-    } 
+
+    let currentDay = moment(start).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
     adminStore.site.siteId.unavailabilityDates.map((key, index) => {
       if (key.dayOff === true) {
         if (moment(start).isSame(key.date, "day")) {
@@ -404,26 +413,37 @@ const Calender = (props) => {
       }
       return {};
     });
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
         flagOpeningHoursDay = true;
       }
+      return true;
     });
-    
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
-         flagOpeningHours = true;
-      }else if (key.dayOff === false && currentDay === key.day){
-            if(inRange(start.getHours(), key.startHour, key.endHour) && inRange(end.getHours(), key.startHour, key.endHour)){
-              
-            }else{
-              flagOpeningHours = true;
-            }
+
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
+        flagOpeningHours = true;
+      } else if (key.dayOff === false && currentDay === key.day) {
+        if (
+          inRange(start.getHours(), key.startHour, key.endHour) &&
+          inRange(end.getHours(), key.startHour, key.endHour)
+        ) {
+        } else {
+          flagOpeningHours = true;
+        }
       }
-    }) 
-    if (flagDate || flagOpeningHoursDay || flagOpeningHours || disableDayFlag || pastdayFlag || flagHours || betweenDay ) { 
-     
-        if (flagDate || disableDayFlag || betweenDay) {
+      return true;
+    });
+    if (
+      flagDate ||
+      flagOpeningHoursDay ||
+      flagOpeningHours ||
+      disableDayFlag ||
+      pastdayFlag ||
+      flagHours ||
+      betweenDay
+    ) {
+      if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
@@ -435,7 +455,7 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Disable hours", "error"),
           ),
         );
-      }else if (betweenDay){
+      } else if (betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Site Date is Out of Range", "error"),
@@ -443,91 +463,92 @@ const Calender = (props) => {
         );
       } else if (pastdayFlag) {
         dispatch(
-            Actions.notistack.enqueueSnackbar(
-              Actions.notistack.snackbar("Booking can't be in Previous day", "error"),
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(
+              "Booking can't be in Previous day",
+              "error",
             ),
-          );
+          ),
+        );
       }
-    }else{
+    } else {
       setAddDelivery(true);
     }
-    
-  }
-  const AddEvent = ({ start, end, slots }) => {
-  
-    setAlertBoxTime(false);
-    let preDateTime = new Date();
-    let milliseconds = Date.parse(preDateTime);
-    milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds);
-
-    if (
-      start.getDay() === days[0] ||
-      start.getDay() === days[1] ||
-      start.getDay() === days[2] ||
-      start.getDay() === days[3] ||
-      start.getDay() === days[4] ||
-      start.getDay() === days[5] ||
-      start.getDay() === days[6]
-    ) {
-      console.log("not active day");
-    } else {
-      // active days
-      let beforeTime = moment(start).format("HH:mm");
-      let afterTime = moment(end).format("HH:mm");
-      let dateCheck = events.filter((item) => {
-        return (
-          moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
-          moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
-        );
-      });
-      if (dateCheck.length === 0 && overlap) {
-        if (start > preDateTime && start < end) {
-          if (slots.length >= 2) {
-            var format = "HH:mm";
-            let time = moment(start, format);
-            let beforeTime = moment(start).format("HH:mm");
-            let afterTime = moment(end).format("HH:mm");
-            let checkDiff = time.isBetween(beforeTime, afterTime);
-            if (
-              beforeTime !== "17:00" &&
-              beforeTime !== "17:30" &&
-              checkDiff === false
-            ) {
-              setShow(!show);
-              setStartTime(start);
-              setEndTime(end);
-              let getstart = String(start);
-              let getend = String(end);
-              getstart = getstart.slice(16, 21);
-              getend = getend.slice(16, 21);
-              setstarttimeslice(getstart);
-              setEndtimeslice(getend);
-            } else {
-              return false;
-            }
-          } else {
-            setShow(!show);
-            setStartTime(start);
-            setEndTime(end);
-            let getstart = String(start);
-            let getend = String(end);
-            getstart = getstart.slice(16, 21);
-            getend = getend.slice(16, 21);
-            setstarttimeslice(getstart);
-            setEndtimeslice(getend);
-          }
-        } else {
-          setAlertBoxTime(true);
-          setTimeout(function () {
-            setAlertBoxTime(false);
-          }, 2000);
-        }
-      } else {
-        console.log("disable time clicked");
-      }
-    }
   };
+  // const AddEvent = ({ start, end, slots }) => {
+  //   setAlertBoxTime(false);
+  //   let preDateTime = new Date();
+  //   let milliseconds = Date.parse(preDateTime);
+  //   milliseconds = milliseconds - 1 * 60 * 1000;
+  //   preDateTime = new Date(milliseconds);
+
+  //   if (
+  //     start.getDay() === days[0] ||
+  //     start.getDay() === days[1] ||
+  //     start.getDay() === days[2] ||
+  //     start.getDay() === days[3] ||
+  //     start.getDay() === days[4] ||
+  //     start.getDay() === days[5] ||
+  //     start.getDay() === days[6]
+  //   ) {
+  //     console.log("not active day");
+  //   } else {
+  //     // active days
+  //     let beforeTime = moment(start).format("HH:mm");
+  //     let afterTime = moment(end).format("HH:mm");
+  //     let dateCheck = events.filter((item) => {
+  //       return (
+  //         moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
+  //         moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
+  //       );
+  //     });
+  //     if (dateCheck.length === 0 && overlap) {
+  //       if (start > preDateTime && start < end) {
+  //         if (slots.length >= 2) {
+  //           var format = "HH:mm";
+  //           let time = moment(start, format);
+  //           let beforeTime = moment(start).format("HH:mm");
+  //           let afterTime = moment(end).format("HH:mm");
+  //           let checkDiff = time.isBetween(beforeTime, afterTime);
+  //           if (
+  //             beforeTime !== "17:00" &&
+  //             beforeTime !== "17:30" &&
+  //             checkDiff === false
+  //           ) {
+  //             setShow(!show);
+  //             setStartTime(start);
+  //             setEndTime(end);
+  //             let getstart = String(start);
+  //             let getend = String(end);
+  //             getstart = getstart.slice(16, 21);
+  //             getend = getend.slice(16, 21);
+  //             setstarttimeslice(getstart);
+  //             setEndtimeslice(getend);
+  //           } else {
+  //             return false;
+  //           }
+  //         } else {
+  //           setShow(!show);
+  //           setStartTime(start);
+  //           setEndTime(end);
+  //           let getstart = String(start);
+  //           let getend = String(end);
+  //           getstart = getstart.slice(16, 21);
+  //           getend = getend.slice(16, 21);
+  //           setstarttimeslice(getstart);
+  //           setEndtimeslice(getend);
+  //         }
+  //       } else {
+  //         setAlertBoxTime(true);
+  //         setTimeout(function () {
+  //           setAlertBoxTime(false);
+  //         }, 2000);
+  //       }
+  //     } else {
+  //       console.log("disable time clicked");
+  //     }
+  //   }
+  // };
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -550,54 +571,52 @@ const Calender = (props) => {
     setstarttimesliceEdit(getstart);
     setEndtimesliceEdit(getend);
   };
-  const handleDeleteEvent = (confirm) => {  
-    if(confirm === "yes"){
+  const handleDeleteEvent = (confirm) => {
+    if (confirm === "yes") {
       setAlertBoxTime(true);
       setpopoverShow(!popoverShow);
-      const fill = events.filter((e) => e.id !== eventID);
-  //  setEvents(fill); 
-    dispatch(delete_mean(eventID));
-    }else if (confirm === "no"){ 
-      setAlertBoxTime(false); 
-    }else{
+      // const fill = events.filter((e) => e.id !== eventID);
+      //  setEvents(fill);
+      dispatch(delete_mean(eventID));
+    } else if (confirm === "no") {
+      setAlertBoxTime(false);
+    } else {
       setAlertBoxTime(true);
       setpopoverShow(popoverShow);
     }
-  
-    
   };
-  const handleDeleteDelivery = (confirm) =>{ 
-    if(confirm === "yes"){
-        setAlertBoxTime(true);
-        setpopoverShow(!popoverShow);
-        const fill = events.filter((e) => e.id !== eventID);
-        setEvents(fill); 
-        delete_Delivery(eventID);
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Delivery Deleted", "success"),
-          ),
-        );
-        setSiteMeans("");
-      }else if (confirm === "no"){ 
-        setAlertBoxTime(false); 
-      }else{
-        setAlertBoxTime(true);
-        setpopoverShow(popoverShow);
-      }
-  }
-  const handleValidateMeans = () =>{
+  const handleDeleteDelivery = (confirm) => {
+    if (confirm === "yes") {
+      setAlertBoxTime(true);
+      setpopoverShow(!popoverShow);
+      const fill = events.filter((e) => e.id !== eventID);
+      setEvents(fill);
+      delete_Delivery(eventID);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("Delivery Deleted", "success"),
+        ),
+      );
+      setSiteMeans("");
+    } else if (confirm === "no") {
+      setAlertBoxTime(false);
+    } else {
+      setAlertBoxTime(true);
+      setpopoverShow(popoverShow);
+    }
+  };
+  const handleValidateMeans = () => {
     setpopoverShow(!popoverShow);
     const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill); 
+    setEvents(fill);
     update_mean_status(eventID);
-  }
-  const handleValidateDelivery = () =>{
+  };
+  const handleValidateDelivery = () => {
     setpopoverShow(!popoverShow);
     const fill = events.filter((e) => e.id !== eventID);
-    setEvents(fill); 
+    setEvents(fill);
     update_delivery_status(eventID);
-  }
+  };
 
   const handlePopoverShow = (event) => {
     setAlertBoxTime(false);
@@ -607,24 +626,24 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     // admin code end
   };
-  const bookingSlot = (event) => {
-    // booking Event
-    setbookingslot(true);
-    const fill = events.filter((e) => e.id === event.id);
-    setbookingEvent(fill[0]);
-    setBookingstartTime(fill[0].start);
-    setBookingEndTime(fill[0].end);
+  // const bookingSlot = (event) => {
+  //   // booking Event
+  //   setbookingslot(true);
+  //   const fill = events.filter((e) => e.id === event.id);
+  //   setbookingEvent(fill[0]);
+  //   setBookingstartTime(fill[0].start);
+  //   setBookingEndTime(fill[0].end);
 
-    /* show time start */
-    let getstart = String(fill[0].start);
-    let getend = String(fill[0].end);
-    getstart = getstart.slice(16, 21);
-    getend = getend.slice(16, 21);
+  //   /* show time start */
+  //   let getstart = String(fill[0].start);
+  //   let getend = String(fill[0].end);
+  //   getstart = getstart.slice(16, 21);
+  //   getend = getend.slice(16, 21);
 
-    setBookingstartTimeslice(getstart);
-    setBookingendTimeslice(getend);
-    /* show time End  */
-  };
+  //   setBookingstartTimeslice(getstart);
+  //   setBookingendTimeslice(getend);
+  //   /* show time End  */
+  // };
   const saveBooking = () => {
     /* start time*/
     bookingstartTime = String(bookingstartTime);
@@ -653,7 +672,7 @@ const Calender = (props) => {
     bookingEndTime = String(bookingEndTime);
     bookingEndTime = bookingEndTime.replace(/,/g, "");
     bookingEndTime = new Date(bookingEndTime);
-    
+
     if (
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
@@ -667,59 +686,56 @@ const Calender = (props) => {
     }
   };
   const update_mean_status = async (id) => {
-     
     try {
       const response = await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.UPDATE_MEAN_STATUS}/${id}`,
-        token: store.token, 
+        token: store.token,
       });
-       
-      if (response.success) { 
+
+      if (response.success) {
         setUpdateMeanStatus(response._id);
       }
-    }catch(err){
+    } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
-  }
+  };
   const update_delivery_status = async (id) => {
-     
     try {
       const response = await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.updateDeliveryStatus}/${id}`,
-        token: store.token, 
+        token: store.token,
       });
-       
-      if (response.success) { 
+
+      if (response.success) {
         setUpdateMeanStatus(response._id);
       }
-    }catch(err){
+    } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
-  }
-   const delete_Delivery =  async (id) => {
-    try { 
-  
-      const result = await GLOBALS.API({
+  };
+  const delete_Delivery = async (id) => {
+    try {
+      await GLOBALS.API({
         method: "DELETE",
-        token: store.token, 
+        token: store.token,
         uri: GLOBALS.Constants.delete_Delivery + "/" + id,
-      }); 
-    } catch (err) { 
-        dispatch(
-            Actions.notistack.enqueueSnackbar(
-              Actions.notistack.snackbar(err.message, "error"),
-            ),
-          );
+      });
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
     }
   };
   const getfilterdata = async () => {
@@ -737,7 +753,6 @@ const Calender = (props) => {
               value: item.companyId._id,
             });
           });
-          setCompany(response.data.site_companies);
           setDropdownCompany(temp);
         }
       } else {
@@ -853,7 +868,7 @@ const Calender = (props) => {
             Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
           ),
         );
-      } 
+      }
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -862,7 +877,7 @@ const Calender = (props) => {
         ),
       );
     }
-  }; 
+  };
   function Alertbox(props) {
     return (
       <Alert
@@ -893,11 +908,12 @@ const Calender = (props) => {
     let flagDate = false;
     let flagOpeningHoursDay = false;
     let betweenDate = false;
-    let currentDay =  moment(date).day(); 
-    if(currentDay === 0){ // disorder of days of Opening Hours component
-      currentDay=7;
-    } 
-    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
+    let currentDay = moment(date).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
+    adminStore.site.siteId.unavailabilityDates.map((key) => {
       if (key.dayOff === true) {
         if (moment(date).isSame(key.date, "day")) {
           flagDate = true;
@@ -905,14 +921,23 @@ const Calender = (props) => {
       }
       return {};
     });
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
+    openingHours.map((key) => {
+      if (key.dayOff === true && currentDay === key.day) {
         flagOpeningHoursDay = true;
       }
+      return true;
     });
-    if (!moment(date).isBetween(moment(siteAvailabilityStart), moment(siteAvailabilityEnd).add(1, 'day'),null, '[]','day')){
+    if (
+      !moment(date).isBetween(
+        moment(siteAvailabilityStart),
+        moment(siteAvailabilityEnd).add(1, "day"),
+        null,
+        "[]",
+        "day",
+      )
+    ) {
       betweenDate = true;
-}
+    }
     if (flagDate || flagOpeningHoursDay || betweenDate) {
       return {
         className: "special-day",
@@ -939,7 +964,7 @@ const Calender = (props) => {
           placeId: placeId,
         }),
       });
-      if (response.success) { 
+      if (response.success) {
         if (typeOfPlaning === "Deliveries") {
           let colour = "";
 
@@ -947,18 +972,18 @@ const Calender = (props) => {
             if (!(key.startTime && key.endTime)) {
               return {};
             }
-            if (key.alert === true && status === "ALERT" ) {
-                colour = "red";
-              } else {
-                if (key.status === "PENDING") {
-                    colour = "yellow";
-                  } else if (key.status === "VALIDATED") {
-                    colour = "green";
-                  } else if (key.status === "MODIFIED") {
-                    colour = "orange";
-                  } 
+            if (key.alert === true && status === "ALERT") {
+              colour = "red";
+            } else {
+              if (key.status === "PENDING") {
+                colour = "yellow";
+              } else if (key.status === "VALIDATED") {
+                colour = "green";
+              } else if (key.status === "MODIFIED") {
+                colour = "orange";
               }
-           
+            }
+
             /* start time converstion */
             let start = new Date(key.date);
             let startHours = key.startTime.slice(0, 2);
@@ -986,21 +1011,20 @@ const Calender = (props) => {
               liftingMeans: key.liftingMeans,
               routingMeans: key.routingMeans,
               company: key.companyId,
-              materials : key.materials,
-              deliveryArea : key.deliveryArea,
+              materials: key.materials,
+              deliveryArea: key.deliveryArea,
               storageArea: key.storageArea,
               building: key.building,
-              status : key.status
+              status: key.status,
             };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
-          tempEvent = response.data.Means.map((key, index) => { 
-          
-            let colour= ""
+          tempEvent = response.data.Means.map((key, index) => {
+            let colour = "";
             if (key.status === "VALIDATED") {
               colour = "green";
-            }else{
+            } else {
               colour = "";
             }
             let start = new Date(key.startDate);
@@ -1015,7 +1039,7 @@ const Calender = (props) => {
               companyName: key.companyId.name,
               meanName: key.meanId.name,
               status: key.status,
-              color : colour
+              color: colour,
             };
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
@@ -1026,34 +1050,36 @@ const Calender = (props) => {
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message , "error"),
+          Actions.notistack.snackbar(err.message, "error"),
         ),
       );
     }
   };
   function inRange(x, min, max) {
-    return ((x-min)*(x-max) <= 0);
+    return (x - min) * (x - max) <= 0;
   }
   const slotPropGetter = (date) => {
     let flagDateAndTime = false;
     let flagOpeningHours = false;
-    let currentDay =  moment(date).day();  
-    if(currentDay === 0){ // disorder of days of Opening Hours component
-      currentDay=7;
-    } 
+    let currentDay = moment(date).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
     let newStyle = {
       backgroundColor: "#EBEBE4",
-    }; 
-    openingHours.map((key, index)=>{
-      if (key.dayOff === true && currentDay === key.day){
-            flagOpeningHours = true;
-      }else if (key.dayOff === false && currentDay === key.day){
-            if(inRange(date.getHours(), key.startHour, key.endHour)){ 
-            }else{
-              flagOpeningHours = true;
-            }
+    };
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
+        flagOpeningHours = true;
+      } else if (key.dayOff === false && currentDay === key.day) {
+        if (inRange(date.getHours(), key.startHour, key.endHour)) {
+        } else {
+          flagOpeningHours = true;
+        }
       }
-    })
+      return true;
+    });
     disableHours.map((key, index) => {
       if (moment(date).isSame(key)) {
         flagDateAndTime = true;
@@ -1084,27 +1110,25 @@ const Calender = (props) => {
     setDisableHours(tempDisabledTime);
   };
 
- 
-
   return (
-    <> 
-       <FullScreenModal
+    <>
+      <FullScreenModal
         open={addDelivery}
         title={`Delivery Request`}
         onClose={() => {
-          setAddDelivery(false); 
-          seteventID('')
+          setAddDelivery(false);
+          seteventID("");
         }}
         body={
-          <DeliveryRequest 
-            date={deliverDate}
+          <DeliveryRequest
+            date={deliverDate || onEditDeliveryData?.start}
             end={deliverEndHours}
             history={props.history}
             start={deliverStartHours}
             eventId={eventID}
             onClose={() => {
               setAddDelivery(false);
-              seteventID('')
+              seteventID("");
             }}
           />
         }
@@ -1304,6 +1328,7 @@ const Calender = (props) => {
             </div>
           </div>
         </Modal.Body>
+        {isLoading && ""}
         <Modal.Footer>
           <Button
             style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
@@ -1422,216 +1447,217 @@ const Calender = (props) => {
           popoverShow={popoverShow}
           handlePopoverClose={handlePopoverClose}
           handleDeleteEvent={handleDeleteEvent}
-          handleEditEvent={handleEditEvent} 
-          handleValidateMeans = {handleValidateMeans}
+          handleEditEvent={handleEditEvent}
+          handleValidateMeans={handleValidateMeans}
           event={event}
-          setAlertBoxTime = {setAlertBoxTime} 
-          alertBoxTime = {alertBoxTime} 
-          handleValidateDelivery = {handleValidateDelivery} 
-          handleDeleteDelivery = {handleDeleteDelivery}
-
-          onEditDelivery = {() => {setpopoverShow(false);setAddDelivery(true)}}
-
-        />  
-        <div style={{ flexBasis: "100%" }}> 
+          setAlertBoxTime={setAlertBoxTime}
+          alertBoxTime={alertBoxTime}
+          handleValidateDelivery={handleValidateDelivery}
+          handleDeleteDelivery={handleDeleteDelivery}
+          onEditDelivery={(data) => {
+            setOnEditDeliveryData(data);
+            setpopoverShow(false);
+            setAddDelivery(true);
+          }}
+        />
+        <div style={{ flexBasis: "100%" }}>
           <div className="px-2">
-          <Form.Row alignItems="center">
-            <Form.Row noMargin>
-              <Heading primary="PLANNING" noWrap />
-              <SubHeading
-                noMargin
-                topPadding
-                style={{ color: "#F80303", paddingRight: "3rem" }}
-                primary={siteMeans}
-                bold
-              />
-            </Form.Row>
-          </Form.Row>
-          <Form.Row alignItems="center" noMargin>
-            <Form.Row justifyContent="flex-start" noMargin>
-              <div style={{ marginRight: "20px", width: 250 }}>
-                <DatePicker
-                  showPopperArrow={true}
-                  dateFormat="dd-MM-yyyy"
-                  selected={filterDate}
-                  popperPlacement="top-start"
-                  showYearDropdown
-                  placeholderText="Delivery date"
-                  onChange={(filterDate) => {
-                    setFilterDate(filterDate);
-                  }}
+            <Form.Row alignItems="center">
+              <Form.Row noMargin>
+                <Heading primary="PLANNING" noWrap />
+                <SubHeading
+                  noMargin
+                  topPadding
+                  style={{ color: "#F80303", paddingRight: "3rem" }}
+                  primary={siteMeans}
+                  bold
                 />
-              </div>
-              {props.location.companyId != null ? (
-                <>
-                  <FormSelect
-                    placeholder="Enterprise"
-                    value={enterprise}
-                    values={dropdownCompany}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={(e) => setEnterprise(e.target.value)}
-                  />
-                </>
-              ) : (
-                <>
-                  <FormSelect
-                    placeholder="Enterprise"
-                    value={enterprise}
-                    values={dropdownCompany}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={(e) => setEnterprise(e.target.value)}
-                  />
-                </>
-              )}
-
-              <FormSelect 
-                value= {typeOfPlaning}
-                values={[
-                  { value: "Deliveries", label: "Deliveries" },
-                  { value: "Means", label: "Means" },
-                ]}
-                onChange={(e) => {
-                  setTypeOfPlaning(e.target.value);
-                  if (e.target.value === "Deliveries") {
-                    setDeliveriesMeansStatus([
-                      { value: "PENDING", label: "PENDING" },
-                      { value: "VALIDATED", label: "VALIDATED" },
-                      { value: "MODIFIED", label: "MODIFIED" },
-                      { value: "ALERT", label: "ALERT" },
-                    ]);
-                  } else if (e.target.value === "Means") {
-                    setDeliveriesMeansStatus([
-                      { value: "AVAILABLE", label: "AVAILABLE" },
-                      { value: "UNAVAILABLE", label: "UNAVAILABLE" },
-                    ]);
-                  }
-                }}
-                style={{ marginRight: "20px", maxWidth: 250 }}
-              />
-              <FormSelect
-                placeholder="Status"
-                value= {status}
-                values={deliveriesMeansStatus}
-                onChange={(e) => setStatus(e.target.value)}
-                style={{ marginRight: "5px", maxWidth: 250 }}
-              />
+              </Form.Row>
             </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <Form.Row justifyContent="flex-start" noMargin>
-              {props.location.selectedShape != null ? (
-                <>
-                  <FormSelect
-                    placeholder="Type of place"
-                    value={typeOfPlacevalue}
-                    values={[
-                      { value: "DELIVERYAREA", label: "Delivery area" },
-                      { value: "STORAGEAREA", label: "Storage area" },
-                      { value: "BUILDING", label: "Emplacement" },
-                    ]}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={handleChangeTypeOfPlace}
+            <Form.Row alignItems="center" noMargin>
+              <Form.Row justifyContent="flex-start" noMargin>
+                <div style={{ marginRight: "20px", width: 250 }}>
+                  <DatePicker
+                    showPopperArrow={true}
+                    dateFormat="dd-MM-yyyy"
+                    selected={filterDate}
+                    popperPlacement="top-start"
+                    showYearDropdown
+                    placeholderText="Delivery date"
+                    onChange={(filterDate) => {
+                      setFilterDate(filterDate);
+                    }}
                   />
+                </div>
+                {props.location.companyId != null ? (
+                  <>
+                    <FormSelect
+                      placeholder="Enterprise"
+                      value={enterprise}
+                      values={dropdownCompany}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={(e) => setEnterprise(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FormSelect
+                      placeholder="Enterprise"
+                      value={enterprise}
+                      values={dropdownCompany}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={(e) => setEnterprise(e.target.value)}
+                    />
+                  </>
+                )}
 
-                  <FormSelect
-                    placeholder="place"
-                    value={placeId}
-                    values={typeOfPlace}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={(e) => setPlaceId(e.target.value)}
-                  />
-                </>
-              ) : (
-                <>
-                  <FormSelect
-                    placeholder="Type of place"
-                    value= {typeOfPlacevalue}
-                    values={[
-                      { value: "DELIVERYAREA", label: "Delivery area" },
-                      { value: "STORAGEAREA", label: "Storage area" },
-                      { value: "BUILDING", label: "Emplacement" },
-                    ]}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={handleChangeTypeOfPlace}
-                  />
-
-                  <FormSelect
-                    placeholder="place"
-                    value= {placeId}
-                    values={typeOfPlace}
-                    style={{ marginRight: "20px", maxWidth: 250 }}
-                    onChange={(e) => setPlaceId(e.target.value)}
-                  />
-                </>
-              )}
+                <FormSelect
+                  value={typeOfPlaning}
+                  values={[
+                    { value: "Deliveries", label: "Deliveries" },
+                    { value: "Means", label: "Means" },
+                  ]}
+                  onChange={(e) => {
+                    setTypeOfPlaning(e.target.value);
+                    if (e.target.value === "Deliveries") {
+                      setDeliveriesMeansStatus([
+                        { value: "PENDING", label: "PENDING" },
+                        { value: "VALIDATED", label: "VALIDATED" },
+                        { value: "MODIFIED", label: "MODIFIED" },
+                        { value: "ALERT", label: "ALERT" },
+                      ]);
+                    } else if (e.target.value === "Means") {
+                      setDeliveriesMeansStatus([
+                        { value: "AVAILABLE", label: "AVAILABLE" },
+                        { value: "UNAVAILABLE", label: "UNAVAILABLE" },
+                      ]);
+                    }
+                  }}
+                  style={{ marginRight: "20px", maxWidth: 250 }}
+                />
+                <FormSelect
+                  placeholder="Status"
+                  value={status}
+                  values={deliveriesMeansStatus}
+                  onChange={(e) => setStatus(e.target.value)}
+                  style={{ marginRight: "5px", maxWidth: 250 }}
+                />
+              </Form.Row>
             </Form.Row>
-          </Form.Row>
+            <Form.Row>
+              <Form.Row justifyContent="flex-start" noMargin>
+                {props.location.selectedShape != null ? (
+                  <>
+                    <FormSelect
+                      placeholder="Type of place"
+                      value={typeOfPlacevalue}
+                      values={[
+                        { value: "DELIVERYAREA", label: "Delivery area" },
+                        { value: "STORAGEAREA", label: "Storage area" },
+                        { value: "BUILDING", label: "Emplacement" },
+                      ]}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={handleChangeTypeOfPlace}
+                    />
+
+                    <FormSelect
+                      placeholder="place"
+                      value={placeId}
+                      values={typeOfPlace}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={(e) => setPlaceId(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <FormSelect
+                      placeholder="Type of place"
+                      value={typeOfPlacevalue}
+                      values={[
+                        { value: "DELIVERYAREA", label: "Delivery area" },
+                        { value: "STORAGEAREA", label: "Storage area" },
+                        { value: "BUILDING", label: "Emplacement" },
+                      ]}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={handleChangeTypeOfPlace}
+                    />
+
+                    <FormSelect
+                      placeholder="place"
+                      value={placeId}
+                      values={typeOfPlace}
+                      style={{ marginRight: "20px", maxWidth: 250 }}
+                      onChange={(e) => setPlaceId(e.target.value)}
+                    />
+                  </>
+                )}
+              </Form.Row>
+            </Form.Row>
           </div>
           {events ? (
-              <Calendar
-                slotPropGetter={slotPropGetter}
-                popup
-                selectable
-                formats={formats}
-                localizer={localizer}
-                events={events}
-                views={view}
-                defaultView="work_week"
-                step={60}
-                timeslots={1}
-                onSelectEvent={handlePopoverShow}
-                // onSelectEvent={bookingSlot}
-                onSelecting={true}
-                // onSelectSlot={AddEvent}
-                onSelectSlot={AddDeliveryRequest}
-                // onSelectSlot={AddAvailability}
-                startAccessor="start"
-                endAccessor="end"
-                style={{
-                  width: "98%",
-                  height: "540px",
-                }}
-                eventPropGetter={(events, start, end, isSelected) => {
-                  let { color } = events;
+            <Calendar
+              slotPropGetter={slotPropGetter}
+              popup
+              selectable
+              formats={formats}
+              localizer={localizer}
+              events={events}
+              views={view}
+              defaultView="work_week"
+              step={60}
+              timeslots={1}
+              onSelectEvent={handlePopoverShow}
+              // onSelectEvent={bookingSlot}
+              onSelecting={true}
+              // onSelectSlot={AddEvent}
+              onSelectSlot={AddDeliveryRequest}
+              // onSelectSlot={AddAvailability}
+              startAccessor="start"
+              endAccessor="end"
+              style={{
+                width: "98%",
+                height: "540px",
+              }}
+              eventPropGetter={(events, start, end, isSelected) => {
+                let { color } = events;
 
-                  let newStyle = {
-                    clear: "both",
-                    display: "block",
-                    fontSize: "13px",
-                    borderRadius: "4px",
-                    padding: "5px",
-                    marginTop: "5px !important",
-                    marginLeft: "5px !important",
-                    lineHeight: "14px",
-                    background: `${color}`,
-                    border: "2px solid #fff",
-                    color: "black",
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                  };
+                let newStyle = {
+                  clear: "both",
+                  display: "block",
+                  borderRadius: "4px",
+                  padding: "5px",
+                  marginTop: "5px !important",
+                  marginLeft: "5px !important",
+                  lineHeight: "14px",
+                  background: `${color}`,
+                  border: "2px solid #fff",
+                  color: "black",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                };
 
-                  if (events.isMine) {
-                    newStyle.backgroundColor = "color";
-                    newStyle.border = "2px solid #fff";
-                  }
+                if (events.isMine) {
+                  newStyle.backgroundColor = "color";
+                  newStyle.border = "2px solid #fff";
+                }
 
-                  return {
-                    className: "",
-                    style: newStyle,
-                  };
-                }}
-                custom_week_days={days}
-                dayPropGetter={customDayPropGetter}
-                date={filterDate}
-                onNavigate={(date) => {
-                  setFilterDate(date);
-                }}
-              />
-            ) : (
-              <Loader.Progress />
-            )}
-    
-          </div> </div>
+                return {
+                  className: "",
+                  style: newStyle,
+                };
+              }}
+              custom_week_days={days}
+              dayPropGetter={customDayPropGetter}
+              date={filterDate}
+              onNavigate={(date) => {
+                setFilterDate(date);
+              }}
+            />
+          ) : (
+            <Loader.Progress />
+          )}
+        </div>{" "}
+      </div>
     </>
   );
 };

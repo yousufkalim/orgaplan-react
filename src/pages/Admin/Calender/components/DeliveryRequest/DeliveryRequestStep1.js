@@ -15,13 +15,9 @@ import MultiAdderInput from "../../../../../components/MultiAdderInput";
 export default function AddSiteStep1(props) {
   const [company, setCompany] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
-  const [date, setDate] = useState(props.date);
-  const [startTime, setStartTime] = useState(
-    moment(props.date).set("hour", props.start),
-  );
-  const [endTime, setEndTime] = useState(
-    moment(props.date).set("hour", props.end),
-  );
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
@@ -35,11 +31,15 @@ export default function AddSiteStep1(props) {
       setDate(props.step1Data.date);
       props.step1Data.startTime &&
         setStartTime(
-          moment(props.step1Data.date).set("hour", props.step1Data.startTime),
+          moment(props.step1Data.date)
+            .set("hours", props.step1Data.startTime.split(":")[0])
+            .set("minutes", props.step1Data.startTime.split(":")[1]),
         );
       props.step1Data.endTime &&
         setEndTime(
-          moment(props.step1Data.date).set("hour", props.step1Data.endTime),
+          moment(props.step1Data.date)
+            .set("hours", props.step1Data.endTime.split(":")[0])
+            .set("minutes", props.step1Data.endTime.split(":")[1]),
         );
       setTrades(props.step1Data.trades);
       setMaterials(
@@ -48,7 +48,12 @@ export default function AddSiteStep1(props) {
       );
       setLiftingMeans(props.step1Data.liftingMeans);
       setUpdate((st) => !st);
+    } else {
+      setDate(props.date);
+      setStartTime(moment(props.date).set("hour", props.start));
+      setEndTime(moment(props.date).set("hour", props.end));
     }
+    // eslint-disable-next-line
   }, [props.step1Data]);
 
   useEffect(() => {
@@ -58,6 +63,12 @@ export default function AddSiteStep1(props) {
           currentValue.meanType === "LIFTING" &&
           currentValue.location.find(
             (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+          ) &&
+          moment(props.date).isBetween(
+            currentValue.availability.start,
+            currentValue.availability.end,
+            "day",
+            "[]",
           )
         ) {
           accumulator.push({
@@ -77,8 +88,8 @@ export default function AddSiteStep1(props) {
       company,
       deliveryArea,
       date,
-      startTime: moment(startTime).hours(),
-      endTime: moment(endTime).hours(),
+      startTime: moment(startTime).format("HH:mm"),
+      endTime: moment(endTime).format("HH:mm"),
       trades,
       liftingMeans,
       materials: materials.map((item) => item.label),
@@ -127,7 +138,6 @@ export default function AddSiteStep1(props) {
           />
           <TimeInput
             format="HH:mm"
-            disabled={true}
             name="startTime"
             value={startTime}
             placeholder="Start Time"
@@ -137,7 +147,6 @@ export default function AddSiteStep1(props) {
           <TimeInput
             name="endTime"
             format="HH:mm"
-            disabled={true}
             value={endTime}
             placeholder="End Time"
             style={{ width: "31%" }}

@@ -59,6 +59,7 @@ export default function Input(props) {
         disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
+        style={props.disabled ? { cursor: "not-allowed" } : {}}
       >
         {props.placeholder && <option value="">{props.placeholder}</option>}
         {props.values.map((item, index) => (

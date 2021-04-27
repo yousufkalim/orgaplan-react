@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
 import Actions from "../../../../../redux/actions";
@@ -69,14 +70,27 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setMeans(means.data);
+
       setDeliveryAreas(
-        deliveryAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-        })),
+        deliveryAreas.data.reduce((accumulator, currentValue) => {
+          if (
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
+              "[]",
+            )
+          ) {
+            accumulator.push({
+              value: currentValue._id,
+              label: currentValue.name,
+            });
+          }
+          return accumulator;
+        }, []),
       );
       setCompanies(
-        response.data.companies.map((company) => ({
+        response.data.map((company) => ({
           label: company.companyId.name,
           value: company.companyId._id,
         })),
@@ -88,11 +102,23 @@ export default function DeliveryRequest(props) {
         })),
       );
       setStorageAreas(
-        storageAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-          level: item.level,
-        })),
+        storageAreas.data.reduce((accumulator, currentValue) => {
+          if (
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
+              "[]",
+            )
+          ) {
+            accumulator.push({
+              value: currentValue._id,
+              label: currentValue.name,
+              level: currentValue.level,
+            });
+          }
+          return accumulator;
+        }, []),
       );
       setBuildings(buildings.data.items);
       props.eventId && fetchEvent();

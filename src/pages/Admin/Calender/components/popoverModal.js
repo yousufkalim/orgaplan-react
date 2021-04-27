@@ -2,12 +2,12 @@ import React from "react";
 import moment from "moment";
 import "./sass/custom.scss";
 import { Modal, Alert } from "react-bootstrap";
+
 const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
   handleDeleteEvent,
   handleDeleteDelivery,
-  handleEditEvent,
   event,
   handleValidateMeans,
   setAlertBoxTime,
@@ -35,45 +35,47 @@ const PopoverModal = ({
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
         {props.message}&nbsp;&nbsp;&nbsp;
-        {event.objectName === "Deliveries" ? <>
-          <a
-          onClick={() => {
-            handleDeleteDelivery("no");
-          }}
-          className="alert-link"
-        >
-          NO
-        </a>{" "}
-        &nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteDelivery("yes");
-          }}
-          className="alert-link"
-        >
-          YES
-        </a>
-        </> : <>
-        
-        <a
-          onClick={() => {
-            handleDeleteEvent("no");
-          }}
-          className="alert-link"
-        >
-          NO
-        </a>{" "}
-        &nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteEvent("yes");
-          }}
-          className="alert-link"
-        >
-          YES
-        </a>
-        </>} 
-     
+        {event.objectName === "Deliveries" ? (
+          <>
+            <div
+              onClick={() => {
+                handleDeleteDelivery("no");
+              }}
+              className="alert-link"
+            >
+              NO
+            </div>{" "}
+            &nbsp;&nbsp;
+            <div
+              onClick={() => {
+                handleDeleteDelivery("yes");
+              }}
+              className="alert-link"
+            >
+              YES
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              onClick={() => {
+                handleDeleteEvent("no");
+              }}
+              className="alert-link"
+            >
+              NO
+            </div>{" "}
+            &nbsp;&nbsp;
+            <div
+              onClick={() => {
+                handleDeleteEvent("yes");
+              }}
+              className="alert-link"
+            >
+              YES
+            </div>
+          </>
+        )}
       </Alert>
     );
   }
@@ -118,14 +120,13 @@ const PopoverModal = ({
                       <th>Name</th>
                       <th>Type</th>
                       <th>Reason</th>
-
                     </tr>
                     {event.liftingMeans.map((key, index) => {
                       return (
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
-                          <td>{key.alerts? key.alerts.reason : null}</td> 
+                          <td>{key.alerts ? key.alerts.reason : null}</td>
                         </tr>
                       );
                     })}
@@ -134,8 +135,7 @@ const PopoverModal = ({
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
-                          <td>{key.alerts? key.alerts.reason : null}</td> 
-                          
+                          <td>{key.alerts ? key.alerts.reason : null}</td>
                         </tr>
                       );
                     })}
@@ -175,7 +175,10 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {" Name:  " + event.deliveryArea.name } <br />  {event.deliveryArea.alert ? " Reason:  " + event.deliveryArea.alert.reason : null} 
+                      {" Name:  " + event.deliveryArea.name} <br />{" "}
+                      {event.deliveryArea.alert
+                        ? " Reason:  " + event.deliveryArea.alert.reason
+                        : null}
                     </h5>
                   </>
                 ) : (
@@ -196,13 +199,12 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      
-                         { " Name:  " + event.storageArea.name} <br /> 
-                         {event.storageArea.alert ? event.storageArea.alert.map((item , index)=>{
-                            return (
-                              `Reason ${index+1}   :   ${item.reason} `
-                            )
-                         }) : null}
+                      {" Name:  " + event.storageArea.name} <br />
+                      {event.storageArea.alert
+                        ? event.storageArea.alert.map((item, index) => {
+                            return `Reason ${index + 1}   :   ${item.reason} `;
+                          })
+                        : null}
                     </h5>
                   </>
                 ) : (
@@ -273,7 +275,7 @@ const PopoverModal = ({
                       <div className="col-lg-4">
                         <button
                           className="btn text-success btn-light"
-                          onClick={onEditDelivery}
+                          onClick={() => onEditDelivery(event)}
                         >
                           <i class="fas fa-trash"></i> <span>More Info</span>
                         </button>
