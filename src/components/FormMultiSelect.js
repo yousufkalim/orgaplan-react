@@ -50,13 +50,13 @@ export default function MultipleSelect(props) {
       borderWidth: 1,
       display: "flex",
       overflow: "hidden",
-      textAlign: "center",
       padding: "10px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: white,
       borderColor: borderColor,
+      textAlign: props.textAlign ? props.textAlign : "left",
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       "&::placeholder": {
         color: color,
@@ -76,6 +76,7 @@ export default function MultipleSelect(props) {
       <Select
         multiple
         fullWidth
+        displayEmpty
         input={<Input />}
         name={props.name}
         value={props.value}
@@ -83,16 +84,37 @@ export default function MultipleSelect(props) {
         disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
-        displayEmpty={props.placeholder}
+        renderValue={(selected) => {
+          if (selected.length === 0) {
+            return <em>{props.placeholder}</em>;
+          }
+          let toRender = [];
+          selected.map((item) => {
+            let ind = props.values.findIndex((option) => option.value === item);
+            if (ind > -1) {
+              toRender.push(props.values[ind].label);
+            }
+            return true;
+          });
+          return toRender.join(", ");
+        }}
       >
+        {props.placeholder && (
+          <MenuItem disabled value="">
+            <em>{props.placeholder}</em>
+          </MenuItem>
+        )}
         {props.values.map((item) => (
           <MenuItem
             key={item.value}
             value={item.value}
             style={getStyles(item.label, props.value, theme)}
           >
-            {item.label}
-            {/* <ListItemText primary={item.label} /> */}
+            <Checkbox
+              color="primary"
+              checked={props.value.indexOf(item.value) > -1}
+            />
+            <ListItemText primary={item.label} />
           </MenuItem>
         ))}
       </Select>

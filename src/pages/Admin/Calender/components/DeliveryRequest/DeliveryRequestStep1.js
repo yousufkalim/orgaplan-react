@@ -150,6 +150,7 @@ export default function AddSiteStep1(props) {
         <FormMultiSelect
           name="trades"
           value={trades}
+          placeholder="Trades"
           values={props.trades}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setTrades(value)}
