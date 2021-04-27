@@ -17,6 +17,7 @@ import FormInput from "../../../components/FormInput";
 import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
+import RadioButton from "../../../components/RadioButton";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
 
@@ -48,20 +49,23 @@ export default function Admins(props) {
   const [data, setData] = useState("");
   const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
+  const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [companies, setCompanies] = useState([]);
-  const [update, setUpdate] = useState(false);
+
+  const [company, setCompany] = useState("");
+  const [allCompanies, setAllCompanies] = useState([]);
 
   const [modal, setModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [companyId, setCompanyId] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [adminType, setAdminType] = useState("ADMINPERSITE");
 
   useEffect(() => {
     fetchData();
@@ -78,6 +82,7 @@ export default function Admins(props) {
         uri: `${GLOBALS.Constants.COMPANY}`,
       });
 
+      setAllCompanies(companies.data.items);
       const companiesArray = [];
       companies.data.items.map((item) => {
         if (!item.adminId) {
@@ -117,7 +122,12 @@ export default function Admins(props) {
     } else if (name === "image") {
       setUpdate((st) => !st);
       setImage(value);
-    } else if (name === "companyId") setCompanyId(value);
+    } else if (name === "companyId") {
+      setCompanyId(value);
+      value
+        ? setCompany(allCompanies.find((item) => item._id === value))
+        : setCompany("");
+    } else if (name === "adminType") setAdminType(value);
   }
 
   async function onUpdate(e) {
@@ -125,10 +135,11 @@ export default function Admins(props) {
       e.preventDefault();
       setLoading(true);
       var formdata = new FormData();
-      formdata.append("firstName", firstName);
-      formdata.append("lastName", lastName);
       formdata.append("phone", phone);
+      formdata.append("lastName", lastName);
+      formdata.append("firstName", firstName);
       formdata.append("companyId", companyId);
+      formdata.append("adminType", adminType);
       formdata.append("adminId", selectedItem._id);
       image.file && formdata.append("image", image.file);
 
@@ -141,7 +152,9 @@ export default function Admins(props) {
         body: formdata,
       });
       const itemsArray = items.map((item) =>
-        item._id === selectedItem._id ? result.data : item,
+        item._id === selectedItem._id
+          ? { ...result.data, sites: item.sites }
+          : item,
       );
       setItems(itemsArray);
       setModal(false);
@@ -186,7 +199,6 @@ export default function Admins(props) {
     setPhone("");
     setImage("");
     setCompanyId("");
-    setCompanyName("");
   }
 
   const rows = items.map((item) => {
@@ -207,8 +219,12 @@ export default function Admins(props) {
           setFirstName(item.firstName);
           setLastName(item.lastName);
           setPhone(`0${item.phone}`);
+          item.adminType && setAdminType(item.adminType);
           setCompanyId(item.company._id);
-          setCompanyName(item.company.name);
+          item.company._id &&
+            setCompany(
+              allCompanies.find((item2) => item2._id === item.company._id),
+            );
           setModal(true);
         }}
       >
@@ -290,7 +306,7 @@ export default function Admins(props) {
                   name="firstName"
                   value={firstName}
                   placeholder="First Name"
-                  style={{ width: "100%" }}
+                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -303,7 +319,7 @@ export default function Admins(props) {
                   name="lastName"
                   value={lastName}
                   placeholder="Last Name"
-                  style={{ width: "100%" }}
+                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -315,8 +331,8 @@ export default function Admins(props) {
                 <FormInput
                   name="phone"
                   value={phone}
-                  style={{ width: "100%" }}
                   placeholder="Phone Number"
+                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -332,14 +348,32 @@ export default function Admins(props) {
                   name="companyId"
                   value={companyId}
                   values={companies}
-                  placeholder={companyName}
-                  style={{ width: "100%" }}
+                  placeholder={"Select Company"}
+                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
                 />
               </div>
             </Form.Row>
+            {company.type === "MASTERCLIENT" && (
+              <Form.Row justifyContent="center">
+                <div style={{ width: "50%" }}>
+                  <RadioButton
+                    name="adminType"
+                    value={adminType}
+                    // style={GLOBALS.Styles.inputWidth}
+                    onChange={({ target: { name, value } }) =>
+                      handleChange(name, value)
+                    }
+                    items={[
+                      { value: "ADMINPERSITE", label: "Admin Per Site" },
+                      { value: "MASTERADMIN", label: "Master Admin" },
+                    ]}
+                  />
+                </div>
+              </Form.Row>
+            )}
             <Form.Column alignItems="center">
               <Form.Row justifyContent="center">
                 <Button

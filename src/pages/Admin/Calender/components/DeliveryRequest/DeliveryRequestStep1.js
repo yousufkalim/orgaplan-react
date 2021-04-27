@@ -127,7 +127,6 @@ export default function AddSiteStep1(props) {
           />
           <TimeInput
             format="HH:mm"
-            disabled={true}
             name="startTime"
             value={startTime}
             placeholder="Start Time"
@@ -137,7 +136,6 @@ export default function AddSiteStep1(props) {
           <TimeInput
             name="endTime"
             format="HH:mm"
-            disabled={true}
             value={endTime}
             placeholder="End Time"
             style={{ width: "31%" }}

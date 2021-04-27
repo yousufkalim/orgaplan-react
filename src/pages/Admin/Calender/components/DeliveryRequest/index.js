@@ -76,7 +76,7 @@ export default function DeliveryRequest(props) {
         })),
       );
       setCompanies(
-        response.data.companies.map((company) => ({
+        response.data.map((company) => ({
           label: company.companyId.name,
           value: company.companyId._id,
         })),
