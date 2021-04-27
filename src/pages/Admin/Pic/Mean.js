@@ -51,7 +51,6 @@ export default function AddMean(props) {
   const [storageAreas, setStorageAreas] = useState([]);
 
   useEffect(() => {
-    console.log("props", props.level);
     getData();
     // eslint-disable-next-line
   }, []);
@@ -113,6 +112,7 @@ export default function AddMean(props) {
         setUpdate((st) => !st);
         setLoading(false);
       } else {
+        setEndDate(moment(adminStore.site.siteId.end).format("YYYY-MM-DD"));
         setLoading(false);
       }
     } catch (err) {
@@ -343,26 +343,31 @@ export default function AddMean(props) {
             <FormInput
               type="date"
               name="startDate"
+              value={startDate}
               style={{ width: "49%" }}
               placeholder={`Start date`}
-              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              value={startDate}
+              min={
+                moment().isAfter(moment(adminStore.site.siteId.start), "day")
+                  ? moment().format("YYYY-MM-DD")
+                  : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
+              }
             />
             <FormInput
               type="date"
+              name="endDate"
+              value={endDate}
+              disabled={!startDate}
               placeholder="End date"
               style={{ width: "49%" }}
-              name="endDate"
+              min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              value={endDate}
-              min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
             />
           </Form.Row>
         </Form.Row>

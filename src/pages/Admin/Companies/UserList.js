@@ -194,9 +194,9 @@ export default function UserList(props) {
       );
     }
   };
-  let rows = userList.map((item) => {
-    if ((item.companyId && item.userId) || item.role !== "ADMIN") {
-      return [
+  let rows = userList.map(
+    (item) =>
+      ((item.companyId && item.userId) || item.role !== "ADMIN") && [
         item.userId.firstName + " " + item.userId.lastName,
         item.companyId.name,
         item.role,
@@ -214,9 +214,8 @@ export default function UserList(props) {
             borderRadius: 4,
           }}
         />,
-      ];
-    }
-  });
+      ],
+  );
   async function updateEditModel(editModel) {
     if (editModel) {
       if (editModel.userId.isVerified) {

@@ -106,7 +106,7 @@ const endpoints = {
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
 
   ADMIN_COMPANY: BASE_URL_V1 + "company",
-  GET_USER_COMPANY: BASE_URL_V1 + "company/user",
+  GET_COMPANY_USER: BASE_URL_V1 + "company/user",
   GET_ADMIN_COMPANY: BASE_URL_V1 + "company/admin",
   ADMIN_SITE_COMPANY: BASE_URL_V1 + "company/site",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",

@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
-// import DeliveryRequest from "./DeliveryRequest";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -162,7 +161,7 @@ export default function Organigramme(props) {
           />
         </div>
       </div>
-      {/* <DeliveryRequest history={props.history} /> */}
+      {loading && ""}
     </>
   );
 }
