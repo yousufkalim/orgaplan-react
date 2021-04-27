@@ -37,13 +37,13 @@ export default function Input(props) {
       borderWidth: 1,
       display: "flex",
       overflow: "hidden",
-      textAlign: props.textAlign ? props.textAlign : "center",
       padding: "14px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: white,
       borderColor: borderColor,
+      textAlign: props.textAlign ? props.textAlign : "left",
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       "&::placeholder": {
         color: color,
@@ -118,7 +118,7 @@ export default function Input(props) {
           minLength={props.minLength}
           className={classes.textArea}
           placeholder={props.placeholder}
-          style={props.disabled && { cursor: "not-allowed" }}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       ) : props.type === "date" ? (
         <DatePicker
@@ -164,7 +164,7 @@ export default function Input(props) {
           disabled={props.disabled}
           maxLength={props.maxLength}
           placeholder={props.placeholder}
-          style={props.disabled && { cursor: "not-allowed" }}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       )}
       {props.error !== "" && (

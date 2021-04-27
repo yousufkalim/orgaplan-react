@@ -129,7 +129,7 @@ export default function FormMultipleUpload(props) {
               !props.disabled &&
                 document.getElementById(`fileinput-${props.name}`).click();
             }}
-            style={props.disabled && { cursor: "not-allowed" }}
+            style={props.disabled ? { cursor: "not-allowed" } : {}}
           >
             <div>
               <Plus style={{ width: 20, height: 20 }} />

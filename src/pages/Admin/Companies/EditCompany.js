@@ -308,9 +308,9 @@ export default function AddCompanies(props) {
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
-                  placeholder="Company"
                   name="parentCompanyId"
                   value={parentCompanyId}
+                  placeholder="Select Company"
                   values={allSiteCompanies.filter(
                     (item) => item.value !== props.match.params.id,
                   )}
@@ -330,6 +330,7 @@ export default function AddCompanies(props) {
                 value={trades}
                 disabled={true}
                 values={allTrades}
+                placeholder="Trades"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   inputChange(name, value)
