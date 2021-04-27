@@ -260,7 +260,9 @@ const Calender = (props) => {
       }, 2000);
     }
   };
+
   const saveEvent = () => {
+    let disableHoursSiteUnavailabilityDatesFlag = false;
     if (title !== "" && selectedCompany !== "") {
       /* start time*/
       startTime = String(startTime);
@@ -341,19 +343,26 @@ const Calender = (props) => {
             }
             return {};
           });
-
-          if (!flagHours) {
+          disableHoursSiteUnavailabilityDates.map((key, index) => {
+            if (moment(key).isBetween(startTime, endTime)){
+                  disableHoursSiteUnavailabilityDatesFlag = true; 
+                  return {};
+            }  
+          });
+           console.log(disableHoursSiteUnavailabilityDates);
+        console.log(disableHoursSiteUnavailabilityDatesFlag);
+          if (flagHours || disableHoursSiteUnavailabilityDatesFlag) { 
+            setAlertMsg("you can not Select Disable Hours of a Day");
+            setAlertBoxTime(true);
+            setTimeout(function () {
+              setAlertBoxTime(false);
+            }, 1000); 
+          } else {
             dispatch(add_mean(DbElement));
             setTitle("");
             setSelectedCompany("");
             setAddedEvent(DbElement);
             setShow(false);
-          } else {
-            setAlertMsg("you can not Select Disable Hours of a Day");
-            setAlertBoxTime(true);
-            setTimeout(function () {
-              setAlertBoxTime(false);
-            }, 1000);
           }
         } else if (
           overlap === "Disable" &&
@@ -397,6 +406,7 @@ const Calender = (props) => {
     let flagOpeningHours = false;
     let flagOpeningHoursDay = false;
     let unavailabilitySite = false;
+    let disableHoursSiteUnavailabilityDatesFlag = false;
 
     setBookingDate(moment(start).format("DD/MM/YYYY"));
     setAlertBoxTime(false);
@@ -448,15 +458,22 @@ const Calender = (props) => {
       }
       return {};
     }); 
-    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay || unavailabilitySite) {
+    disableHoursSiteUnavailabilityDates.map((key, index) => {
+      if (moment(start).isSame(key)) {
+        disableHoursSiteUnavailabilityDatesFlag = true;
+
+      }
+      return {};
+    });
+    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay || unavailabilitySite || disableHoursSiteUnavailabilityDatesFlag) {
       setShow(false);
-      if (flagDate || unavailabilitySite) {
+      if (flagDate || unavailabilitySite ) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
           ),
         );
-      } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay) {
+      } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay || disableHoursSiteUnavailabilityDatesFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
@@ -838,6 +855,7 @@ const Calender = (props) => {
       }
       return {};
     });
+  
     if (flagDateAndTime || disableHoursSiteUnavailabilityDatesFlag) {
       return {
         className: "rbc-day-slot rbc-time-slot ",
