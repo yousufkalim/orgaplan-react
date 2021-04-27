@@ -344,8 +344,7 @@ const Calender = (props) => {
             return {};
           });
           disableHoursSiteUnavailabilityDates.map((key, index) => {
-            if (moment(startTime).isSame(key) ||
-            moment(endTime).isSame(key) || moment(key).isBetween(startTime, endTime)){
+            if (moment(key).isBetween(startTime, endTime),null ,'[]'){
                   disableHoursSiteUnavailabilityDatesFlag = true; 
                   return {};
             }  
