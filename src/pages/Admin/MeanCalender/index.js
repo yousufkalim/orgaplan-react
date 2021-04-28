@@ -111,21 +111,8 @@ const Calender = (props) => {
     setDisableHoursSiteUnavailabilityDates,
   ] = useState(adminStore.site.siteId.unavailabilityDates);
   const [disableDay, setDisableDay] = useState([]);
-  // const [statusbooking, setStatusbooking] = useState("#FFFF00");
 
   const [overlap] = React.useState("Enable");
-  // const [overlapOpen, setoverlapOpen] = React.useState(false);
-  // overlap functions **************
-  // const handleOverLapChange = (event) => {
-  //   setoverlap(event.target.value);
-  // };
-  // const handleOverLapClose = () => {
-  //   setoverlapOpen(false);
-  // };
-  // const handleOverLapOpen = () => {
-  //   setoverlapOpen(true);
-  // };
-  // useEffect
 
   useEffect(() => {
     unavailabilityDates();
@@ -144,29 +131,6 @@ const Calender = (props) => {
     }
     // eslint-disable-next-line
   }, [selectedMeanId, saveSelectedMean]);
-  // useEffect(() => {
-  //   if (meansData.means) {
-  //     const tempmeanData = meansData.means.map((key, index) => {
-  //       return {
-  //         title: key.bookingReason,
-  //         companyId: key.companyId,
-  //         createdAt: key.createdAt,
-  //         start: new Date(key.startDate),
-  //         end: new Date(key.endDate),
-  //         endTime: key.endTime,
-  //         meanId: key.meanId,
-  //         siteId: key.siteId,
-  //         startTime: key.startTime,
-  //         updatedAt: key.updatedAt,
-  //         userId: key.userId,
-  //         _id: key._id,
-  //         color: "yellow",
-  //       };
-  //     });
-  //     setEvents(tempmeanData);
-  //   }
-  // }, [meansData.means]);
-
   //
   const handleClose = () => setShow(false);
   let work_week_obj = {
@@ -355,19 +319,18 @@ const Calender = (props) => {
             return {};
           });
           disableHoursSiteUnavailabilityDates.map((key, index) => {
-            if (moment(key).isBetween(startTime, endTime),null ,'[]'){
-                  disableHoursSiteUnavailabilityDatesFlag = true; 
-                  return {};
-            }  
+            if ((moment(key).isBetween(startTime, endTime), null, "[]")) {
+              disableHoursSiteUnavailabilityDatesFlag = true;
+              return {};
+            }
+            return true;
           });
-           console.log(disableHoursSiteUnavailabilityDates);
-        console.log(disableHoursSiteUnavailabilityDatesFlag);
-          if (flagHours || disableHoursSiteUnavailabilityDatesFlag) { 
+          if (flagHours || disableHoursSiteUnavailabilityDatesFlag) {
             setAlertMsg("you can not Select Disable Hours of a Day");
             setAlertBoxTime(true);
             setTimeout(function () {
               setAlertBoxTime(false);
-            }, 1000); 
+            }, 1000);
           } else {
             dispatch(add_mean(DbElement));
             setTitle("");
@@ -472,24 +435,35 @@ const Calender = (props) => {
         }
       }
       return {};
-    }); 
+    });
     disableHoursSiteUnavailabilityDates.map((key, index) => {
       if (moment(start).isSame(key)) {
         disableHoursSiteUnavailabilityDatesFlag = true;
-
       }
       return {};
     });
-    if (flagDate || flagHours || pastdayFlag || flagOpeningHours || flagOpeningHoursDay || unavailabilitySite || disableHoursSiteUnavailabilityDatesFlag) {
+    if (
+      flagDate ||
+      flagHours ||
+      pastdayFlag ||
+      flagOpeningHours ||
+      flagOpeningHoursDay ||
+      unavailabilitySite ||
+      disableHoursSiteUnavailabilityDatesFlag
+    ) {
       setShow(false);
-      if (flagDate || unavailabilitySite ) {
+      if (flagDate || unavailabilitySite) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable Day", "error"),
           ),
         );
-      } else if (flagHours ||  flagOpeningHours || flagOpeningHoursDay || disableHoursSiteUnavailabilityDatesFlag) {
-
+      } else if (
+        flagHours ||
+        flagOpeningHours ||
+        flagOpeningHoursDay ||
+        disableHoursSiteUnavailabilityDatesFlag
+      ) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar("Disable hours", "error"),
@@ -597,24 +571,6 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     // admin code end
   };
-  // const bookingSlot = (event) => {
-  //   // booking Event
-  //   setbookingslot(true);
-  //   const fill = events.filter((e) => e.id === event.id);
-  //   setbookingEvent(fill[0]);
-  //   setBookingstartTime(fill[0].start);
-  //   setBookingEndTime(fill[0].end);
-
-  //   /* show time start */
-  //   let getstart = String(fill[0].start);
-  //   let getend = String(fill[0].end);
-  //   getstart = getstart.slice(16, 21);
-  //   getend = getend.slice(16, 21);
-
-  //   setBookingstartTimeslice(getstart);
-  //   setBookingendTimeslice(getend);
-  //   /* show time End  */
-  // };
   const saveBooking = () => {
     /* start time*/
     bookingstartTime = String(bookingstartTime);
@@ -643,16 +599,6 @@ const Calender = (props) => {
     bookingEndTime = String(bookingEndTime);
     bookingEndTime = bookingEndTime.replace(/,/g, "");
     bookingEndTime = new Date(bookingEndTime);
-    /* End time*/
-    // let uniqid = Math.random();
-    // const newElement = {
-    //   p_id: bookingEvent.id,
-    //   id: uniqid,
-    //   title: bookingTitle,
-    //   start: bookingstartTime,
-    //   end: bookingEndTime,
-    //   color: statusbooking,
-    // };
     if (
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
@@ -664,9 +610,6 @@ const Calender = (props) => {
       }, 1000);
     }
   };
-  // const statusBookingChange = (event) => {
-  //   setStatusbooking(event.target.value);
-  // };
   function Alertbox(props) {
     return (
       <Alert
@@ -885,7 +828,7 @@ const Calender = (props) => {
       }
       return {};
     });
-  
+
     if (flagDateAndTime || disableHoursSiteUnavailabilityDatesFlag) {
       return {
         className: "rbc-day-slot rbc-time-slot ",
@@ -921,53 +864,6 @@ const Calender = (props) => {
                   locale="sv-sv"
                 />
               </div>
-              {/* <div class="form-group statusColor">
-                <label>Status Color </label>
-
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="statusColor"
-                    name="statusColor"
-                    value={statusbooking}
-                    onChange={statusBookingChange}
-                  >
-                    <FormControlLabel
-                      value="#FFFF00"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Pending validation"
-                      className="pending"
-                    />
-
-                    <FormControlLabel
-                      value="#808080"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Not availble"
-                      className="notAvailble"
-                    />
-                    <FormControlLabel
-                      value="#008000"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusbooking(e.target.value)}
-                        />
-                      }
-                      label="Validate"
-                      className="validate"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </div> */}
             </div>
             <div className="col-md-12">
               <div className="endTime">
@@ -984,7 +880,6 @@ const Calender = (props) => {
             <div className="col-md-12">
               <div className="description">
                 <div className="form-group ">
-                  {/* <label for="exampleFormControlTextarea1">Add message</label> */}
                   <textarea
                     className="form-control"
                     id="exampleFormControlTextarea1"
@@ -1097,55 +992,6 @@ const Calender = (props) => {
               </div>
             </div>
           </div>
-          {/* <div className="row">
-            <div className="col-md-6">
-              <div class="form-group statusColor">
-                <label>Status Color </label>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="gender"
-                    name="statusColor"
-                    value={statusColor}
-                    onChange={statusColorChange}
-                  >
-                    <FormControlLabel
-                      value="#FFFF00"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusColor(e.target.value)}
-                        />
-                      }
-                      label="Pending validation"
-                      className="pending"
-                    />
-                    <FormControlLabel
-                      value="#808080"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusColor(e.target.value)}
-                        />
-                      }
-                      label="Not availble"
-                      className="notAvailble"
-                    />
-                    <FormControlLabel
-                      value="#008000"
-                      control={
-                        <Radio
-                          color="primary"
-                          onChange={(e) => setStatusColor(e.target.value)}
-                        />
-                      }
-                      label="Validate"
-                      className="validate"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </div>
-            </div>
-          </div> */}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -1389,126 +1235,6 @@ const Calender = (props) => {
               <h1>Loading.....</h1>
             )}
           </div>
-          {/* <div style={{ flexBasis: "25%", margin: "0 20px 0px 10px" }}>
-            <div className="calender-sidebar pt-5">
-              <div className="text-center w-100 calender-sidebar-heading pb-3">
-                BOOKING
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <input
-                    disabled
-                    type="text"
-                    style={{ border: "1px solid #707070", textAlign: "center" }}
-                    placeholder="Lundi 03 Septembre 2020"
-                    className="w-100 p-2"
-                    value={cdate}
-                    onChange={(e) => setCdate(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="row mt-3">
-                <div className="col-md-12">
-                  <div className="starttime">
-                    <FormSelect
-                      placeholder="ConstructBTP"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12 mt-3">
-                  <div className="endTime">
-                    <FormSelect
-                      placeholder="Start hour"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-12 mt-3">
-                  <div className="endTime">
-                    <FormSelect
-                      placeholder="End hour"
-                      values={[
-                        { value: "green", label: "Green" },
-                        { value: "Yellow", label: "Yellow" },
-                        { value: "Red", label: "Red" },
-                        { value: "Blue", label: "Blue" },
-                        { value: "Orange", label: "Orange" },
-                        { value: "Purple", label: "Purple" },
-                        { value: "Magenta", label: "Magenta" },
-                      ]}
-                      onChange={(e) => {
-                        console.log("area ==> ", e.target.value);
-                      }}
-                      style={{ maxWidth: 300 }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="row pt-3">
-                <div className="col-md-12">
-                  <div className="description">
-                    <div className="form-group ">
-                    <label for="exampleFormControlTextarea1">Add message</label>  
-                      <textarea
-                        className="form-control"
-                        id="exampleFormControlTextarea1"
-                        placeholder="Reason of booking"
-                        rows="3"
-                        value={bookingTitle}
-                        onChange={(e) => setBookingTitle(e.target.value)}
-                      ></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  className="w-100 py-2"
-                  onClick={saveBooking}
-                  style={{
-                    color: "#fff",
-                    backgroundColor: "#DBB20A",
-                    border: "none",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Book
-                </button>
-              </div>
-           <Button variant="primary" onClick={saveBooking}>
-            Add Booking
-          </Button>
-          <Button variant="secondary" onClick={() => setbookingslot(false)}>
-            Close
-          </Button> 
-            </div>
-          </div> */}
         </div>
       </div>
     </>

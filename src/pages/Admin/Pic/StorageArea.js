@@ -19,6 +19,7 @@ import ColorPicker from "../../../components/ColorPcker";
 import FormMultiSelect from "../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
+
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
@@ -92,7 +93,7 @@ export default function DeliveryArea(props) {
         setIsFull(props.selectedShape.storageArea.isFull);
         setColor(props.selectedShape.color);
         setStartDate(props.selectedShape.storageArea.availability.start);
-        setEndDate(props.selectedShape.storageArea.availability.end);
+        setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
         setUnavailabilities(props.selectedShape.storageArea.unavailability);
         setSelectedCompanies(props.selectedShape.storageArea.companies);
@@ -101,6 +102,8 @@ export default function DeliveryArea(props) {
         );
         setNotificationTo(props.selectedShape.storageArea.notificationTo);
         setUpdate((st) => !st);
+      } else {
+        setEndDate(moment(adminStore.site.siteId.end).format("YYYY-MM-DD"));
       }
     } catch (err) {
       dispatch(
@@ -261,7 +264,11 @@ export default function DeliveryArea(props) {
               type="date"
               name="startDate"
               value={startDate}
-              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+              min={
+                moment().isAfter(moment(adminStore.site.siteId.start), "day")
+                  ? moment().format("YYYY-MM-DD")
+                  : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
+              }
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               placeholder={`Date de début`}
               style={GLOBALS.Styles.inputWidth}
@@ -272,6 +279,7 @@ export default function DeliveryArea(props) {
             <FormInput
               type="date"
               name="endDate"
+              disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
@@ -347,6 +355,7 @@ export default function DeliveryArea(props) {
             <FormInput
               type="number"
               placeholder="0"
+              textAlign="center"
               name="notificationPriorToDays"
               value={notificationPriorToDays}
               style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
@@ -356,7 +365,7 @@ export default function DeliveryArea(props) {
             />
             <SmallText
               primary="Days before end of the contract"
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", marginBottom: 0 }}
             />
           </Form.Row>
         </Form.Row>

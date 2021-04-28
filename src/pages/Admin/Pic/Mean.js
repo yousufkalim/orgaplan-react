@@ -346,10 +346,10 @@ export default function AddMean(props) {
               value={startDate}
               style={{ width: "49%" }}
               placeholder={`Start date`}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
+              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               min={
                 moment().isAfter(moment(adminStore.site.siteId.start), "day")
                   ? moment().format("YYYY-MM-DD")

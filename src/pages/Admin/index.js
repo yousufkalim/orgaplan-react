@@ -5,6 +5,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import Pic from "./Pic";
 import Means from "./Means";
 import Sites from "./Sites.js";
+import AddSite from "./AddSite";
 import Calender from "./Calender";
 import Companies from "./Companies";
 import Incidents from "./Incidents";
@@ -18,6 +19,7 @@ export default function AdminIndex() {
   return !store.site ? (
     <Switch>
       <Route exact path="/" component={Sites} />
+      <Route exact path="/add-site" component={AddSite} />
       <Redirect from="*" to="/" />
     </Switch>
   ) : (

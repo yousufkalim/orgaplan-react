@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import "./Login.css";
 import GLOBALS from "../../globals";
 import Actions from "../../redux/actions";
 
-import Loader from "../../components/Loader";
+import Modal from "../../components/Modal";
 import { Images } from "../../assets/Assets";
+import Loader from "../../components/Loader";
 import Button from "../../components/Button";
-import "./Login.css";
 
 const loginYup = Yup.object().shape({
   email: Yup.string()
@@ -308,7 +308,7 @@ export default function Login(props) {
                   name="email"
                   onBlur={handleBlur}
                   value={values.email}
-                  className="login-input"
+                  className="login-input my-2"
                   onChange={handleChange}
                   placeholder={GLOBALS.I18n.t("emailPlaceholder")}
                 />
@@ -320,7 +320,7 @@ export default function Login(props) {
                   value={values.password}
                   onChange={handleChange}
                   error={errors.password}
-                  className="login-input"
+                  className="login-input my-2"
                   placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
                 />
               </div>
@@ -344,23 +344,13 @@ export default function Login(props) {
         </Formik>
       </div>
       <Modal
-        centered
-        animation="false"
-        show={showForgetModal}
-        onHide={() => setShowForgetModal((st) => !st)}
-      >
-        <Modal.Body className="modal-container">
-          <h3>MOT DE PASSE OUBLIÉ ?</h3>
-          <span
-            onClick={() => setShowForgetModal((st) => !st)}
-            className="modalClose"
-          >
-            X
-          </span>
-          <p>
-            Informez votre adresse e-mail afin de réinitialiser votre mot de
-            passe :
-          </p>
+        maxWidth="sm"
+        title="MOT DE PASSE OUBLIÉ ?"
+        open={showForgetModal}
+        onClose={() => {
+          setShowForgetModal(false);
+        }}
+        body={
           <Formik
             initialValues={{ email: "" }}
             validationSchema={forgetYup}
@@ -374,13 +364,12 @@ export default function Login(props) {
               isSubmitting,
             }) => (
               <form onSubmit={handleSubmit}>
-                <div className="w-75 m-auto">
+                <div className="w-100 m-auto">
                   <input
                     type="email"
                     name="email"
                     onBlur={handleBlur}
                     value={values.email}
-                    // error={errors.email}
                     onChange={handleChange}
                     className="login-input"
                     placeholder={GLOBALS.I18n.t("emailPlaceholder")}
@@ -390,7 +379,7 @@ export default function Login(props) {
                   <Button
                     type="submit"
                     fullWidth={false}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !values.email}
                     text={
                       isSubmitting ? (
                         <Loader.Progress />
@@ -403,22 +392,15 @@ export default function Login(props) {
               </form>
             )}
           </Formik>
-        </Modal.Body>
-      </Modal>
-      <Modal animation="false" centered show={showResetModal} backdrop="static">
-        <Modal.Body className="modal-container">
-          <h3>RÉINITIALISATION DU MOT DE PASSE : </h3>
-          <span
-            onClick={() => setShowResetModal((st) => !st)}
-            className="modalClose"
-          >
-            X
-          </span>
-          <p>
-            Entrez les informations suivantes pour réinitialiser votre mot de
-            passe :
-          </p>
-          {validateLoading ? (
+        }
+      />
+      <Modal
+        maxWidth="sm"
+        title="RESET PASSWORD"
+        open={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        body={
+          validateLoading ? (
             <Loader.Progress />
           ) : expired ? (
             <p>Invalid or expired verification token</p>
@@ -440,8 +422,11 @@ export default function Login(props) {
                 isSubmitting,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  {/* {setFieldValue("email", email)} */}
-                  <div className="w-75 mx-auto my-2">
+                  <p style={{ textAlign: "center" }}>
+                    Entrez les informations suivantes pour réinitialiser votre
+                    mot de passe
+                  </p>
+                  <div className="w-100 mx-auto my-2">
                     <input
                       type="email"
                       name="email"
@@ -453,7 +438,7 @@ export default function Login(props) {
                       placeholder={GLOBALS.I18n.t("emailPlaceholder")}
                     />
                   </div>
-                  <div className="w-75 mx-auto my-3">
+                  <div className="w-100 mx-auto my-3">
                     <input
                       required
                       name="password"
@@ -465,7 +450,7 @@ export default function Login(props) {
                       placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
                     />
                   </div>
-                  <div className="w-75 mx-auto mt-2">
+                  <div className="w-100 mx-auto mt-2">
                     <input
                       required
                       type="password"
@@ -482,153 +467,154 @@ export default function Login(props) {
                       type="submit"
                       fullWidth={false}
                       loading={isSubmitting}
-                      disabled={isSubmitting}
+                      disabled={
+                        isSubmitting ||
+                        !values.password ||
+                        values.password !== values.confirmPassword
+                      }
                       text={GLOBALS.I18n.t("submit")}
                     />
                   </div>
                 </form>
               )}
             </Formik>
-          )}
-        </Modal.Body>
-      </Modal>
+          )
+        }
+      />
       <Modal
-        centered
-        backdrop="static"
-        animation="false"
-        show={showProfileModal}
-      >
-        <Modal.Body className="modal-container">
-          <h3>Registration</h3>
-          <span
-            onClick={() => setShowProfileModal((st) => !st)}
-            className="modalClose"
-          >
-            X
-          </span>
-          {!expired && <p>Complete your profile</p>}
-          {validateLoading ? (
-            <Loader.Progress />
-          ) : expired ? (
-            <p>Invalid or expired verification token</p>
-          ) : (
-            <Formik
-              initialValues={{
-                company: company,
-                email: email,
-                phone: phone,
-                firstName: firstName,
-                lastName: lastName,
-                password: "",
-                confirmPassword: "",
-              }}
-              validationSchema={completeProfileYup}
-              onSubmit={onProfileSubmit}
-            >
-              {({
-                values,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  <div className="w-75 mx-auto my-2">
-                    <input
-                      type="text"
-                      name="company"
-                      disabled={true}
-                      onBlur={handleBlur}
-                      value={values.company}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("companyPlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto my-2">
-                    <input
-                      type="email"
-                      name="email"
-                      disabled={true}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("emailPlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto my-2">
-                    <input
-                      type="number"
-                      name="phone"
-                      onBlur={handleBlur}
-                      value={values.phone}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("phonePlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto my-2">
-                    <input
-                      type="text"
-                      name="firstName"
-                      onBlur={handleBlur}
-                      value={values.firstName}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("firstNamePlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto my-2">
-                    <input
-                      type="text"
-                      name="lastName"
-                      onBlur={handleBlur}
-                      value={values.lastName}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("lastNamePlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto my-3">
-                    <input
-                      required
-                      name="password"
-                      type="password"
-                      onBlur={handleBlur}
-                      value={values.password}
-                      onChange={handleChange}
-                      className="login-input"
-                      placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
-                    />
-                  </div>
-                  <div className="w-75 mx-auto mt-2">
-                    <input
-                      required
-                      type="password"
-                      onBlur={handleBlur}
-                      name="confirmPassword"
-                      onChange={handleChange}
-                      className="login-input"
-                      value={values.confirmPassword}
-                      placeholder={GLOBALS.I18n.t("confirmPasswordPlaceholder")}
-                    />
-                  </div>
-                  <div className="text-center mg-top-20">
-                    <Button
-                      type="submit"
-                      fullWidth={false}
-                      loading={isSubmitting}
-                      disabled={isSubmitting}
-                      text={GLOBALS.I18n.t("submit")}
-                    />
-                  </div>
-                </form>
-              )}
-            </Formik>
-          )}
-        </Modal.Body>
-      </Modal>
+        title="REGISTRATION"
+        open={showProfileModal}
+        onClose={() => {
+          setShowProfileModal(false);
+        }}
+        body={
+          <>
+            {!expired && <p>Complete your profile</p>}
+            {validateLoading ? (
+              <Loader.Progress />
+            ) : expired ? (
+              <p>Invalid or expired verification token</p>
+            ) : (
+              <Formik
+                initialValues={{
+                  company: company,
+                  email: email,
+                  phone: phone,
+                  firstName: firstName,
+                  lastName: lastName,
+                  password: "",
+                  confirmPassword: "",
+                }}
+                validationSchema={completeProfileYup}
+                onSubmit={onProfileSubmit}
+              >
+                {({
+                  values,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    <div className="w-100 mx-auto my-2">
+                      <input
+                        type="text"
+                        name="company"
+                        disabled={true}
+                        onBlur={handleBlur}
+                        value={values.company}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("companyPlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto my-2">
+                      <input
+                        type="email"
+                        name="email"
+                        disabled={true}
+                        onBlur={handleBlur}
+                        value={values.email}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto my-2">
+                      <input
+                        type="number"
+                        name="phone"
+                        onBlur={handleBlur}
+                        value={values.phone}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("phonePlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto my-2">
+                      <input
+                        type="text"
+                        name="firstName"
+                        onBlur={handleBlur}
+                        value={values.firstName}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("firstNamePlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto my-2">
+                      <input
+                        type="text"
+                        name="lastName"
+                        onBlur={handleBlur}
+                        value={values.lastName}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("lastNamePlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto my-3">
+                      <input
+                        required
+                        name="password"
+                        type="password"
+                        onBlur={handleBlur}
+                        value={values.password}
+                        onChange={handleChange}
+                        className="login-input"
+                        placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
+                      />
+                    </div>
+                    <div className="w-100 mx-auto mt-2">
+                      <input
+                        required
+                        type="password"
+                        onBlur={handleBlur}
+                        name="confirmPassword"
+                        onChange={handleChange}
+                        className="login-input"
+                        value={values.confirmPassword}
+                        placeholder={GLOBALS.I18n.t(
+                          "confirmPasswordPlaceholder",
+                        )}
+                      />
+                    </div>
+                    <div className="text-center mg-top-20">
+                      <Button
+                        type="submit"
+                        fullWidth={false}
+                        loading={isSubmitting}
+                        disabled={isSubmitting}
+                        text={GLOBALS.I18n.t("submit")}
+                      />
+                    </div>
+                  </form>
+                )}
+              </Formik>
+            )}
+          </>
+        }
+      />
     </>
   );
 }

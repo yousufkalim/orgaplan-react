@@ -264,29 +264,6 @@ export default function Sites(props) {
     }
   }
 
-  function handleChange(name, value) {
-    if (name === "oldPassword") setOldPassword(value);
-    else if (name === "newPassword") setNewPassword(value);
-    else if (name === "confirmPassword") setConfirmPassword(value);
-    else if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "image") {
-      setUpdate((st) => !st);
-      setImage(value);
-    }
-  }
-
-  function resetState() {
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setFirstName("");
-    setLastName("");
-    setImage("");
-    setPhone("");
-  }
-
   async function onPasswordChange(e) {
     try {
       e.preventDefault();
@@ -360,6 +337,29 @@ export default function Sites(props) {
     }
   }
 
+  function handleChange(name, value) {
+    if (name === "oldPassword") setOldPassword(value);
+    else if (name === "newPassword") setNewPassword(value);
+    else if (name === "confirmPassword") setConfirmPassword(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "image") {
+      setUpdate((st) => !st);
+      setImage(value);
+    }
+  }
+
+  function resetState() {
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setFirstName("");
+    setLastName("");
+    setImage("");
+    setPhone("");
+  }
+
   return (
     <>
       <Form.Row className={classes.page} noMargin>
@@ -394,7 +394,9 @@ export default function Sites(props) {
                   />
                 ))}
                 {store.user.adminType === "MASTERADMIN" && (
-                  <SiteAddCard onClick={() => console.log("asdf")} />
+                  <SiteAddCard
+                    onClick={() => props.history.push("/add-site")}
+                  />
                 )}
               </div>
             )}

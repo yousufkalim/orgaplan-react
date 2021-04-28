@@ -484,13 +484,9 @@ class App extends Component {
     tempArr[0].opacity = this.state.clickedShape.opacity;
   };
   handleConvaLineClick = (id) => {
-    // const { meanCheck } = this.state;
-
     this.handleDisableShape(id);
   };
   handleConvaCircleClick = (id) => {
-    // const { meanCheck } = this.state;
-
     this.handleDisableMean(id);
   };
 

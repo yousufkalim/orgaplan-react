@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 
 import "./Landing.css";
 import GLOBALS from "../../globals";
+import Modal from "../../components/Modal";
 import { Images } from "../../assets/Assets";
 import FormInput from "../../components/FormInput";
 import CustomButton from "../../components/Button";
@@ -220,15 +220,15 @@ export default function LandingPage() {
           </footer>
         </div>
       </div>
-      <Modal centered backdrop="static" animation="false" show={showQuoteModal}>
-        <Modal.Body className="modal-container">
-          <h3>Request a Quote</h3>
-          <span
-            onClick={() => setShowQuoteModal((st) => !st)}
-            className="modalClose"
-          >
-            X
-          </span>
+      <Modal
+        maxWidth="sm"
+        title="REQUEST A QUOTE"
+        open={showQuoteModal}
+        onClose={() => {
+          setShowQuoteModal(false);
+          setQuoteMessage("");
+        }}
+        body={
           <Formik
             initialValues={{
               company: "",
@@ -242,20 +242,23 @@ export default function LandingPage() {
             onSubmit={onQuoteSubmit}
           >
             {({ errors, values, handleChange, handleSubmit, isSubmitting }) => (
-              <form onSubmit={handleSubmit} className="mg-top-20">
+              <form onSubmit={handleSubmit} style={{ padding: "0 20px" }}>
                 {quoteMessage && (
-                  <div className="w-75 mx-auto my-2">
+                  <div className="w-100 mx-auto my-2">
                     <div
                       className="login-input"
                       style={
                         quoteMessageType === "error"
                           ? {
-                              backgroundColor: "#fff2f0",
+                              backgroundColor: "#f44336",
                               borderColor: "1px solid #ffccc7",
+                              color: "#fff",
+                              textAlign: "center",
                             }
                           : {
                               backgroundColor: "#f6ffed",
                               borderColor: "1px solid #b7eb8f",
+                              textAlign: "center",
                             }
                       }
                     >
@@ -263,7 +266,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 )}
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     type="text"
                     name="company"
@@ -274,7 +277,7 @@ export default function LandingPage() {
                     placeholder="Nom de l’entreprise"
                   />
                 </div>
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     type="text"
                     name="city"
@@ -284,7 +287,7 @@ export default function LandingPage() {
                     className="login-input"
                   />
                 </div>
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     type="text"
                     name="name"
@@ -294,7 +297,7 @@ export default function LandingPage() {
                     placeholder="Prénom et Nom du contact"
                   />
                 </div>
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     type="number"
                     name="phone"
@@ -304,7 +307,7 @@ export default function LandingPage() {
                     className="login-input"
                   />
                 </div>
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     type="email"
                     name="email"
@@ -314,7 +317,7 @@ export default function LandingPage() {
                     placeholder={GLOBALS.I18n.t("emailPlaceholder")}
                   />
                 </div>
-                <div className="w-75 mx-auto my-2">
+                <div className="w-100 mx-auto my-2">
                   <input
                     textArea
                     width={"100"}
@@ -330,15 +333,23 @@ export default function LandingPage() {
                     type="submit"
                     fullWidth={false}
                     loading={isSubmitting}
-                    disabled={isSubmitting}
+                    disabled={
+                      isSubmitting ||
+                      !values.message ||
+                      !values.email ||
+                      !values.city ||
+                      !values.name ||
+                      !values.company ||
+                      !values.phone
+                    }
                     text={GLOBALS.I18n.t("submit")}
                   />
                 </div>
               </form>
             )}
           </Formik>
-        </Modal.Body>
-      </Modal>
+        }
+      />
     </>
   );
 }

@@ -15,8 +15,9 @@ import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import ColorPicker from "../../../components/ColorPcker";
 import MultiAdderInput from "../../../components/MultiAdderInput";
-import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
+import DeliveryAreaAddressModal from "../../../components/DeliveryAreaAddressModal";
+
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: GLOBALS.Styles.pageContentPadding,
@@ -78,7 +79,7 @@ export default function DeliveryArea(props) {
         setName(props.selectedShape.deliveryArea.name);
         setColor(props.selectedShape.deliveryArea.color);
         setStartDate(props.selectedShape.deliveryArea.availability.start);
-        setEndDate(props.selectedShape.deliveryArea.availability.end);
+        setEndDate(props.selectedShape.deliveryArea.availability.end || "");
         setAddresses(addressAr);
         setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
         setVehicles(vehiclesAr);
@@ -87,6 +88,8 @@ export default function DeliveryArea(props) {
         );
         setNotificationTo(props.selectedShape.deliveryArea.notificationTo);
         setUpdate((st) => !st);
+      } else {
+        setEndDate(moment(adminStore.site.siteId.end).format("YYYY-MM-DD"));
       }
     } catch (err) {
       dispatch(
@@ -154,7 +157,7 @@ export default function DeliveryArea(props) {
           : GLOBALS.Constants.CREATE_DELIVERY_AREA,
         token: store.token,
         body: formdata,
-      }); 
+      });
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
@@ -225,7 +228,11 @@ export default function DeliveryArea(props) {
               name="startDate"
               value={startDate}
               placeholder={`Date de début`}
-              min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+              min={
+                moment().isAfter(moment(adminStore.site.siteId.start), "day")
+                  ? moment().format("YYYY-MM-DD")
+                  : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
+              }
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -235,6 +242,7 @@ export default function DeliveryArea(props) {
             <FormInput
               type="date"
               name="endDate"
+              disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
@@ -249,18 +257,16 @@ export default function DeliveryArea(props) {
         <Form.Row>
           <FormLabel bold primary="INDISPONIBILITES: " />
           <Form.Row noMargin width="65%">
-          <UnavailabilityTimes
-                  name="unavailabilityDates"
-                  values={unavailability}
-                  style={GLOBALS.Styles.inputWidth}
-                  unavailabilityDates={unavailability}
-                  setUnavailabilityDates={setUnavailabilities}
-                  startRange={startDate}
-                  endRange={moment(endDate).add(1, "days")}
-                  onChange={(values) =>
-                    handleChange("unavailabilityDates", values)
-                  }
-                />
+            <UnavailabilityTimes
+              name="unavailabilityDates"
+              values={unavailability}
+              style={GLOBALS.Styles.inputWidth}
+              unavailabilityDates={unavailability}
+              setUnavailabilityDates={setUnavailabilities}
+              startRange={startDate}
+              endRange={moment(endDate).add(1, "days")}
+              onChange={(values) => handleChange("unavailabilityDates", values)}
+            />
           </Form.Row>
         </Form.Row>
         <Form.Row>
@@ -309,6 +315,7 @@ export default function DeliveryArea(props) {
             <FormInput
               type="number"
               placeholder="0"
+              textAlign="center"
               name="notificationPriorToDays"
               value={notificationPriorToDays}
               style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
@@ -318,7 +325,7 @@ export default function DeliveryArea(props) {
             />
             <SmallText
               primary="Days before end of the contract"
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", marginBottom: 0 }}
             />
           </Form.Row>
         </Form.Row>
