@@ -68,32 +68,26 @@ export default function DeliveryArea(props) {
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-
-      const companiesTempArray = [];
-      companies.data.companies.map((item) =>
-        companiesTempArray.push({
-          value: item._id,
-          label: item.name,
-        }),
+      setCompanies(
+        companies.data.map((item) => ({
+          value: item.companyId._id,
+          label: item.companyId.name,
+        })),
       );
 
-      const deliveryAreasTempArray = [];
-      deliveryAreas.data.map((item) =>
-        deliveryAreasTempArray.push({
+      setDeliveryAreas(
+        deliveryAreas.data.map((item) => ({
           value: item._id,
           label: item.name,
-        }),
+        })),
       );
 
-      setCompanies(companiesTempArray);
-      setDeliveryAreas(deliveryAreasTempArray);
       if (props.selectedShape) {
         const means = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,
           token: store.token,
         });
         setMeans(means.data.map((item) => item.name));
-
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
         setColor(props.selectedShape.color);
