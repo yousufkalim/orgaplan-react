@@ -11,7 +11,6 @@ import Companies from "./Companies";
 import Incidents from "./Incidents";
 import AdminHeader from "./AdminHeader";
 import Organigramme from "./Organigramme";
-import Invoices from "./Invoices/Invoices";
 
 export default function AdminIndex() {
   const store = useSelector((state) => state.admin);
@@ -28,7 +27,6 @@ export default function AdminIndex() {
         <Route exact path="/" component={Calender} />
         <Route path="/companies" component={Companies} />
         <Route path="/incidents" component={Incidents} />
-        <Route path="/invoices" component={Invoices} />
         <Route path="/means" component={Means} />
         <Route path="/pic-interactive" component={Pic} />
         <Route path="/organigramme" component={Organigramme} />
