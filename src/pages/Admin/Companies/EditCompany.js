@@ -107,7 +107,6 @@ export default function AddCompanies(props) {
       let company = siteCo.data.find(
         (item) => item.companyId._id === props.match.params.id,
       );
-      console.log("company", company);
       setName(company.companyId.name);
       setColor(company.color);
       setTrades(company.trades);

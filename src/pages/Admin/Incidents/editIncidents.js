@@ -74,13 +74,9 @@ export default function AddIncidents(props) {
 
   useEffect(() => {
     if (companyId) {
-      companies.map((com) => {
-        let subc = com.subContractors.find((sub) => sub._id === companyId);
-        if (subc) {
-          setGeneralContractor(subc.name);
-        }
-        return true;
-      });
+      let comp = companies.find((com) => com.companyId._id === companyId);
+      if (comp.parentCompanyId) setGeneralContractor(comp.parentCompanyId.name);
+      else setGeneralContractor("");
     }
     // eslint-disable-next-line
   }, [companyId]);
@@ -94,22 +90,21 @@ export default function AddIncidents(props) {
 
       if (response.data.site_companies) {
         setCompanies(response.data.site_companies);
-        const temp = [];
-        response.data.site_companies.map((item) =>
-          temp.push({
+        setDropdownCompanies(
+          response.data.site_companies.map((item) => ({
             label: item.companyId.name,
             value: item.companyId._id,
-          }),
+          })),
         );
-        setDropdownCompanies(temp);
       }
 
       if (response.data.locationTypes) {
-        const temp = [];
-        response.data.locationTypes.map((item, index) => {
-          return temp.push({ label: item, value: item });
-        });
-        setDropdownLocationType(temp);
+        setDropdownLocationType(
+          response.data.locationTypes.map((item, index) => ({
+            label: item,
+            value: item,
+          })),
+        );
       }
       await setValues();
     } catch (err) {
@@ -165,30 +160,24 @@ export default function AddIncidents(props) {
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        const storageValue = [
-          {
-            label: response.data.name,
-            value: response.data._id,
-          },
-        ];
+      const storageValue = [
+        {
+          label: response.data.name,
+          value: response.data._id,
+        },
+      ];
 
-        setDropdownLocation(storageValue);
-      }
+      setDropdownLocation(storageValue);
     }
     if (selectedLocationType === "DELIVERYAREA") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data) {
-          const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item._id });
-          });
-          setDropdownLocation(temp);
-        }
+      if (response.data) {
+        setDropdownLocation(
+          response.data.map((item) => ({ label: item.name, value: item._id })),
+        );
       }
     }
   };
