@@ -108,9 +108,9 @@ export default function AddClient(props) {
           phoneError: "",
         });
       }
-      if (value.length > 10 || value.length < 10) {
+      if (value.length > 25 && value.length < 10) {
         setErrors({
-          phoneError: "* Phone Number must have exact 10 digits",
+          phoneError: "* Telephone must have 10 to 25 digits",
         });
       }
       if (value[0] !== "0") {
@@ -280,7 +280,8 @@ export default function AddClient(props) {
               <FormInput
                 name="phone"
                 value={phone}
-                maxLength="30"
+                type="number"
+                maxlength="25"
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
