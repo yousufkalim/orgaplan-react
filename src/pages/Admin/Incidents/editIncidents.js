@@ -149,9 +149,6 @@ export default function AddIncidents(props) {
     if (e.target.name === "status") setType(e.target.status);
     if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
-      const locationObject = {};
-      locationObject[0] = selectedLocationType;
-      locationObject[1] = e.target.value;
     }
   };
   const fetchLocationDataOnTypeChange = async () => {

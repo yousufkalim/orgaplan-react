@@ -132,12 +132,36 @@ export default function Home(props) {
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [invoices, setInvoices] = useState("");
+  const [deliveries, setDeliveries] = useState("");
+  const [means, setMeans] = useState("");
+  const [incidents, setIncidents] = useState("");
+
+  const [invoiceArray, setInvoiceArray] = useState("");
+  const [subSiteArray, setSubSiteArray] = useState([]);
+  const [subClientArray, setSubClientArray] = useState([]);
+  const [siteDeliveryArray, setSiteDeliveryArray] = useState([]);
+  const [clientDeliveryArray, setClientDeliveryArray] = useState([]);
+  const [siteMeanArray, setSiteMeanArray] = useState([]);
+  const [clientMeanArray, setClientMeanArray] = useState([]);
+  const [siteIncidentArray, setSiteIncidentArray] = useState([]);
+  const [clientIncidentArray, setClientIncidentArray] = useState([]);
+  //working
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
   }, []);
 
   async function fetchData() {
+    fetchDashboardData();
+    fetchInvoices();
+    fetchEndOfSubscriton();
+    fetchDeliveries();
+    fetchMeans();
+    fetchIncident();
+  }
+
+  async function fetchDashboardData() {
     try {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.DASHBOARD}`,
@@ -151,6 +175,152 @@ export default function Home(props) {
         ),
       );
     }
+  }
+  async function fetchInvoices() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/invoices`,
+      });
+      setInvoices(result.data);
+      fetchInvoicesArray(result.data.invoices);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+  async function fetchDeliveries() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/deliveries`,
+      });
+      console.log(result.data);
+      setDeliveries(result.data);
+      fetchDeliveriesArray(result.data);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function fetchMeans() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/means`,
+      });
+      setMeans(result.data);
+      fetchMeanArray(result.data);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+
+  async function fetchIncident() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/incidents`,
+      });
+      setIncidents(result.data);
+      fetchIncidentArray(result.data);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+  async function fetchEndOfSubscriton() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/endOfSubscription`,
+      });
+      fetchEndOfSubscriptionArray(result.data);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
+  async function fetchIncidentArray(data) {
+    const siteTemp = [];
+    const clientTemp = [];
+    data.siteIncidents.map((item, index) => {
+      return siteTemp.push({ [item.siteId.name]: item.count });
+    });
+
+    data.clientIncidents?.map((item, index) => {
+      return clientTemp.push({ [item.comapanyName]: item.count });
+    });
+    setSiteIncidentArray(siteTemp);
+    setClientIncidentArray(clientTemp);
+  }
+  async function fetchMeanArray(data) {
+    const siteTemp = [];
+    const clientTemp = [];
+    data.siteMean.map((item, index) => {
+      return siteTemp.push({ [item.siteId.name]: item.count });
+    });
+
+    data.clientMean?.map((item, index) => {
+      return clientTemp.push({ [item.comapanyName]: item.count });
+    });
+    setSiteMeanArray(siteTemp);
+    setClientMeanArray(clientTemp);
+  } //working
+
+  async function fetchDeliveriesArray(data) {
+    const siteTemp = [];
+    const clientTemp = [];
+    data.siteDeliveries.map((item, index) => {
+      return siteTemp.push({ [item.siteId.name]: item.count });
+    });
+
+    data.clientDeliveries?.map((item, index) => {
+      return clientTemp.push({ [item.comapanyName]: item.count });
+    });
+    setSiteDeliveryArray(siteTemp);
+    setClientDeliveryArray(clientTemp);
+  }
+
+  async function fetchEndOfSubscriptionArray(data) {
+    const siteTemp = [];
+    const clientTemp = [];
+    data.site.map((item, index) => {
+      return siteTemp.push({ [item.name]: item.daysLeft });
+    });
+
+    data.client.map((item, index) => {
+      return clientTemp.push({ [item.comapanyName]: item.daysLeft });
+    });
+    setSubSiteArray(siteTemp);
+    setSubClientArray(clientTemp);
+  }
+  async function fetchInvoicesArray(data) {
+    const temp = [];
+    data.map((item, index) => {
+      const invoiceObject = {
+        [item.siteId.name]: item.totalAmount,
+      };
+      temp.push(invoiceObject);
+    });
+    return setInvoiceArray(temp);
   }
 
   let renderArray = [
@@ -170,164 +340,59 @@ export default function Home(props) {
         },
         {
           title: "INVOICE",
-          total: data && data.invoices.total,
+          total: invoices && invoices.total,
           tabs: false,
           path: "/invoices",
           text: "Invoices list",
-          items: [
-            { "Marché couvert ULYS": "11,392" },
-            { "Démolition usine VUC": "1,391" },
-            { "Extension bâtiment c": "101" },
-            { "Réalisation châtelet": "101" },
-            { "Démolition usine VIC": "0" },
-            { "Extension bâtiment carc": "0" },
-            { "Réalisation Bâtiment C": "0" },
-            { "Extension usine Réglais": "0" },
-          ],
+          items: [...invoiceArray],
         },
       ],
       cols: 4,
     },
     {
       title: "DELIVERIES",
-      total: "235",
+      total: deliveries && deliveries.total,
       tabs: true,
       items: [
         {
           title: "site",
-          items: [
-            { "Marché couvert ULYSSES": 190 },
-            { "Démolition usine VUC": 149 },
-            { "Extension bâtiment carc": 120 },
-            { "Réalisation châtelet ": 110 },
-            { "Démolition usine VIC": 10 },
-            { "Marché couvert REGAL": 10 },
-            { "Démolition usine VIX": 10 },
-            { "Extension bâtiment carc": 10 },
-            { "Réalisation Bâtiment C": 10 },
-            { "Extension usine Réglais": 10 },
-            { "Marché couvert REGAL": 10 },
-            { "Démolition usine VIX": 10 },
-            { "Extension bâtiment carc": 10 },
-            { "Réalisation Bâtiment C": 10 },
-            { "Extension usine Réglais": 10 },
-          ],
+          items: siteDeliveryArray,
         },
         {
           title: "client",
-          items: [
-            { "Marché couvert ULYSSES": 90 },
-            { "Démolition usine VUC": 49 },
-            { "Extension bâtiment carc": 20 },
-            { "Réalisation châtelet ": 10 },
-            { "Démolition usine VIC": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-          ],
+          items: clientDeliveryArray,
         },
       ],
       cols: 4,
     },
     {
       title: "INCIDENTS",
-      total: 203,
+      total: incidents && incidents.total,
       tabs: true,
       items: [
         {
           title: "site",
-          items: [
-            { "Marché couvert ULYSSES": 190 },
-            { "Démolition usine VUC": 149 },
-            { "Extension bâtiment carc": 120 },
-            { "Réalisation châtelet ": 110 },
-            { "Démolition usine VIC": 10 },
-            { "Marché couvert REGAL": 10 },
-            { "Démolition usine VIX": 10 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-          ],
+          items: siteIncidentArray,
         },
         {
           title: "client",
-          items: [
-            { "Marché couvert ULYSSES": 90 },
-            { "Démolition usine VUC": 49 },
-            { "Extension bâtiment carc": 20 },
-            { "Réalisation châtelet ": 10 },
-            { "Démolition usine VIC": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-          ],
+          items: clientIncidentArray,
         },
       ],
       cols: 4,
     },
     {
       title: "MEANS",
-      total: 104,
+      total: means && means.total,
       tabs: true,
       items: [
         {
           title: "site",
-          items: [
-            { "Marché couvert ULYSSES": 90 },
-            { "Démolition usine VUC": 49 },
-            { "Extension bâtiment carc": 20 },
-            { "Réalisation châtelet ": 10 },
-            { "Démolition usine VIC": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-          ],
+          items: siteMeanArray,
         },
         {
           title: "client",
-          items: [
-            { "Marché couvert ULYSSES": 90 },
-            { "Démolition usine VUC": 49 },
-            { "Extension bâtiment carc": 20 },
-            { "Réalisation châtelet ": 10 },
-            { "Démolition usine VIC": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-            { "Marché couvert REGAL": 0 },
-            { "Démolition usine VIX": 0 },
-            { "Extension bâtiment carc": 0 },
-            { "Réalisation Bâtiment C": 0 },
-            { "Extension usine Réglais": 0 },
-          ],
+          items: clientMeanArray,
         },
       ],
       cols: 4,
@@ -339,25 +404,11 @@ export default function Home(props) {
       items: [
         {
           title: "site",
-          items: [
-            { "Marché couvert ULYSSES": 2 },
-            { "Démolition usine VUC": 4 },
-            { "Extension bâtiment carc": 8 },
-            { "Réalisation châtelet ": 20 },
-            { "Démolition usine VIC": 32 },
-            { "Marché couvert REGAL": 60 },
-          ],
+          items: subSiteArray,
         },
         {
           title: "client",
-          items: [
-            { "Marché couvert ULYSSES": 2 },
-            { "Démolition usine VUC": 4 },
-            { "Extension bâtiment carc": 8 },
-            { "Réalisation châtelet ": 20 },
-            { "Démolition usine VIC": 32 },
-            { "Marché couvert REGAL": 60 },
-          ],
+          items: subClientArray,
         },
       ],
       cols: 4,
