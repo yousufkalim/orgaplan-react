@@ -2,11 +2,12 @@ import React from "react";
 import moment from "moment";
 import "./sass/custom.scss";
 import { Modal, Alert } from "react-bootstrap";
+
 const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
   handleDeleteEvent,
-  handleEditEvent,
+  handleDeleteDelivery,
   event,
   handleValidateMeans,
   setAlertBoxTime,
@@ -34,23 +35,47 @@ const PopoverModal = ({
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
         {props.message}&nbsp;&nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteEvent("no");
-          }}
-          className="alert-link"
-        >
-          NO
-        </a>{" "}
-        &nbsp;&nbsp;
-        <a
-          onClick={() => {
-            handleDeleteEvent("yes");
-          }}
-          className="alert-link"
-        >
-          YES
-        </a>
+        {event.objectName === "Deliveries" ? (
+          <>
+            <div
+              onClick={() => {
+                handleDeleteDelivery("no");
+              }}
+              className="alert-link"
+            >
+              NO
+            </div>{" "}
+            &nbsp;&nbsp;
+            <div
+              onClick={() => {
+                handleDeleteDelivery("yes");
+              }}
+              className="alert-link"
+            >
+              YES
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              onClick={() => {
+                handleDeleteEvent("no");
+              }}
+              className="alert-link"
+            >
+              NO
+            </div>{" "}
+            &nbsp;&nbsp;
+            <div
+              onClick={() => {
+                handleDeleteEvent("yes");
+              }}
+              className="alert-link"
+            >
+              YES
+            </div>
+          </>
+        )}
       </Alert>
     );
   }
@@ -61,7 +86,7 @@ const PopoverModal = ({
           <Modal.Title className="text-center">Booking</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="A you sure to want Delete" />
+          <Alertbox message="Are you sure to Delete" />
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <>
@@ -94,12 +119,14 @@ const PopoverModal = ({
                     <tr>
                       <th>Name</th>
                       <th>Type</th>
+                      <th>Reason</th>
                     </tr>
                     {event.liftingMeans.map((key, index) => {
                       return (
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
+                          <td>{key.alerts ? key.alerts.reason : null}</td>
                         </tr>
                       );
                     })}
@@ -108,6 +135,7 @@ const PopoverModal = ({
                         <tr>
                           <td>{key.name}</td>
                           <td>{key.meanType}</td>
+                          <td>{key.alerts ? key.alerts.reason : null}</td>
                         </tr>
                       );
                     })}
@@ -147,7 +175,10 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {event.deliveryArea.name}
+                      {" Name:  " + event.deliveryArea.name} <br />{" "}
+                      {event.deliveryArea.alert
+                        ? " Reason:  " + event.deliveryArea.alert.reason
+                        : null}
                     </h5>
                   </>
                 ) : (
@@ -168,7 +199,12 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {event.storageArea.name}
+                      {" Name:  " + event.storageArea.name} <br />
+                      {event.storageArea.alert
+                        ? event.storageArea.alert.map((item, index) => {
+                            return `Reason ${index + 1}   :   ${item.reason} `;
+                          })
+                        : null}
                     </h5>
                   </>
                 ) : (
@@ -239,7 +275,7 @@ const PopoverModal = ({
                       <div className="col-lg-4">
                         <button
                           className="btn text-success btn-light"
-                          onClick={onEditDelivery}
+                          onClick={() => onEditDelivery(event)}
                         >
                           <i class="fas fa-trash"></i> <span>More Info</span>
                         </button>
@@ -247,7 +283,7 @@ const PopoverModal = ({
                       <div className="col-lg-3">
                         <button
                           className="btn text-danger btn-light"
-                          onClick={handleDeleteEvent}
+                          onClick={handleDeleteDelivery}
                         >
                           <i class="fas fa-trash"></i> <span>Refuse</span>
                         </button>

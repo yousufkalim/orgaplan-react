@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import * as Yup from "yup";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -19,7 +18,6 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
-import { RestoreOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,7 +101,6 @@ export default function UserList(props) {
 
   const getData = async () => {
     try {
-      console.log(props?.match?.params?.id);
       setSiteName(adminStore.site.siteId.name);
 
       const userResponse = await GLOBALS.API({
@@ -176,11 +173,10 @@ export default function UserList(props) {
 
   const resendMail = async (email) => {
     try {
-      const response = await GLOBALS.API({
+      await GLOBALS.API({
         uri: `${GLOBALS.Constants.RESEND_EMAIL_VERIFICATION}?email=${email}`,
         token: store.token,
         method: "POST",
-        bosy: {},
       });
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -198,18 +194,15 @@ export default function UserList(props) {
       );
     }
   };
-  // eslint-disable-next-line
-  let rows = userList.map((item) => {
-    // console.log(item.role !== "ADMIN");
-    if ((item.companyId && item.userId) || item.role !== "ADMIN") {
-      return [
+  let rows = userList.map(
+    (item) =>
+      ((item.companyId && item.userId) || item.role !== "ADMIN") && [
         item.userId.firstName + " " + item.userId.lastName,
         item.companyId.name,
         item.role,
         item.userId.isVerified ? "Inscrit" : "En attente",
         item.userId.email,
         <SmallButton
-          // text="Edit"
           text={item.userId.isVerified ? "Edit" : "Re-Send"}
           onClick={(e) => {
             updateEditModel(item);
@@ -221,11 +214,9 @@ export default function UserList(props) {
             borderRadius: 4,
           }}
         />,
-      ];
-    }
-  });
+      ],
+  );
   async function updateEditModel(editModel) {
-    // console.log(editModel);
     if (editModel) {
       if (editModel.userId.isVerified) {
         handleClickOpen();
@@ -239,7 +230,6 @@ export default function UserList(props) {
         setImage({
           uri: GLOBALS.Constants.BASE_URL + editModel.userId.image,
         });
-        // setImage([{ key: 0, file: undefined, uri: editModel.userId.image }]);
         setUserId(editModel.userId._id);
       } else {
         resendMail(editModel.userId.email);

@@ -38,6 +38,7 @@ const Form = (props) => {
 
   return (
     <form
+      {...props}
       className={`${classes.form} ${props.className}`}
       onSubmit={props.onSubmit}
       style={props.style}

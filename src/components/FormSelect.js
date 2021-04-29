@@ -24,14 +24,15 @@ export default function Input(props) {
       width: "100%",
       borderWidth: 1,
       display: "flex",
+      // textIndent: "40%",
       overflow: "hidden",
-      textAlign: "center",
       padding: "10px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: white,
       borderColor: borderColor,
+      textAlign: props.textAlign ? props.textAlign : "center",
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       "&::placeholder": {
         color: color,
@@ -58,10 +59,11 @@ export default function Input(props) {
         disabled={props.disabled}
         onChange={props.onChange}
         className={classes.select}
+        style={props.disabled ? { cursor: "not-allowed" } : {}}
       >
         {props.placeholder && <option value="">{props.placeholder}</option>}
         {props.values.map((item, index) => (
-          <option key={item.value + index} value={item.value}>
+          <option key={Date.now() + index} value={item.value}>
             {item.label}
           </option>
         ))}

@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
 import Actions from "../../../../../redux/actions";
 
 import Loader from "../../../../../components/Loader";
 import Stepper from "../../../../../components/Stepper";
-import Heading from "../../../../../components/Heading";
 import DeliveryRequestStep1 from "./DeliveryRequestStep1";
 import DeliveryRequestStep2 from "./DeliveryRequestStep2";
 import DeliveryRequestStep3 from "./DeliveryRequestStep3";
-import { ReactComponent as BackArrow } from "../../../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +50,7 @@ export default function DeliveryRequest(props) {
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_SITE_COMPANIES}/${adminStore.site.siteId._id}`,
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
       const deliveryAreas = await GLOBALS.API({
@@ -72,14 +70,27 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setMeans(means.data);
+
       setDeliveryAreas(
-        deliveryAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-        })),
+        deliveryAreas.data.reduce((accumulator, currentValue) => {
+          if (
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
+              "[]",
+            )
+          ) {
+            accumulator.push({
+              value: currentValue._id,
+              label: currentValue.name,
+            });
+          }
+          return accumulator;
+        }, []),
       );
       setCompanies(
-        response.data.companies.map((company) => ({
+        response.data.map((company) => ({
           label: company.companyId.name,
           value: company.companyId._id,
         })),
@@ -91,11 +102,23 @@ export default function DeliveryRequest(props) {
         })),
       );
       setStorageAreas(
-        storageAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-          level: item.level,
-        })),
+        storageAreas.data.reduce((accumulator, currentValue) => {
+          if (
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
+              "[]",
+            )
+          ) {
+            accumulator.push({
+              value: currentValue._id,
+              label: currentValue.name,
+              level: currentValue.level,
+            });
+          }
+          return accumulator;
+        }, []),
       );
       setBuildings(buildings.data.items);
       props.eventId && fetchEvent();

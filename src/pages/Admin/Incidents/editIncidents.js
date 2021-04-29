@@ -15,7 +15,6 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
-import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
@@ -75,13 +74,9 @@ export default function AddIncidents(props) {
 
   useEffect(() => {
     if (companyId) {
-      companies.map((com) => {
-        let subc = com.subContractors.find((sub) => sub._id === companyId);
-        if (subc) {
-          setGeneralContractor(subc.name);
-        }
-        return true;
-      });
+      let comp = companies.find((com) => com.companyId._id === companyId);
+      if (comp.parentCompanyId) setGeneralContractor(comp.parentCompanyId.name);
+      else setGeneralContractor("");
     }
     // eslint-disable-next-line
   }, [companyId]);
@@ -95,22 +90,21 @@ export default function AddIncidents(props) {
 
       if (response.data.site_companies) {
         setCompanies(response.data.site_companies);
-        const temp = [];
-        response.data.site_companies.map((item) =>
-          temp.push({
+        setDropdownCompanies(
+          response.data.site_companies.map((item) => ({
             label: item.companyId.name,
             value: item.companyId._id,
-          }),
+          })),
         );
-        setDropdownCompanies(temp);
       }
 
       if (response.data.locationTypes) {
-        const temp = [];
-        response.data.locationTypes.map((item, index) => {
-          return temp.push({ label: item, value: item });
-        });
-        setDropdownLocationType(temp);
+        setDropdownLocationType(
+          response.data.locationTypes.map((item, index) => ({
+            label: item,
+            value: item,
+          })),
+        );
       }
       await setValues();
     } catch (err) {
@@ -132,6 +126,15 @@ export default function AddIncidents(props) {
     setStatus(incident?.status);
     setDescription(incident?.description);
     setIsPaid(incident.isPaid);
+    setImage([{ key: 0, file: undefined, uri: incident.photos[0] }]);
+    if (incident?.isBillable) {
+      setPriceDisable("true");
+    } else {
+      setPriceDisable("false");
+    }
+  };
+  const handleChange = (name, value) => {
+    if (name === "image") setImage(value);
   };
   const nameChange = (e) => {
     if (e.target.name === "name") setName(e.target.value);
@@ -146,9 +149,6 @@ export default function AddIncidents(props) {
     if (e.target.name === "status") setType(e.target.status);
     if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
-      const locationObject = {};
-      locationObject[0] = selectedLocationType;
-      locationObject[1] = e.target.value;
     }
   };
   const fetchLocationDataOnTypeChange = async () => {
@@ -157,30 +157,24 @@ export default function AddIncidents(props) {
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        const storageValue = [
-          {
-            label: response.data.name,
-            value: response.data._id,
-          },
-        ];
+      const storageValue = [
+        {
+          label: response.data.name,
+          value: response.data._id,
+        },
+      ];
 
-        setDropdownLocation(storageValue);
-      }
+      setDropdownLocation(storageValue);
     }
     if (selectedLocationType === "DELIVERYAREA") {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data) {
-          const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item._id });
-          });
-          setDropdownLocation(temp);
-        }
+      if (response.data) {
+        setDropdownLocation(
+          response.data.map((item) => ({ label: item.name, value: item._id })),
+        );
       }
     }
   };
@@ -202,6 +196,7 @@ export default function AddIncidents(props) {
       formdata.append("comment", comment);
       formdata.append("companyId", companyId);
       formdata.append("isPaid", isPaid);
+      if (image[0]?.file) formdata.append("photos", image[0].file);
 
       formdata.append("siteId", adminStore.site.siteId._id);
       await GLOBALS.API({
@@ -348,7 +343,9 @@ export default function AddIncidents(props) {
                 name="profile"
                 values={image}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
+                onChange={(values) => {
+                  handleChange("image", values);
+                }}
               />
             </Form.Row>
           </Form.Row>

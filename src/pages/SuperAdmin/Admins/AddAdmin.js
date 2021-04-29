@@ -12,6 +12,7 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
@@ -33,18 +34,21 @@ export default function AddAdmin(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
+  const [company, setCompany] = useState("");
+  const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
-  const [update, setUpdate] = useState(false);
+  const [allCompanies, setAllCompanies] = useState([]);
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [image, setImage] = useState([]);
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [adminType, setAdminType] = useState("ADMINPERSITE");
 
   useEffect(() => {
     fetchData();
@@ -62,6 +66,7 @@ export default function AddAdmin(props) {
         label: item.name,
       }));
 
+      setAllCompanies(result.data.items);
       setCompanies(itemsArray);
       setLoading(false);
     } catch (err) {
@@ -98,8 +103,12 @@ export default function AddAdmin(props) {
     else if (name === "image") {
       setUpdate((st) => !st);
       setImage(value);
-      console.log("updated image");
-    } else if (name === "companyId") setCompanyId(value);
+    } else if (name === "companyId") {
+      setCompanyId(value);
+      value
+        ? setCompany(allCompanies.find((item) => item._id === value))
+        : setCompany("");
+    } else if (name === "adminType") setAdminType(value);
   };
 
   const onSubmit = async (e) => {
@@ -109,10 +118,11 @@ export default function AddAdmin(props) {
       var formdata = new FormData();
       formdata.append("email", email);
       formdata.append("phone", phone);
-      formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
-      formdata.append("image", image[0]?.file);
+      formdata.append("firstName", firstName);
+      formdata.append("adminType", adminType);
       formdata.append("companyId", companyId);
+      formdata.append("image", image[0]?.file);
 
       await GLOBALS.API({
         method: "POST",
@@ -187,7 +197,6 @@ export default function AddAdmin(props) {
               <FormInput
                 name="firstName"
                 value={firstName}
-                // error={firstName}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -197,7 +206,6 @@ export default function AddAdmin(props) {
               <FormInput
                 name="lastName"
                 value={lastName}
-                // error={lastName}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -210,7 +218,6 @@ export default function AddAdmin(props) {
             <FormLabel bold primary="PROFILE*: " />
             <FormMultipleUpload
               name="image"
-              // error={image}
               values={image}
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => handleChange("image", values)}
@@ -230,6 +237,23 @@ export default function AddAdmin(props) {
               }
             />
           </Form.Row>
+          {company.type === "MASTERCLIENT" && (
+            <Form.Row>
+              <FormLabel bold primary="TYPE OF ADMIN* : " />
+              <RadioButton
+                name="adminType"
+                value={adminType}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+                items={[
+                  { value: "ADMINPERSITE", label: "Admin Per Site" },
+                  { value: "MASTERADMIN", label: "Master Admin" },
+                ]}
+              />
+            </Form.Row>
+          )}
           <Form.ButtonContainer>
             <Button
               type="submit"

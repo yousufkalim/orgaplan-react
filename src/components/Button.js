@@ -20,6 +20,7 @@ export default function ButtonComponent(props) {
     },
     label: {
       width: "100%",
+      whiteSpace: "nowrap",
       color: props.textColor || theme.palette.common.white,
     },
   }));

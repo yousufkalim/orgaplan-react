@@ -78,8 +78,7 @@ const PicCanvas = (props) => {
 
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
-  const [levelsDropdown, setLevelsDropdown] = useState([]);
-
+  const [levelsDropdown, setLevelsDropdown] = useState([]);  
   useEffect(() => {
     fetchSitePic();
     // eslint-disable-next-line
@@ -366,6 +365,19 @@ const PicCanvas = (props) => {
                   >
                     <Pencil className={classes.infoIcon} />
                   </IconButton>
+                  {selectedShape.type === "MEAN" ? <>
+                  <NavLink
+                    disabled={loading}
+                    to={{
+                      pathname: "/means/calendar",
+                      selectedShape: selectedShape,
+                    }}
+                  >
+                    <IconButton>
+                      <Calendar className={classes.infoIcon} />
+                    </IconButton>
+                  </NavLink>
+                  </> : <>
                   <NavLink
                     disabled={loading}
                     to={{
@@ -377,6 +389,8 @@ const PicCanvas = (props) => {
                       <Calendar className={classes.infoIcon} />
                     </IconButton>
                   </NavLink>
+                  </>}
+             
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {

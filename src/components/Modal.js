@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: "20px",
     overflow: "hidden",
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   headerContainer: {
     display: "flex",

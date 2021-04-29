@@ -37,13 +37,13 @@ export default function Input(props) {
       borderWidth: 1,
       display: "flex",
       overflow: "hidden",
-      textAlign: props.textAlign ? props.textAlign : "center",
       padding: "14px 12px",
       borderStyle: "solid",
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: white,
       borderColor: borderColor,
+      textAlign: props.textAlign ? props.textAlign : "left",
       transition: "background-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
       "&::placeholder": {
         color: color,
@@ -118,6 +118,7 @@ export default function Input(props) {
           minLength={props.minLength}
           className={classes.textArea}
           placeholder={props.placeholder}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       ) : props.type === "date" ? (
         <DatePicker
@@ -129,7 +130,6 @@ export default function Input(props) {
           required={props.required}
           value={props.value ? moment(props.value) : 0}
           format="DD-MM-YYYY"
-          style={datepickerStyle}
           disabled={props.disabled}
           placeholder={props.placeholder}
           onChange={(e) => {
@@ -145,13 +145,16 @@ export default function Input(props) {
             (props.min && d.isBefore(props.min)) ||
             (props.max && d.isSameOrAfter(props.max))
           }
+          style={{
+            ...datepickerStyle,
+            cursor: props.disabled ? "not-allowed" : "default",
+          }}
         />
       ) : (
         <input
           name={props.name}
           type={props.type}
           value={props.value}
-          maxLength={props.maxLength}
           max={props.maxLength}
           onBlur={props.onBlur}
           onFocus={props.onFocus}
@@ -159,8 +162,9 @@ export default function Input(props) {
           onChange={props.onChange}
           required={props.required}
           disabled={props.disabled}
+          maxLength={props.maxLength}
           placeholder={props.placeholder}
-          maxlength={props.maxlength}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
         />
       )}
       {props.error !== "" && (

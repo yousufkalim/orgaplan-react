@@ -244,11 +244,15 @@ export default function Sites(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_USER_SITES}/${store.user._id}`,
       });
-      // const adminCompany = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.COMPANY_GET}/${store.user.company}`,
-      // });
-      // dispatch(Actions.admin.set_company(adminCompany.data));
-      // setCompany(adminCompany.data);
+      try {
+        const adminCompany = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_ADMIN_COMPANY}/${store.user._id}`,
+        });
+        dispatch(Actions.admin.set_company(adminCompany.data));
+        setCompany(adminCompany.data);
+      } catch (e) {
+        console.log("e");
+      }
       setItems(result.data.sites);
       setLoading(false);
     } catch (err) {
@@ -258,29 +262,6 @@ export default function Sites(props) {
         ),
       );
     }
-  }
-
-  function handleChange(name, value) {
-    if (name === "oldPassword") setOldPassword(value);
-    else if (name === "newPassword") setNewPassword(value);
-    else if (name === "confirmPassword") setConfirmPassword(value);
-    else if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") setPhone(value);
-    else if (name === "image") {
-      setUpdate((st) => !st);
-      setImage(value);
-    }
-  }
-
-  function resetState() {
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setFirstName("");
-    setLastName("");
-    setImage("");
-    setPhone("");
   }
 
   async function onPasswordChange(e) {
@@ -356,6 +337,29 @@ export default function Sites(props) {
     }
   }
 
+  function handleChange(name, value) {
+    if (name === "oldPassword") setOldPassword(value);
+    else if (name === "newPassword") setNewPassword(value);
+    else if (name === "confirmPassword") setConfirmPassword(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "image") {
+      setUpdate((st) => !st);
+      setImage(value);
+    }
+  }
+
+  function resetState() {
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setFirstName("");
+    setLastName("");
+    setImage("");
+    setPhone("");
+  }
+
   return (
     <>
       <Form.Row className={classes.page} noMargin>
@@ -389,10 +393,11 @@ export default function Sites(props) {
                     }
                   />
                 ))}
-                {company.type === "MASTERCLIENT" &&
-                  company.adminIds.some(
-                    (admin) => admin._id === store.user._id,
-                  ) && <SiteAddCard onClick={() => console.log("asdf")} />}
+                {store.user.adminType === "MASTERADMIN" && (
+                  <SiteAddCard
+                    onClick={() => props.history.push("/add-site")}
+                  />
+                )}
               </div>
             )}
           </div>

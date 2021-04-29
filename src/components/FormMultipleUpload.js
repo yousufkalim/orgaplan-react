@@ -123,13 +123,15 @@ export default function FormMultipleUpload(props) {
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <Grid container spacing={2}>
         <Grid item xs={2}>
-          <div className={classes.container}>
-            <div
-              onClick={() => {
-                if (props.enabled !== undefined && props.enabled) return;
+          <div
+            className={classes.container}
+            onClick={() => {
+              !props.disabled &&
                 document.getElementById(`fileinput-${props.name}`).click();
-              }}
-            >
+            }}
+            style={props.disabled ? { cursor: "not-allowed" } : {}}
+          >
+            <div>
               <Plus style={{ width: 20, height: 20 }} />
             </div>
             <input

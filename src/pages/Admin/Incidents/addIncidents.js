@@ -49,7 +49,7 @@ export default function AddIncidents(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isBillable, setIsBillable] = useState(true);
-  const [isPaid, setIsPaid] = useState("");
+  const [isPaid, setIsPaid] = useState(false);
 
   const [price, setPrice] = useState("0");
   const [priceDisable, setPriceDisable] = useState("true");
@@ -78,14 +78,12 @@ export default function AddIncidents(props) {
       });
       if (response.data.site_companies) {
         setCompanies(response.data.site_companies);
-        const temp = [];
-        response.data.site_companies.map((item) =>
-          temp.push({
+        setDropdownCompanies(
+          response.data.site_companies.map((item) => ({
             label: item.companyId.name,
             value: item.companyId._id,
-          }),
+          })),
         );
-        setDropdownCompanies(temp);
       }
     } catch (err) {
       dispatch(
@@ -96,21 +94,12 @@ export default function AddIncidents(props) {
     }
   };
   const nameChange = (e) => {
-    console.log("called");
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
-      if (e.target.value) {
-        companies.map((com) => {
-          let subc = com.subContractors.find(
-            (sub) => sub._id === e.target.value,
-          );
-          if (subc) {
-            setGeneralContractor(subc.name);
-          }
-          return true;
-        });
-      }
+      let comp = companies.find((com) => com.companyId._id === e.target.value);
+      if (comp.parentCompanyId) setGeneralContractor(comp.parentCompanyId.name);
+      else setGeneralContractor("");
     }
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
@@ -122,8 +111,6 @@ export default function AddIncidents(props) {
     }
     if (e.target.name === "description") setDescription(e.target.value);
     if (e.target.name === "bill") {
-      alert(e.target.value);
-
       if (e.target.value === "true") {
         setIsBillable(true);
       } else if (e.target.value === "false") {
@@ -144,16 +131,14 @@ export default function AddIncidents(props) {
         uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data) {
-          const storageValue = [
-            {
-              label: response.data.name,
-              value: response.data._id,
-            },
-          ];
-          setDropdownLocation(storageValue);
-        }
+      if (response.data) {
+        const storageValue = [
+          {
+            label: response.data.name,
+            value: response.data._id,
+          },
+        ];
+        setDropdownLocation(storageValue);
       }
     }
     if (selectedLocationType === "deliveryArea") {
@@ -161,14 +146,10 @@ export default function AddIncidents(props) {
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      if (response.success) {
-        if (response.data) {
-          const temp = [];
-          response.data.map((item, index) => {
-            return temp.push({ label: item.name, value: item._id });
-          });
-          setDropdownLocation(temp);
-        }
+      if (response.data) {
+        setDropdownLocation(
+          response.data.map((item) => ({ label: item.name, value: item._id })),
+        );
       }
     }
   };
@@ -182,6 +163,8 @@ export default function AddIncidents(props) {
     e.preventDefault();
 
     var formdata = new FormData();
+    if (image[0]?.file) formdata.append("photos", image[0].file);
+
     formdata.append("name", name);
     formdata.append("date", date);
     formdata.append("time", time);
@@ -234,6 +217,7 @@ export default function AddIncidents(props) {
             >
               <FormSelect
                 name="comapnyId"
+                value={companyId}
                 onChange={nameChange}
                 values={dropdownCompanies}
                 placeholder="Nom de I'enterprise"
@@ -253,7 +237,11 @@ export default function AddIncidents(props) {
                 style={GLOBALS.Styles.inputWidth}
                 placeholder="Date"
                 name="date"
-                min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+                min={
+                  moment().isAfter(moment(adminStore.site.siteId.start), "day")
+                    ? moment().format("YYYY-MM-DD")
+                    : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
+                }
                 max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={nameChange}
                 value={date}

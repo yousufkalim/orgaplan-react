@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
-
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
@@ -46,6 +46,12 @@ export default function AddSiteStep1(props) {
           currentValue.meanType === "ROUTING" &&
           currentValue.location.find(
             (loc) => loc.storageArea && loc.storageArea === storageArea,
+          ) &&
+          moment(props.date).isBetween(
+            currentValue.availability.start,
+            currentValue.availability.end,
+            "day",
+            "[]",
           )
         ) {
           accumulator.push({

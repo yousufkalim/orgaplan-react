@@ -18,7 +18,6 @@ export default function Canvas({
   isFinished,
   curMousePos,
   shapes,
-  means,
   meanFinish,
   width,
   height,
@@ -45,7 +44,7 @@ export default function Canvas({
             points={flattenedPoints}
             stroke="black"
             fill="blue"
-            strokeWidth={3}
+            strokeWidth={1}
             closed={isFinished}
           />
           {shapes && shapes.length > 0
@@ -64,7 +63,6 @@ export default function Canvas({
                     [],
                   );
                 }
-
                 return (
                   <>
                     {shape.type === "MEAN" ? (
@@ -78,7 +76,7 @@ export default function Canvas({
                           fillPatternImage={shape.image}
                           stroke={shape.color}
                           meanFinish={meanFinish}
-                          strokeWidth={3}
+                          strokeWidth={1}
                           onClick={(e) => handleConvaCircleClick(shape._id)}
                         />
                       ) : (
@@ -90,20 +88,24 @@ export default function Canvas({
                           fill={shape.color}
                           meanFinish={meanFinish}
                           stroke={shape.color}
-                          strokeWidth={3}
+                          strokeWidth={1}
                           onClick={(e) => handleConvaCircleClick(shape._id)}
                         />
                       )
                     ) : (
                       <ConvaLine
                         key={shape._id}
-                        points={flattenedPoint}
                         stroke="black"
+                        points={flattenedPoint}
                         fill={shape.color}
-                        opacity={shape.opacity}
-                        strokeWidth={3}
-                        onMouseOver={() => handleConvaLineMouseOver(shape._id)}
-                        onMouseOut={() => handleConvaLineMouseOut(shape._id)}
+                        opacity={
+                          shape.type === "BUILDING" ? 0.8 : shape.opacity
+                        }
+                        strokeWidth={1}
+                        // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
+                        // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
+                        onMouseOver={() => {}}
+                        onMouseOut={() => {}}
                         onClick={() => handleConvaLineClick(shape._id)}
                         closed={true}
                       />

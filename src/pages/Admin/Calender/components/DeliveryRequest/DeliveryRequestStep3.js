@@ -30,23 +30,23 @@ export default function DeliveryRequestStep3(props) {
     let comp = props.companies.find(
       (item) => item.value === props.step1Data.company,
     );
-    setCompany(comp.label);
+    comp && setCompany(comp.label);
     let deliv = props.deliveryAreas.find(
       (item) => item.value === props.step1Data.deliveryArea,
     );
-    setDeliveryArea(deliv.label);
+    deliv && setDeliveryArea(deliv.label);
     let stor = props.storageAreas.find(
       (item) => item.value === props.step2Data.storageArea,
     );
-    setStorageArea(stor.label);
+    stor && setStorageArea(stor.label);
     let liftMea = props.means.filter((item) =>
       props.step1Data.liftingMeans.includes(item._id),
     );
-    setLiftingMeans(liftMea.map((item) => item.name));
+    liftMea && setLiftingMeans(liftMea.map((item) => item.name));
     let routMeans = props.means.filter((item) =>
       props.step2Data.routingMeans.includes(item._id),
     );
-    setRoutingMeans(routMeans.map((item) => item.name));
+    routMeans && setRoutingMeans(routMeans.map((item) => item.name));
     // eslint-disable-next-line
   }, [props]);
 
@@ -107,7 +107,7 @@ export default function DeliveryRequestStep3(props) {
           primary="IDENTITY :"
           style={GLOBALS.Styles.inputWidth}
         />
-        <FormLabel primary={company} style={GLOBALS.Styles.inputWidth} />
+        <FormLabel primary={company || "-"} style={GLOBALS.Styles.inputWidth} />
       </Form.Row>
       <Form.Row>
         <FormLabel
@@ -116,12 +116,25 @@ export default function DeliveryRequestStep3(props) {
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
-          primary={`${
-            props.step1Data.date &&
-            moment(props.step1Data.date).format("DD-MM-YYYY")
-          } between ${moment(props.step1Data.startTime).format(
-            "HH",
-          )}h and ${moment(props.step1Data.endTime).format("HH")}h`}
+          primary={`${moment(props.date).format("DD-MM-YYYY")} between ${
+            props.step1Data.startTime
+              ? moment(props.step1Data.date)
+                  .set("hours", props.step1Data.startTime.split(":")[0])
+                  .set("minutes", props.step1Data.startTime.split(":")[1])
+                  .format("HH:mm")
+              : moment(moment(props.date).set("hour", props.start)).format(
+                  "HH:mm",
+                )
+          }h and ${
+            props.step1Data.endTime
+              ? moment(props.step1Data.date)
+                  .set("hours", props.step1Data.endTime.split(":")[0])
+                  .set("minutes", props.step1Data.endTime.split(":")[1])
+                  .format("HH:mm")
+              : moment(moment(props.date).set("hour", props.end)).format(
+                  "HH:mm",
+                )
+          }h`}
           style={GLOBALS.Styles.inputWidth}
         />
       </Form.Row>
@@ -132,7 +145,7 @@ export default function DeliveryRequestStep3(props) {
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
-          primary={`${deliveryArea} / ${liftingMeans.join(", ")}`}
+          primary={`${deliveryArea || "-"} / ${liftingMeans.join(", ") || "-"}`}
           style={GLOBALS.Styles.inputWidth}
         />
       </Form.Row>
@@ -143,7 +156,7 @@ export default function DeliveryRequestStep3(props) {
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
-          primary={`${storageArea} / ${routingMeans.join(", ")}`}
+          primary={`${storageArea || "-"} / ${routingMeans.join(", ") || "-"}`}
           style={GLOBALS.Styles.inputWidth}
         />
       </Form.Row>
@@ -154,7 +167,11 @@ export default function DeliveryRequestStep3(props) {
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
-          primary={props.step1Data.materials.join(", ")}
+          primary={
+            props.step1Data.materials
+              ? props.step1Data.materials.join(", ")
+              : "-"
+          }
           style={GLOBALS.Styles.inputWidth}
         />
       </Form.Row>
@@ -188,7 +205,14 @@ export default function DeliveryRequestStep3(props) {
           text="VALIDATE"
           fullWidth={false}
           loading={loading}
-          disabled={loading}
+          disabled={
+            loading ||
+            !company ||
+            !storageArea ||
+            !deliveryArea ||
+            liftingMeans.length === 0 ||
+            routingMeans.length === 0
+          }
         />
       </Form.ButtonContainer>
     </Form.Form>
