@@ -72,6 +72,8 @@ const Incidents = (props) => {
   const [selectedDeliveryArea, setSelectedDeliveryArea] = useState("");
   const [disableStorageDropdown, setDisableStorageDropdown] = useState(true);
   const [disableLevelDropdown, setDisableLevelDropdown] = useState(true);
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedBuilding, setSelectedBuilding] = useState("");
 
   // const [page, setPage] = useState("");
   const store = useSelector((state) => state.auth);
@@ -127,6 +129,14 @@ const Incidents = (props) => {
         if (result.data.site_buildings) {
           getBuildingLocation(result.data.site_buildings);
         }
+        setDropDownStorageArea(
+          result.data.site_storage_areas.map((item) => ({
+            label: item.name,
+            value: item._id,
+            level: item.level,
+          })),
+        );
+
         const params = QueryString.parse(props.location.search);
         if (params.companyId) {
           setCompanyId(params.companyId);
@@ -285,16 +295,19 @@ const Incidents = (props) => {
     }
   }
 
-  function fetchStorageAreaOfSelectedLevels(levelId) {
-    const storagedata = selectedLevels.filter((x) => x._id === levelId)[0]
-      .storage;
-    let temp = [];
-    temp.push({
-      label: storagedata.name,
-      value: storagedata._id,
-    });
-    setDropDownStorageArea(temp);
-  }
+  // function fetchStorageAreaOfSelectedLevels(levelId) {
+  //   const storagedata = selectedLevels.filter((x) => x._id === levelId)[0]
+  //     .storage;
+  //   if (storagedata) {
+  //     let temp = [];
+  //     temp.push({
+  //       label: storagedata.name,
+  //       value: storagedata._id,
+  //       level: storagedata.level,
+  //     });
+  //     setDropDownStorageArea(temp);
+  //   }
+  // }
 
   return (
     <div className={classes.root}>
@@ -335,23 +348,38 @@ const Incidents = (props) => {
             values={siteDeliveryArea}
             placeholder="Delivery area"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            value={selectedDeliveryArea}
             onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                setSelectedDeliveryArea(event.target.value);
-              }
+              setSelectedDeliveryArea(event.target.value);
+              // const index = event.target.selectedIndex - 1;
+              // if (index !== -1) {
+              //   setSelectedDeliveryArea(event.target.value);
+              // } else {
+              //   setSelectedDeliveryArea(" ");
+              // }
             }}
           />
           <FormSelect
-            values={siteBuilding}
+            values={[
+              ...[{ label: "Exterior", value: "Exterior" }],
+              ...siteBuilding,
+            ]}
             placeholder="Location"
             style={{ marginRight: "20px", maxWidth: 250 }}
+            value={selectedBuilding}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
+              setSelectedBuilding(event.target.value);
+              console.log(event.target.value);
               if (index !== -1) {
-                setDisableLevelDropdown(false);
-
-                fetchLevelesOfSelectedBuilding(event.target.value);
+                if (event.target.value === "Exterior") {
+                  setDisableLevelDropdown(true);
+                  setDisableStorageDropdown(false);
+                } else {
+                  fetchLevelesOfSelectedBuilding(event.target.value);
+                  setDisableLevelDropdown(false);
+                  setDisableStorageDropdown(true);
+                }
               } else {
                 setDisableLevelDropdown(true);
               }
@@ -361,19 +389,24 @@ const Incidents = (props) => {
             values={dropDownLevels}
             placeholder="Level"
             disabled={disableLevelDropdown}
+            value={selectedLevel}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               if (index !== -1) {
                 setDisableStorageDropdown(false);
-                fetchStorageAreaOfSelectedLevels(event.target.value);
+                setSelectedLevel(event.target.value);
               } else {
                 setDisableStorageDropdown(true);
               }
             }}
           />
           <FormSelect
-            values={dropDownStorageArea}
+            values={dropDownStorageArea.filter((item) =>
+              selectedBuilding && selectedBuilding === "Exterior"
+                ? !item.level
+                : item.level === selectedLevel,
+            )}
             placeholder="Storage area"
             disabled={disableStorageDropdown}
             style={{ marginRight: "20px", maxWidth: 250 }}
