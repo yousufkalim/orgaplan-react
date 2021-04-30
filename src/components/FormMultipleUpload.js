@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import ClearIcon from "@material-ui/icons/Clear";
 
 import Actions from "../redux/actions";
 import GLOBALS from "../globals";
+import Form from "./Form";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -42,6 +42,7 @@ export default function FormMultipleUpload(props) {
       marginTop: 15,
     },
     imageWrapper: {
+      marginLeft: 15,
       position: "relative",
       width: 45,
       height: 45,
@@ -67,8 +68,8 @@ export default function FormMultipleUpload(props) {
       backgroundColor: theme.palette.common.black,
     },
     error: {
-      color: errorColor,
       fontWeight: 400,
+      color: errorColor,
       position: "absolute",
       fontSize: theme.typography.pxToRem(12),
     },
@@ -120,59 +121,53 @@ export default function FormMultipleUpload(props) {
   };
 
   return (
-    <div className={`${classes.root} ${props.className}`} style={props.style}>
-      <Grid container spacing={2}>
-        <Grid item xs={2}>
-          <div
-            className={classes.container}
-            onClick={() => {
-              !props.disabled &&
-                document.getElementById(`fileinput-${props.name}`).click();
-            }}
-            style={props.disabled ? { cursor: "not-allowed" } : {}}
-          >
-            <div>
-              <Plus style={{ width: 20, height: 20 }} />
+    <Form.Row
+      noMargin
+      style={props.style}
+      justifyContent="flex-start"
+      className={`${classes.root} ${props.className}`}
+    >
+      <div>
+        <div
+          className={classes.container}
+          style={props.disabled ? { cursor: "not-allowed" } : {}}
+          onClick={() => {
+            !props.disabled &&
+              document.getElementById(`fileinput-${props.name}`).click();
+          }}
+        >
+          <Plus style={{ width: 20, height: 20 }} />
+          <input
+            hidden
+            type="file"
+            onChange={onAdd}
+            onBlur={props.onBlur}
+            accept={props.fileTypes}
+            id={`fileinput-${props.name}`}
+          />
+        </div>
+        {props.error !== "" && (
+          <span className={classes.error}>{props.error}</span>
+        )}
+      </div>
+      {update && ""}
+      {props.values.map((value, index) => (
+        <div className={classes.imageWrapper} key={index}>
+          <Avatar
+            variant="square"
+            className={classes.image}
+            src={
+              value.file ? value.uri : GLOBALS.Constants.BASE_URL + value.uri
+            }
+            alt={props.name}
+          />
+          {!props.disabled && (
+            <div onClick={handleDelete(value)} className={classes.imageCross}>
+              <ClearIcon fontSize="inherit" color="inherit" />
             </div>
-            <input
-              hidden
-              type="file"
-              onChange={onAdd}
-              onBlur={props.onBlur}
-              accept={props.fileTypes}
-              id={`fileinput-${props.name}`}
-            />
-          </div>
-          {props.error !== "" && (
-            <span className={classes.error}>{props.error}</span>
           )}
-        </Grid>
-        {update && ""}
-        {props.values.map((value, index) => (
-          <Grid item xs={12} lg={4} key={index}>
-            <div className={classes.imageWrapper}>
-              <Avatar
-                variant="square"
-                className={classes.image}
-                src={
-                  value.file
-                    ? value.uri
-                    : GLOBALS.Constants.BASE_URL + value.uri
-                }
-                alt="Natacha"
-              />
-              {props.enabled ? (
-                <div
-                  onClick={handleDelete(value)}
-                  className={classes.imageCross}
-                >
-                  <ClearIcon fontSize="inherit" color="inherit" />
-                </div>
-              ) : null}
-            </div>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+        </div>
+      ))}
+    </Form.Row>
   );
 }

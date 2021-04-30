@@ -46,9 +46,12 @@ export default function AddAdmin(props) {
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [companyId, setCompanyId] = useState("");
+  const [adminType, setAdminType] = useState("ADMINPERSITE");
+
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [adminType, setAdminType] = useState("ADMINPERSITE");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -77,41 +80,7 @@ export default function AddAdmin(props) {
       );
     }
   }
-
-  const handleChange = (name, value) => {
-    if (name === "email") {
-      setEmail(value);
-      // eslint-disable-next-line
-      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!value.match(mailformat)) {
-        setEmailError(true);
-      } else {
-        setEmailError(false);
-      }
-    }
-    if (name === "phone") {
-      setPhone(value);
-      if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
-      } else if (value.charAt(0) === "0" && value.length > 25) {
-        setPhoneError("Telephone must have 10 to 25 digits");
-      } else {
-        setPhoneError("");
-      }
-    } else if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "image") {
-      setUpdate((st) => !st);
-      setImage(value);
-    } else if (name === "companyId") {
-      setCompanyId(value);
-      value
-        ? setCompany(allCompanies.find((item) => item._id === value))
-        : setCompany("");
-    } else if (name === "adminType") setAdminType(value);
-  };
-
-  const onSubmit = async (e) => {
+  async function onSubmit(e) {
     try {
       e.preventDefault();
       setLoading(true);
@@ -142,7 +111,43 @@ export default function AddAdmin(props) {
         ),
       );
     }
-  };
+  }
+
+  function handleChange(name, value) {
+    if (name === "email") setEmail(value);
+    else if (name === "phone") setPhone(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "adminType") setAdminType(value);
+    else if (name === "image") setImage(value);
+    else if (name === "companyId") {
+      setCompanyId(value);
+      value
+        ? setCompany(allCompanies.find((item) => item._id === value))
+        : setCompany("");
+    }
+    setUpdate((st) => !st);
+  }
+
+  function validation(name, value) {
+    if (name === "email") {
+      if (GLOBALS.Functions.email(value))
+        setEmailError("Please enter valid email");
+      else setEmailError("");
+    } else if (name === "phone") {
+      if (GLOBALS.Functions.phone(value))
+        setPhoneError("Phone must be 10-25 digits");
+      else setPhoneError("");
+    } else if (name === "firstName") {
+      if (GLOBALS.Functions.empty(value))
+        setFirstNameError("First name is required");
+      else setFirstNameError("");
+    } else if (name === "lastName") {
+      if (GLOBALS.Functions.empty(value))
+        setLastNameError("Last name is required");
+      else setLastNameError("");
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -154,40 +159,36 @@ export default function AddAdmin(props) {
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO*: " />
-            <Form.Row noMargin width="48%" style={{ gap: "20px" }}>
-              <div style={{ width: "50%" }}>
-                <FormInput
-                  name="email"
-                  type="email"
-                  placeholder="E-mail Address"
-                  value={email}
-                  // error={email}
-                  style={{ width: "100%" }}
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
-                />
-                {emailError === true && (
-                  <div className={classes.error}>Please enter valid email</div>
-                )}
-              </div>
-              <div style={{ width: "50%" }}>
-                <FormInput
-                  name="phone"
-                  value={phone}
-                  type="number"
-                  maxlength="25"
-                  // error={phone}
-                  placeholder="Phone Number"
-                  style={{ width: "100%" }}
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
-                />
-                {phoneError && (
-                  <div className={classes.error}>{phoneError}</div>
-                )}
-              </div>
+            <Form.Row noMargin width="48%">
+              <FormInput
+                name="email"
+                type="email"
+                value={email}
+                error={emailError}
+                placeholder="E-mail Address"
+                style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
+              <FormInput
+                name="phone"
+                type="number"
+                value={phone}
+                maxLength="26"
+                error={phoneError}
+                placeholder="Phone Number"
+                style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
+              />
             </Form.Row>
           </Form.Row>
           {update && ""}
@@ -197,8 +198,12 @@ export default function AddAdmin(props) {
               <FormInput
                 name="firstName"
                 value={firstName}
+                error={firstNameError}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -206,8 +211,12 @@ export default function AddAdmin(props) {
               <FormInput
                 name="lastName"
                 value={lastName}
+                error={lastNameError}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -228,7 +237,6 @@ export default function AddAdmin(props) {
             <FormSelect
               name="companyId"
               value={companyId}
-              // error={companyId}
               values={companies}
               placeholder="Select Company"
               style={GLOBALS.Styles.inputWidth}
@@ -264,10 +272,12 @@ export default function AddAdmin(props) {
               disabled={
                 loading ||
                 emailError ||
+                !email ||
+                phoneError ||
                 !phone ||
-                phone.length !== 10 ||
-                phone.charAt(0) !== "0" ||
+                firstNameError ||
                 !firstName ||
+                !lastNameError ||
                 !lastName ||
                 !companyId
               }

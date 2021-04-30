@@ -64,8 +64,11 @@ export default function Admins(props) {
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [companyId, setCompanyId] = useState("");
-  const [phoneError, setPhoneError] = useState("");
   const [adminType, setAdminType] = useState("ADMINPERSITE");
+
+  const [phoneError, setPhoneError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -105,32 +108,6 @@ export default function Admins(props) {
         ),
       );
     }
-  }
-
-  function handleChange(name, value) {
-    if (name === "firstName") setFirstName(value);
-    else if (name === "lastName") setLastName(value);
-    else if (name === "phone") {
-      setPhone(value);
-      if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
-      } else if (
-        (value.charAt(0) === "0" && value.length > 25) ||
-        value.length < 10
-      ) {
-        setPhoneError("Telephone must have 10 to 25 digits");
-      } else {
-        setPhoneError("");
-      }
-    } else if (name === "image") {
-      setUpdate((st) => !st);
-      setImage(value);
-    } else if (name === "companyId") {
-      setCompanyId(value);
-      value
-        ? setCompany(allCompanies.find((item) => item._id === value))
-        : setCompany("");
-    } else if (name === "adminType") setAdminType(value);
   }
 
   async function onUpdate(e) {
@@ -202,6 +179,37 @@ export default function Admins(props) {
     setPhone("");
     setImage("");
     setCompanyId("");
+  }
+
+  function handleChange(name, value) {
+    if (name === "phone") setPhone(value);
+    else if (name === "firstName") setFirstName(value);
+    else if (name === "lastName") setLastName(value);
+    else if (name === "adminType") setAdminType(value);
+    else if (name === "image") setImage(value);
+    else if (name === "companyId") {
+      setCompanyId(value);
+      value
+        ? setCompany(allCompanies.find((item) => item._id === value))
+        : setCompany("");
+    }
+    setUpdate((st) => !st);
+  }
+
+  function validation(name, value) {
+    if (name === "phone") {
+      if (GLOBALS.Functions.phone(value))
+        setPhoneError("Phone must be 10-25 digits");
+      else setPhoneError("");
+    } else if (name === "firstName") {
+      if (GLOBALS.Functions.empty(value))
+        setFirstNameError("First name is required");
+      else setFirstNameError("");
+    } else if (name === "lastName") {
+      if (GLOBALS.Functions.empty(value))
+        setLastNameError("Last name is required");
+      else setLastNameError("");
+    }
   }
 
   const rows = items.map((item) => {
@@ -308,8 +316,11 @@ export default function Admins(props) {
                 <FormInput
                   name="firstName"
                   value={firstName}
+                  error={firstNameError}
                   placeholder="First Name"
-                  // style={GLOBALS.Styles.inputWidth}
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -321,8 +332,11 @@ export default function Admins(props) {
                 <FormInput
                   name="lastName"
                   value={lastName}
+                  error={lastNameError}
                   placeholder="Last Name"
-                  // style={GLOBALS.Styles.inputWidth}
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -335,13 +349,15 @@ export default function Admins(props) {
                   name="phone"
                   type="number"
                   value={phone}
+                  maxLength="25"
+                  error={phoneError}
                   placeholder="Phone Number"
-                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
-                  style={{ width: "100%" }}
-                  maxLength="25"
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
                 />
                 {phoneError && (
                   <div className={classes.error}>{phoneError}</div>
@@ -355,7 +371,6 @@ export default function Admins(props) {
                   value={companyId}
                   values={companies}
                   placeholder={"Select Company"}
-                  // style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -368,7 +383,6 @@ export default function Admins(props) {
                   <RadioButton
                     name="adminType"
                     value={adminType}
-                    // style={GLOBALS.Styles.inputWidth}
                     onChange={({ target: { name, value } }) =>
                       handleChange(name, value)
                     }
@@ -392,7 +406,8 @@ export default function Admins(props) {
                     loading ||
                     !firstName ||
                     !lastName ||
-                    phone.length !== 10 ||
+                    !phone ||
+                    !/^[+]?\d{10,25}$/g.test(phone) ||
                     image === "" ||
                     !companyId
                   }
@@ -403,8 +418,8 @@ export default function Admins(props) {
                   text="DELETE"
                   minWidth="30%"
                   fullWidth={false}
-                  disabled={loading}
                   loading={loading}
+                  disabled={loading}
                   color={theme.palette.error.main}
                   onClick={() => onDelete(selectedItem._id)}
                 />

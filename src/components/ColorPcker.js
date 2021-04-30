@@ -51,7 +51,9 @@ class ColorPicker extends React.Component {
         },
       },
     });
+
     const { color } = this.props;
+
     return (
       <div style={{ width: "100%" }}>
         <div

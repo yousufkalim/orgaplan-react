@@ -18,7 +18,7 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import Pagination from "../../../components/Pagination";
 import SubHeading from "../../../components/SubHeading";
-import FormSelect from "../../../components/FormSelect";
+import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
@@ -70,6 +70,8 @@ export default function Clients(props) {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [monthlyCost, setMonthlyCost] = useState("0");
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -95,10 +97,8 @@ export default function Clients(props) {
   }
 
   function handleChange(name, value) {
-    if (name === "logo") {
-      setUpdate((st) => !st);
-      setLogo(value);
-    } else if (name === "color") setColor(value);
+    if (name === "logo") setLogo(value);
+    else if (name === "color") setColor(value);
     else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "email") setEmail(value);
@@ -112,6 +112,7 @@ export default function Clients(props) {
     else if (name === "functionality") setFunctionality(value);
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "monthlyCost") setMonthlyCost(value);
+    setUpdate((st) => !st);
   }
 
   function modifyClick(item, contract) {
@@ -198,8 +199,8 @@ export default function Clients(props) {
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
         fetchData();
-        // setModal(false);
-        // setLoading(false);
+        setModal(false);
+        setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -208,6 +209,43 @@ export default function Clients(props) {
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
+    }
+  }
+
+  function validation(name, value) {
+    if (name === "name") {
+      if (GLOBALS.Functions.empty(value))
+        setErrors({ ...errors, name: "Company name is required" });
+      else setErrors({ ...errors, name: "" });
+    } else if (name === "email") {
+      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.email(value))
+        setErrors({ ...errors, email: "Please enter valid email" });
+      else setErrors({ ...errors, email: "" });
+    } else if (name === "phone") {
+      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.phone(value))
+        setErrors({ ...errors, phone: "Phone must be 10-25 digits" });
+      else setErrors({ ...errors, phone: "" });
+    } else if (name === "additionalInfo") {
+      if (GLOBALS.Functions.length(value, 300))
+        setErrors({
+          ...errors,
+          additionalInfo: "Additional Info must be less than 300 characters",
+        });
+      else setErrors({ ...errors, additionalInfo: "" });
+    } else if (name === "firstName") {
+      if (GLOBALS.Functions.length(value, 30))
+        setErrors({
+          ...errors,
+          firstName: "First Name must be less than 30 characters",
+        });
+      else setErrors({ ...errors, firstName: "" });
+    } else if (name === "lastName") {
+      if (GLOBALS.Functions.length(value, 30))
+        setErrors({
+          ...errors,
+          lastName: "Last Name must be less than 30 characters",
+        });
+      else setErrors({ ...errors, lastName: "" });
     }
   }
 
@@ -357,7 +395,7 @@ export default function Clients(props) {
       </div>
       {update && ""}
       <Modal
-        title="EDIT CLIENT"
+        title="EDIT A CLIENT"
         open={selectedItem ? modal : false}
         onClose={() => {
           setModal((st) => !st);
@@ -368,7 +406,6 @@ export default function Clients(props) {
             <Form.Row justifyContent="center">
               <AvatarUpload
                 value={logo}
-                // error={logo}
                 onChange={(file) => {
                   const uri = URL.createObjectURL(file);
                   handleChange("logo", { file, uri });
@@ -376,33 +413,23 @@ export default function Clients(props) {
               />
             </Form.Row>
             <Form.Row justifyContent="center">
-              <FormSelect
-                name="color"
-                value={color}
-                // error={color}
-                placeholder="Color"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
+              <div style={GLOBALS.Styles.inputWidth}>
+                <ColorPicker
+                  color={color}
+                  handleChange={({ hex }) => handleChange("color", hex)}
+                />
+              </div>
             </Form.Row>
             <Form.Row>
               <FormInput
                 name="firstName"
                 value={firstName}
-                // error={firstName}
+                error={errors.firstName}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -410,9 +437,12 @@ export default function Clients(props) {
               <FormInput
                 name="lastName"
                 value={lastName}
-                // error={lastName}
+                error={errors.lastName}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -422,9 +452,12 @@ export default function Clients(props) {
               <FormInput
                 name="email"
                 value={email}
-                // error={email}
+                error={errors.email}
                 placeholder="E-mail Address"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -434,9 +467,12 @@ export default function Clients(props) {
                 value={phone}
                 type="number"
                 maxlength="25"
-                // error={phone}
+                error={errors.phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -448,7 +484,6 @@ export default function Clients(props) {
                 placeholder="Start date"
                 name="contractStartDate"
                 value={contractStartDate}
-                // error={contractStartDate}
                 style={GLOBALS.Styles.inputWidth}
                 min={moment().format("YYYY-MM-DD")}
                 disabled={contractType !== "MASTERCLIENT"}
@@ -461,7 +496,6 @@ export default function Clients(props) {
                 placeholder="End date"
                 name="contractEndDate"
                 value={contractEndDate}
-                // error={contractEndDate}
                 min={moment(contractStartDate)
                   .add(1, "days")
                   .format("YYYY-MM-DD")}
@@ -475,9 +509,8 @@ export default function Clients(props) {
             <Form.Row>
               <RadioButton
                 name="contractType"
-                style={GLOBALS.Styles.inputWidth}
                 value={contractType}
-                // error={contractType}
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -489,14 +522,13 @@ export default function Clients(props) {
             </Form.Row>
             <Form.Row>
               <RadioButton
-                style={GLOBALS.Styles.inputWidth}
                 name="functionality"
+                value={functionality}
+                style={GLOBALS.Styles.inputWidth}
+                items={[{ value: "DELIVERY", label: "Delivery module" }]}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={functionality}
-                // error={functionality}
-                items={[{ value: "DELIVERY", label: "Delivery module" }]}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
@@ -504,12 +536,11 @@ export default function Clients(props) {
                 <FormInput
                   type="number"
                   name="monthlyCost"
+                  value={monthlyCost}
+                  style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                   onChange={({ target: { name, value } }) =>
                     value >= 0 && handleChange(name, value)
                   }
-                  value={monthlyCost}
-                  // error={monthlyCost}
-                  style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 />
                 <SmallText primary="€/month" noMargin />
               </Form.Row>
@@ -518,13 +549,17 @@ export default function Clients(props) {
               <FormInput
                 textArea
                 rows={3}
+                maxLength="300"
+                name="additionalInfo"
+                value={additionalInfo}
+                error={errors.additionalInfo}
+                placeholder="Additional information"
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                placeholder="Additional information"
-                name="additionalInfo"
-                value={additionalInfo}
-                // error={additionalInfo}
               />
             </Form.Row>
             <Form.Column alignItems="center">
@@ -538,6 +573,10 @@ export default function Clients(props) {
                   disabled={
                     loading ||
                     !logo ||
+                    errors.firstName ||
+                    errors.lastName ||
+                    errors.phone ||
+                    errors.additionalInfo ||
                     (contractType === "MASTERCLIENT" &&
                       (!contractStartDate ||
                         !contractEndDate ||
@@ -545,13 +584,6 @@ export default function Clients(props) {
                           moment(contractStartDate),
                           "days",
                         ) <= 0)) ||
-                    (firstName && firstName.length > 30) ||
-                    (lastName && lastName.length) > 30 ||
-                    (phone &&
-                      String(phone).length > 0 &&
-                      (!String(phone).startsWith("0") ||
-                        String(phone).length !== 10)) ||
-                    (additionalInfo && additionalInfo.length > 300) ||
                     Number(monthlyCost) < 0
                   }
                 />

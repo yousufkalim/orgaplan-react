@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
-// import * as Yup from "yup";
 import moment from "moment";
 
 import GLOBALS from "../../../globals";
@@ -14,7 +13,7 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
-import FormSelect from "../../../components/FormSelect";
+import ColorPicker from "../../../components/ColorPcker";
 import RadioButton from "../../../components/RadioButton";
 import MultiAdderInput from "../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
@@ -29,29 +28,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: GLOBALS.Styles.pageContentMargin,
   },
 }));
-
-// const addClientYup = Yup.object().shape({
-//   logo: Yup.array().min(1, "Required").required("Required"),
-//   name: Yup.string().required("Required"),
-//   color: Yup.string().required("Required"),
-//   firstName: Yup.string().required("Required"),
-//   lastName: Yup.string().required("Required"),
-//   email: Yup.string().required("Required"),
-//   phone: Yup.number()
-//     .test(
-//       "len",
-//       "Must be exactly 10 characters",
-//       (val) => val && val.toString().length === 10,
-//     )
-//     .required("Required"),
-//   contractType: Yup.string().required("Required"),
-//   contractStartDate: Yup.string().required("Required"),
-//   contractEndDate: Yup.string().required("Required"),
-//   functionality: Yup.string().required("Required"),
-//   additionalInfo: Yup.string(),
-//   notificationPriorToDays: Yup.number(),
-//   notificationTo: Yup.array(),
-// });
 
 export default function VerifyClient(props) {
   const classes = useStyles();
@@ -76,11 +52,11 @@ export default function VerifyClient(props) {
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
 
-  const handleChange = (name, value) => {
-    if (name === "logo") {
-      setUpdate((st) => !st);
-      setLogo(value);
-    } else if (name === "name") setName(value);
+  const [errors, setErrors] = useState({});
+
+  function handleChange(name, value) {
+    if (name === "logo") setLogo(value);
+    else if (name === "name") setName(value);
     else if (name === "color") setColor(value);
     else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
@@ -93,13 +69,11 @@ export default function VerifyClient(props) {
     else if (name === "additionalInfo") setAdditionalInfo(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
-    else if (name === "notificationTo") {
-      setUpdate((st) => !st);
-      setNotificationTo(value);
-    }
-  };
+    else if (name === "notificationTo") setNotificationTo(value);
+    setUpdate((st) => !st);
+  }
 
-  const onSubmit = async (e) => {
+  async function onSubmit(e) {
     try {
       e.preventDefault();
       setLoading(true);
@@ -138,11 +112,21 @@ export default function VerifyClient(props) {
         ),
       );
     }
-  };
+  }
+
+  function validation(name, value) {
+    if (name === "additionalInfo") {
+      if (GLOBALS.Functions.length(value, 300))
+        setErrors({
+          ...errors,
+          additionalInfo: "Additional Info must be less than 300 characters",
+        });
+      else setErrors({ ...errors, additionalInfo: "" });
+    }
+  }
 
   useEffect(() => {
     let item = props.location.item;
-
     setName(item.companyId.name);
     setFirstName(item.companyId.incharge.firstName);
     setLastName(item.companyId.incharge.lastName);
@@ -158,7 +142,7 @@ export default function VerifyClient(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CLIENT" />
+      <Heading primary="VERIFY A QUOTE" />
       {update && ""}
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
@@ -182,29 +166,15 @@ export default function VerifyClient(props) {
               <FormMultipleUpload
                 name="logo"
                 values={logo}
-                // error={logo}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("logo", values)}
               />
-              <FormSelect
-                name="color"
-                value={color}
-                // error={color}
-                placeholder="Color"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
-                style={GLOBALS.Styles.inputWidth}
-                values={[
-                  { value: "green", label: "Green" },
-                  { value: "Yellow", label: "Yellow" },
-                  { value: "Red", label: "Red" },
-                  { value: "Blue", label: "Blue" },
-                  { value: "Orange", label: "Orange" },
-                  { value: "Purple", label: "Purple" },
-                  { value: "Magenta", label: "Magenta" },
-                ]}
-              />
+              <div style={GLOBALS.Styles.inputWidth}>
+                <ColorPicker
+                  color={color}
+                  handleChange={({ hex }) => handleChange("color", hex)}
+                />
+              </div>
             </Form.Row>
           </Form.Row>
           <Form.Row>
@@ -213,24 +183,22 @@ export default function VerifyClient(props) {
               <FormInput
                 disabled
                 name="firstName"
+                value={firstName}
                 placeholder="First Name"
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={firstName}
-                // error={firstName}
-                style={GLOBALS.Styles.inputWidth}
               />
               <FormInput
                 disabled
                 name="lastName"
+                value={lastName}
                 placeholder="Last Name"
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={lastName}
-                // error={lastName}
-                style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
           </Form.Row>
@@ -240,26 +208,24 @@ export default function VerifyClient(props) {
               <FormInput
                 disabled
                 name="email"
-                placeholder="E-mail Address"
                 value={email}
-                // error={email}
+                placeholder="E-mail Address"
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                style={GLOBALS.Styles.inputWidth}
               />
               <FormInput
                 disabled
                 name="phone"
                 type="number"
+                value={phone}
                 maxlength="25"
                 placeholder="Phone Number"
-                value={phone}
-                // error={phone}
+                style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
           </Form.Row>
@@ -268,12 +234,11 @@ export default function VerifyClient(props) {
             <RadioButton
               disabled
               name="contractType"
+              value={contractType}
+              style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              style={GLOBALS.Styles.inputWidth}
-              value={contractType}
-              // error={contractType}
               items={[
                 { value: "CLIENTPERSITE", label: "Per Site" },
                 { value: "MASTERCLIENT", label: "Master Contract" },
@@ -287,29 +252,27 @@ export default function VerifyClient(props) {
                 type="date"
                 placeholder="Start date"
                 name="contractStartDate"
+                value={contractStartDate}
+                style={GLOBALS.Styles.inputWidth}
+                min={moment().format("YYYY-MM-DD")}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                min={moment().format("YYYY-MM-DD")}
-                style={GLOBALS.Styles.inputWidth}
-                value={contractStartDate}
-                // error={contractStartDate}
               />
               <FormInput
                 type="date"
                 placeholder="End date"
                 name="contractEndDate"
+                value={contractEndDate}
+                style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
                 min={moment(contractStartDate)
                   .add(1, "days")
                   .format("YYYY-MM-DD")}
-                style={GLOBALS.Styles.inputWidth}
-                value={contractEndDate}
-                // error={contractEndDate}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -317,13 +280,12 @@ export default function VerifyClient(props) {
             <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
             <RadioButton
               name="functionality"
+              value={functionality}
+              style={GLOBALS.Styles.inputWidth}
+              items={[{ value: "DELIVERY", label: "Delivery module" }]}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              style={GLOBALS.Styles.inputWidth}
-              value={functionality}
-              // error={functionality}
-              items={[{ value: "DELIVERY", label: "Delivery module" }]}
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -331,14 +293,15 @@ export default function VerifyClient(props) {
             <FormInput
               textArea
               rows={3}
+              name="additionalInfo"
+              value={additionalInfo}
+              error={errors.additionalInfo}
               style={GLOBALS.Styles.inputWidth}
+              placeholder="Additional information"
+              onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
-              placeholder="Additional information"
-              name="additionalInfo"
-              value={additionalInfo}
-              // error={additionalInfo}
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
@@ -347,22 +310,21 @@ export default function VerifyClient(props) {
               noMargin
               width="48%"
               alignItems="center"
-              justifyContent="center"
+              justifyContent="flex-start"
             >
               <FormInput
                 type="number"
                 name="notificationPriorToDays"
+                value={notificationPriorToDays}
+                disabled={contractType !== "MASTERCLIENT"}
+                style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
-                value={notificationPriorToDays}
-                // error={notificationPriorToDays}
-                disabled={contractType !== "MASTERCLIENT"}
-                style={{ ...GLOBALS.Styles.inputWidth, maxWidth: 100 }}
               />
               <SmallText
                 primary="Days before end of the contract"
-                style={{ marginLeft: "10px" }}
+                style={{ marginLeft: "10px", marginBottom: 0 }}
               />
             </Form.Row>
           </Form.Row>
@@ -399,8 +361,7 @@ export default function VerifyClient(props) {
                       moment(contractStartDate),
                       "days",
                     ) <= 0)) ||
-                additionalInfo.length > 300 ||
-                (phone && String(phone).length !== 9) ||
+                errors.additionalInfo ||
                 Number(notificationPriorToDays) < 0
               }
             />
