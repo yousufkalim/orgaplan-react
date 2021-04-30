@@ -40,10 +40,10 @@ export default function AddIncidents(props) {
 
   const [name, setName] = useState("");
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
-  const [dropdownLocationType, setDropdownLocationType] = useState([]);
   const [dropdownLocation, setDropdownLocation] = useState([]);
 
   const [selectedLocationType, setselectedLocationType] = useState("");
+  const [selectedLocation, setselectedLocation] = useState("");
 
   const [companyId, setCompanyId] = useState("");
   const [description, setDescription] = useState("");
@@ -62,6 +62,7 @@ export default function AddIncidents(props) {
   const [companies, setCompanies] = useState([]);
   const [generalContractor, setGeneralContractor] = useState("");
   const [isPaid, setIsPaid] = useState("");
+  const [location, setLocation] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -97,15 +98,6 @@ export default function AddIncidents(props) {
           })),
         );
       }
-
-      if (response.data.locationTypes) {
-        setDropdownLocationType(
-          response.data.locationTypes.map((item, index) => ({
-            label: item,
-            value: item,
-          })),
-        );
-      }
       await setValues();
     } catch (err) {
       dispatch(
@@ -132,6 +124,13 @@ export default function AddIncidents(props) {
     } else {
       setPriceDisable("false");
     }
+    if (incident.location?.storageArea) {
+      setselectedLocationType("storageArea");
+      setselectedLocation(incident.location?.storageArea._id);
+    } else if (incident.location?.deliveryArea) {
+      setselectedLocationType("deliveryArea");
+      setselectedLocation(incident.location?.deliveryArea._id);
+    }
   };
   const handleChange = (name, value) => {
     if (name === "image") setImage(value);
@@ -149,35 +148,54 @@ export default function AddIncidents(props) {
     if (e.target.name === "status") setType(e.target.status);
     if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
+      setselectedLocation(e.target.value);
+      const locationObject = {
+        [selectedLocationType]: e.target.value,
+      };
+      setLocation(locationObject);
     }
   };
   const fetchLocationDataOnTypeChange = async () => {
-    if (selectedLocationType === "STORAGEAREA") {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-      const storageValue = [
-        {
-          label: response.data.name,
-          value: response.data._id,
-        },
-      ];
+    try {
+      if (selectedLocationType === "storageArea") {
+        const response = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+          token: store.token,
+        });
+        const storageValue = [
+          {
+            label: response.data.name,
+            value: response.data._id,
+          },
+        ];
 
-      setDropdownLocation(storageValue);
-    }
-    if (selectedLocationType === "DELIVERYAREA") {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-      if (response.data) {
-        setDropdownLocation(
-          response.data.map((item) => ({ label: item.name, value: item._id })),
-        );
+        setDropdownLocation(storageValue);
       }
-    }
+      if (selectedLocationType === "deliveryArea") {
+        const response = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+          token: store.token,
+        });
+        if (response.data) {
+          setDropdownLocation(
+            response.data.map((item) => ({
+              label: item.name,
+              value: item._id,
+            })),
+          );
+        }
+      }
+    } catch (err) {}
   };
+
+  const locationChange = (e) => {
+    setselectedLocation(e.target.value);
+    const locationObject = {
+      [selectedLocationType]: e.target.value,
+    };
+    setLocation(locationObject);
+  };
+
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
   };
@@ -196,6 +214,8 @@ export default function AddIncidents(props) {
       formdata.append("comment", comment);
       formdata.append("companyId", companyId);
       formdata.append("isPaid", isPaid);
+      formdata.append("location", JSON.stringify(location));
+
       if (image[0]?.file) formdata.append("photos", image[0].file);
 
       formdata.append("siteId", adminStore.site.siteId._id);
@@ -311,14 +331,18 @@ export default function AddIncidents(props) {
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={locationTypeChange}
-                values={dropdownLocationType}
+                value={selectedLocationType}
+                values={[
+                  { value: "storageArea", label: "Storage Area" },
+                  { value: "deliveryArea", label: "Delivery Area" },
+                ]}
               />
               <FormSelect
                 placeholder="LOCATION"
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={nameChange}
-                value=""
+                onChange={locationChange}
+                value={selectedLocation}
                 values={dropdownLocation}
                 disabled={!selectedLocationType}
               />

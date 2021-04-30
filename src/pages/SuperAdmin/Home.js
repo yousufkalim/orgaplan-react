@@ -146,7 +146,9 @@ export default function Home(props) {
   const [clientMeanArray, setClientMeanArray] = useState([]);
   const [siteIncidentArray, setSiteIncidentArray] = useState([]);
   const [clientIncidentArray, setClientIncidentArray] = useState([]);
-  //working
+  const [siteCustomerRateArray, setSiteCustomerRateArray] = useState([]);
+  const [clientCustomerRateArray, setClientCustomerRateArray] = useState([]);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -159,6 +161,7 @@ export default function Home(props) {
     fetchDeliveries();
     fetchMeans();
     fetchIncident();
+    fetchCustomerRate();
   }
 
   async function fetchDashboardData() {
@@ -197,7 +200,6 @@ export default function Home(props) {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.DASHBOARD}/deliveries`,
       });
-      console.log(result.data);
       setDeliveries(result.data);
       fetchDeliveriesArray(result.data);
       setLoading(false);
@@ -258,6 +260,22 @@ export default function Home(props) {
       );
     }
   }
+
+  async function fetchCustomerRate() {
+    try {
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DASHBOARD}/customerRate`,
+      });
+      fetchCustomerRateArray(result.data);
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  }
   async function fetchIncidentArray(data) {
     const siteTemp = [];
     const clientTemp = [];
@@ -283,7 +301,7 @@ export default function Home(props) {
     });
     setSiteMeanArray(siteTemp);
     setClientMeanArray(clientTemp);
-  } //working
+  }
 
   async function fetchDeliveriesArray(data) {
     const siteTemp = [];
@@ -318,9 +336,22 @@ export default function Home(props) {
       const invoiceObject = {
         [item.siteId.name]: item.totalAmount,
       };
-      temp.push(invoiceObject);
+      return temp.push(invoiceObject);
     });
-    return setInvoiceArray(temp);
+    setInvoiceArray(temp);
+  }
+  async function fetchCustomerRateArray(data) {
+    const siteTemp = [];
+    const clientTemp = [];
+    data.clientPerSite.map((item, index) => {
+      return siteTemp.push({ [item.comapanyName]: item.amount });
+    });
+
+    data.masterClient.map((item, index) => {
+      return clientTemp.push({ [item.comapanyName]: item.amount });
+    });
+    setSiteCustomerRateArray(siteTemp);
+    setClientCustomerRateArray(clientTemp);
   }
 
   let renderArray = [
@@ -420,11 +451,11 @@ export default function Home(props) {
       items: [
         {
           title: "site",
-          items: [{ VINCI: 24 }, { BOUYGUES: 34 }, { EIFFAGE: 20 }],
+          items: siteCustomerRateArray,
         },
         {
           title: "client",
-          items: [{ VINCI: 24 }, { BOUYGUES: 34 }, { EIFFAGE: 20 }],
+          items: clientCustomerRateArray,
         },
       ],
       cols: 4,

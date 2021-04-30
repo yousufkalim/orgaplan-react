@@ -42,6 +42,8 @@ export default function AddIncidents(props) {
   const [dropdownCompanies, setDropdownCompanies] = useState([]);
   const [dropdownLocation, setDropdownLocation] = useState([]);
   const [selectedLocationType, setselectedLocationType] = useState("");
+  const [selectedLocation, setselectedLocation] = useState("");
+
   const [location, setLocation] = useState("");
 
   const [companyId, setCompanyId] = useState("");
@@ -104,10 +106,11 @@ export default function AddIncidents(props) {
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
+      setselectedLocation(e.target.value);
       const locationObject = {
         [selectedLocationType]: e.target.value,
       };
-      setLocation(locationObject);
+      setLocation(locationObject); //working
     }
     if (e.target.name === "description") setDescription(e.target.value);
     if (e.target.name === "bill") {
@@ -126,32 +129,38 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const fetchLocationDataOnTypeChange = async () => {
-    if (selectedLocationType === "storageArea") {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-      if (response.data) {
-        const storageValue = [
-          {
-            label: response.data.name,
-            value: response.data._id,
-          },
-        ];
-        setDropdownLocation(storageValue);
+    try {
+      if (selectedLocationType === "storageArea") {
+        const response = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_STORAGE_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+          token: store.token,
+        });
+        if (response.data) {
+          const storageValue = [
+            {
+              label: response.data.name,
+              value: response.data._id,
+            },
+          ];
+          setDropdownLocation(storageValue);
+        }
       }
-    }
-    if (selectedLocationType === "deliveryArea") {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
-        token: store.token,
-      });
-      if (response.data) {
-        setDropdownLocation(
-          response.data.map((item) => ({ label: item.name, value: item._id })),
-        );
+
+      if (selectedLocationType === "deliveryArea") {
+        const response = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
+          token: store.token,
+        });
+        if (response.data) {
+          setDropdownLocation(
+            response.data.map((item) => ({
+              label: item.name,
+              value: item._id,
+            })),
+          );
+        }
       }
-    }
+    } catch (err) {}
   };
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
@@ -281,6 +290,7 @@ export default function AddIncidents(props) {
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth} //working
                 onChange={locationTypeChange}
+                value={selectedLocationType}
                 values={[
                   { value: "storageArea", label: "Storage Area" },
                   { value: "deliveryArea", label: "Delivery Area" },
@@ -291,6 +301,7 @@ export default function AddIncidents(props) {
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
+                value={selectedLocation}
                 values={dropdownLocation}
                 disabled={!selectedLocationType}
               />
