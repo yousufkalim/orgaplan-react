@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
-import GLOBALS from "../../../globals";
-import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
 import moment from "moment";
-import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 import * as QueryString from "query-string";
+import { makeStyles } from "@material-ui/core/styles";
 
+import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
-import FormInput from "../../../components/FormInput";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,17 +43,13 @@ const useStyles = makeStyles((theme) => ({
 const Incidents = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const store = useSelector((state) => state.auth);
 
-  // const [loading, setLoading] = useState(true);
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
-  // const [siteStorageArea, setSiteStorageArea] = useState([]);
   const [siteComapny, setSiteComapny] = useState([]);
   const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
-  // const [status, setStatus] = useState([]);
   const [tatalInvoices, seTatalInvoices] = useState([]);
   const [tatalPrice, seTatalPrice] = useState([]);
   const [nameText, setNameText] = useState("");
@@ -64,9 +60,7 @@ const Incidents = (props) => {
   const [endDate, setEndDate] = useState("");
   const [siteBuilding, setSiteBuilding] = useState([]);
   const [allBuilding, setAllBuilding] = useState([]);
-  const [selectedLevels, setSelectedLevels] = useState([]);
   const [dropDownLevels, setDropDownLevels] = useState([]);
-  // const [selectedStorageArea, setSelectedStorageArea] = useState([]);
   const [dropDownStorageArea, setDropDownStorageArea] = useState([]);
   const [selectedStorageAreaValue, setSelectedStorageAreaValue] = useState("");
   const [selectedDeliveryArea, setSelectedDeliveryArea] = useState("");
@@ -75,7 +69,6 @@ const Incidents = (props) => {
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedBuilding, setSelectedBuilding] = useState("");
 
-  // const [page, setPage] = useState("");
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
@@ -99,48 +92,41 @@ const Incidents = (props) => {
 
   async function fetchData() {
     try {
-      // if (props?.location?.companyId) {
-      // }
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
-      if (result.success) {
-        setIncidents(result.data.incidents);
-        if (result.data.incidents) {
-          seTatalInvoices(result.data.incidents.length);
-          getIncidentsfiltered(result.data.incidents);
-        }
+      setIncidents(result.data.incidents);
+      if (result.data.incidents) {
+        seTatalInvoices(result.data.incidents.length);
+        getIncidentsfiltered(result.data.incidents);
+      }
 
-        if (result.data.site_delivery_areas) {
-          getDeliveryArea(result.data.site_delivery_areas);
-        }
-        // if (result.data.site_storage_areas) {
-        //   getStorageArea(result.data.site_storage_areas);
-        // }
-        if (result.data.type) {
-          getType(result.data.type);
-        }
-        if (result.data.status) {
-          getStatus(result.data.status);
-        }
-        if (result.data.site_companies) {
-          getCompanies(result.data.site_companies);
-        }
-        if (result.data.site_buildings) {
-          getBuildingLocation(result.data.site_buildings);
-        }
-        setDropDownStorageArea(
-          result.data.site_storage_areas.map((item) => ({
-            label: item.name,
-            value: item._id,
-            level: item.level,
-          })),
-        );
+      if (result.data.site_delivery_areas) {
+        getDeliveryArea(result.data.site_delivery_areas);
+      }
+      if (result.data.type) {
+        getType(result.data.type);
+      }
+      if (result.data.status) {
+        getStatus(result.data.status);
+      }
+      if (result.data.site_companies) {
+        getCompanies(result.data.site_companies);
+      }
+      if (result.data.site_buildings) {
+        getBuildingLocation(result.data.site_buildings);
+      }
+      setDropDownStorageArea(
+        result.data.site_storage_areas.map((item) => ({
+          label: item.name,
+          value: item._id,
+          level: item.level,
+        })),
+      );
 
-        const params = QueryString.parse(props.location.search);
-        if (params.companyId) {
-          setCompanyId(params.companyId);
-        }
+      const params = QueryString.parse(props.location.search);
+      if (params.companyId) {
+        setCompanyId(params.companyId);
       }
       // setLoading(false);
     } catch (err) {
@@ -283,7 +269,6 @@ const Incidents = (props) => {
   function fetchLevelesOfSelectedBuilding(buildingId) {
     const data = allBuilding.filter((x) => x._id === buildingId)[0].levels;
     if (data) {
-      setSelectedLevels(data);
       let temp = [];
       data.map((item, index) => {
         return temp.push({
@@ -294,20 +279,6 @@ const Incidents = (props) => {
       setDropDownLevels(temp);
     }
   }
-
-  // function fetchStorageAreaOfSelectedLevels(levelId) {
-  //   const storagedata = selectedLevels.filter((x) => x._id === levelId)[0]
-  //     .storage;
-  //   if (storagedata) {
-  //     let temp = [];
-  //     temp.push({
-  //       label: storagedata.name,
-  //       value: storagedata._id,
-  //       level: storagedata.level,
-  //     });
-  //     setDropDownStorageArea(temp);
-  //   }
-  // }
 
   return (
     <div className={classes.root}>

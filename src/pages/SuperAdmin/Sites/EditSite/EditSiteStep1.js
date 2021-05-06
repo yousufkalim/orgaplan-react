@@ -170,7 +170,7 @@ export default function EditSiteStep1(props) {
               values={zacs}
               value={zacId}
               // error={zacId}
-              placeholder="Select a ZAC"
+              placeholder="Select ZAC"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -191,7 +191,7 @@ export default function EditSiteStep1(props) {
               value={adminId}
               values={admins}
               // error={adminId}
-              // placeholder="Admin"
+              placeholder="Select Admin"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -252,11 +252,7 @@ export default function EditSiteStep1(props) {
                   value >= 0 && handleChange(name, value)
                 }
               />
-              <SmallText
-                noMargin
-                primary="€"
-                style={{ marginLeft: 10 }}
-              />
+              <SmallText noMargin primary="€" style={{ marginLeft: 10 }} />
             </Form.Row>
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
@@ -269,11 +265,7 @@ export default function EditSiteStep1(props) {
                   value >= 0 && handleChange(name, value)
                 }
               />
-              <SmallText
-                noMargin
-                primary="€"
-                style={{ marginLeft: 10 }}
-              />
+              <SmallText noMargin primary="€" style={{ marginLeft: 10 }} />
             </Form.Row>
           </Form.Row>
         </Form.Row>

@@ -466,7 +466,6 @@ export default function Clients(props) {
                 name="phone"
                 value={phone}
                 type="number"
-                maxlength="25"
                 error={errors.phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}

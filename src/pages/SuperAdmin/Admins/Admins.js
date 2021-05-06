@@ -349,7 +349,6 @@ export default function Admins(props) {
                   name="phone"
                   type="number"
                   value={phone}
-                  maxLength="25"
                   error={phoneError}
                   placeholder="Phone Number"
                   onChange={({ target: { name, value } }) =>

@@ -188,7 +188,6 @@ export default function AddUser(props) {
               <FormInput
                 name="phone"
                 type="number"
-                maxlength="25"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
                 placeholder="Téléphone"
                 value={phone}

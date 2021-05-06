@@ -245,7 +245,6 @@ export default function AddContact(props) {
                   name="phone"
                   value={phone}
                   type="number"
-                  maxlength="25"
                   // error={lastName}
                   placeholder="Téléphone"
                   style={{ width: "100%" }}

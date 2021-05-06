@@ -287,7 +287,6 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
-                  maxlength="25"
                 />
                 {phoneError !== "" && (
                   <div className={classes.error}>{phoneError}</div>

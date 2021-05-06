@@ -318,7 +318,6 @@ export default function UserList(props) {
               <FormInput
                 name="phone"
                 type="number"
-                maxlength="25"
                 value={phone}
                 onChange={(e) => {
                   setPhone(e.target.value);

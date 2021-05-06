@@ -9,9 +9,9 @@ import UnAuth from "../pages/UnAuth";
 import SuperAdmin from "../pages/SuperAdmin";
 
 export default function Main() {
-  const store = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const store = useSelector((state) => state.auth);
 
   React.useEffect(() => {
     dispatch(Actions.auth.checkLogin()).then(() => {

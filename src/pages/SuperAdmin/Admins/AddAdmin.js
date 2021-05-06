@@ -178,7 +178,6 @@ export default function AddAdmin(props) {
                 name="phone"
                 type="number"
                 value={phone}
-                maxLength="26"
                 error={phoneError}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
@@ -277,7 +276,7 @@ export default function AddAdmin(props) {
                 !phone ||
                 firstNameError ||
                 !firstName ||
-                !lastNameError ||
+                lastNameError ||
                 !lastName ||
                 !companyId
               }

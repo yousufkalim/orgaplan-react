@@ -220,7 +220,6 @@ export default function VerifyClient(props) {
                 name="phone"
                 type="number"
                 value={phone}
-                maxlength="25"
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>

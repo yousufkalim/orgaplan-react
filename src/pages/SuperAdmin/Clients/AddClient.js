@@ -208,7 +208,9 @@ export default function AddClient(props) {
                 placeholder="First Name"
                 error={errors.firstName}
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) => validation(name, value)}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -220,7 +222,9 @@ export default function AddClient(props) {
                 placeholder="Last Name"
                 error={errors.lastName}
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) => validation(name, value)}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -247,7 +251,6 @@ export default function AddClient(props) {
                 name="phone"
                 value={phone}
                 type="number"
-                maxLength="25"
                 error={errors.phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}

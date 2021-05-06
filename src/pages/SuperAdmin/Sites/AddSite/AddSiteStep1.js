@@ -154,7 +154,7 @@ export default function AddSiteStep1(props) {
               values={zacs}
               value={zacId}
               // error={zacId}
-              placeholder="Select a ZAC"
+              placeholder="Select ZAC"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -174,7 +174,7 @@ export default function AddSiteStep1(props) {
               name="adminId"
               value={adminId}
               values={admins}
-              placeholder="Admin"
+              placeholder="Select Admin"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)

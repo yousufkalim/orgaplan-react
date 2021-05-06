@@ -358,7 +358,6 @@ export default function AddCompanies(props) {
                   name="phone"
                   type="number"
                   value={phone}
-                  maxLength="25"
                   disabled={true}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>
