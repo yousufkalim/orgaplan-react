@@ -99,6 +99,7 @@ const endpoints = {
 
   // DELIVERY
   DELIVERY: BASE_URL_V1 + "delivery",
+  GET_DELIVERY: BASE_URL_V1 + "delivery/get",
 
   SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 

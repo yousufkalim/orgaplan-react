@@ -106,6 +106,7 @@ export default function AddSiteStep1(props) {
         <FormSelect
           name="company"
           value={company}
+          disabled={props.eventId}
           values={props.companies}
           placeholder="Select a Company"
           style={GLOBALS.Styles.inputWidth}
@@ -117,6 +118,7 @@ export default function AddSiteStep1(props) {
         <FormSelect
           name="deliveryArea"
           value={deliveryArea}
+          disabled={props.eventId}
           values={props.deliveryAreas}
           style={GLOBALS.Styles.inputWidth}
           placeholder="Select a Delivery Area"
@@ -138,6 +140,7 @@ export default function AddSiteStep1(props) {
           />
           <TimeInput
             format="HH:mm"
+            minuteStep={15}
             name="startTime"
             value={startTime}
             placeholder="Start Time"
@@ -147,6 +150,7 @@ export default function AddSiteStep1(props) {
           <TimeInput
             name="endTime"
             format="HH:mm"
+            minuteStep={15}
             value={endTime}
             placeholder="End Time"
             style={{ width: "31%" }}
@@ -161,6 +165,7 @@ export default function AddSiteStep1(props) {
           value={trades}
           placeholder="Trades"
           values={props.trades}
+          disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setTrades(value)}
         />
@@ -182,6 +187,7 @@ export default function AddSiteStep1(props) {
         <MultiAdderInput
           name="materials"
           values={materials}
+          disabled={props.eventId}
           placeholder="Enter Materials"
           style={GLOBALS.Styles.inputWidth}
           onChange={(values) => {
@@ -203,7 +209,7 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            means.length === 0 ||
+            liftingMeans.length === 0 ||
             materials.length === 0
           }
         />

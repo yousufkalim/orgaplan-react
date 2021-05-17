@@ -107,10 +107,11 @@ export default function AddSiteStep1(props) {
         <FormSelect
           name="location"
           value={building}
-          values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
+          disabled={props.eventId}
           placeholder="Select a location"
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
+          values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
         />
       </Form.Row>
       <Form.Row>
@@ -121,8 +122,8 @@ export default function AddSiteStep1(props) {
           values={levels}
           placeholder="Select a Level"
           style={GLOBALS.Styles.inputWidth}
-          disabled={!building || building === "Exterior"}
           onChange={({ target: { value } }) => setLevel(value)}
+          disabled={!building || building === "Exterior" || props.eventId}
         />
       </Form.Row>
       <Form.Row>
@@ -137,8 +138,10 @@ export default function AddSiteStep1(props) {
                 ? !item.level
                 : item.level === level,
             )}
-            disabled={!building || (building !== "Exterior" && !level)}
             onChange={({ target: { value } }) => setStorageArea(value)}
+            disabled={
+              !building || (building !== "Exterior" && !level) || props.eventId
+            }
           />
         </Form.Row>
       </Form.Row>

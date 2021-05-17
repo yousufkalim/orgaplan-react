@@ -8,9 +8,10 @@ export default function FormCheckbox(props) {
       control={
         <Checkbox
           name={props.name}
-          color={props.color || "default"}
           checked={props.checked}
+          disabled={props.disabled}
           onChange={props.onChange}
+          color={props.color || "default"}
         />
       }
       label={props.label}

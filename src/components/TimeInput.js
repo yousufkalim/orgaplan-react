@@ -69,6 +69,7 @@ export default function Input(props) {
         required={props.required}
         disabled={props.disabled}
         onChange={props.onChange}
+        minuteStep={props.minuteStep}
         placeholder={props.placeholder}
       />
       {props.error !== "" && (

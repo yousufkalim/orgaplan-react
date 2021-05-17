@@ -32,6 +32,7 @@ export default function DeliveryRequest(props) {
   const [loading, setLoading] = useState(true);
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
+  const [step3Data, setStep3Data] = useState("");
 
   // Step1 Data
   const [companies, setCompanies] = useState([]);
@@ -136,7 +137,7 @@ export default function DeliveryRequest(props) {
     try {
       setLoading(true);
       const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.DELIVERY}/${props.eventId}`,
+        uri: `${GLOBALS.Constants.GET_DELIVERY}/${props.eventId}`,
         token: store.token,
       });
       setStep1Data({
@@ -155,6 +156,10 @@ export default function DeliveryRequest(props) {
         storageArea: response.data.storageArea,
         routingMeans: response.data.routingMeans,
       });
+      setStep3Data({
+        comment: response.data.comment,
+        sendDeliverySummary: response.data.sendDeliverySummary,
+      });
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -169,6 +174,7 @@ export default function DeliveryRequest(props) {
     <div className={classes.root}>
       <Stepper
         step={step}
+        disabled={true}
         setStep={setStep}
         steps={[
           "Step 1: Delivery Area",
@@ -192,6 +198,7 @@ export default function DeliveryRequest(props) {
             deliveryAreas={deliveryAreas}
             trades={trades}
             means={means}
+            eventId={props.eventId}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2
@@ -214,6 +221,7 @@ export default function DeliveryRequest(props) {
             setStep={setStep}
             step1Data={step1Data}
             step2Data={step2Data}
+            step3Data={step3Data}
             setStep1Data={setStep1Data}
             setStep2Data={setStep2Data}
             companies={companies}

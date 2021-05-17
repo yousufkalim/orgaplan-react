@@ -47,6 +47,10 @@ export default function DeliveryRequestStep3(props) {
       props.step2Data.routingMeans.includes(item._id),
     );
     routMeans && setRoutingMeans(routMeans.map((item) => item.name));
+    if (props.step3Data) {
+      setComments(props.step3Data.comment);
+      setReceiveSummary(props.step3Data.sendDeliverySummary);
+    }
     // eslint-disable-next-line
   }, [props]);
 
@@ -183,6 +187,7 @@ export default function DeliveryRequestStep3(props) {
           name="comments"
           value={comments}
           placeholder="Comments"
+          disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setComments(value)}
         />
@@ -193,6 +198,7 @@ export default function DeliveryRequestStep3(props) {
           <FormCheckbox
             name="receiveSummary"
             checked={receiveSummary}
+            disabled={props.eventId}
             label="Receive Summary by e-mail"
             onChange={({ target: { checked } }) => setReceiveSummary(checked)}
           />
