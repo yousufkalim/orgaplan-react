@@ -148,5 +148,6 @@ const endpoints = {
   updateDeliveryStatus: BASE_URL_V1 + "delivery/updateStatus",
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
   delete_Delivery: BASE_URL_V1 + "delivery",
+  getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
 };
 export default endpoints;
