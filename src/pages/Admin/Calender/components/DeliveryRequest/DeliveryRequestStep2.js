@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-
+import { useDispatch, useSelector } from "react-redux";
 import GLOBALS from "../../../../../globals";
+import Actions from "../../../../../redux/actions";
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
-
 export default function AddSiteStep1(props) {
+  console.log(props);
+  const dispatch = useDispatch();
+  const adminStore = useSelector((state) => state.admin);
   const [building, setBuilding] = useState("");
   const [buildings, setBuildings] = useState([]);
   const [level, setLevel] = useState("");
@@ -17,6 +20,7 @@ export default function AddSiteStep1(props) {
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
+  const [deliverStroageArea, setDeliveryStroageAre] = useState([]);
 
   useEffect(() => {
     if (props.step2Data) {
@@ -80,14 +84,16 @@ export default function AddSiteStep1(props) {
       }
       if (props.step2Data && !rendered) {
         setLevel(props.step2Data.level);
-        setStorageArea(props.step2Data.storageArea);
+        setStorageArea(deliverStroageArea);
         setRoutingMeans(props.step2Data.routingMeans);
         setRendered(true);
       }
     }
     // eslint-disable-next-line
   }, [building]);
-
+  useEffect(() => {
+    getDeliveryallStorageArea();
+  }, []);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
@@ -99,7 +105,40 @@ export default function AddSiteStep1(props) {
     props.setStep2Data(values);
     props.setStep(3);
   }
+  const getDeliveryallStorageArea = async () => {
+    try {
+      const response = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.getDeliveryallStorageArea}/${adminStore.site.siteId._id}/${props.step1Data.deliveryArea}`,
+      });
+      // setDeliveryStroageAre(response.data);
 
+      const data = response.data.reduce((accumulator, currentValue) => {
+        if (
+          moment(props.date).isBetween(
+            currentValue.availability.start,
+            currentValue.availability.end,
+            "day",
+            "[]",
+          )
+        ) {
+          accumulator.push({
+            value: currentValue._id,
+            label: currentValue.name,
+            level: currentValue.level,
+          });
+        }
+        return accumulator;
+      }, []);
+      setDeliveryStroageAre(data);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.response, "error"),
+        ),
+      );
+    }
+  };
+  console.log(deliverStroageArea);
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -133,7 +172,7 @@ export default function AddSiteStep1(props) {
             name="storageArea"
             value={storageArea}
             placeholder="Storage Area"
-            values={props.storageAreas.filter((item) =>
+            values={deliverStroageArea.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
                 : item.level === level,
