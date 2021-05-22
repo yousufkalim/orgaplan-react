@@ -127,9 +127,17 @@ export default function AddIncidents(props) {
     if (incident.location?.storageArea) {
       setselectedLocationType("storageArea");
       setselectedLocation(incident.location?.storageArea._id);
+      const locationObject = {
+        ["storageArea"]: incident.location?.storageArea._id,
+      };
+      setLocation(locationObject);
     } else if (incident.location?.deliveryArea) {
       setselectedLocationType("deliveryArea");
       setselectedLocation(incident.location?.deliveryArea._id);
+      const locationObject = {
+        ["deliveryArea"]: incident.location?.deliveryArea._id,
+      };
+      setLocation(locationObject);
     }
   };
   const handleChange = (name, value) => {
@@ -217,8 +225,8 @@ export default function AddIncidents(props) {
       formdata.append("location", JSON.stringify(location));
 
       if (image[0]?.file) formdata.append("photos", image[0].file);
+      formdata.append("siteId", adminStore.site.siteId._id);   
 
-      formdata.append("siteId", adminStore.site.siteId._id);
       await GLOBALS.API({
         method: "PUT",
         uri:
@@ -243,6 +251,8 @@ export default function AddIncidents(props) {
   const timeChange = (e) => {
     setTime(moment(e?._d).format("HH:mm:ss"));
   };
+
+
 
   return (
     <div className={classes.root}>
@@ -341,7 +351,7 @@ export default function AddIncidents(props) {
                 placeholder="LOCATION"
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
-                onChange={locationChange}
+                 onChange={locationChange}
                 value={selectedLocation}
                 values={dropdownLocation}
                 disabled={!selectedLocationType}
