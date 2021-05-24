@@ -548,7 +548,6 @@ export default function Clients(props) {
               <FormInput
                 textArea
                 rows={3}
-                maxLength="300"
                 name="additionalInfo"
                 value={additionalInfo}
                 error={errors.additionalInfo}

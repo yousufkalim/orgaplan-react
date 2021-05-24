@@ -142,7 +142,7 @@ export default function EditSiteStep1(props) {
           <FormInput
             name="name"
             value={name}
-            maxLength="50"
+            // maxLength="50"
             // error={name}
             placeholder="Site name"
             style={GLOBALS.Styles.inputWidth}

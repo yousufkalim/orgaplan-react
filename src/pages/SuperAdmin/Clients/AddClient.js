@@ -164,7 +164,7 @@ export default function AddClient(props) {
       </IconButton>
       <Heading primary="ADD A CLIENT" />
       <div className={classes.content}>
-        <Form.Form onSubmit={onSubmit}>
+        <Form.Form>
           <Form.Row>
             <FormLabel bold primary="COMPANY NAME* :" />
             <FormInput
@@ -381,7 +381,7 @@ export default function AddClient(props) {
           </Form.Row>
           <Form.ButtonContainer>
             <Button
-              type="submit"
+              onClick={onSubmit}
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
