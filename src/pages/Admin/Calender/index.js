@@ -966,21 +966,22 @@ const Calender = (props) => {
       });
       if (response.success) {
         if (typeOfPlaning === "Deliveries") {
-          let colour = "";
+          let background = "";
+          let fontColor = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
             if (!(key.startTime && key.endTime)) {
               return {};
             }
             if (key.alert === true && status === "ALERT") {
-              colour = "red";
+              fontColor = "red";
             } else {
               if (key.status === "PENDING") {
-                colour = "yellow";
+                background = "yellow";
               } else if (key.status === "VALIDATED") {
-                colour = "green";
+                background = "green";
               } else if (key.status === "MODIFIED") {
-                colour = "orange";
+                background = "orange";
               }
             }
 
@@ -1007,7 +1008,8 @@ const Calender = (props) => {
               title: key.comment,
               start: start,
               end: end,
-              color: colour,
+              background: background,
+              fontColor: fontColor,
               liftingMeans: key.liftingMeans,
               routingMeans: key.routingMeans,
               company: key.companyId,
@@ -1021,11 +1023,13 @@ const Calender = (props) => {
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
-            let colour = "";
+            let background = "";
+            let fontColor = "white";
+
             if (key.status === "VALIDATED") {
-              colour = "green";
+              background = "green";
             } else {
-              colour = "";
+              background = "";
             }
             let start = new Date(key.startDate);
             let end = new Date(key.endDate);
@@ -1039,7 +1043,8 @@ const Calender = (props) => {
               companyName: key.companyId.name,
               meanName: key.meanId.name,
               status: key.status,
-              color: colour,
+              background: background,
+              fontColor: fontColor,
             };
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
@@ -1619,8 +1624,8 @@ const Calender = (props) => {
                 height: "540px",
               }}
               eventPropGetter={(events, start, end, isSelected) => {
-                let { color } = events;
-
+                console.log(events);
+                let { background, fontColor } = events;
                 let newStyle = {
                   clear: "both",
                   display: "block",
@@ -1629,9 +1634,9 @@ const Calender = (props) => {
                   marginTop: "5px !important",
                   marginLeft: "5px !important",
                   lineHeight: "14px",
-                  background: `${color}`,
+                  background: `${background}`,
                   border: "2px solid #fff",
-                  color: "black",
+                  color: fontColor ? `${fontColor}` : "black",
                   fontWeight: "bold",
                   fontSize: "16px",
                 };
@@ -1656,7 +1661,7 @@ const Calender = (props) => {
           ) : (
             <Loader.Progress />
           )}
-        </div>{" "}
+        </div>
       </div>
     </>
   );
