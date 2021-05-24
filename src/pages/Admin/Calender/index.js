@@ -970,17 +970,29 @@ const Calender = (props) => {
           let fontColor = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
+            console.log(key);
             if (!(key.startTime && key.endTime)) {
               return {};
             }
-            if (key.alert === true && status === "ALERT") {
-              fontColor = "red";
-            } else {
-              if (key.status === "PENDING") {
+            if (key.status === "PENDING") {
+              if (key.alert === true && status === "ALERT") {
+                fontColor = "red";
                 background = "yellow";
-              } else if (key.status === "VALIDATED") {
+              } else {
+                background = "yellow";
+              }
+            } else if (key.status === "VALIDATED") {
+              if (key.alert === true && status === "ALERT") {
+                fontColor = "red";
                 background = "green";
-              } else if (key.status === "MODIFIED") {
+              } else {
+                background = "green";
+              }
+            } else if (key.status === "MODIFIED") {
+              if (key.alert === true && status === "ALERT") {
+                fontColor = "red";
+                background = "orange";
+              } else {
                 background = "orange";
               }
             }
@@ -1624,8 +1636,8 @@ const Calender = (props) => {
                 height: "540px",
               }}
               eventPropGetter={(events, start, end, isSelected) => {
-                console.log(events);
                 let { background, fontColor } = events;
+                console.log(events);
                 let newStyle = {
                   clear: "both",
                   display: "block",
