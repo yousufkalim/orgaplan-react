@@ -8,8 +8,8 @@ import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
+
 export default function AddSiteStep1(props) {
-  console.log(props);
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const [building, setBuilding] = useState("");
@@ -138,7 +138,7 @@ export default function AddSiteStep1(props) {
       );
     }
   };
-  console.log(deliverStroageArea);
+  console.log(props);
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -171,7 +171,7 @@ export default function AddSiteStep1(props) {
           <FormSelect
             name="storageArea"
             value={storageArea}
-            placeholder="Storage Area"
+            placeholder="Select Storage Area"
             values={deliverStroageArea.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
