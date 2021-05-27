@@ -1030,6 +1030,7 @@ const Calender = (props) => {
               storageArea: key.storageArea,
               building: key.building,
               status: key.status,
+              user: key.userId,
             };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
@@ -1057,6 +1058,7 @@ const Calender = (props) => {
               status: key.status,
               background: background,
               fontColor: fontColor,
+              user: key.userId,
             };
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);

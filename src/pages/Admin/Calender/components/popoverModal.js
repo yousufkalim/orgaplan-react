@@ -90,6 +90,32 @@ const PopoverModal = ({
           <div className="showPopover">
             {event.objectName === "Deliveries" ? (
               <>
+                {event.status === "MODIFIED" ? (
+                  <>
+                    <span>Modified By</span>
+                    <h5
+                      className="text-center"
+                      style={{
+                        backgroundColor: "#f7f7f7",
+                        fontSize: "16px",
+                        color: "#777",
+                        textAlign: "center",
+                        padding: "10px 20px",
+                        margin: "10px 0px",
+                      }}
+                    >
+                      {"Name: " +
+                        event.user.firstName +
+                        " " +
+                        event.user.lastName +
+                        " Role: " +
+                        event.user.adminType}
+                    </h5>
+                  </>
+                ) : (
+                  <></>
+                )}
+
                 <span>Company</span>
                 <h5
                   className="text-center"
