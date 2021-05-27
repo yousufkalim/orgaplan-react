@@ -141,20 +141,20 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setStep1Data({
-        company: response.data.companyId,
-        deliveryArea: response.data.deliveryArea,
+        company: response.data.companyId._id,
+        deliveryArea: response.data.deliveryArea._id,
         date: response.data.date,
         startTime: response.data.startTime,
         endTime: response.data.endTime,
         trades: response.data.trades,
-        liftingMeans: response.data.liftingMeans,
+        liftingMeans: response.data.liftingMeans.map((item) => item._id),
         materials: response.data.materials,
       });
       setStep2Data({
         building: response.data.building,
         level: response.data.level,
-        storageArea: response.data.storageArea,
-        routingMeans: response.data.routingMeans,
+        storageArea: response.data.storageArea._id,
+        routingMeans: response.data.routingMeans.map((item) => item._id),
       });
       setStep3Data({
         comment: response.data.comment,
