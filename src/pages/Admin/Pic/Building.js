@@ -120,7 +120,8 @@ export default function AddSiteStep3(props) {
       setLoading(true);
       let color;
       if (props.selectedShape) color = props.selectedShape.building.color;
-      else color = GLOBALS.Functions.randomColor();
+      // else color = GLOBALS.Functions.randomColor();
+      else color="white"
 
       const formdata = JSON.stringify({
         name: buildingName,
