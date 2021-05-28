@@ -158,6 +158,9 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: formdata,
       });
+      console.log(response.data,"response")
+      console.log(color,"color")
+
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
