@@ -43,10 +43,12 @@ export default function DeliveryRequest(props) {
   const [buildings, setBuildings] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
 
+  const [deliveryArea, setDeliveryArea] = useState([]);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [deliveryArea]);
 
   const fetchData = async () => {
     try {
@@ -71,28 +73,28 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setMeans(means.data);
-     
-      deliveryAreas.data.forEach((val, index) => {   
+
+      deliveryAreas.data.forEach((val, index) => {
         val.unavailability.map((key) => {
           if (key.dayOff === true) {
             if (moment(props.date).isSame(key.date, "day")) {
               deliveryAreas.data[index].isDisable = true;
-            } 
-          }      
+            }
+          }
         });
       });
 
-      storageAreas.data.forEach((val1, index1) => {   
+      storageAreas.data.forEach((val1, index1) => {
         val1.unavailability.map((key1) => {
           if (key1.dayOff === true) {
             if (moment(props.date).isSame(key1.date, "day")) {
               storageAreas.data[index1].isDisable = true;
-            } 
-          }      
+            }
+          }
         });
       });
 
-    setDeliveryAreas(
+      setDeliveryAreas(
         deliveryAreas.data.reduce((accumulator, currentValue) => {
           if (
             moment(props.date).isBetween(
@@ -102,11 +104,11 @@ export default function DeliveryRequest(props) {
               "[]",
             )
           ) {
-            if(!currentValue.isDisable){
-            accumulator.push({
-              value: currentValue._id,
-              label: currentValue.name,
-            });
+            if (!currentValue.isDisable) {
+              accumulator.push({
+                value: currentValue._id,
+                label: currentValue.name,
+              });
             }
           }
           return accumulator;
@@ -125,23 +127,27 @@ export default function DeliveryRequest(props) {
         })),
       );
       setStorageAreas(
+        //deliveryArea
         storageAreas.data.reduce((accumulator, currentValue) => {
-          if (
-            moment(props.date).isBetween(
-              currentValue.availability.start,
-              currentValue.availability.end,
-              "day",
-              "[]",
-            )
-          ) {
-            if(!currentValue.isDisable){
-              accumulator.push({
-                value: currentValue._id,
-                label: currentValue.name,
-                level: currentValue.level,
-              });
-           }
-          }
+          currentValue.deliveryArea.map((key, index) => {
+            if (key === deliveryArea) {
+              if (
+                moment(props.date).isBetween(
+                  currentValue.availability.start,
+                  currentValue.availability.end,
+                  "day",
+                  "[]",
+                )
+              ) {
+                accumulator.push({
+                  value: currentValue._id,
+                  label: currentValue.name,
+                  level: currentValue.level,
+                });
+              }
+            }
+            return;
+          });
           return accumulator;
         }, []),
       );
@@ -223,6 +229,8 @@ export default function DeliveryRequest(props) {
             trades={trades}
             means={means}
             eventId={props.eventId}
+            deliveryArea={deliveryArea}
+            setDeliveryArea={setDeliveryArea}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2

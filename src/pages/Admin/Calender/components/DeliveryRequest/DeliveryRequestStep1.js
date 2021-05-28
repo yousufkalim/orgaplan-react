@@ -14,7 +14,7 @@ import MultiAdderInput from "../../../../../components/MultiAdderInput";
 
 export default function AddSiteStep1(props) {
   const [company, setCompany] = useState("");
-  const [deliveryArea, setDeliveryArea] = useState("");
+  let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
