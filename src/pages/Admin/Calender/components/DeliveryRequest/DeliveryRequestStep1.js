@@ -26,7 +26,7 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     if (props.step1Data) {
-      setCompany(props.step1Data.company);
+      setCompany(props.step1Data.company);     
       setDeliveryArea(props.step1Data.deliveryArea);
       setDate(props.step1Data.date);
       props.step1Data.startTime &&
@@ -97,6 +97,8 @@ export default function AddSiteStep1(props) {
     props.setStep1Data(values);
     props.setStep(2);
   }
+
+  // console.log('setDeliveryArea :::::::', deliveryArea);
 
   return (
     <Form.Form onSubmit={onSubmit}>
