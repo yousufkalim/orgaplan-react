@@ -20,8 +20,6 @@ export default function AddSiteStep1(props) {
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
-  const [deliverStroageArea, setDeliveryStroageAre] = useState([]);
-
   useEffect(() => {
     if (props.step2Data) {
       if (props.step2Data.building) {
@@ -84,16 +82,13 @@ export default function AddSiteStep1(props) {
       }
       if (props.step2Data && !rendered) {
         setLevel(props.step2Data.level);
-        setStorageArea(deliverStroageArea);
+        setStorageArea(props.step2Data.storageArea);
         setRoutingMeans(props.step2Data.routingMeans);
         setRendered(true);
       }
     }
     // eslint-disable-next-line
   }, [building]);
-  useEffect(() => {
-    getDeliveryallStorageArea();
-  }, []);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
@@ -105,40 +100,7 @@ export default function AddSiteStep1(props) {
     props.setStep2Data(values);
     props.setStep(3);
   }
-  const getDeliveryallStorageArea = async () => {
-    try {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.getDeliveryallStorageArea}/${adminStore.site.siteId._id}/${props.step1Data.deliveryArea}`,
-      });
-      // setDeliveryStroageAre(response.data);
 
-      const data = response.data.reduce((accumulator, currentValue) => {
-        if (
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
-            level: currentValue.level,
-          });
-        }
-        return accumulator;
-      }, []);
-      setDeliveryStroageAre(data);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.response, "error"),
-        ),
-      );
-    }
-  };
-  console.log(props);
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -172,7 +134,7 @@ export default function AddSiteStep1(props) {
             name="storageArea"
             value={storageArea}
             placeholder="Select Storage Area"
-            values={deliverStroageArea.filter((item) =>
+            values={props.storageAreas.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
                 : item.level === level,
@@ -184,6 +146,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
+
       <Form.Row>
         <FormLabel bold primary="TRANSPORTING MEANS* :" />
         <Form.Row noMargin width="48%">

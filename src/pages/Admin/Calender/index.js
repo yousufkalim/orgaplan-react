@@ -970,7 +970,6 @@ const Calender = (props) => {
           let fontColor = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
-            console.log(key);
             if (!(key.startTime && key.endTime)) {
               return {};
             }
@@ -1639,7 +1638,6 @@ const Calender = (props) => {
               }}
               eventPropGetter={(events, start, end, isSelected) => {
                 let { background, fontColor } = events;
-                console.log(events);
                 let newStyle = {
                   clear: "both",
                   display: "block",

@@ -43,10 +43,12 @@ export default function DeliveryRequest(props) {
   const [buildings, setBuildings] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
 
+  const [deliveryArea, setDeliveryArea] = useState([]);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [deliveryArea]);
 
   const fetchData = async () => {
     try {
@@ -103,21 +105,27 @@ export default function DeliveryRequest(props) {
         })),
       );
       setStorageAreas(
+        //deliveryArea
         storageAreas.data.reduce((accumulator, currentValue) => {
-          if (
-            moment(props.date).isBetween(
-              currentValue.availability.start,
-              currentValue.availability.end,
-              "day",
-              "[]",
-            )
-          ) {
-            accumulator.push({
-              value: currentValue._id,
-              label: currentValue.name,
-              level: currentValue.level,
-            });
-          }
+          currentValue.deliveryArea.map((key, index) => {
+            if (key === deliveryArea) {
+              if (
+                moment(props.date).isBetween(
+                  currentValue.availability.start,
+                  currentValue.availability.end,
+                  "day",
+                  "[]",
+                )
+              ) {
+                accumulator.push({
+                  value: currentValue._id,
+                  label: currentValue.name,
+                  level: currentValue.level,
+                });
+              }
+            }
+            return;
+          });
           return accumulator;
         }, []),
       );
@@ -199,6 +207,8 @@ export default function DeliveryRequest(props) {
             trades={trades}
             means={means}
             eventId={props.eventId}
+            deliveryArea={deliveryArea}
+            setDeliveryArea={setDeliveryArea}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2

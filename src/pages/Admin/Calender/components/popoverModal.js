@@ -44,8 +44,7 @@ const PopoverModal = ({
               className="alert-link"
             >
               NO
-            </div>{" "}
-            &nbsp;&nbsp;
+            </div>
             <div
               onClick={() => {
                 handleDeleteDelivery("yes");
