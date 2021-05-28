@@ -71,8 +71,28 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setMeans(means.data);
+     
+      deliveryAreas.data.forEach((val, index) => {   
+        val.unavailability.map((key) => {
+          if (key.dayOff === true) {
+            if (moment(props.date).isSame(key.date, "day")) {
+              deliveryAreas.data[index].isDisable = true;
+            } 
+          }      
+        });
+      });
 
-      setDeliveryAreas(
+      storageAreas.data.forEach((val1, index1) => {   
+        val1.unavailability.map((key1) => {
+          if (key1.dayOff === true) {
+            if (moment(props.date).isSame(key1.date, "day")) {
+              storageAreas.data[index1].isDisable = true;
+            } 
+          }      
+        });
+      });
+
+    setDeliveryAreas(
         deliveryAreas.data.reduce((accumulator, currentValue) => {
           if (
             moment(props.date).isBetween(
@@ -82,10 +102,12 @@ export default function DeliveryRequest(props) {
               "[]",
             )
           ) {
+            if(!currentValue.isDisable){
             accumulator.push({
               value: currentValue._id,
               label: currentValue.name,
             });
+            }
           }
           return accumulator;
         }, []),
@@ -112,11 +134,13 @@ export default function DeliveryRequest(props) {
               "[]",
             )
           ) {
-            accumulator.push({
-              value: currentValue._id,
-              label: currentValue.name,
-              level: currentValue.level,
-            });
+            if(!currentValue.isDisable){
+              accumulator.push({
+                value: currentValue._id,
+                label: currentValue.name,
+                level: currentValue.level,
+              });
+           }
           }
           return accumulator;
         }, []),
