@@ -42,7 +42,7 @@ class App extends Component {
     meanCheck: "",
     meanValue: "",
     meanFinish: false,
-    isLoading: true,
+    isLoading: false,
     clickedShape: "",
   };
 
@@ -54,17 +54,18 @@ class App extends Component {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
       await Promise.all(
-        this.props.shapes.map(async (tempShap) => {
-          const tempShape = _.cloneDeep(tempShap);
-          if (tempShape.image && typeof tempShape.image === "string") {
-            const image = await loadImage(
-              `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
-            );
-            tempShape.image = image;
-          }
-          newArray.push(tempShape);
-          return tempShape;
-        }),
+        this.props.shapes &&
+          this.props.shapes.map(async (tempShap) => {
+            const tempShape = _.cloneDeep(tempShap);
+            if (tempShape.image && typeof tempShape.image === "string") {
+              const image = await loadImage(
+                `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
+              );
+              tempShape.image = image;
+            }
+            newArray.push(tempShape);
+            return tempShape;
+          }),
       );
       this.setState({ shapes: [] }, () => this.setState({ shapes: newArray }));
       // this.setState({ shapes: this.props.shapes });
@@ -305,13 +306,13 @@ class App extends Component {
     } = this;
     var finishDisable = false;
     var checkMean = false;
-
     const stage = event.target.getStage();
     const pointer = stage.getPointerPosition();
     const mousePos = getMousePos(stage);
 
     if (shapes.length > 0) {
       var flat = event.target.attrs.points;
+
       if (flat !== undefined && event.target.attrs.closed === true) {
         if (flat.length === 6) {
           finishDisable = this.isInsideTriangle(flat, pointer.x, pointer.y);
@@ -321,6 +322,14 @@ class App extends Component {
           finishDisable = this.isInsidePentagon(flat, pointer.x, pointer.y);
         } else if (flat.length === 12) {
           finishDisable = this.isInsideHexagon(flat, pointer.x, pointer.y);
+        } else if (flat.length === 14) {
+          finishDisable = this.isInsideHeptagon(flat, pointer.x, pointer.y);
+        } else if (flat.length === 16) {
+          finishDisable = this.isInsideOctagon(flat, pointer.x, pointer.y);
+        } else if (flat.length === 18) {
+          finishDisable = this.isInsidePloygon(flat, pointer.x, pointer.y);
+        } else if (flat.length === 20) {
+          finishDisable = this.isInsideDecagon(flat, pointer.x, pointer.y);
         }
       }
       if (event.target.attrs.meanFinish === false) {
@@ -404,8 +413,8 @@ class App extends Component {
             this.setState({
               points: [],
             });
-          } else if (points.length >= 6) {
-            alert("You only can make upto hexagon shape");
+          } else if (points.length >= 10) {
+            alert("You only can make upto Decagon shape");
             return;
           } else {
             this.setState({
@@ -623,6 +632,269 @@ class App extends Component {
       return false;
     }
   };
+  // 7points
+
+  isInsideHeptagon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x6 = arr[10];
+    let y6 = arr[11];
+    let x7 = arr[12];
+    let y7 = arr[13];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5) +
+      AreaOfTriangle(x4, y4, x6, y6, x5, y5) +
+      AreaOfTriangle(x1, y1, x6, y6, x7, y7);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let A6 = AreaOfTriangle(x, y, x4, y4, x6, y6);
+    let A7 = AreaOfTriangle(x, y, x4, y4, x7, y7);
+
+    let tempA = A1 + A2 + A3 + A4 + A5 + A6 + A7;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsideOctagon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x6 = arr[10];
+    let y6 = arr[11];
+    let x7 = arr[12];
+    let y7 = arr[13];
+    let x8 = arr[14];
+    let y8 = arr[15];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5) +
+      AreaOfTriangle(x4, y4, x6, y6, x5, y5) +
+      AreaOfTriangle(x1, y1, x6, y6, x7, y7) +
+      AreaOfTriangle(x1, y1, x6, y6, x8, y8);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let A6 = AreaOfTriangle(x, y, x4, y4, x6, y6);
+    let A7 = AreaOfTriangle(x, y, x4, y4, x7, y7);
+    let A8 = AreaOfTriangle(x, y, x4, y4, x8, y8);
+
+    let tempA = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsidePloygon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x6 = arr[10];
+    let y6 = arr[11];
+    let x7 = arr[12];
+    let y7 = arr[13];
+    let x8 = arr[14];
+    let y8 = arr[15];
+    let x9 = arr[16];
+    let y9 = arr[17];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5) +
+      AreaOfTriangle(x4, y4, x6, y6, x5, y5) +
+      AreaOfTriangle(x1, y1, x6, y6, x7, y7) +
+      AreaOfTriangle(x1, y1, x6, y6, x8, y8) +
+      AreaOfTriangle(x1, y1, x6, y6, x9, y9);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let A6 = AreaOfTriangle(x, y, x4, y4, x6, y6);
+    let A7 = AreaOfTriangle(x, y, x4, y4, x7, y7);
+    let A8 = AreaOfTriangle(x, y, x4, y4, x8, y8);
+    let A9 = AreaOfTriangle(x, y, x4, y4, x9, y9);
+
+    let tempA = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8 + A9;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  isInsideDecagon = (arr, p1, p2) => {
+    let tempArr = Array.from(Array(100).keys());
+    let x1 = arr[0];
+    let y1 = arr[1];
+    let x2 = arr[2];
+    let y2 = arr[3];
+    let x3 = arr[4];
+    let y3 = arr[5];
+    let x4 = arr[6];
+    let y4 = arr[7];
+    let x5 = arr[8];
+    let y5 = arr[9];
+    let x6 = arr[10];
+    let y6 = arr[11];
+    let x7 = arr[12];
+    let y7 = arr[13];
+    let x8 = arr[14];
+    let y8 = arr[15];
+    let x9 = arr[16];
+    let y9 = arr[17];
+    let x10 = arr[18];
+    let y10 = arr[19];
+    let x = p1;
+    let y = p2;
+
+    /* Calculate AreaOfTriangle of triangle ABC */
+    const { AreaOfTriangle } = this;
+    let A =
+      AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
+      AreaOfTriangle(x1, y1, x4, y4, x3, y3) +
+      AreaOfTriangle(x4, y4, x3, y3, x5, y5) +
+      AreaOfTriangle(x4, y4, x6, y6, x5, y5) +
+      AreaOfTriangle(x1, y1, x6, y6, x7, y7) +
+      AreaOfTriangle(x1, y1, x6, y6, x8, y8) +
+      AreaOfTriangle(x1, y1, x6, y6, x9, y9) +
+      AreaOfTriangle(x1, y1, x6, y6, x10, y10);
+
+    /* Calculate AreaOfTriangle of triangle PBC */
+    let A1 = AreaOfTriangle(x, y, x1, y1, x2, y2);
+
+    /* Calculate AreaOfTriangle of triangle PAC */
+    let A2 = AreaOfTriangle(x, y, x2, y2, x3, y3);
+
+    /* Calculate AreaOfTriangle of triangle PAB */
+    let A3 = AreaOfTriangle(x, y, x3, y3, x4, y4);
+    let A4 = AreaOfTriangle(x, y, x1, y1, x4, y4);
+
+    let A5 = AreaOfTriangle(x, y, x4, y4, x5, y5);
+    let A6 = AreaOfTriangle(x, y, x4, y4, x6, y6);
+    let A7 = AreaOfTriangle(x, y, x4, y4, x7, y7);
+    let A8 = AreaOfTriangle(x, y, x4, y4, x8, y8);
+    let A9 = AreaOfTriangle(x, y, x4, y4, x9, y9);
+    let A10 = AreaOfTriangle(x, y, x4, y4, x10, y10);
+
+    let tempA = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8 + A9 + A10;
+
+    let splitA = tempA.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let splitB = A.toString(10).replace(/\D/g, "0").split("").map(Number);
+    let num1 = Number(`${splitA[0]}${splitA[1]}`);
+    let num2 = Number(`${splitB[0]}${splitB[1]}`);
+
+    let diff = Math.abs(num1 - num2);
+    let tempCheck = tempArr.find((dt) => dt === diff);
+
+    /* Check if sum of A1, A2 and A3 is same as A */
+    if (tempCheck !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  // *
   isInsideRectangle = (arr, p1, p2) => {
     let tempArr = Array.from(Array(100).keys());
     let x1 = arr[0];

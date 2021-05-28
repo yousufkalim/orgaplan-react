@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_SERVER_URL;
+const BASE_URL = "http://localhost:5000/";
 const BASE_URL_V1 = BASE_URL + "api/v1/";
 
 const endpoints = {

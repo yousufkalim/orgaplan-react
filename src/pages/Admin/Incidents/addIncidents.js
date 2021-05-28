@@ -107,6 +107,7 @@ export default function AddIncidents(props) {
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
+      
       const locationObject = {
         [selectedLocationType]: e.target.value,
       };
@@ -163,6 +164,7 @@ export default function AddIncidents(props) {
     } catch (err) {}
   };
   const locationTypeChange = (e) => {
+   
     setselectedLocationType(e.target.value);
   };
   const timeChange = (e) => {
@@ -170,7 +172,6 @@ export default function AddIncidents(props) {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
-
     var formdata = new FormData();
     if (image[0]?.file) formdata.append("photos", image[0].file);
 

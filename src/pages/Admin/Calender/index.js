@@ -367,7 +367,6 @@ const Calender = (props) => {
     let disableDayFlag = false;
     let pastdayFlag = false;
     let betweenDay = false;
-
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
