@@ -11,6 +11,7 @@ export default function Canvas({
   onMouseOutStartPoint,
   handleConvaLineMouseOver,
   handleConvaLineMouseOut,
+  handleConvaCircleImageClick,
   handleConvaLineClick,
   handleConvaCircleClick,
   // states start
@@ -148,7 +149,7 @@ export default function Canvas({
                           stroke={shape.color}
                           meanFinish={meanFinish}
                           strokeWidth={1}
-                          onClick={(e) => handleConvaCircleClick(shape._id)}
+                          onClick={(e) => handleConvaCircleImageClick(shape._id)}
                         />
                       ) : (
                         <Circle
@@ -178,10 +179,13 @@ export default function Canvas({
                           <Image
                             image={img}
                             x={storageArea?.x}
-                            y={storageArea?.y}
-                            onMouseEnter={() =>
+                              y={storageArea?.y}
+                              width={150}
+                              height={150}
+
+                            onClick={() =>
                               alert(
-                                `You are going to expire after ${storageArea.expireDay} days`,
+                                `Your storageArea is going to expire after ${storageArea.expireDay} days`,
                               )
                             }
                             // I will use offset to set origin to the center of the image
@@ -193,11 +197,15 @@ export default function Canvas({
                             image={img}
                             x={deliveryArea?.x}
                             y={deliveryArea?.y}
-                            onMouseEnter={(e) =>
+                            width={150}
+                            height={150}
+
+                            onClick={(e) =>
                               alert(
-                                `You are going to expire after ${deliveryArea.expireDay} days`,
+                                `Your deliveryArea is going to expire after ${deliveryArea.expireDay} days`,
                               )
                             }
+                            
                             // I will use offset to set origin to the center of the image
                             offsetX={img ? img.width / 2 : 0}
                             offsetY={img ? img.height / 2 : 0}
