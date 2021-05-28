@@ -15,6 +15,7 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
@@ -144,6 +145,7 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const nameChange = (e) => {
+
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
@@ -153,7 +155,7 @@ export default function AddIncidents(props) {
     if (e.target.name === "comment") setComment(e.target.value);
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") setType(e.target.value);
-    if (e.target.name === "status") setType(e.target.status);
+    if (e.target.name === "status") setStatus(e.target.value);
     if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
@@ -426,6 +428,30 @@ export default function AddIncidents(props) {
                   { value: false, label: "No" },
                 ]}
               />
+            </Form.Row>
+          </Form.Row>
+
+          <Form.Row>
+            <FormLabel bold primary="Status:" />
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin>
+                <RadioButton
+                  name="status"
+                  value={status}
+                  // onChange={({ target: { name, value } }) =>
+                  //   nameChange(name, value)
+                  // }
+
+                  onChange={nameChange}
+                  items={[
+                    {
+                      value: "OPEN",
+                      label: "Open",
+                    },
+                    { value: "CLOSED", label: "Closed" },
+                  ]}
+                />                
+              </Form.Column>
             </Form.Row>
           </Form.Row>
 
