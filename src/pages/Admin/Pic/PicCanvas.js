@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import _ from "lodash";
-
+import moment from "moment";
 import Mean from "./Mean";
 import Building from "./Building";
 import GLOBALS from "../../../globals";
@@ -71,6 +71,8 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
+  const [newPoints, setnewPoints] = useState("");
+
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
@@ -78,12 +80,45 @@ const PicCanvas = (props) => {
 
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
-  const [levelsDropdown, setLevelsDropdown] = useState([]);  
+  const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
     fetchSitePic();
     // eslint-disable-next-line
   }, []);
+  const expiredShapes = async (shapes) => {
+    let array = [];
 
+    await Promise.all(
+      shapes.map(async (sp) => {
+        if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
+          let isExist = sp?.storageArea?.availability?.end;
+          if (isExist) {
+            let check = Date.now() > new Date(isExist);
+            if (check == false) {
+              array.push(sp);
+            }
+          }
+        } else if (sp.mean && Object.keys(sp.mean).length > 0) {
+          let isExist = sp?.mean?.availability?.end;
+          if (isExist) {
+            let check = Date.now() > new Date(isExist);
+            if (check == false) {
+              array.push(sp);
+            }
+          }
+        } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
+          let isExist = sp?.deliveryArea?.availability?.end;
+          if (isExist) {
+            let check = Date.now() > new Date(isExist);
+            if (check == false) {
+              array.push(sp);
+            }
+          }
+        }
+      }),
+    );
+    return array;
+  };
   const fetchSitePic = async () => {
     try {
       setPdf(
@@ -95,8 +130,19 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+      let shapes = response.data.shapes;
+      let newShapes = expiredShapes(shapes);
+
+      if (newShapes) {
+        newShapes.then((shape) => {
+          setShapes(shape);
+        });
+      } else {
+        setShapes(response.data.shapes);
+      }
+      // setShapes(response.data.shapes);
+
       setSitePic(response.data);
-      setShapes(response.data.shapes);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -202,14 +248,67 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
-    level && (selectedShapeReserver = selectedShape);
-    setSelectedShape("");
-    getShape && setShape(getShape);
-    setShapes(shapesArray);
-    setModal(true);
+
+    if (selectedShape) {
+      let newShape = selectedShape;
+
+      getShape.color = newShape.color;
+      getShape.opacity = newShape.opacity;
+      getShape.type = newShape.type;
+      getShape.name = newShape.name;
+      // getShape._id = Number(newShape._id);
+
+      var removeIndex = shapesArray
+        ?.map(function (item) {
+          return item._id;
+        })
+        .indexOf(newShape._id);
+      shapesArray[removeIndex] = getShape;
+
+      level && (selectedShapeReserver = selectedShape);
+      
+
+      getShape && setShape(getShape);
+
+      setShapes(shapesArray);
+      // if (newShape.type === 'BUILDING') {
+      //   updateBuilding(getShape)
+      // }
+      // remove object
+      removeIndex && shapesArray.splice(removeIndex, 1);
+      setSelectedShape("");
+    } else {
+      level && (selectedShapeReserver = selectedShape);
+      setSelectedShape("");
+
+      getShape && setShape(getShape);
+
+      setShapes(shapesArray);
+      setModal(true);
+    }
   };
+  // update Building
+
+  const updateBuilding =async (selectedShape) => {
+    const formdata = JSON.stringify({
+      name: selectedShape.name,
+      siteId: adminStore.site.siteId._id,
+      color:selectedShape.color,
+    });
+
+    // JSON.stringify Creation
+    const response = await GLOBALS.API({
+      method:  "PUT" ,
+      uri: selectedShape
+        ? `${GLOBALS.Constants.BUILDINGS}/${selectedShape._id}`
+        : GLOBALS.Constants.BUILDINGS,
+      token: store.token,
+      body: formdata,
+    });
+  }
 
   const handleClick = (id, shape) => {
+    console.log(shape,"shape")
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       let levelsArr = _.cloneDeep(shape.building.levels);
@@ -365,32 +464,36 @@ const PicCanvas = (props) => {
                   >
                     <Pencil className={classes.infoIcon} />
                   </IconButton>
-                  {selectedShape.type === "MEAN" ? <>
-                  <NavLink
-                    disabled={loading}
-                    to={{
-                      pathname: "/means/calendar",
-                      selectedShape: selectedShape,
-                    }}
-                  >
-                    <IconButton>
-                      <Calendar className={classes.infoIcon} />
-                    </IconButton>
-                  </NavLink>
-                  </> : <>
-                  <NavLink
-                    disabled={loading}
-                    to={{
-                      pathname: "/",
-                      selectedShape: selectedShape,
-                    }}
-                  >
-                    <IconButton>
-                      <Calendar className={classes.infoIcon} />
-                    </IconButton>
-                  </NavLink>
-                  </>}
-             
+                  {selectedShape.type === "MEAN" ? (
+                    <>
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/means/calendar",
+                          selectedShape: selectedShape,
+                        }}
+                      >
+                        <IconButton>
+                          <Calendar className={classes.infoIcon} />
+                        </IconButton>
+                      </NavLink>
+                    </>
+                  ) : (
+                    <>
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/",
+                          selectedShape: selectedShape,
+                        }}
+                      >
+                        <IconButton>
+                          <Calendar className={classes.infoIcon} />
+                        </IconButton>
+                      </NavLink>
+                    </>
+                  )}
+
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {

@@ -25,6 +25,7 @@ export default function Main() {
   return (
     <>
       {store.loading && <Loader.AbsoluteLinear />}
+      
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (
