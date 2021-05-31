@@ -87,7 +87,6 @@ const PicCanvas = (props) => {
   }, []);
   const expiredShapes = async (shapes) => {
     let array = [];
-
     await Promise.all(
       shapes.map(async (sp) => {
         if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
@@ -114,6 +113,8 @@ const PicCanvas = (props) => {
               array.push(sp);
             }
           }
+        } else if (sp.building && Object.keys(sp.building).length > 0) {
+          array.push(sp);
         }
       }),
     );
@@ -249,31 +250,34 @@ const PicCanvas = (props) => {
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
 
-    if (selectedShape) {
+    if (selectedShape && Object.keys(selectedShape).length > 0) {
       let newShape = selectedShape;
-
       getShape.color = newShape.color;
       getShape.opacity = newShape.opacity;
       getShape.type = newShape.type;
       getShape.name = newShape.name;
-      // getShape._id = Number(newShape._id);
+      getShape._id = newShape._id;
+
+      if (newShape.type === "STORAGEAREA") {
+        getShape.storageArea = newShape.storageArea;
+      } else if (newShape.type === "DELIVERYAREA") {
+        getShape.deliveryArea = newShape.deliveryArea;
+      } else if (newShape.type === "BUILDING") {
+        getShape.building = newShape.building;
+      }
 
       var removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
         .indexOf(newShape._id);
+
       shapesArray[removeIndex] = getShape;
-
       level && (selectedShapeReserver = selectedShape);
-      
-
       getShape && setShape(getShape);
-
       setShapes(shapesArray);
-      // if (newShape.type === 'BUILDING') {
-      //   updateBuilding(getShape)
-      // }
+      updateShape(getShape);
+
       // remove object
       removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
@@ -289,26 +293,18 @@ const PicCanvas = (props) => {
   };
   // update Building
 
-  const updateBuilding =async (selectedShape) => {
-    const formdata = JSON.stringify({
-      name: selectedShape.name,
-      siteId: adminStore.site.siteId._id,
-      color:selectedShape.color,
-    });
-
-    // JSON.stringify Creation
-    const response = await GLOBALS.API({
-      method:  "PUT" ,
-      uri: selectedShape
-        ? `${GLOBALS.Constants.BUILDINGS}/${selectedShape._id}`
-        : GLOBALS.Constants.BUILDINGS,
+  const updateShape = async (newShape) => {
+    await GLOBALS.API({
+      method: "PUT",
+      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${newShape._id}`,
       token: store.token,
-      body: formdata,
+      body: JSON.stringify({
+        shapes: shapes,
+      }),
     });
-  }
+  };
 
   const handleClick = (id, shape) => {
-    console.log(shape,"shape")
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       let levelsArr = _.cloneDeep(shape.building.levels);

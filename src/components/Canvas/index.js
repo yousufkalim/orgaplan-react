@@ -44,6 +44,8 @@ class App extends Component {
     meanFinish: false,
     isLoading: false,
     clickedShape: "",
+    shapeColor: "",
+    meanColor: "",
   };
 
   // LifeCycle Hooks
@@ -123,7 +125,7 @@ class App extends Component {
       if (meanShapeId) {
         let tempArr = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr) {
-          tempArr.color = this.state.color;
+          tempArr.color = this.state.meanColor;
         } else {
           return;
         }
@@ -207,7 +209,7 @@ class App extends Component {
     }
   };
   handleDisableShape = (id) => {
-    const { shapes, shapeId } = this.state;
+    const { shapes, shapeId, shapeColor } = this.state;
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
       let orgni = _.cloneDeep(tempArr);
@@ -217,15 +219,18 @@ class App extends Component {
 
       this.setState({
         shapeName: tempArr.name,
+        shapeColor: tempArr.color,
       });
       if (shapeId) {
         let tempArr2 = shapes.find((sp) => sp._id === shapeId);
         if (tempArr2) {
           if (shapeId !== id) {
-            tempArr2.color = "#ccc";
-          } else {
-            tempArr.color = "white";
+            tempArr2.color = shapeColor;
+            tempArr2.opacity = 1;
           }
+          // else {
+          //   tempArr.color = "white";
+          // }
         }
       }
     }
@@ -498,23 +503,38 @@ class App extends Component {
   handleConvaCircleClick = (id) => {
     this.handleDisableMean(id);
   };
-
-  handleDisableMean = (id) => {
-    const { shapes, meanShapeId } = this.state;
+  handleConvaCircleImageClick = (id) => {
+    const { shapes, meanShapeId, meanColor } = this.state;
     this.setState({ meanCheck: "MEAN" });
+
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
-      this.props.onClick(id, tempArr);
-      this.setState({ clickedShape: tempArr });
+      let orgni = _.cloneDeep(tempArr);
+      this.props.onClick(id, orgni);
+      this.setState({ clickedShape: orgni });
+    }
+  };
+  handleDisableMean = (id) => {
+    const { shapes, meanShapeId, meanColor } = this.state;
+    this.setState({ meanCheck: "MEAN" });
+
+    if (shapes.length > 0) {
+      let tempArr = shapes.find((sp) => sp._id === id);
+      let orgni = _.cloneDeep(tempArr);
+      this.props.onClick(id, orgni);
+      this.setState({ clickedShape: orgni });
+
+      this.setState({
+        meanColor: tempArr.color,
+      });
       tempArr.color = "white";
+
       if (meanShapeId) {
         let tempArr2 = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr2) {
           if (meanShapeId !== id) {
-            tempArr2.color = this.state.color;
-          } else {
-            tempArr.color = "white";
-          }
+            tempArr2.color = meanColor;
+          } 
         }
       }
     }
@@ -990,6 +1010,7 @@ class App extends Component {
       handleConvaLineMouseOut,
       handleConvaLineClick,
       handleConvaCircleClick,
+      handleConvaCircleImageClick,
     } = this;
     return (
       <div className="bg-white">
@@ -1009,6 +1030,7 @@ class App extends Component {
             handleConvaLineMouseOut={handleConvaLineMouseOut}
             handleConvaLineClick={handleConvaLineClick}
             handleConvaCircleClick={handleConvaCircleClick}
+            handleConvaCircleImageClick={handleConvaCircleImageClick}
             image={image}
             curMousePos={curMousePos}
             isFinished={isFinished}

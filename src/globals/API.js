@@ -7,10 +7,10 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       if (process.env.NODE_ENV === "development") {
         if (body instanceof FormData) {
           for (let values of body.entries()) {
-            console.log("values", values);
+            // console.log("values", values);
           }
         } else {
-          console.log("body", body);
+          // console.log("body", body);
         }
       }
 
@@ -22,11 +22,11 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       if (!response.ok) throw await response.json();
       let data = await response.json();
       // process.env.NODE_ENV === "development" &&
-      console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
+      // console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
       resolve(data);
     } catch (err) {
       // process.env.NODE_ENV === "development" &&
-      console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
+      // console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
       reject(err);
     }
   });
