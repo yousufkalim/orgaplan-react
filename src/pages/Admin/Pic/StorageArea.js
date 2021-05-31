@@ -96,7 +96,12 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
-        setUnavailabilities(props.selectedShape.storageArea.unavailability);
+        setUnavailabilities(
+          props.selectedShape.storageArea.unavailability.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setSelectedCompanies(props.selectedShape.storageArea.companies);
         setNotificationPriorToDays(
           props.selectedShape.storageArea.notificationPriorToDays,
