@@ -30,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const { setSelectedShape } = props;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -189,6 +191,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

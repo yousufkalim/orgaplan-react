@@ -32,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const { setSelectedShape } = props;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -82,7 +84,6 @@ export default function DeliveryArea(props) {
           label: item.name,
         })),
       );
-
       if (props.selectedShape) {
         const means = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,
@@ -91,7 +92,7 @@ export default function DeliveryArea(props) {
         setMeans(means.data.map((item) => item.name));
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
-        setColor(props.selectedShape.color);
+        setColor(props.selectedShape.storageArea.color);
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
@@ -144,7 +145,7 @@ export default function DeliveryArea(props) {
         siteId: adminStore.site.siteId._id,
         isFull: isFull,
         name,
-        color: props.shape.color,
+        color: color,
         availability: {
           start: startDate,
           end: endDate,
@@ -177,7 +178,7 @@ export default function DeliveryArea(props) {
       propShapes[inde].name = name;
       propShape.name = response.data.name;
       propShapes[inde].color = color;
-      propShape.color = color;
+      propShape.color = response.data.color;
       propShapes[inde].storageArea = response.data;
       propShape.storageArea = response.data;
 
@@ -209,6 +210,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

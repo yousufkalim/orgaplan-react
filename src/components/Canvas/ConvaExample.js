@@ -25,7 +25,7 @@ export default function Canvas({
   height,
 }) {
   const [img] = useImage(
-    "https://freedcampfilestorage.s3.amazonaws.com/Orgaplan_SRL/Alert%20icon-75950_thumb.png?AWSAccessKeyId=AWS_ACCESS_KEY_ID_REDACTED&Expires=1622201279&Signature=6VjnHWO4vr0nyFtBZVagqVywXNU%3D",
+    "https://cdn1.iconfinder.com/data/icons/round-ui/134/27-512.png",
   );
   var flattenedPoints = points
     .concat(isFinished ? [] : curMousePos)
@@ -44,9 +44,9 @@ export default function Canvas({
     if (newShape && Number(newShape?.notificationPriorToDays) > 0) {
       date.add(newShape?.notificationPriorToDays, "days");
       if (moment(newShape.availability.end).isSame(date, "day")) {
-        obj.expires = false;
-      } else {
         obj.expires = true;
+      } else {
+        obj.expires = false;
       }
     }
     return obj;
@@ -65,9 +65,9 @@ export default function Canvas({
     if (newShape && Number(newShape?.notificationPriorToDays) > 0) {
       date.add(newShape?.notificationPriorToDays, "days");
       if (moment(newShape?.availability.end).isSame(date, "day")) {
-        obj.expires = false;
-      } else {
         obj.expires = true;
+      } else {
+        obj.expires = false;
       }
     }
     return obj;
@@ -111,9 +111,11 @@ export default function Canvas({
                 let storageArea;
                 let deliveryArea;
 
-                if (shape.type === "STORAGEAREA") {
+              if (shape.type === "STORAGEAREA") {
+               
                   storageArea = checkStorageAlert(shape);
                 } else if (shape.type === "DELIVERYAREA") {
+              
                   deliveryArea = checkDeliverAlert(shape);
                 }
                 if (shape.type === "MEAN") {
@@ -134,8 +136,8 @@ export default function Canvas({
                           key={shape._id}
                           x={x}
                           y={y}
-                          width={30}
-                          height={30}
+                          width={50}
+                          height={50}
                           onMouseOver={(e) => {
                             // style stage container:
                             const container = e.target.getStage().container();
@@ -149,7 +151,9 @@ export default function Canvas({
                           stroke={shape.color}
                           meanFinish={meanFinish}
                           strokeWidth={1}
-                          onClick={(e) => handleConvaCircleImageClick(shape._id)}
+                          onClick={(e) =>
+                            handleConvaCircleImageClick(shape._id)
+                          }
                         />
                       ) : (
                         <Circle
@@ -165,7 +169,7 @@ export default function Canvas({
                             const container = e.target.getStage().container();
                             container.style.cursor = "crosshair";
                           }}
-                          width={30}
+                          width={50}
                           fill={shape.color}
                           meanFinish={meanFinish}
                           stroke={shape.color}
@@ -177,38 +181,55 @@ export default function Canvas({
                       <>
                         {storageArea && storageArea?.expires === true ? (
                           <Image
+                            key={shape._id}
                             image={img}
                             x={storageArea?.x}
-                              y={storageArea?.y}
-                              width={150}
-                              height={150}
-
-                            onClick={() =>
+                            y={storageArea?.y}
+                            width={50}
+                            height={50}
+                              onClick={() => {
                               alert(
                                 `Your storageArea is going to expire after ${storageArea.expireDay} days`,
-                              )
-                            }
+                              );
+                              return;
+                            }}
+                            onMouseEnter={(e) => {
+                              // style stage container:
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "pointer";
+                            }}
+                            onMouseLeave={(e) => {
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "crosshair";
+                            }}
                             // I will use offset to set origin to the center of the image
-                            offsetX={img ? img.width / 2 : 0}
-                            offsetY={img ? img.height / 2 : 0}
                           />
-                        ) : deliveryArea && deliveryArea?.expires === false ? (
+                        ) : deliveryArea && deliveryArea?.expires === true ? (
                           <Image
+                            key={shape._id}
                             image={img}
                             x={deliveryArea?.x}
                             y={deliveryArea?.y}
-                            width={150}
-                            height={150}
-
-                            onClick={(e) =>
+                            width={50}
+                            height={50}
+                            onClick={(e) => {
                               alert(
                                 `Your deliveryArea is going to expire after ${deliveryArea.expireDay} days`,
-                              )
-                            }
-                            
+                              );
+                              return;
+                            }}
+                            onMouseEnter={(e) => {
+                              // style stage container:
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "pointer";
+                            }}
+                            onMouseLeave={(e) => {
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "crosshair";
+                            }}
                             // I will use offset to set origin to the center of the image
-                            offsetX={img ? img.width / 2 : 0}
-                            offsetY={img ? img.height / 2 : 0}
+                            // offsetX={deliveryArea?.x}
+                            // offsetY={deliveryArea?.y}
                           />
                         ) : (
                           <ConvaLine

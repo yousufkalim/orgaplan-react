@@ -52,6 +52,8 @@ const levelNumberList = [
 let propsShapesCon = [];
 let propsShapeCon = "";
 export default function AddSiteStep3(props) {
+  const { setSelectedShape } = props;
+
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -176,6 +178,7 @@ export default function AddSiteStep3(props) {
       propsShapeCon = _.cloneDeep(propShape);
 
       props.setShapes(propShapes, propShape, true);
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

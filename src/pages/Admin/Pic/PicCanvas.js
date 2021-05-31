@@ -65,6 +65,7 @@ const PicCanvas = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const SITE_ID = adminStore.site.siteId._id;
 
   const [sitePic, setSitePic] = useState("");
   const [levelPic, setlevelPic] = useState("");
@@ -84,7 +85,8 @@ const PicCanvas = (props) => {
   useEffect(() => {
     fetchSitePic();
     // eslint-disable-next-line
-  }, []);
+  }, [adminStore]);
+
   const expiredShapes = async (shapes) => {
     let array = [];
     await Promise.all(
@@ -120,6 +122,28 @@ const PicCanvas = (props) => {
     );
     return array;
   };
+  const handleColorAndNameOfShape = (shape) => {
+    console.log(shape, "shape");
+    if (shape.deliveryArea && Object.keys(shape?.deliveryArea).length > 0) {
+      shape.name = shape?.deliveryArea.name;
+      shape.color = shape.deliveryArea.color;
+    } else if (
+      shape.storageArea &&
+      Object.keys(shape?.storageArea).length > 0
+    ) {
+      shape.name = shape.storageArea.name;
+      shape.color = shape.storageArea.color;
+    } else if (shape.building && Object.keys(shape?.building).length > 0) {
+      shape.name = shape.building.name;
+      shape.color = shape.building.color;
+    } else if (shape.mean && Object.keys(shape?.mean).length > 0) {
+      if (shape.mean.image) {
+        shape.image = shape.mean.image;
+      } else {
+        shape.color = shape.mean.color;
+      }
+    }
+  };
   const fetchSitePic = async () => {
     try {
       setPdf(
@@ -136,6 +160,7 @@ const PicCanvas = (props) => {
 
       if (newShapes) {
         newShapes.then((shape) => {
+          shape.map((st) => handleColorAndNameOfShape(st));
           setShapes(shape);
         });
       } else {
@@ -250,7 +275,11 @@ const PicCanvas = (props) => {
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
 
-    if (selectedShape && Object.keys(selectedShape).length > 0) {
+    if (
+      selectedShape &&
+      getShape.type !== "MEAN" &&
+      Object.keys(selectedShape).length > 0
+    ) {
       let newShape = selectedShape;
       getShape.color = newShape.color;
       getShape.opacity = newShape.opacity;
@@ -271,15 +300,14 @@ const PicCanvas = (props) => {
           return item._id;
         })
         .indexOf(newShape._id);
-
       shapesArray[removeIndex] = getShape;
+
       level && (selectedShapeReserver = selectedShape);
       getShape && setShape(getShape);
       setShapes(shapesArray);
       updateShape(getShape);
-
       // remove object
-      removeIndex && shapesArray.splice(removeIndex, 1);
+      // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
@@ -296,10 +324,11 @@ const PicCanvas = (props) => {
   const updateShape = async (newShape) => {
     await GLOBALS.API({
       method: "PUT",
-      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${newShape._id}`,
+      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
       token: store.token,
       body: JSON.stringify({
-        shapes: shapes,
+        points: newShape.points,
+        picID: newShape._id,
       }),
     });
   };
@@ -403,6 +432,7 @@ const PicCanvas = (props) => {
               shapes={shapes}
               onClick={handleClick}
               onChange={handleChange}
+              setSelectedShape={setSelectedShape}
               onClear={onClear}
               pdf={pdf}
               onPdfChange={handlePdfChange}
@@ -528,6 +558,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -551,6 +582,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -574,6 +606,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -595,6 +628,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
