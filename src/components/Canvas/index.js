@@ -134,6 +134,7 @@ class App extends Component {
         shapeId: "",
         checkDisable: true,
         meanDisable: true,
+        meanCheck: "",
         meanShapeId: "",
         points: [],
       });
@@ -209,7 +210,16 @@ class App extends Component {
     }
   };
   handleDisableShape = (id) => {
-    const { shapes, shapeId, shapeColor } = this.state;
+    const { shapes, shapeId, shapeColor, meanShapeId } = this.state;
+
+    if (meanShapeId) {
+      let tempArr = shapes.find((sp) => sp._id === meanShapeId);
+      if (tempArr) {
+        tempArr.color = this.state.meanColor;
+      } else {
+        return;
+      }
+    }
     if (shapes.length > 0) {
       let tempArr = shapes.find((sp) => sp._id === id);
       let orgni = _.cloneDeep(tempArr);
@@ -277,6 +287,7 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
+    this.props && this.props.setSelectedShape("");
     if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
@@ -306,6 +317,7 @@ class App extends Component {
         meanFinish,
         meanPoints,
         image,
+        shapeId,meanShapeId
       },
       getMousePos,
     } = this;
@@ -315,6 +327,28 @@ class App extends Component {
     const pointer = stage.getPointerPosition();
     const mousePos = getMousePos(stage);
 
+    if (event.target.attrs.image) {
+      if (shapeId) {
+        let tempArr = shapes.find((sp) => sp._id === shapeId);
+
+        if (tempArr) {
+          tempArr.opacity = this.state.clickedShape.opacity;
+        } else {
+          return;
+        }
+      }
+      if (meanShapeId) {
+        let tempArr = shapes.find((sp) => sp._id === meanShapeId);
+        if (tempArr) {
+          tempArr.color = this.state.meanColor;
+        } else {
+          return;
+        }
+      }
+      this.props.setSelectedShape("");
+
+      return;
+    }
     if (shapes.length > 0) {
       var flat = event.target.attrs.points;
 
@@ -515,7 +549,17 @@ class App extends Component {
     }
   };
   handleDisableMean = (id) => {
-    const { shapes, meanShapeId, meanColor } = this.state;
+    const { shapes, meanShapeId, meanColor, shapeId } = this.state;
+
+    if (shapeId) {
+      let tempArr = shapes.find((sp) => sp._id === shapeId);
+
+      if (tempArr) {
+        tempArr.opacity = this.state.clickedShape.opacity;
+      } else {
+        return;
+      }
+    }
     this.setState({ meanCheck: "MEAN" });
 
     if (shapes.length > 0) {
@@ -527,14 +571,14 @@ class App extends Component {
       this.setState({
         meanColor: tempArr.color,
       });
-      tempArr.color = "white";
+      // tempArr.color = "white";
 
       if (meanShapeId) {
         let tempArr2 = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr2) {
           if (meanShapeId !== id) {
             tempArr2.color = meanColor;
-          } 
+          }
         }
       }
     }

@@ -67,6 +67,8 @@ const endpoints = {
   ADMIN_PIC_GET: BASE_URL_V1 + "site-pic/get",
   ADMIN_PIC_SITE: BASE_URL_V1 + "site-pic/site",
   ADMIN_PIC_SHAPE: BASE_URL_V1 + "site-pic/shape",
+  ADMIN_PIC_SHAPE_POINTS: BASE_URL_V1 + "site-pic/shape",
+
   ADMIN_PIC_BY_SITE: BASE_URL_V1 + "site-pic/site",
 
   // LEVEL PIC

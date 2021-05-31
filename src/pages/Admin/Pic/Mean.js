@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddMean(props) {
   const classes = useStyles();
+  const { setSelectedShape } = props;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -241,6 +242,7 @@ export default function AddMean(props) {
       }
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(
