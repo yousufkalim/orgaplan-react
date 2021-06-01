@@ -75,7 +75,8 @@ export default function Canvas({
     }
     return obj;
   };
-
+  {
+  }
   return (
     <>
       <Stage
@@ -180,148 +181,83 @@ export default function Canvas({
                       )
                     ) : (
                       <>
+                        <ConvaLine
+                          key={shape._id}
+                          stroke="black"
+                          points={flattenedPoint}
+                          fill={shape.color}
+                          opacity={
+                            shape.type === "BUILDING" ? 0.8 : shape.opacity
+                          }
+                          strokeWidth={1}
+                          // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
+                          // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
+                          onMouseOver={(e) => {
+                            // style stage container:
+                            const container = e.target.getStage().container();
+                            container.style.cursor = "pointer";
+                          }}
+                          onMouseOut={(e) => {
+                            const container = e.target.getStage().container();
+                            container.style.cursor = "crosshair";
+                          }}
+                          onClick={() => handleConvaLineClick(shape._id)}
+                          closed={true}
+                        />
                         {storageArea && storageArea?.expires === true ? (
-                          <>
-                            <ConvaLine
-                              key={shape._id}
-                              stroke="black"
-                              points={flattenedPoint}
-                              fill={shape.color}
-                              opacity={
-                                shape.type === "BUILDING" ? 0.8 : shape.opacity
-                              }
-                              strokeWidth={1}
-                              // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
-                              // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
-                              onMouseOver={(e) => {
-                                // style stage container:
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "pointer";
-                              }}
-                              onMouseOut={(e) => {
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "crosshair";
-                              }}
-                              onClick={() => handleConvaLineClick(shape._id)}
-                              closed={true}
-                            />
-                            <Image
-                              key={shape._id}
-                              image={img}
-                              x={storageArea?.x}
-                              y={storageArea?.y}
-                              width={50}
-                              height={50}
-                              onMouseOver={() => {
-                                alert(
-                                  `Your ${storageArea.name} is going to expire after ${storageArea.expireDay} days`,
-                                );
-                                return;
-                              }}
-                              onMouseEnter={(e) => {
-                                // style stage container:
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "pointer";
-                              }}
-                              onMouseLeave={(e) => {
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "crosshair";
-                              }}
-                              // I will use offset to set origin to the center of the image
-                            />
-                          </>
-                        ) : deliveryArea && deliveryArea?.expires === true ? (
-                          <>
-                            <ConvaLine
-                              key={shape._id}
-                              stroke="black"
-                              points={flattenedPoint}
-                              fill={shape.color}
-                              opacity={
-                                shape.type === "BUILDING" ? 0.8 : shape.opacity
-                              }
-                              strokeWidth={1}
-                              // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
-                              // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
-                              onMouseOver={(e) => {
-                                // style stage container:
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "pointer";
-                              }}
-                              onMouseOut={(e) => {
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "crosshair";
-                              }}
-                              onClick={() => handleConvaLineClick(shape._id)}
-                              closed={true}
-                            />
-                            <Image
-                              key={shape._id}
-                              image={img}
-                              x={deliveryArea?.x}
-                              y={deliveryArea?.y}
-                              width={50}
-                              height={50}
-                              onMouseOver={(e) => {
-                                alert(
-                                  `Your ${deliveryArea.name} is going to expire after ${deliveryArea.expireDay} days`,
-                                );
-                                return;
-                              }}
-                              onMouseEnter={(e) => {
-                                // style stage container:
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "pointer";
-                              }}
-                              onMouseLeave={(e) => {
-                                const container = e.target
-                                  .getStage()
-                                  .container();
-                                container.style.cursor = "crosshair";
-                              }}
-                              // I will use offset to set origin to the center of the image
-                              // offsetX={deliveryArea?.x}
-                              // offsetY={deliveryArea?.y}
-                            />
-                          </>
-                        ) : (
-                          <ConvaLine
+                          <Image
                             key={shape._id}
-                            stroke="black"
-                            points={flattenedPoint}
-                            fill={shape.color}
-                            opacity={
-                              shape.type === "BUILDING" ? 0.8 : shape.opacity
-                            }
-                            strokeWidth={1}
-                            // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
-                            // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
-                            onMouseOver={(e) => {
+                            image={img}
+                            x={storageArea?.x}
+                            y={storageArea?.y}
+                            width={50}
+                            height={50}
+                            onMouseOver={() => {
+                              alert(
+                                `Your ${storageArea.name} is going to expire after ${storageArea.expireDay} days`,
+                              );
+                              return;
+                            }}
+                            onMouseEnter={(e) => {
                               // style stage container:
                               const container = e.target.getStage().container();
                               container.style.cursor = "pointer";
                             }}
-                            onMouseOut={(e) => {
+                            onMouseLeave={(e) => {
                               const container = e.target.getStage().container();
                               container.style.cursor = "crosshair";
                             }}
-                            onClick={() => handleConvaLineClick(shape._id)}
-                            closed={true}
+                            // I will use offset to set origin to the center of the image
                           />
+                        ) : deliveryArea && deliveryArea?.expires === true ? (
+                          <Image
+                            key={shape._id}
+                            image={img}
+                            x={deliveryArea?.x}
+                            y={deliveryArea?.y}
+                            width={50}
+                            height={50}
+                            onMouseOver={(e) => {
+                              alert(
+                                `Your ${deliveryArea.name} is going to expire after ${deliveryArea.expireDay} days`,
+                              );
+                              return;
+                            }}
+                            onMouseEnter={(e) => {
+                              // style stage container:
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "pointer";
+                            }}
+                            onMouseLeave={(e) => {
+                              const container = e.target.getStage().container();
+                              container.style.cursor = "crosshair";
+                            }}
+                            // I will use offset to set origin to the center of the image
+                            // offsetX={deliveryArea?.x}
+                            // offsetY={deliveryArea?.y}
+                          />
+                        ) : (
+                          null
                         )}
                       </>
                     )}
