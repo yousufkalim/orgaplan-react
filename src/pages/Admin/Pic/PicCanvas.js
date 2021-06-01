@@ -87,43 +87,42 @@ const PicCanvas = (props) => {
     // eslint-disable-next-line
   }, [adminStore]);
 
-  const expiredShapes = async (shapes) => {
+  const expiredShapes = (shapes) => {
     let array = [];
-    await Promise.all(
-      shapes.map(async (sp) => {
-        if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
-          let isExist = sp?.storageArea?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
+
+    shapes.map((sp) => {
+      if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
+        let isExist = sp?.storageArea?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
           }
-        } else if (sp.mean && Object.keys(sp.mean).length > 0) {
-          let isExist = sp?.mean?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
-          }
-        } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
-          let isExist = sp?.deliveryArea?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
-          }
-        } else if (sp.building && Object.keys(sp.building).length > 0) {
-          array.push(sp);
         }
-      }),
-    );
+      } else if (sp.mean && Object.keys(sp.mean).length > 0) {
+        let isExist = sp?.mean?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
+        let isExist = sp?.deliveryArea?.availability?.end;
+        if (isExist) {
+          let check = Date.now() > new Date(isExist);
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.building && Object.keys(sp.building).length > 0) {
+        array.push(sp);
+      }
+    });
+
     return array;
   };
   const handleColorAndNameOfShape = (shape) => {
-    console.log(shape, "shape");
     if (shape.deliveryArea && Object.keys(shape?.deliveryArea).length > 0) {
       shape.name = shape?.deliveryArea.name;
       shape.color = shape.deliveryArea.color;
@@ -157,12 +156,9 @@ const PicCanvas = (props) => {
       });
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
-
       if (newShapes) {
-        newShapes.then((shape) => {
-          shape.map((st) => handleColorAndNameOfShape(st));
-          setShapes(shape);
-        });
+        newShapes.map((st) => handleColorAndNameOfShape(st));
+        setShapes(newShapes);
       } else {
         setShapes(response.data.shapes);
       }
@@ -178,7 +174,6 @@ const PicCanvas = (props) => {
       );
     }
   };
-
   const fetchLevelPic = async (levelId) => {
     try {
       let response = await GLOBALS.API({
