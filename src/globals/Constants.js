@@ -149,6 +149,10 @@ const endpoints = {
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
   updateDeliveryStatus: BASE_URL_V1 + "delivery/updateStatus",
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  HistoryOfPlan: BASE_URL_V1 + "building/history",
+  GetHistoryOfPlans: BASE_URL_V1 + "building/getHistory",
+
+
   delete_Delivery: BASE_URL_V1 + "delivery",
   getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
 };

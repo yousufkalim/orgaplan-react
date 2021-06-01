@@ -464,6 +464,15 @@
       ["4", "Plan 4.pdf"]
     ]
   },
+  "pdfHistory": {
+    "headings": ["Name of the PDF", "Date of deletion ", "Download"],
+    "items": [
+      ["RDC", "Plan 1.pdf"],
+      ["2", "Plan 2.pdf"],
+      ["3", "Plan 3.pdf"],
+      ["4", "Plan 4.pdf"]
+    ]
+  },
   "admins": {
     "headings": ["Company", "Name", "Phone", "Sites", "Action"],
     "items": [

@@ -47,7 +47,6 @@ class App extends Component {
     shapeColor: "",
     meanColor: "",
   };
-
   // LifeCycle Hooks
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.tempImage !== this.state.tempImage) {
@@ -81,6 +80,7 @@ class App extends Component {
     document.removeEventListener("keydown", this.escFunction, false);
   }
   async componentDidMount() {
+
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
     // console.log("this.props.shapes", this.props.shapes);
@@ -94,10 +94,13 @@ class App extends Component {
             );
             tempShape.image = image;
           }
+
           newArray.push(tempShape);
+          
           return tempShape;
         }),
       );
+
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
@@ -138,6 +141,7 @@ class App extends Component {
         meanShapeId: "",
         points: [],
       });
+      this.props.setSelectedShape("")
       this.props.onClear();
       //Do whatever when esc is pressed
     }
