@@ -321,7 +321,7 @@ export default function MultiAdderInputModal(props) {
               </Form.Row>
             </Form.Form>
             <table className="table">
-              {unavailabilityDates.length > 0 && (
+              {unavailabilityDates?.length > 0 && (
                 <>
                   <thead>
                     <tr>

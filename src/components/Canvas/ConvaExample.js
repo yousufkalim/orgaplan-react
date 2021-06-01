@@ -35,8 +35,9 @@ export default function Canvas({
   const checkStorageAlert = (shape) => {
     let date = moment();
     let obj = {};
-    obj.x = shape.points[0][0];
+    obj.x = shape.points[0][0] + 40;
     obj.y = shape.points[0][1];
+    obj.name = shape.name;
 
     let newShape = shape.storageArea;
     obj.expireDay = newShape ? newShape.notificationPriorToDays : 0;
@@ -59,8 +60,10 @@ export default function Canvas({
     let obj = {};
 
     let newShape = shape.deliveryArea;
-    obj.x = shape.points[0][0];
+    obj.x = shape.points[0][0] + 40;
     obj.y = shape.points[0][1];
+    obj.name = shape.name;
+
     obj.expireDay = newShape ? newShape.notificationPriorToDays : 0;
     if (newShape && Number(newShape?.notificationPriorToDays) > 0) {
       date.add(newShape?.notificationPriorToDays, "days");
@@ -72,6 +75,8 @@ export default function Canvas({
     }
     return obj;
   };
+  {
+  }
   return (
     <>
       <Stage
@@ -111,11 +116,9 @@ export default function Canvas({
                 let storageArea;
                 let deliveryArea;
 
-              if (shape.type === "STORAGEAREA") {
-               
+                if (shape.type === "STORAGEAREA") {
                   storageArea = checkStorageAlert(shape);
                 } else if (shape.type === "DELIVERYAREA") {
-              
                   deliveryArea = checkDeliverAlert(shape);
                 }
                 if (shape.type === "MEAN") {
@@ -127,7 +130,6 @@ export default function Canvas({
                     [],
                   );
                 }
-
                 return (
                   <>
                     {shape.type === "MEAN" ? (
@@ -179,6 +181,29 @@ export default function Canvas({
                       )
                     ) : (
                       <>
+                        <ConvaLine
+                          key={shape._id}
+                          stroke="black"
+                          points={flattenedPoint}
+                          fill={shape.color}
+                          opacity={
+                            shape.type === "BUILDING" ? 0.8 : shape.opacity
+                          }
+                          strokeWidth={1}
+                          // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
+                          // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
+                          onMouseOver={(e) => {
+                            // style stage container:
+                            const container = e.target.getStage().container();
+                            container.style.cursor = "pointer";
+                          }}
+                          onMouseOut={(e) => {
+                            const container = e.target.getStage().container();
+                            container.style.cursor = "crosshair";
+                          }}
+                          onClick={() => handleConvaLineClick(shape._id)}
+                          closed={true}
+                        />
                         {storageArea && storageArea?.expires === true ? (
                           <Image
                             key={shape._id}
@@ -187,9 +212,9 @@ export default function Canvas({
                             y={storageArea?.y}
                             width={50}
                             height={50}
-                              onClick={() => {
+                            onMouseOver={() => {
                               alert(
-                                `Your storageArea is going to expire after ${storageArea.expireDay} days`,
+                                `Your ${storageArea.name} is going to expire after ${storageArea.expireDay} days`,
                               );
                               return;
                             }}
@@ -212,9 +237,9 @@ export default function Canvas({
                             y={deliveryArea?.y}
                             width={50}
                             height={50}
-                            onClick={(e) => {
+                            onMouseOver={(e) => {
                               alert(
-                                `Your deliveryArea is going to expire after ${deliveryArea.expireDay} days`,
+                                `Your ${deliveryArea.name} is going to expire after ${deliveryArea.expireDay} days`,
                               );
                               return;
                             }}
@@ -232,29 +257,7 @@ export default function Canvas({
                             // offsetY={deliveryArea?.y}
                           />
                         ) : (
-                          <ConvaLine
-                            key={shape._id}
-                            stroke="black"
-                            points={flattenedPoint}
-                            fill={shape.color}
-                            opacity={
-                              shape.type === "BUILDING" ? 0.8 : shape.opacity
-                            }
-                            strokeWidth={1}
-                            // onMouseOver={() => handleConvaLineMouseOver(shape._id)}
-                            // onMouseOut={() => handleConvaLineMouseOut(shape._id)}
-                            onMouseOver={(e) => {
-                              // style stage container:
-                              const container = e.target.getStage().container();
-                              container.style.cursor = "pointer";
-                            }}
-                            onMouseOut={(e) => {
-                              const container = e.target.getStage().container();
-                              container.style.cursor = "crosshair";
-                            }}
-                            onClick={() => handleConvaLineClick(shape._id)}
-                            closed={true}
-                          />
+                          null
                         )}
                       </>
                     )}
