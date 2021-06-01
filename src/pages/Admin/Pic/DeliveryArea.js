@@ -83,7 +83,12 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.deliveryArea.availability.start);
         setEndDate(props.selectedShape.deliveryArea.availability.end || "");
         setAddresses(addressAr);
-        setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
+        setUnavailabilities(
+          props.selectedShape.deliveryArea.unavailability.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
@@ -160,7 +165,6 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: formdata,
       });
-    
 
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
