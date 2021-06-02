@@ -82,7 +82,7 @@ export default function AddMean(props) {
         setMeanType(props.selectedShape.mean.meanType);
         setColor(props.selectedShape.mean.color);
         setUnavailabilities(
-          props.selectedShape.mean.unavailability.map((key, index) => {
+          props.selectedShape.mean.unavailability?.map((key, index) => {
             delete key._id;
             return key;
           }),
@@ -245,7 +245,7 @@ export default function AddMean(props) {
       }
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("")
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
