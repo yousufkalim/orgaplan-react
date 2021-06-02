@@ -11,7 +11,8 @@ import TimeInput from "../../../../../components/TimeInput";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
-
+import Checkbox from "@material-ui/core/Checkbox";
+import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
@@ -23,10 +24,11 @@ export default function AddSiteStep1(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [disableMean, setDisableMean] = useState("");
 
   useEffect(() => {
     if (props.step1Data) {
-      setCompany(props.step1Data.company);     
+      setCompany(props.step1Data.company);
       setDeliveryArea(props.step1Data.deliveryArea);
       setDate(props.step1Data.date);
       props.step1Data.startTime &&
@@ -171,6 +173,16 @@ export default function AddSiteStep1(props) {
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setTrades(value)}
         />
+      </Form.Row>
+
+      <Form.Row>
+        <div class="col-sm-6">
+          <FormLabel bold primary="Disable Mean" />
+        </div>
+        <div class="col-sm-6">
+          {" "}
+          <FormCheckbox style={{ color: "#DBB20A" }} />
+        </div>
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary="UNLOADING MEANS* :" />
