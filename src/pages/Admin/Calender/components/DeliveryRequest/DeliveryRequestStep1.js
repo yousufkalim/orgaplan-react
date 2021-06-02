@@ -209,6 +209,10 @@ export default function AddSiteStep1(props) {
             setUpdate((st) => !st);
           }}
         />
+        {/* {
+              !props.eventId && setMaterials(values);
+              !props.eventId && setUpdate((st) => !st);
+            } */}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
