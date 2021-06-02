@@ -8,7 +8,7 @@ import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
-
+import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
@@ -20,6 +20,7 @@ export default function AddSiteStep1(props) {
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
+  const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
   useEffect(() => {
     if (props.step2Data) {
       if (props.step2Data.building) {
@@ -146,7 +147,21 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
-
+      <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+          <FormLabel bold primary="Disable Mean" />
+        </div>
+        <div class="col-sm-6" style={{ paddingLeft: "20px" }}>
+          <FormCheckbox
+            name={disableRoutingMeans}
+            onChange={(event) => {
+              setDisableRoutingMeans(event.target.checked);
+              setRoutingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+          />
+        </div>
+      </Form.Row>
       <Form.Row>
         <FormLabel bold primary="TRANSPORTING MEANS* :" />
         <Form.Row noMargin width="48%">
@@ -155,7 +170,7 @@ export default function AddSiteStep1(props) {
             values={means}
             placeholder="Means"
             value={routingMeans}
-            disabled={!storageArea}
+            disabled={!storageArea || disableRoutingMeans}
             onChange={({ target: { value } }) => setRoutingMeans(value)}
           />
         </Form.Row>

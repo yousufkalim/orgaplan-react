@@ -24,8 +24,7 @@ export default function AddSiteStep1(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
-  const [disableMean, setDisableMean] = useState("");
-
+  const [disableLiftingMeans, setDisableLiftingMeans] = useState("");
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -176,12 +175,18 @@ export default function AddSiteStep1(props) {
       </Form.Row>
 
       <Form.Row>
-        <div class="col-sm-6">
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
           <FormLabel bold primary="Disable Mean" />
         </div>
-        <div class="col-sm-6">
-          {" "}
-          <FormCheckbox style={{ color: "#DBB20A" }} />
+        <div class="col-sm-6" style={{ paddingLeft: "20px" }}>
+          <FormCheckbox
+            name={disableLiftingMeans}
+            onChange={(event) => {
+              setDisableLiftingMeans(event.target.checked);
+              setLiftingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+          />
         </div>
       </Form.Row>
       <Form.Row>
@@ -191,7 +196,7 @@ export default function AddSiteStep1(props) {
           values={means}
           placeholder="Means"
           value={liftingMeans}
-          disabled={!deliveryArea}
+          disabled={!deliveryArea || disableLiftingMeans}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setLiftingMeans(value)}
         />
