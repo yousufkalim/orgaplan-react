@@ -70,6 +70,7 @@ const Calender = (props) => {
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
+  console.log("events ", events);
   const [show, setShow] = useState(false);
   let [startTime] = useState("");
   let [endTime] = useState("");
