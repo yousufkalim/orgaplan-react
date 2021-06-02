@@ -9,6 +9,7 @@ const PopoverModal = ({
   handleDeleteEvent,
   handleDeleteDelivery,
   event,
+  setEvent,
   handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime,
@@ -78,6 +79,7 @@ const PopoverModal = ({
       </Alert>
     );
   }
+  // console.log("event", event);
   if (event) {
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
@@ -87,11 +89,20 @@ const PopoverModal = ({
         <Modal.Body>
           <Alertbox message="Are you sure to Delete" />
           <div className="showPopover">
+            <div style={{ textAlign: "right" }}>
+              <button
+                className="btn btn-light"
+                onClick={() => onEditDelivery(event)}
+              >
+                <i class="fas fa-trash"></i> <span>Edit</span>
+              </button>
+            </div>
             {event.objectName === "Deliveries" ? (
               <>
                 {event.status === "MODIFIED" ? (
                   <>
                     <span>Modified By</span>
+
                     <h5
                       className="text-center"
                       style={{
@@ -115,7 +126,7 @@ const PopoverModal = ({
                   <></>
                 )}
 
-                <span>Company</span>
+                <span>Company1</span>
                 <h5
                   className="text-center"
                   style={{
@@ -402,6 +413,14 @@ const PopoverModal = ({
 
                 {event.status !== "VALIDATED" ? (
                   <>
+                    <div style={{ textAlign: "right" }}>
+                      <button
+                        className="btn btn-light"
+                        onClick={() => onEditDelivery(event)}
+                      >
+                        <i class="fas fa-trash"></i> <span>Edit</span>
+                      </button>
+                    </div>
                     <hr />
                     <div className="popoverfooter">
                       <div className="col-lg-2">

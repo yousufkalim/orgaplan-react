@@ -135,7 +135,7 @@ export default function AddSiteStep1(props) {
             type="date"
             name="date"
             value={date}
-            disabled={true}
+            // disabled={true}
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
@@ -214,6 +214,10 @@ export default function AddSiteStep1(props) {
             setUpdate((st) => !st);
           }}
         />
+        {/* {
+              !props.eventId && setMaterials(values);
+              !props.eventId && setUpdate((st) => !st);
+            } */}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
