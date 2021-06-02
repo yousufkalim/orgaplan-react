@@ -9,6 +9,7 @@ const PopoverModal = ({
   handleDeleteEvent,
   handleDeleteDelivery,
   event,
+  setEvent,
   handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime,
@@ -78,6 +79,7 @@ const PopoverModal = ({
       </Alert>
     );
   }
+  console.log("1111event", event);
   if (event) {
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
@@ -91,7 +93,16 @@ const PopoverModal = ({
               <>
                 {event.status === "MODIFIED" ? (
                   <>
+                    <div style={{ textAlign: "right" }}>
+                      <button
+                        className="btn btn-light"
+                        onClick={() => onEditDelivery(event)}
+                      >
+                        <i class="fas fa-trash"></i> <span>Edit</span>
+                      </button>
+                    </div>
                     <span>Modified By</span>
+
                     <h5
                       className="text-center"
                       style={{

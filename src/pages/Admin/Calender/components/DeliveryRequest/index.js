@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryRequest(props) {
+  console.log("props in delivery index ", props);
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);

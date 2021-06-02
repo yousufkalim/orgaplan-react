@@ -24,9 +24,11 @@ export default function AddSiteStep1(props) {
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
 
+  console.log("props in step 1", props);
+
   useEffect(() => {
     if (props.step1Data) {
-      setCompany(props.step1Data.company);     
+      setCompany(props.step1Data.company);
       setDeliveryArea(props.step1Data.deliveryArea);
       setDate(props.step1Data.date);
       props.step1Data.startTime &&
@@ -197,6 +199,10 @@ export default function AddSiteStep1(props) {
             setUpdate((st) => !st);
           }}
         />
+        {/* {
+              !props.eventId && setMaterials(values);
+              !props.eventId && setUpdate((st) => !st);
+            } */}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
