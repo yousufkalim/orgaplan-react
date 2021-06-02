@@ -12,6 +12,7 @@ export default function FormCheckbox(props) {
           disabled={props.disabled}
           onChange={props.onChange}
           color={props.color || "default"}
+          style={props.style}
         />
       }
       label={props.label}

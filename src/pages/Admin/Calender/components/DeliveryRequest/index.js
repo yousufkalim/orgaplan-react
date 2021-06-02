@@ -76,7 +76,7 @@ export default function DeliveryRequest(props) {
       setMeans(means.data);
 
       deliveryAreas.data.forEach((val, index) => {
-        val.unavailability.map((key) => {
+        val.unavailability?.map((key) => {
           if (key.dayOff === true) {
             if (moment(props.date).isSame(key.date, "day")) {
               deliveryAreas.data[index].isDisable = true;
@@ -86,7 +86,7 @@ export default function DeliveryRequest(props) {
       });
 
       storageAreas.data.forEach((val1, index1) => {
-        val1.unavailability.map((key1) => {
+        val1.unavailability?.map((key1) => {
           if (key1.dayOff === true) {
             if (moment(props.date).isSame(key1.date, "day")) {
               storageAreas.data[index1].isDisable = true;
@@ -116,13 +116,13 @@ export default function DeliveryRequest(props) {
         }, []),
       );
       setCompanies(
-        response.data.map((company) => ({
+        response.data?.map((company) => ({
           label: company.companyId.name,
           value: company.companyId._id,
         })),
       );
       setTrades(
-        adminStore.site.siteId.trades.map((trade) => ({
+        adminStore.site.siteId.trades?.map((trade) => ({
           label: trade,
           value: trade,
         })),
@@ -130,7 +130,7 @@ export default function DeliveryRequest(props) {
       setStorageAreas(
         //deliveryArea
         storageAreas.data.reduce((accumulator, currentValue) => {
-          currentValue.deliveryArea.map((key, index) => {
+          currentValue.deliveryArea?.map((key, index) => {
             if (key === deliveryArea) {
               if (
                 moment(props.date).isBetween(
@@ -178,14 +178,14 @@ export default function DeliveryRequest(props) {
         startTime: response.data.startTime,
         endTime: response.data.endTime,
         trades: response.data.trades,
-        liftingMeans: response.data.liftingMeans.map((item) => item._id),
+        liftingMeans: response.data.liftingMeans?.map((item) => item._id),
         materials: response.data.materials,
       });
       setStep2Data({
         building: response.data.building,
         level: response.data.level,
         storageArea: response.data.storageArea._id,
-        routingMeans: response.data.routingMeans.map((item) => item._id),
+        routingMeans: response.data.routingMeans?.map((item) => item._id),
       });
       setStep3Data({
         comment: response.data.comment,
