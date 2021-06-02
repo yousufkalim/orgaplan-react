@@ -97,7 +97,7 @@ export default function DeliveryArea(props) {
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
         setUnavailabilities(
-          props.selectedShape.storageArea.unavailability.map((key, index) => {
+          props.selectedShape.storageArea.unavailability?.map((key, index) => {
             delete key._id;
             return key;
           }),
@@ -215,7 +215,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("")
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(

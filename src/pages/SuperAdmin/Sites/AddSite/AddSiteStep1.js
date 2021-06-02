@@ -39,7 +39,7 @@ export default function AddSiteStep1(props) {
     fetchData();
     fetchStateData();
     // eslint-disable-next-line
-  }, [props.fetchStateData, props.setStep1Data]);
+  }, [props.setStep1Data]);
 
   const fetchStateData = () => {
     if (props.step1Data) {
