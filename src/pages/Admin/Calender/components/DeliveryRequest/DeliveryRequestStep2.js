@@ -108,6 +108,19 @@ export default function AddSiteStep1(props) {
     props.setStep(3);
   }
 
+
+  const selectedCompanyId = props.step1Data.company;
+  const filterStorageAreas = [];
+  props.storageAreas.forEach(val => {
+    val.companies.map(cP => {
+      if(cP === selectedCompanyId){
+        filterStorageAreas.push(val);
+      }
+    });
+  });
+
+
+
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -135,13 +148,13 @@ export default function AddSiteStep1(props) {
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="STORAGE AREA* :" />
+        <FormLabel bold primary="STORAGE AREA*:" />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"
             value={storageArea}
             placeholder="Select Storage Area"
-            values={props.storageAreas.filter((item) =>
+            values={filterStorageAreas.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
                 : item.level === level,
