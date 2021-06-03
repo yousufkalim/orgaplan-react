@@ -26,6 +26,37 @@ export default function AddSiteStep1(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [disableMean, setDisableMean] = useState("");
+  // let arr = [2, 3];
+  // function disabledHours() {
+  //   return arr;
+  // }
+  const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
+  const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
+  console.log("adminStore", adminStore);
+
+  function disabledDate(current) {
+    let customDate = "2021-6-6";
+    return (
+      (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
+      current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
+    );
+  }
+  const checkavailability = (value) => {
+    let customDate = "2021-06-06";
+    // console.log(
+    //   "date format",
+    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
+    // );
+    // console.log("date value", value);
+    // if (value === customDate) {
+    //   alert("notavailable");
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+    return true;
+  };
   const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
   useEffect(() => {
     if (props.step1Data) {
@@ -144,7 +175,7 @@ export default function AddSiteStep1(props) {
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
-            // disabledDate={disabledDate}
+            disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
             }}
