@@ -220,14 +220,7 @@ export default function DeliveryRequestStep3(props) {
           text="VALIDATE"
           fullWidth={false}
           loading={loading}
-          disabled={
-            loading ||
-            !company ||
-            !storageArea ||
-            !deliveryArea ||
-            liftingMeans.length === 0 ||
-            routingMeans.length === 0
-          }
+          disabled={loading || !company || !storageArea || !deliveryArea}
         />
       </Form.ButtonContainer>
     </Form.Form>

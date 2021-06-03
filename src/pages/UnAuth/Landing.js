@@ -215,7 +215,18 @@ export default function LandingPage() {
               <b>Orgaplan</b> <br />
               La platefore au servic e de votre organisation de chantier !
             </p>
-            <p className="col">CGU</p>
+            <Link
+              className="col"
+              style={{
+                textDecoration: "none",
+                color: "#656461",
+                paddingTop: "15px",
+              }}
+              to="/privacy"
+              className="col"
+            >
+              CGU
+            </Link>
             <p className="col">CGV</p>
           </footer>
         </div>

@@ -57,6 +57,7 @@ export default function AddSiteStep1(props) {
     // }
     return true;
   };
+  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -79,7 +80,12 @@ export default function AddSiteStep1(props) {
         props.step1Data.materials &&
           props.step1Data.materials.map((item, i) => ({ key: i, label: item })),
       );
-      setLiftingMeans(props.step1Data.liftingMeans);
+      if (props.step1Data.liftingMeans.length === 0) {
+        setDisableLiftingMeans(true);
+      } else {
+        setLiftingMeans(props.step1Data.liftingMeans);
+      }
+
       setUpdate((st) => !st);
     } else {
       setDate(props.date);
@@ -209,25 +215,33 @@ export default function AddSiteStep1(props) {
       </Form.Row>
 
       <Form.Row>
-        <div class="col-sm-6">
-          <FormLabel bold primary="Disable Mean" />
-        </div>
-        <div class="col-sm-6">
-          {" "}
-          <FormCheckbox style={{ color: "#DBB20A" }} />
-        </div>
-      </Form.Row>
-      <Form.Row>
         <FormLabel bold primary="UNLOADING MEANS* :" />
         <FormMultiSelect
           name="means"
           values={means}
           placeholder="Means"
           value={liftingMeans}
-          disabled={!deliveryArea}
+          disabled={!deliveryArea || disableLiftingMeans}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setLiftingMeans(value)}
         />
+      </Form.Row>
+      <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+          <FormLabel bold primary="" />
+        </div>
+        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+          <FormCheckbox
+            name={disableLiftingMeans}
+            checked={disableLiftingMeans}
+            onChange={(event) => {
+              setDisableLiftingMeans(event.target.checked);
+              setLiftingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+            label="none"
+          />
+        </div>
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary="MATERIALS DELIVERED* :" />
@@ -260,7 +274,6 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            liftingMeans.length === 0 ||
             materials.length === 0
           }
         />
