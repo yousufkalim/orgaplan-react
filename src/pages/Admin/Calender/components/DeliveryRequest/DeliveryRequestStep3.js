@@ -25,11 +25,11 @@ export default function DeliveryRequestStep3(props) {
   const [deliveryArea, setDeliveryArea] = useState("");
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
-
   useEffect(() => {
     let comp = props.companies.find(
       (item) => item.value === props.step1Data.company,
     );
+
     comp && setCompany(comp.label);
     let deliv = props.deliveryAreas.find(
       (item) => item.value === props.step1Data.deliveryArea,
@@ -75,7 +75,12 @@ export default function DeliveryRequestStep3(props) {
         startTime: props.step1Data.startTime,
         endTime: props.step1Data.endTime,
         type: "SCHEDULED",
-        status: props.eventId ? "MODIFIED" : "VALIDATED",
+        status:
+          props.eventId && !props.editDelivery
+            ? "MODIFIED"
+            : props?.event?.status
+            ? props.event.status
+            : "VALIDATED",
       };
 
       props.step2Data.building !== "Exterior" &&
@@ -120,7 +125,11 @@ export default function DeliveryRequestStep3(props) {
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
-          primary={`${moment(props.date).format("DD-MM-YYYY")} between ${
+          primary={`${
+            props.step1Data.date
+              ? moment(props.step1Data.date).format("DD-MM-YYYY")
+              : moment(props.date).format("DD-MM-YYYY")
+          } between ${
             props.step1Data.startTime
               ? moment(props.step1Data.date)
                   .set("hours", props.step1Data.startTime.split(":")[0])

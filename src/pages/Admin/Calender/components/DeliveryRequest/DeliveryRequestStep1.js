@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
+import { useSelector, useDispatch } from "react-redux";
 
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
@@ -14,6 +15,7 @@ import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
+  const adminStore = useSelector((state) => state.admin);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
@@ -25,7 +27,41 @@ export default function AddSiteStep1(props) {
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
+  // let arr = [2, 3];
+  // function disabledHours() {
+  //   return arr;
+  // }
+  const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
+  const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
+  console.log("adminStore", adminStore);
 
+  // function disabledDate(current) {
+  //   let customDate = "2021-6-6";
+  //   return (
+  //     (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
+  //     current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
+  //   );
+  // }
+  // function disabledDate(current) {
+  //   console.log("current", current);
+  //   // Can not select days before today and today
+  //   return current && current < moment().endOf("day");
+  // }
+  const checkavailability = (value) => {
+    let customDate = "2021-06-06";
+    // console.log(
+    //   "date format",
+    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
+    // );
+    // console.log("date value", value);
+    // if (value === customDate) {
+    //   alert("notavailable");
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+    return true;
+  };
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -100,8 +136,6 @@ export default function AddSiteStep1(props) {
     props.setStep(2);
   }
 
-  // console.log('setDeliveryArea :::::::', deliveryArea);
-
   return (
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
@@ -140,13 +174,17 @@ export default function AddSiteStep1(props) {
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
-            onChange={({ target: { value } }) => setDate(value)}
+            // disabledDate={disabledDate}
+            onChange={({ target: { value } }) => {
+              checkavailability(value) && setDate(value);
+            }}
           />
           <TimeInput
             format="HH:mm"
             minuteStep={15}
             name="startTime"
             value={startTime}
+            // disabledHours={disabledHours()}
             placeholder="Start Time"
             style={{ width: "31%" }}
             onChange={(value) => setStartTime(value)}
