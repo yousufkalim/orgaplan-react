@@ -8,7 +8,7 @@ import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
-
+import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
@@ -20,6 +20,7 @@ export default function AddSiteStep1(props) {
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
+  const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
   useEffect(() => {
     if (props.step2Data) {
       if (props.step2Data.building) {
@@ -83,7 +84,13 @@ export default function AddSiteStep1(props) {
       if (props.step2Data && !rendered) {
         setLevel(props.step2Data.level);
         setStorageArea(props.step2Data.storageArea);
-        setRoutingMeans(props.step2Data.routingMeans);
+
+        if (props.step2Data.routingMeans.length === 0) {
+          setDisableRoutingMeans(true);
+        } else {
+          setRoutingMeans(props.step2Data.routingMeans);
+        }
+
         setRendered(true);
       }
     }
@@ -155,10 +162,27 @@ export default function AddSiteStep1(props) {
             values={means}
             placeholder="Means"
             value={routingMeans}
-            disabled={!storageArea}
+            disabled={!storageArea || disableRoutingMeans}
             onChange={({ target: { value } }) => setRoutingMeans(value)}
           />
         </Form.Row>
+      </Form.Row>
+      <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+          <FormLabel bold primary="" />
+        </div>
+        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+          <FormCheckbox
+            name={disableRoutingMeans}
+            checked={disableRoutingMeans}
+            onChange={(event) => {
+              setDisableRoutingMeans(event.target.checked);
+              setRoutingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+            label="none"
+          />
+        </div>
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -167,10 +191,7 @@ export default function AddSiteStep1(props) {
           text="VALIDATE"
           fullWidth={false}
           disabled={
-            !building ||
-            (building !== "Exterior" && !level) ||
-            !storageArea ||
-            routingMeans.length === 0
+            !building || (building !== "Exterior" && !level) || !storageArea
           }
         />
       </Form.ButtonContainer>
