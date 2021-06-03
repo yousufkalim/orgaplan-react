@@ -555,7 +555,7 @@ const Calender = (props) => {
     setValue(event.target.value);
   };
   const handlePopoverClose = () => {
-    // seteventID("");
+    seteventID("");
     setEditDelivery(false);
     setpopoverShow(false);
   };
@@ -834,7 +834,6 @@ const Calender = (props) => {
               value: item._id,
             });
           });
-
           setTypeOfPlace(temp);
         }
       } else {
@@ -1152,6 +1151,8 @@ const Calender = (props) => {
             history={props.history}
             start={deliverStartHours}
             eventId={eventID}
+            event={event}
+            editDelivery={editDelivery}
             onClose={() => {
               setAddDelivery(false);
               seteventID("");
@@ -1478,13 +1479,14 @@ const Calender = (props) => {
           handleValidateMeans={handleValidateMeans}
           event={event}
           setEvent={setEvent}
+          setEditDelivery={setEditDelivery}
           setAlertBoxTime={setAlertBoxTime}
           alertBoxTime={alertBoxTime}
           handleValidateDelivery={handleValidateDelivery}
           handleDeleteDelivery={handleDeleteDelivery}
           onEditDelivery={(data) => {
             setOnEditDeliveryData(data);
-            setEditDelivery(true);
+            // setEditDelivery(true);
             setpopoverShow(false);
             setAddDelivery(true);
           }}

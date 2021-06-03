@@ -46,7 +46,7 @@ export default function Companies(props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storageAreaRequest, setStorageAreaRequest] = useState([]);
-
+  console.log("companies", companies);
   useEffect(() => {
     getData();
     // eslint-disable-next-line

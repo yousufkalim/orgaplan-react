@@ -10,6 +10,7 @@ const PopoverModal = ({
   handleDeleteDelivery,
   event,
   setEvent,
+  setEditDelivery,
   handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime,
@@ -92,7 +93,10 @@ const PopoverModal = ({
             <div style={{ textAlign: "right" }}>
               <button
                 className="btn btn-light"
-                onClick={() => onEditDelivery(event)}
+                onClick={() => {
+                  setEditDelivery(true);
+                  onEditDelivery(event);
+                }}
               >
                 <i class="fas fa-trash"></i> <span>Edit</span>
               </button>

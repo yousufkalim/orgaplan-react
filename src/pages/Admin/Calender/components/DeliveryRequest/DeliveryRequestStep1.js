@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
+import { useSelector, useDispatch } from "react-redux";
 
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
@@ -14,6 +15,7 @@ import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
+  const adminStore = useSelector((state) => state.admin);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
@@ -104,8 +106,6 @@ export default function AddSiteStep1(props) {
     props.setStep(2);
   }
 
-  // console.log('setDeliveryArea :::::::', deliveryArea);
-
   return (
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
@@ -144,13 +144,17 @@ export default function AddSiteStep1(props) {
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
-            onChange={({ target: { value } }) => setDate(value)}
+            // disabledDate={disabledDate}
+            onChange={({ target: { value } }) => {
+              checkavailability(value) && setDate(value);
+            }}
           />
           <TimeInput
             format="HH:mm"
             minuteStep={15}
             name="startTime"
             value={startTime}
+            // disabledHours={disabledHours()}
             placeholder="Start Time"
             style={{ width: "31%" }}
             onChange={(value) => setStartTime(value)}
