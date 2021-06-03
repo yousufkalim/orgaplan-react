@@ -142,11 +142,11 @@ export default function Input(props) {
             props.onChange(event);
           }}
           disabledDate={props.disabledDate}
-          // disabledDate={(d) =>
-          //   // (props.min && d.isBefore(props.min)) ||
-          //   //   (props.max && d.isSameOrAfter(props.max));
-          //   props.disabledDate
-          // }
+          disabledDate={(d) =>
+            (props.min && d.isBefore(props.min)) ||
+            (props.max && d.isSameOrAfter(props.max)) ||
+            props.disabledDate
+          }
           style={{
             ...datepickerStyle,
             cursor: props.disabled ? "not-allowed" : "default",
