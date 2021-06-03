@@ -35,18 +35,13 @@ export default function AddSiteStep1(props) {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   console.log("adminStore", adminStore);
 
-  // function disabledDate(current) {
-  //   let customDate = "2021-6-6";
-  //   return (
-  //     (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
-  //     current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
-  //   );
-  // }
-  // function disabledDate(current) {
-  //   console.log("current", current);
-  //   // Can not select days before today and today
-  //   return current && current < moment().endOf("day");
-  // }
+  function disabledDate(current) {
+    let customDate = "2021-6-6";
+    return (
+      (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
+      current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
+    );
+  }
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
     // console.log(
@@ -174,7 +169,7 @@ export default function AddSiteStep1(props) {
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
-            // disabledDate={disabledDate}
+            disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
             }}
