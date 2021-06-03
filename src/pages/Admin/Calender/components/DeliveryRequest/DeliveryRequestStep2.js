@@ -84,7 +84,13 @@ export default function AddSiteStep1(props) {
       if (props.step2Data && !rendered) {
         setLevel(props.step2Data.level);
         setStorageArea(props.step2Data.storageArea);
-        setRoutingMeans(props.step2Data.routingMeans);
+
+        if (props.step2Data.routingMeans.length === 0) {
+          setDisableRoutingMeans(true);
+        } else {
+          setRoutingMeans(props.step2Data.routingMeans);
+        }
+
         setRendered(true);
       }
     }
@@ -147,21 +153,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
-      <Form.Row>
-        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
-          <FormLabel bold primary="Disable Mean" />
-        </div>
-        <div class="col-sm-6" style={{ paddingLeft: "20px" }}>
-          <FormCheckbox
-            name={disableRoutingMeans}
-            onChange={(event) => {
-              setDisableRoutingMeans(event.target.checked);
-              setRoutingMeans([]);
-            }}
-            style={{ color: "#DBB20A" }}
-          />
-        </div>
-      </Form.Row>
+
       <Form.Row>
         <FormLabel bold primary="TRANSPORTING MEANS* :" />
         <Form.Row noMargin width="48%">
@@ -175,6 +167,23 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
+      <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+          <FormLabel bold primary="" />
+        </div>
+        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+          <FormCheckbox
+            name={disableRoutingMeans}
+            checked={disableRoutingMeans}
+            onChange={(event) => {
+              setDisableRoutingMeans(event.target.checked);
+              setRoutingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+            label="none"
+          />
+        </div>
+      </Form.Row>
       <Form.ButtonContainer>
         <Button
           type="submit"
@@ -182,10 +191,7 @@ export default function AddSiteStep1(props) {
           text="VALIDATE"
           fullWidth={false}
           disabled={
-            !building ||
-            (building !== "Exterior" && !level) ||
-            !storageArea ||
-            routingMeans.length === 0
+            !building || (building !== "Exterior" && !level) || !storageArea
           }
         />
       </Form.ButtonContainer>
