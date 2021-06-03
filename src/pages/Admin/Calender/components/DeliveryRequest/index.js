@@ -265,6 +265,8 @@ export default function DeliveryRequest(props) {
             history={props.history}
             onClose={props.onClose}
             eventId={props.eventId}
+            event={props.event}
+            editDelivery={props.editDelivery}
           />
         )}
       </div>
