@@ -21,6 +21,7 @@ import {
   add_mean,
   update_mean,
   delete_mean,
+  validateMean,
 } from "../../../redux/actions/means";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
@@ -297,15 +298,29 @@ const Calender = (props) => {
         startTime < endTime
       ) {
         if (overlap === "Enable") {
-          var DbElement = {
-            startDate: startTime,
-            endDate: endTime,
-            bookingReason: title,
-            siteId: adminStore.site.siteId._id,
-            userId: store.user._id,
-            companyId: selectedCompany,
-            meanId: selectedMeanId,
-          };
+          if (store.user.adminType !== "NOADMIN") {
+            var DbElement = {
+              startDate: startTime,
+              endDate: endTime,
+              bookingReason: title,
+              siteId: adminStore.site.siteId._id,
+              userId: store.user._id,
+              companyId: selectedCompany,
+              meanId: selectedMeanId,
+              status: "VALIDATED",
+            };
+          } else {
+            var DbElement = {
+              startDate: startTime,
+              endDate: endTime,
+              bookingReason: title,
+              siteId: adminStore.site.siteId._id,
+              userId: store.user._id,
+              companyId: selectedCompany,
+              meanId: selectedMeanId,
+            };
+          }
+
           // setEvents([...events, stateElement]);
           let flagHours = false;
           disableHoursMean.map((key, index) => {
@@ -564,6 +579,11 @@ const Calender = (props) => {
     dispatch(delete_mean(eventID));
     // dispatch(get_means());
   };
+  const handleValidateEvent = () => {
+    setpopoverShow(!popoverShow);
+    dispatch(validateMean(eventID));
+    onChangeMeans();
+  };
   const handlePopoverShow = (event) => {
     seteventID(event._id);
     const fill = events.filter((e) => e._id === event._id);
@@ -744,6 +764,11 @@ const Calender = (props) => {
         uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+      const data = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
+        token: store.token,
+      });
+      console.log(data);
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
@@ -751,7 +776,7 @@ const Calender = (props) => {
           if (key.status === "VALIDATED") {
             colour = "green";
           } else {
-            colour = "";
+            colour = "#FFFF00";
           }
           return {
             title: key.bookingReason,
@@ -767,6 +792,7 @@ const Calender = (props) => {
             userId: key.userId,
             _id: key._id,
             color: colour,
+            status: key.status,
           };
         });
 
@@ -1125,6 +1151,7 @@ const Calender = (props) => {
           handlePopoverClose={handlePopoverClose}
           handleDeleteEvent={handleDeleteEvent}
           handleEditEvent={handleEditEvent}
+          handleValidateEvent={handleValidateEvent}
           event={event}
         />
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
@@ -1158,7 +1185,7 @@ const Calender = (props) => {
             />
           </div>
           <div style={{ textAlign: "right", width: "46%" }}>
-            <FiberManualRecordIcon style={{ color: "#265985" }} />
+            <FiberManualRecordIcon style={{ color: "#FFFF00" }} />
             <span style={{ display: "inline-block", paddingRight: "14px" }}>
               {" "}
               PENDING
@@ -1194,7 +1221,7 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "430px",
+                  height: "540px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let { color } = events;
