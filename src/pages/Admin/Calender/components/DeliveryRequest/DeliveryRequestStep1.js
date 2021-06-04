@@ -31,6 +31,8 @@ export default function AddSiteStep1(props) {
   // function disabledHours() {
   //   return arr;
   // }
+  // console.log("start time", moment(startTime).format("h"));
+
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   console.log("adminStore", adminStore);
@@ -136,7 +138,28 @@ export default function AddSiteStep1(props) {
     props.setStep1Data(values);
     props.setStep(2);
   }
+  function disabledDate2(current) {
+    let customDate = "2021-6-6";
+    return (
+      (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
+      current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
+    );
+  }
 
+  const DateRangeforminmax2 = (value) => {
+    let customDate = "2021-06-06";
+    console.log(
+      "date format",
+      moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
+    );
+    console.log("date value", value);
+    if (value === customDate) {
+      alert("notavailable");
+      return false;
+    } else {
+      return true;
+    }
+  };
   return (
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
@@ -175,7 +198,7 @@ export default function AddSiteStep1(props) {
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
-            disabledDate={disabledDate}
+            // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
             }}
