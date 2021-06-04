@@ -102,7 +102,8 @@ const endpoints = {
   // DELIVERY
   DELIVERY: BASE_URL_V1 + "delivery",
   GET_DELIVERY: BASE_URL_V1 + "delivery/get",
-
+  GET_VALIDATED_DELIVERY_MEAN:
+    BASE_URL_V1 + "delivery/getValidatedDeliveryMean",
   SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
@@ -142,6 +143,7 @@ const endpoints = {
 
   CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  Update_BOOKING_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
   UPDATE_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
@@ -151,7 +153,6 @@ const endpoints = {
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
   HistoryOfPlan: BASE_URL_V1 + "building/history",
   GetHistoryOfPlans: BASE_URL_V1 + "building/getHistory",
-
 
   delete_Delivery: BASE_URL_V1 + "delivery",
   getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
