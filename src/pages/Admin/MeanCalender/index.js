@@ -764,10 +764,10 @@ const Calender = (props) => {
         uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      const data = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
-        token: store.token,
-      });
+      // const data = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
+      //   token: store.token,
+      // });
       console.log(data);
 
       if (response.success) {
