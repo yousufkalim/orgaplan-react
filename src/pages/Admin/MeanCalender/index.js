@@ -773,7 +773,7 @@ const Calender = (props) => {
       //   uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
       //   token: store.token,
       // });
-      console.log(data);
+      // console.log(data);
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
