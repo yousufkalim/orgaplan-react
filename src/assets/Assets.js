@@ -6,6 +6,8 @@ import Means from "./images/means.png";
 import Organigramme from "./images/organigramme.png";
 import pic from "./images/pic.png";
 import uploadIcon from "./icons/uploadIcon.png";
+import downloadIcon from "./images/download.png";
+import csvIcon from "./images/csv.png";
 import mapIcon from "./icons/map-icon.png";
 
 import picMap from "./images/picMap.png";
@@ -34,6 +36,8 @@ export const Images = {
   means: Means,
   organigramme: Organigramme,
   uploadIcon: uploadIcon,
+  downloadIcon: downloadIcon,
+  csvIcon: csvIcon,
   pic: pic,
   avatar: avatar,
 
