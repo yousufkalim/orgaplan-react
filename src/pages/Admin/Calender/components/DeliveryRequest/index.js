@@ -84,6 +84,7 @@ export default function DeliveryRequest(props) {
         });
       });
 
+
       storageAreas.data.forEach((val1, index1) => {
         val1.unavailability?.map((key1) => {
           if (key1.dayOff === true) {
@@ -139,11 +140,17 @@ export default function DeliveryRequest(props) {
                   "[]",
                 )
               ) {
+
+                if (!currentValue.isDisable) {
                 accumulator.push({
                   value: currentValue._id,
                   label: currentValue.name,
                   level: currentValue.level,
+                  companies: currentValue.companies,
                 });
+              }
+
+
               }
             }
             return;

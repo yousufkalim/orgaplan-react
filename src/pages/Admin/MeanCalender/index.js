@@ -258,6 +258,7 @@ const Calender = (props) => {
       endTime = String(endTime);
       endTime = endTime.replace(/,/g, "");
       endTime = new Date(endTime);
+
       /* End time*/
       let beforeTime = moment(startTime).format("DD/MM/YYYY HH:mm");
       let afterTime = moment(endTime).format("DD/MM/YYYY HH:mm");
@@ -286,6 +287,10 @@ const Calender = (props) => {
       // }
       let startMean = moment(meanAvailabilityStart).set({ hour: 0 });
       let endMean = moment(meanAvailabilityEnd).set({ hour: 0 });
+
+      const sTime = moment(String(startTime)).format("HH:mm");
+      const eTime = moment(String(endTime)).format("HH:mm");
+
       if (
         moment(startTime).isBetween(
           startMean,
@@ -984,7 +989,7 @@ const Calender = (props) => {
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start hour</label>
+                <label>Start hour ----</label>
                 <TimePicker
                   value={starttimeslice}
                   onChange={(e) => setstarttimeslice(e)}
