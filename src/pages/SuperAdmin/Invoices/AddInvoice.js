@@ -39,6 +39,9 @@ export default function AddInvoice(props) {
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");
   const [amount, setAmount] = useState(0);
+  const [pdf, setPdf] = useState(0);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfUri, setPdfUri] = useState(null);
   const [description, setDescription] = useState("");
 
   useEffect(() => {
@@ -94,6 +97,17 @@ export default function AddInvoice(props) {
     }
   }
 
+  const handlePdfChange = (e) => {
+    console.log("pdf is ", e.target.files);
+    if (e.target.files.length) {
+      let file = e.target.files[0];
+      const uri = URL.createObjectURL(file);
+      setPdfFile(file);
+      setPdfUri(uri);
+    }
+  };
+  console.log("pdf file", pdfFile);
+
   const handleChange = (name, value) => {
     if (name === "clientId") setClientId(value);
     else if (name === "startDate") {
@@ -109,18 +123,33 @@ export default function AddInvoice(props) {
     try {
       e.preventDefault();
       setLoading(true);
-      const formdata = JSON.stringify({
-        clientId: clientId,
-        startDate: startDate,
-        endDate: endDate,
-        siteId: siteId,
-        amount: amount,
-        description: description,
-      });
+      // test formdata
+      var formdata = new FormData();
+      formdata.append("clientId", clientId);
+      formdata.append("startDate", startDate);
+      formdata.append("endDate", endDate);
+      formdata.append("siteId", siteId);
+      formdata.append("amount", amount);
+      formdata.append("description", description);
+      formdata.append("file", pdfFile);
+      // end test
+
+      // const formdata = JSON.stringify({
+      //   clientId: clientId,
+      //   startDate: startDate,
+      //   endDate: endDate,
+      //   siteId: siteId,
+      //   amount: amount,
+      //   description: description,
+      //   file: pdfFile,
+      // });
 
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.INVOICES,
+        headers: {
+          Authorization: store.token,
+        },
         token: store.token,
         body: formdata,
       });
@@ -214,6 +243,9 @@ export default function AddInvoice(props) {
                 value >= 0 && handleChange(name, value)
               }
             />
+          </Form.Row>
+          <Form.Row alignItems="flex-start">
+            <FormLabel bold primary="UploadPdf*:" />
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="DESCRIPTION:" />

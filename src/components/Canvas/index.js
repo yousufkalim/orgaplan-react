@@ -80,7 +80,6 @@ class App extends Component {
     document.removeEventListener("keydown", this.escFunction, false);
   }
   async componentDidMount() {
-
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
     // console.log("this.props.shapes", this.props.shapes);
@@ -96,7 +95,7 @@ class App extends Component {
           }
 
           newArray.push(tempShape);
-          
+
           return tempShape;
         }),
       );
@@ -141,7 +140,7 @@ class App extends Component {
         meanShapeId: "",
         points: [],
       });
-      this.props.setSelectedShape("")
+      this.props.setSelectedShape("");
       this.props.onClear();
       //Do whatever when esc is pressed
     }
@@ -321,7 +320,8 @@ class App extends Component {
         meanFinish,
         meanPoints,
         image,
-        shapeId,meanShapeId
+        shapeId,
+        meanShapeId,
       },
       getMousePos,
     } = this;

@@ -35,15 +35,30 @@ export default function AddSiteStep1(props) {
 
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
-  console.log("adminStore", adminStore);
+  // console.log("adminStore", adminStore);
+  let endTimeDisabledHours = [];
+  let startTimeDisabledHours = [];
+  var minutes = [];
+  const getDisabledHoursEndTime = () => {
+    // console.log("start time", moment(startTime).format("h:m"));
+    // console.log("start minute", moment(startTime).format("m"));
+    for (var i = 0; i <= moment(startTime).format("h"); i++) {
+      endTimeDisabledHours.push(i);
+    }
 
-  function disabledDate(current) {
-    let customDate = "2021-6-6";
-    return (
-      (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
-      current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
-    );
-  }
+    // console.log("endTimeDisabledHours", endTimeDisabledHours);
+    return;
+  };
+
+  const getDisabledHoursStartTime = () => {
+    // console.log("start time", moment(endTime).format("h"));
+    // for (var i = 23; i >= moment(endTime).format("h"); i--) {
+    //   startTimeDisabledHours.push(i);
+    // }
+    // console.log("startTimeDisabledHours", startTimeDisabledHours);
+    return endTimeDisabledHours;
+  };
+
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
     // console.log(
@@ -51,7 +66,7 @@ export default function AddSiteStep1(props) {
     //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
     // );
     // console.log("date value", value);
-    // if (value === customDate) {
+    // if (value > customDate) {
     //   alert("notavailable");
     //   return false;
     // } else {
@@ -141,18 +156,18 @@ export default function AddSiteStep1(props) {
   function disabledDate2(current) {
     let customDate = "2021-6-6";
     return (
-      (current && current < moment(siteAvailabilityStart, "YYYY-MM-DD")) ||
-      current > moment(siteAvailabilityEnd, "YYYY-MM-DD")
+      (current && current < moment(customDate, "YYYY-MM-DD")) ||
+      current > moment(customDate, "YYYY-MM-DD")
     );
   }
 
   const DateRangeforminmax2 = (value) => {
     let customDate = "2021-06-06";
-    console.log(
-      "date format",
-      moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    );
-    console.log("date value", value);
+    // console.log(
+    //   "date format",
+    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
+    // );
+    // console.log("date value", value);
     if (value === customDate) {
       alert("notavailable");
       return false;
@@ -208,7 +223,8 @@ export default function AddSiteStep1(props) {
             minuteStep={15}
             name="startTime"
             value={startTime}
-            // disabledHours={disabledHours()}
+            disabledHours={getDisabledHoursEndTime()}
+            // disabledMinutes={(a) => getDisabledMinutes(a)}
             placeholder="Start Time"
             style={{ width: "31%" }}
             onChange={(value) => setStartTime(value)}
@@ -218,6 +234,8 @@ export default function AddSiteStep1(props) {
             format="HH:mm"
             minuteStep={15}
             value={endTime}
+            disabledHours={getDisabledHoursStartTime()}
+            // disabledMinutes={(a) => getDisabledEndMinutes(a)}
             placeholder="End Time"
             style={{ width: "31%" }}
             onChange={(value) => setEndTime(value)}
