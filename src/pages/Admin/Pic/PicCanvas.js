@@ -86,7 +86,7 @@ const PicCanvas = (props) => {
     fetchSitePic();
     // eslint-disable-next-line
   }, [adminStore]);
-
+ 
   const expiredShapes = (shapes) => {
     let array = [];
 
@@ -143,6 +143,7 @@ const PicCanvas = (props) => {
       }
     }
   };
+
   const fetchSitePic = async () => {
     try {
       setPdf(
@@ -160,7 +161,8 @@ const PicCanvas = (props) => {
         newShapes.map((st) => handleColorAndNameOfShape(st));
         setShapes(newShapes);
       } else {
-        setShapes(response.data.shapes);
+        shapes.map((st) => handleColorAndNameOfShape(st));
+        setShapes(shapes);
       }
       // setShapes(response.data.shapes);
 
@@ -181,7 +183,9 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
-      setShapes(response.data.shapes);
+      let shapes = response.data.shapes;
+      shapes.map((st) => handleColorAndNameOfShape(st));
+      setShapes(shapes);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -280,8 +284,7 @@ const PicCanvas = (props) => {
       getShape.opacity = newShape.opacity;
       getShape.type = newShape.type;
       getShape.name = newShape.name;
-      getShape._id = newShape._id;
-
+      // getShape._id = newShape._id;
       if (newShape.type === "STORAGEAREA") {
         getShape.storageArea = newShape.storageArea;
       } else if (newShape.type === "DELIVERYAREA") {
@@ -302,7 +305,7 @@ const PicCanvas = (props) => {
       setShapes(shapesArray);
       updateShape(getShape);
       // remove object
-      // removeIndex && shapesArray.splice(removeIndex, 1);
+      removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
@@ -317,7 +320,7 @@ const PicCanvas = (props) => {
   // update Building
 
   const updateShape = async (newShape) => {
-    await GLOBALS.API({
+    let response = await GLOBALS.API({
       method: "PUT",
       uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
       token: store.token,
@@ -326,6 +329,8 @@ const PicCanvas = (props) => {
         picID: newShape._id,
       }),
     });
+    // setShapes(response.data.shapes)
+    // console.log(response,"response");
   };
 
   const handleClick = (id, shape) => {
@@ -445,6 +450,7 @@ const PicCanvas = (props) => {
                           adminStore.site.siteId?.plan
                       : undefined,
                   );
+
                   setShapes(sitePic.shapes);
                   setLevel("");
                   selectedShapeReserver = null;
@@ -463,6 +469,7 @@ const PicCanvas = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
+
                       if (value) {
                         fetchLevelPic(value);
                         const leve = allLeves.find((lev) => lev._id === value);

@@ -456,7 +456,6 @@ export default function AddSiteStep3(props) {
       <Form.Row style={{ justifyContent: "center" }}>
         <SmallButton
           text="Download"
-         
           color={theme.palette.primary.contrastText}
           onClick={() => {
             alert("downloading.....")
