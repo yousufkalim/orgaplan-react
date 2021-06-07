@@ -307,6 +307,8 @@ const Calender = (props) => {
             var DbElement = {
               startDate: startTime,
               endDate: endTime,
+              startTime: sTime,
+              endTime: eTime,
               bookingReason: title,
               siteId: adminStore.site.siteId._id,
               userId: store.user._id,
@@ -318,6 +320,8 @@ const Calender = (props) => {
             var DbElement = {
               startDate: startTime,
               endDate: endTime,
+              startTime: sTime,
+              endTime: eTime,
               bookingReason: title,
               siteId: adminStore.site.siteId._id,
               userId: store.user._id,
@@ -764,44 +768,72 @@ const Calender = (props) => {
   };
 
   const onChangeMeans = async () => {
+    let booking = [];
     try {
-      const response = await GLOBALS.API({
+      const meanBooking = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      // const data = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
-      //   token: store.token,
-      // });
-      // console.log(data);
+      const deliveryMean = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
+        token: store.token,
+      });
 
-      if (response.success) {
-        const tempmeanData = response.data.history.map((key, index) => {
-          let colour = "";
-          if (key.status === "VALIDATED") {
-            colour = "green";
-          } else {
-            colour = "#FFFF00";
-          }
+      if (meanBooking.success || deliveryMean.success) {
+        const responseDeliveryMean = deliveryMean.data.map((key, index) => {
+          /* start time converstion */
+          let start = new Date(key.date);
+          let startHours = key.startTime.slice(0, 2);
+          start.setHours(startHours);
+          /* start time converstion */
+
+          /* End time converstion */
+          let end = new Date(key.date);
+          let endHours = key.endTime.slice(0, 2);
+          end.setHours(endHours);
+          /* End time converstion */
+
           return {
-            title: key.bookingReason,
+            title: key.comment,
             companyId: key.companyId,
-            createdAt: key.createdAt,
-            start: new Date(key.startDate),
-            end: new Date(key.endDate),
-            endTime: key.endTime,
-            meanId: key.meanId,
+            start: start,
+            end: end,
             siteId: key.siteId,
-            startTime: key.startTime,
-            updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: colour,
+            color: "green",
             status: key.status,
           };
         });
+        const responseMeanBooking = meanBooking.data.history.map(
+          (key, index) => {
+            let colour = "";
+            if (key.status === "VALIDATED") {
+              colour = "green";
+            } else {
+              colour = "#FFFF00";
+            }
+            return {
+              title: key.bookingReason,
+              companyId: key.companyId,
+              createdAt: key.createdAt,
+              start: new Date(key.startDate),
+              end: new Date(key.endDate),
+              endTime: key.endTime,
+              meanId: key.meanId,
+              siteId: key.siteId,
+              startTime: key.startTime,
+              updatedAt: key.updatedAt,
+              userId: key.userId,
+              _id: key._id,
+              color: colour,
+              status: key.status,
+            };
+          },
+        );
 
-        setEvents(tempmeanData);
+        booking = responseMeanBooking.concat(responseDeliveryMean);
+        setEvents(booking);
       } else {
       }
     } catch (err) {

@@ -143,6 +143,17 @@ class App extends Component {
       this.props.setSelectedShape("");
       this.props.onClear();
       //Do whatever when esc is pressed
+    } else {
+      this.setState({
+        shapeId: "",
+        checkDisable: true,
+        meanDisable: true,
+        meanCheck: "",
+        meanShapeId: "",
+        points: [],
+      });
+      this.props.setSelectedShape("");
+
     }
   };
   showPdf = async (uri) => {
@@ -340,8 +351,7 @@ class App extends Component {
         } else {
           return;
         }
-      }
-      if (meanShapeId) {
+      } else if (meanShapeId) {
         let tempArr = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr) {
           tempArr.color = this.state.meanColor;
@@ -388,9 +398,10 @@ class App extends Component {
       } else {
         checkMean = false;
       }
-      // s********************************
-      // s********************************
+      // ********************************
+      // ********************************
     }
+  
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
         if (meanCheck === "MEAN") {
@@ -474,7 +485,7 @@ class App extends Component {
         return;
       }
     } else if (image === null) {
-      if (checkMean === true || finishDisable === true) return;
+      if (checkMean === true  || finishDisable === true) return;
       else alert("Upload a pdf first");
     } else {
       if (checkMean === true || finishDisable === true) return;
@@ -1016,7 +1027,6 @@ class App extends Component {
     let y2 = arr[3];
     let x3 = arr[4];
     let y3 = arr[5];
-
     let x = p1;
     let y = p2;
 
@@ -1033,7 +1043,11 @@ class App extends Component {
     /* Calculate AreaOfTriangle of triangle PAB */
     let A3 = AreaOfTriangle(x1, y1, x2, y2, x, y);
     /* Check if sum of A1, A2 and A3 is same as A */
-    return A === A1 + A2 + A3;
+    let check = false;
+    if (A === A1 + A2 + A3) {
+      check = true;
+    }
+    return check;
   };
 
   render() {
