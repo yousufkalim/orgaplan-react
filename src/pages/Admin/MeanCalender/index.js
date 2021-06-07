@@ -768,6 +768,7 @@ const Calender = (props) => {
   };
 
   const onChangeMeans = async () => {
+    let booking = [];
     try {
       const meanBooking = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
@@ -777,18 +778,27 @@ const Calender = (props) => {
         uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
         token: store.token,
       });
-      console.log(deliveryMean);
-      if (meanBooking.success && deliveryMean.success) {
+
+      if (meanBooking.success || deliveryMean.success) {
         const responseDeliveryMean = deliveryMean.data.map((key, index) => {
+          /* start time converstion */
+          let start = new Date(key.date);
+          let startHours = key.startTime.slice(0, 2);
+          start.setHours(startHours);
+          /* start time converstion */
+
+          /* End time converstion */
+          let end = new Date(key.date);
+          let endHours = key.endTime.slice(0, 2);
+          end.setHours(endHours);
+          /* End time converstion */
+
           return {
-            title: key.bookingReason,
+            title: key.comment,
             companyId: key.companyId,
-            createdAt: key.createdAt,
-            start: new Date(key.startDate),
-            end: new Date(key.endDate),
-            endTime: key.endTime,
+            start: start,
+            end: end,
             siteId: key.siteId,
-            startTime: key.startTime,
             userId: key.userId,
             _id: key._id,
             color: "green",
@@ -822,7 +832,8 @@ const Calender = (props) => {
           },
         );
 
-        setEvents(responseMeanBooking);
+        booking = responseMeanBooking.concat(responseDeliveryMean);
+        setEvents(booking);
       } else {
       }
     } catch (err) {
