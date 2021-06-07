@@ -6,7 +6,7 @@ const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
   handleDeleteEvent,
-  handleEditEvent,
+  handleValidateEvent,
   event,
 }) => {
   const getStartDate = (start) => {
@@ -29,6 +29,20 @@ const PopoverModal = ({
         </Modal.Header>
         <Modal.Body>
           <div className="showPopover">
+            <span>COMPANY</span>
+            <h5
+              className="text-center"
+              style={{
+                backgroundColor: "#f7f7f7",
+                fontSize: "16px",
+                color: "#777",
+                textAlign: "center",
+                padding: "10px 20px",
+                margin: "10px 0px",
+              }}
+            >
+              {event.companyId.name}
+            </h5>
             <span>BOOKING REASON</span>
             <h5
               className="text-center"
@@ -43,11 +57,8 @@ const PopoverModal = ({
             >
               {event.title}
             </h5>
-            {/* {console.log(event)} */}
-            <p>
-              {/* {event.start.getDay()}-{event.start.getMonth() + 1}-
-                {event.start.getYear()} */}
 
+            <p>
               <span
                 style={{
                   fontWeight: "normal",
@@ -66,8 +77,8 @@ const PopoverModal = ({
                   margin: "10px 0px",
                 }}
               >
-                
-                <span>{getStartDate(event.start)}</span> - {getStartTime(event.start)}
+                <span>{getStartDate(event.start)}</span> -{" "}
+                {getStartTime(event.start)}
               </div>
               <br />
               <span
@@ -95,12 +106,16 @@ const PopoverModal = ({
             <hr />
             <div className="popoverfooter">
               <div className="col-lg-2">
-                {/* <button
-                  className="btn text-primary btn-light px-3 text-center"
-                  onClick={handleEditEvent}
-                >
-                  <i class="fas fa-pencil"></i> <span>Edit</span>
-                </button> */}
+                {event.status !== "VALIDATED" ? (
+                  <>
+                    <button
+                      className="btn text-success btn-light px-3 text-center"
+                      onClick={handleValidateEvent}
+                    >
+                      <i class="fas fa-pencil"></i> <span>validate</span>
+                    </button>
+                  </>
+                ) : null}
               </div>
               <div className="col-lg-3">
                 <button

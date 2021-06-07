@@ -21,6 +21,7 @@ import {
   add_mean,
   update_mean,
   delete_mean,
+  validateMean,
 } from "../../../redux/actions/means";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
@@ -258,7 +259,6 @@ const Calender = (props) => {
       endTime = endTime.replace(/,/g, "");
       endTime = new Date(endTime);
 
-      
       /* End time*/
       let beforeTime = moment(startTime).format("DD/MM/YYYY HH:mm");
       let afterTime = moment(endTime).format("DD/MM/YYYY HH:mm");
@@ -290,7 +290,7 @@ const Calender = (props) => {
 
       const sTime = moment(String(startTime)).format("HH:mm");
       const eTime = moment(String(endTime)).format("HH:mm");
-      
+
       if (
         moment(startTime).isBetween(
           startMean,
@@ -303,17 +303,33 @@ const Calender = (props) => {
         startTime < endTime
       ) {
         if (overlap === "Enable") {
-          var DbElement = {
-            startDate: startTime,
-            endDate: endTime,
-            startTime: sTime,
-            endTime: eTime,
-            bookingReason: title,
-            siteId: adminStore.site.siteId._id,
-            userId: store.user._id,
-            companyId: selectedCompany,
-            meanId: selectedMeanId,
-          };
+          if (store.user.adminType !== "NOADMIN") {
+            var DbElement = {
+              startDate: startTime,
+              endDate: endTime,
+              startTime: sTime,
+              endTime: eTime,
+              bookingReason: title,
+              siteId: adminStore.site.siteId._id,
+              userId: store.user._id,
+              companyId: selectedCompany,
+              meanId: selectedMeanId,
+              status: "VALIDATED",
+            };
+          } else {
+            var DbElement = {
+              startDate: startTime,
+              endDate: endTime,
+              startTime: sTime,
+              endTime: eTime,
+              bookingReason: title,
+              siteId: adminStore.site.siteId._id,
+              userId: store.user._id,
+              companyId: selectedCompany,
+              meanId: selectedMeanId,
+            };
+          }
+
           // setEvents([...events, stateElement]);
           let flagHours = false;
           disableHoursMean.map((key, index) => {
@@ -572,6 +588,11 @@ const Calender = (props) => {
     dispatch(delete_mean(eventID));
     // dispatch(get_means());
   };
+  const handleValidateEvent = () => {
+    setpopoverShow(!popoverShow);
+    dispatch(validateMean(eventID));
+    onChangeMeans();
+  };
   const handlePopoverShow = (event) => {
     seteventID(event._id);
     const fill = events.filter((e) => e._id === event._id);
@@ -748,19 +769,17 @@ const Calender = (props) => {
 
   const onChangeMeans = async () => {
     try {
-      const response = await GLOBALS.API({
+      const meanBooking = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_MEAN_HISTORY}/${selectedMeanId}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-
-      if (response.success) {
-        const tempmeanData = response.data.history.map((key, index) => {
-          let colour = "";
-          if (key.status === "VALIDATED") {
-            colour = "green";
-          } else {
-            colour = "";
-          }
+      const deliveryMean = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}/${adminStore.site.siteId._id}/${selectedMeanId}`,
+        token: store.token,
+      });
+      console.log(deliveryMean);
+      if (meanBooking.success && deliveryMean.success) {
+        const responseDeliveryMean = deliveryMean.data.map((key, index) => {
           return {
             title: key.bookingReason,
             companyId: key.companyId,
@@ -768,17 +787,42 @@ const Calender = (props) => {
             start: new Date(key.startDate),
             end: new Date(key.endDate),
             endTime: key.endTime,
-            meanId: key.meanId,
             siteId: key.siteId,
             startTime: key.startTime,
-            updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: colour,
+            color: "green",
+            status: key.status,
           };
         });
+        const responseMeanBooking = meanBooking.data.history.map(
+          (key, index) => {
+            let colour = "";
+            if (key.status === "VALIDATED") {
+              colour = "green";
+            } else {
+              colour = "#FFFF00";
+            }
+            return {
+              title: key.bookingReason,
+              companyId: key.companyId,
+              createdAt: key.createdAt,
+              start: new Date(key.startDate),
+              end: new Date(key.endDate),
+              endTime: key.endTime,
+              meanId: key.meanId,
+              siteId: key.siteId,
+              startTime: key.startTime,
+              updatedAt: key.updatedAt,
+              userId: key.userId,
+              _id: key._id,
+              color: colour,
+              status: key.status,
+            };
+          },
+        );
 
-        setEvents(tempmeanData);
+        setEvents(responseMeanBooking);
       } else {
       }
     } catch (err) {
@@ -1133,6 +1177,7 @@ const Calender = (props) => {
           handlePopoverClose={handlePopoverClose}
           handleDeleteEvent={handleDeleteEvent}
           handleEditEvent={handleEditEvent}
+          handleValidateEvent={handleValidateEvent}
           event={event}
         />
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
@@ -1166,7 +1211,7 @@ const Calender = (props) => {
             />
           </div>
           <div style={{ textAlign: "right", width: "46%" }}>
-            <FiberManualRecordIcon style={{ color: "#265985" }} />
+            <FiberManualRecordIcon style={{ color: "#FFFF00" }} />
             <span style={{ display: "inline-block", paddingRight: "14px" }}>
               {" "}
               PENDING
@@ -1202,7 +1247,7 @@ const Calender = (props) => {
                 endAccessor="end"
                 style={{
                   width: "98%",
-                  height: "430px",
+                  height: "540px",
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let { color } = events;
