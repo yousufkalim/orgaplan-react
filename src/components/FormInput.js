@@ -155,6 +155,7 @@ export default function Input(props) {
         <input
           name={props.name}
           type={props.type}
+          accept={props.accept}
           value={props.value}
           max={props.maxLength}
           onBlur={props.onBlur}
