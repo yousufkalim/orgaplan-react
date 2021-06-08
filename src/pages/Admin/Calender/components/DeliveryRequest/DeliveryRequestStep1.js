@@ -16,65 +16,82 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
+  const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
-  // let arr = [2, 3];
-  // function disabledHours() {
-  //   return arr;
-  // }
-  // console.log("start time", moment(startTime).format("h"));
-
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
-  // console.log("adminStore", adminStore);
+  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
   var minutes = [];
+  console.log(startDate); // issue in start date
+  console.log(endTime);
   const getDisabledHoursEndTime = () => {
-    // console.log("start time", moment(startTime).format("h:m"));
-    // console.log("start minute", moment(startTime).format("m"));
     for (var i = 0; i <= moment(startTime).format("h"); i++) {
       endTimeDisabledHours.push(i);
     }
-
-    // console.log("endTimeDisabledHours", endTimeDisabledHours);
     return;
   };
 
   const getDisabledHoursStartTime = () => {
-    // console.log("start time", moment(endTime).format("h"));
-    // for (var i = 23; i >= moment(endTime).format("h"); i--) {
-    //   startTimeDisabledHours.push(i);
-    // }
-    // console.log("startTimeDisabledHours", startTimeDisabledHours);
     return endTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
-    // if (value > customDate) {
-    //   alert("notavailable");
-    //   return false;
-    // } else {
-    //   return true;
-    // }
     return true;
   };
-  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
+  const getAllDeliveryMean = async (meanArray) => {
+    if (meanArray.length !== 0) {
+      const getAllDelivery = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DELIVERY}`,
+        token: store.token,
+      });
+      getAllDelivery.data?.map((delivery, dIndex) => {
+        /*start hours and mints Convert into Date Object*/
+        let DBstartDate = new Date(delivery.date);
+        let startHours = delivery.startTime.slice(0, 2);
+        let startmint = delivery.startTime.slice(3, 5);
+        DBstartDate.setHours(startHours);
+        DBstartDate.setMinutes(startmint);
+        /*start hours and mints Convert into Date Object*/
+
+        /*End hours and mints Convert into Date Object*/
+        let DBEndDate = new Date(delivery.date);
+        let endHours = delivery.endTime.slice(0, 2);
+        let endmint = delivery.endTime.slice(3, 5);
+        DBEndDate.setHours(endHours);
+        DBEndDate.setMinutes(endmint);
+        /*End hours and mints Convert into Date Object*/
+
+        delivery?.liftingMeans.map((dmean, dmIndex) => {
+          meanArray?.map((mean, mIndex) => {
+            if (
+              dmean === mean.value &&
+              moment(DBstartDate).isBetween(startDate, endDate) &&
+              moment(DBEndDate).isBetween(startDate, endDate)
+            ) {
+              console.log("mean matched");
+            } else {
+              console.log("mean not matched");
+            }
+          });
+        });
+      });
+    }
+  };
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -111,7 +128,7 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
-
+  //console.log(date, startTime, endTime);
   useEffect(() => {
     setMeans(
       props.means.reduce((accumulator, currentValue) => {
@@ -132,6 +149,7 @@ export default function AddSiteStep1(props) {
             label: currentValue.name,
           });
         }
+        let means = getAllDeliveryMean(accumulator);
         return accumulator;
       }, []),
     );
@@ -163,11 +181,7 @@ export default function AddSiteStep1(props) {
 
   const DateRangeforminmax2 = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
+
     if (value === customDate) {
       alert("notavailable");
       return false;
