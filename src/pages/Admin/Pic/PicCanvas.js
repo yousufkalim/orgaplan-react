@@ -155,10 +155,13 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+   
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
+
       if (newShapes) {
         newShapes.map((st) => handleColorAndNameOfShape(st));
+
         setShapes(newShapes);
       } else {
         shapes.map((st) => handleColorAndNameOfShape(st));
@@ -176,6 +179,8 @@ const PicCanvas = (props) => {
       );
     }
   };
+  
+
   const fetchLevelPic = async (levelId) => {
     try {
       let response = await GLOBALS.API({

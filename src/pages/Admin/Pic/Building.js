@@ -457,8 +457,13 @@ export default function AddSiteStep3(props) {
         <SmallButton
           text="Download"
           color={theme.palette.primary.contrastText}
-          onClick={() => {
-            alert("downloading.....")
+          onClick={async () => {
+            const PDFJS = window.pdfjsLib;
+              var _PDF_DOC = await PDFJS.getDocument({
+                url: 'http://www.africau.edu/images/default/sample.pdf',
+              });
+              var page = await _PDF_DOC.getPage(1);
+           console.log(page,"page")
           }}
           style={{
             marginLeft: 10,
