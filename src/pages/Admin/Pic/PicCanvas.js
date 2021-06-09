@@ -72,7 +72,7 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [newPoints, setnewPoints] = useState("");
+  const [rendering, setRendering] = useState(false);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -85,7 +85,7 @@ const PicCanvas = (props) => {
   useEffect(() => {
     fetchSitePic();
     // eslint-disable-next-line
-  }, [adminStore]);
+  }, [adminStore, selectedShape, rendering]);
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -280,7 +280,7 @@ const PicCanvas = (props) => {
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
-      Object.keys(selectedShape).length > 0
+      Object.keys(selectedShape).length > 0 && level===''
     ) {
       let newShape = selectedShape;
 
@@ -290,7 +290,7 @@ const PicCanvas = (props) => {
         })
         .indexOf(newShape._id);
       shapesArray[removeIndex].points = getShape.points;
-      
+
       let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
       updatedShape && setShape(updatedShape);
@@ -312,15 +312,21 @@ const PicCanvas = (props) => {
   // update Building
 
   const updateShape = async (newShape) => {
-    let response = await GLOBALS.API({
-      method: "PUT",
-      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
-      token: store.token,
-      body: JSON.stringify({
-        points: newShape.points,
-        picID: newShape._id,
-      }),
-    });
+    try {
+      setRendering(true);
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+    } catch (error) {
+      setRendering(false);
+    }
+
     // setShapes(response.data.shapes)
     // console.log(response,"response");
   };

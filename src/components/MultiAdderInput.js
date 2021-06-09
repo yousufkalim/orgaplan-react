@@ -117,7 +117,7 @@ export default function MultiAdderInput(props) {
     );
     props.onChange(newValues);
   };
-
+console.log(props.values,"props.values")
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <div className={classes.container}>
@@ -139,7 +139,7 @@ export default function MultiAdderInput(props) {
         </div>
       </div>
       <ul className={classes.chips}>
-        {props.values.map((data) => (
+        {props.values ? props.values.map((data) => (
           <li key={data.key}>
             <Chip
               label={data.label}
@@ -147,7 +147,7 @@ export default function MultiAdderInput(props) {
               onDelete={handleDelete(data)}
             />
           </li>
-        ))}
+        )):<li></li>}
       </ul>
       {!isValid && <span className={classes.error}>{props.validateError}</span>}
       {props.error && <span className={classes.error}>{props.error}</span>}
