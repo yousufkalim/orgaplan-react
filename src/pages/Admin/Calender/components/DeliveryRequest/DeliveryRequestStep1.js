@@ -16,6 +16,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
+  const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
@@ -27,54 +28,81 @@ export default function AddSiteStep1(props) {
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
-  // let arr = [2, 3];
-  // function disabledHours() {
-  //   return arr;
-  // }
-  // console.log("start time", moment(startTime).format("h"));
-
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
-  // console.log("adminStore", adminStore);
+  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
   var minutes = [];
+
   const getDisabledHoursEndTime = () => {
-    // console.log("start time", moment(startTime).format("h:m"));
-    // console.log("start minute", moment(startTime).format("m"));
     for (var i = 0; i <= moment(startTime).format("h"); i++) {
       endTimeDisabledHours.push(i);
     }
-
-    // console.log("endTimeDisabledHours", endTimeDisabledHours);
     return;
   };
 
   const getDisabledHoursStartTime = () => {
-    // console.log("start time", moment(endTime).format("h"));
-    // for (var i = 23; i >= moment(endTime).format("h"); i--) {
-    //   startTimeDisabledHours.push(i);
-    // }
-    // console.log("startTimeDisabledHours", startTimeDisabledHours);
     return endTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
-    // if (value > customDate) {
-    //   alert("notavailable");
-    //   return false;
-    // } else {
-    //   return true;
-    // }
     return true;
   };
-  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
+  const getAllDeliveryMean = async (meanArray) => {
+    let copyMeanArray = [];
+    if (meanArray.length !== 0) {
+      const getAllDelivery = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.DELIVERY}`,
+        token: store.token,
+      });
+      getAllDelivery.data?.map((delivery, dIndex) => {
+        /*start hours and mints Convert into Date Object*/
+        let DBstartDate = new Date(delivery.date);
+        let startHours = delivery.startTime.slice(0, 2);
+        let startmint = delivery.startTime.slice(3, 5);
+        DBstartDate.setHours(startHours);
+        DBstartDate.setMinutes(startmint);
+        /*start hours and mints Convert into Date Object*/
+
+        /*End hours and mints Convert into Date Object*/
+        let DBEndDate = new Date(delivery.date);
+        let endHours = delivery.endTime.slice(0, 2);
+        let endmint = delivery.endTime.slice(3, 5);
+        DBEndDate.setHours(endHours);
+        DBEndDate.setMinutes(endmint);
+        /*End hours and mints Convert into Date Object*/
+
+        delivery?.liftingMeans.map((dmean, dmIndex) => {
+          copyMeanArray = meanArray?.filter((mean, mIndex) => {
+            if (
+              dmean === mean.value &&
+              (moment(DBstartDate).isBetween(
+                startTime,
+                endTime,
+                undefined,
+                "[]",
+              ) ||
+                moment(DBEndDate).isBetween(
+                  startTime,
+                  endTime,
+                  undefined,
+                  "[]",
+                ))
+            ) {
+              // remove matched array
+              // console.log("mean matched", mean.label);
+            } else {
+              //console.log("mean not matched", mean.label);
+              return mean;
+            }
+          });
+        });
+      });
+    }
+    return copyMeanArray;
+  };
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -111,30 +139,34 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
-
+  //console.log(date, startTime, endTime);
   useEffect(() => {
-    setMeans(
-      props.means.reduce((accumulator, currentValue) => {
-        if (
-          currentValue.meanType === "LIFTING" &&
-          currentValue.location.find(
-            (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
-          ) &&
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
-          });
-        }
-        return accumulator;
-      }, []),
-    );
+    let mean_array = props.means.reduce((accumulator, currentValue) => {
+      if (
+        currentValue.meanType === "LIFTING" &&
+        currentValue.location.find(
+          (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+        ) &&
+        moment(props.date).isBetween(
+          currentValue.availability.start,
+          currentValue.availability.end,
+          "day",
+          "[]",
+        )
+      ) {
+        accumulator.push({
+          value: currentValue._id,
+          label: currentValue.name,
+        });
+      }
+
+      return accumulator;
+    }, []);
+    let delivery_means = getAllDeliveryMean(mean_array);
+    delivery_means.then((mean) => {
+      setMeans(mean);
+    });
+
     // eslint-disable-next-line
   }, [deliveryArea]);
 
@@ -163,11 +195,7 @@ export default function AddSiteStep1(props) {
 
   const DateRangeforminmax2 = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
+
     if (value === customDate) {
       alert("notavailable");
       return false;
