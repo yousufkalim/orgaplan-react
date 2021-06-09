@@ -22,8 +22,6 @@ export default function AddSiteStep1(props) {
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
@@ -36,8 +34,7 @@ export default function AddSiteStep1(props) {
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
   var minutes = [];
-  console.log(startDate); // issue in start date
-  console.log(endTime);
+
   const getDisabledHoursEndTime = () => {
     for (var i = 0; i <= moment(startTime).format("h"); i++) {
       endTimeDisabledHours.push(i);
@@ -54,6 +51,7 @@ export default function AddSiteStep1(props) {
     return true;
   };
   const getAllDeliveryMean = async (meanArray) => {
+    let copyMeanArray = [];
     if (meanArray.length !== 0) {
       const getAllDelivery = await GLOBALS.API({
         uri: `${GLOBALS.Constants.DELIVERY}`,
@@ -77,20 +75,33 @@ export default function AddSiteStep1(props) {
         /*End hours and mints Convert into Date Object*/
 
         delivery?.liftingMeans.map((dmean, dmIndex) => {
-          meanArray?.map((mean, mIndex) => {
+          copyMeanArray = meanArray?.filter((mean, mIndex) => {
             if (
               dmean === mean.value &&
-              moment(DBstartDate).isBetween(startDate, endDate) &&
-              moment(DBEndDate).isBetween(startDate, endDate)
+              (moment(DBstartDate).isBetween(
+                startTime,
+                endTime,
+                undefined,
+                "[]",
+              ) ||
+                moment(DBEndDate).isBetween(
+                  startTime,
+                  endTime,
+                  undefined,
+                  "[]",
+                ))
             ) {
-              console.log("mean matched");
+              // remove matched array
+              // console.log("mean matched", mean.label);
             } else {
-              console.log("mean not matched");
+              //console.log("mean not matched", mean.label);
+              return mean;
             }
           });
         });
       });
     }
+    return copyMeanArray;
   };
   useEffect(() => {
     if (props.step1Data) {
@@ -130,29 +141,32 @@ export default function AddSiteStep1(props) {
   }, [props.step1Data]);
   //console.log(date, startTime, endTime);
   useEffect(() => {
-    setMeans(
-      props.means.reduce((accumulator, currentValue) => {
-        if (
-          currentValue.meanType === "LIFTING" &&
-          currentValue.location.find(
-            (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
-          ) &&
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
-          });
-        }
-        let means = getAllDeliveryMean(accumulator);
-        return accumulator;
-      }, []),
-    );
+    let mean_array = props.means.reduce((accumulator, currentValue) => {
+      if (
+        currentValue.meanType === "LIFTING" &&
+        currentValue.location.find(
+          (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+        ) &&
+        moment(props.date).isBetween(
+          currentValue.availability.start,
+          currentValue.availability.end,
+          "day",
+          "[]",
+        )
+      ) {
+        accumulator.push({
+          value: currentValue._id,
+          label: currentValue.name,
+        });
+      }
+
+      return accumulator;
+    }, []);
+    let delivery_means = getAllDeliveryMean(mean_array);
+    delivery_means.then((mean) => {
+      setMeans(mean);
+    });
+
     // eslint-disable-next-line
   }, [deliveryArea]);
 
