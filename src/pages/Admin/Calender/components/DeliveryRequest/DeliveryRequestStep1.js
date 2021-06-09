@@ -51,10 +51,12 @@ export default function AddSiteStep1(props) {
     return true;
   };
   const getAllDeliveryMean = async (meanArray) => {
-    let copyMeanArray = [];
+    let deliveryMeanArray = [];
+    let meanBooking = [];
     if (meanArray.length !== 0) {
+      // Start  checking mean Availabilty in Delivery Request
       const getAllDelivery = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.DELIVERY}`,
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
         token: store.token,
       });
       getAllDelivery.data?.map((delivery, dIndex) => {
@@ -75,7 +77,7 @@ export default function AddSiteStep1(props) {
         /*End hours and mints Convert into Date Object*/
 
         delivery?.liftingMeans.map((dmean, dmIndex) => {
-          copyMeanArray = meanArray?.filter((mean, mIndex) => {
+          deliveryMeanArray = meanArray?.filter((mean, mIndex) => {
             if (
               dmean === mean.value &&
               (moment(DBstartDate).isBetween(
@@ -100,8 +102,44 @@ export default function AddSiteStep1(props) {
           });
         });
       });
+      // END checking mean Availabilty in Delivery Request
     }
-    return copyMeanArray;
+    // Start checking mean Availabilty in Mean Booking
+    const getAllMeanBooking = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
+      token: store.token,
+    });
+    // value: currentValue._id,
+    // label: currentValue.name,
+
+    getAllMeanBooking.data.map((meanB, Bindex) => {
+      meanBooking = deliveryMeanArray.filter((dmean, dindex) => {
+        if (
+          dmean.value === meanB._id &&
+          (moment(meanB.startDate).isBetween(
+            startTime,
+            endTime,
+            undefined,
+            "[]",
+          ) ||
+            moment(meanB.endDate).isBetween(
+              startTime,
+              endTime,
+              undefined,
+              "[]",
+            ))
+        ) {
+          //match mean remove
+          console.log("mean are matched");
+        } else {
+          // return filtered mean
+          return dmean;
+        }
+      });
+    });
+    // console.log(meanBooking);
+    // END checking mean Availabilty in Mean Booking
+    return meanBooking;
   };
   useEffect(() => {
     if (props.step1Data) {
@@ -168,7 +206,7 @@ export default function AddSiteStep1(props) {
     });
 
     // eslint-disable-next-line
-  }, [deliveryArea]);
+  }, [deliveryArea, startTime, endTime]);
 
   async function onSubmit(e) {
     e.preventDefault();
