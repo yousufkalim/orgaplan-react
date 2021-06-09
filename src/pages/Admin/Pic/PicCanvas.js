@@ -86,7 +86,7 @@ const PicCanvas = (props) => {
     fetchSitePic();
     // eslint-disable-next-line
   }, [adminStore]);
- 
+
   const expiredShapes = (shapes) => {
     let array = [];
 
@@ -155,7 +155,7 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-   
+
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
 
@@ -179,7 +179,6 @@ const PicCanvas = (props) => {
       );
     }
   };
-  
 
   const fetchLevelPic = async (levelId) => {
     try {
@@ -278,39 +277,27 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
-
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
       Object.keys(selectedShape).length > 0
     ) {
       let newShape = selectedShape;
-      getShape.color = newShape.color;
-      getShape.opacity = newShape.opacity;
-      getShape.type = newShape.type;
-      getShape.name = newShape.name;
-      // getShape._id = newShape._id;
-      if (newShape.type === "STORAGEAREA") {
-        getShape.storageArea = newShape.storageArea;
-      } else if (newShape.type === "DELIVERYAREA") {
-        getShape.deliveryArea = newShape.deliveryArea;
-      } else if (newShape.type === "BUILDING") {
-        getShape.building = newShape.building;
-      }
 
       var removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
         .indexOf(newShape._id);
-      shapesArray[removeIndex] = getShape;
-
+      shapesArray[removeIndex].points = getShape.points;
+      
+      let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
-      getShape && setShape(getShape);
+      updatedShape && setShape(updatedShape);
       setShapes(shapesArray);
-      updateShape(getShape);
+      updateShape(updatedShape);
       // remove object
-      removeIndex && shapesArray.splice(removeIndex, 1);
+      // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);

@@ -88,7 +88,6 @@ class App extends Component {
         this.props.shapes.map(async (tempShape) => {
 
           if (tempShape.image && typeof tempShape.image === "string") {
-
             const image = await loadImage(
               `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
             );
