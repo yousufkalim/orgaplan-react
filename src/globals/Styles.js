@@ -9,6 +9,11 @@ const styles = {
   inputWidth: {
     width: "48%",
   },
+  pdffile: {
+    width: "48%",
+    display: "flex",
+    justifyContent: "space-between",
+  },
 };
 
 export default styles;

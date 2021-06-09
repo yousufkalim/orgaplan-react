@@ -13,8 +13,8 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddInvoice(props) {
+  // console.log("props", props);
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -41,7 +42,9 @@ export default function AddInvoice(props) {
   const [amount, setAmount] = useState(0);
   const [pdf, setPdf] = useState(0);
   const [pdfFile, setPdfFile] = useState(null);
+  const [pdfFileName, setPdfFileName] = useState(null);
   const [pdfUri, setPdfUri] = useState(null);
+  const [logo, setLogo] = useState([]);
   const [description, setDescription] = useState("");
 
   useEffect(() => {
@@ -98,15 +101,25 @@ export default function AddInvoice(props) {
   }
 
   const handlePdfChange = (e) => {
-    console.log("pdf is ", e.target.files);
     if (e.target.files.length) {
       let file = e.target.files[0];
       const uri = URL.createObjectURL(file);
+      if (file.size > 15000000) {
+        return dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(
+              `File is large,Max size can be 15 MB`,
+              "error",
+            ),
+          ),
+        );
+      }
+
       setPdfFile(file);
+      setPdfFileName(file.name);
       setPdfUri(uri);
     }
   };
-  console.log("pdf file", pdfFile);
 
   const handleChange = (name, value) => {
     if (name === "clientId") setClientId(value);
@@ -118,10 +131,10 @@ export default function AddInvoice(props) {
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
   };
-
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
+
       setLoading(true);
       // test formdata
       var formdata = new FormData();
@@ -245,7 +258,31 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="UploadPdf*:" />
+            <FormLabel bold primary="PDF File:" />
+            <div style={GLOBALS.Styles.pdffile}>
+              <Button
+                fullWidth={false}
+                // disabled={isLoading}
+                text={"Upload PDF"}
+                onClick={() =>
+                  document.getElementById("upload-canvas-pdf-button").click()
+                }
+              />
+              <input
+                hidden
+                type="file"
+                accept="application/pdf"
+                id="upload-canvas-pdf-button"
+                onChange={(e) => handlePdfChange(e)}
+              />
+              <p className="m-2">{pdfFileName && pdfFileName}</p>
+            </div>
+            {/* <input
+              type="file"
+              name="pdf"
+              accept="application/pdf"
+              onChange={(e) => handlePdfChange(e)}
+            /> */}
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="DESCRIPTION:" />

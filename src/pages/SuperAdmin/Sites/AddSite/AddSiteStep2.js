@@ -160,6 +160,10 @@ export default function AddSiteStep2(props) {
         Number(notificationPriorToDays),
       );
       formdata.append("notificationTo", JSON.stringify(notificationToArray));
+
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdatais in add site step 2 ${key}: ${value}`);
+      // }
       const data = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.SITES,
