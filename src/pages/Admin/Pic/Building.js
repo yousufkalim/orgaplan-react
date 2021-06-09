@@ -438,7 +438,7 @@ export default function AddSiteStep3(props) {
           text="Historique des plans"
           disabled={loading}
           color={theme.palette.primary.contrastText}
-          onClick={() => getHistoryPlan(level._id)}
+          onClick={() =>  getHistoryPlan(level._id)}
           style={{
             marginLeft: 10,
             borderRadius: 4,
@@ -457,10 +457,11 @@ export default function AddSiteStep3(props) {
         <Form.Row style={{ justifyContent: "center" }}>
           <SmallButton
             text="Download"
+            disabled={level.name ? false : true}
             color={theme.palette.primary.contrastText}
             onClick={async () => {
               let fileName = level.name;
-              var url = GLOBALS.Constants.BASE_URL  + fileName;
+              var url = GLOBALS.Constants.BASE_URL + fileName;
               var req = new XMLHttpRequest();
               req.open("GET", url, true);
               req.responseType = "blob";

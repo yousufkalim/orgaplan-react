@@ -301,7 +301,6 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    this.props && this.props.setSelectedShape("");
     if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
