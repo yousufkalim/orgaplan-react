@@ -76,11 +76,11 @@ export default function Sites(props) {
       const clients = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
       });
+
       setClients(clients.data.items);
       setItems(result.data.items);
       setData(result.data);
       setLoading(false);
-      
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
