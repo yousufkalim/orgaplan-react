@@ -82,11 +82,11 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-    // console.log("this.props.shapes", this.props.shapes);
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
         this.props.shapes.map(async (tempShape) => {
+
           if (tempShape.image && typeof tempShape.image === "string") {
             const image = await loadImage(
               `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,

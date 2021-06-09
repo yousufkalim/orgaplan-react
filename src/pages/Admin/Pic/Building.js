@@ -7,7 +7,7 @@ import FullScreenModal from "../../../components/FullScreenModal";
 import moment from "moment";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-
+import { jsPDF } from "jspdf";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -304,9 +304,9 @@ export default function AddSiteStep3(props) {
     }
   };
 
-  const getHistoryPlan =async (levelId) => {
+  const getHistoryPlan = async (levelId) => {
     try {
-      let response=  await GLOBALS.API({
+      let response = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.GetHistoryOfPlans,
         token: store.token,
@@ -316,8 +316,8 @@ export default function AddSiteStep3(props) {
           BuildingId: props.selectedShape.building._id,
         }),
       });
-      setHistories(response.data)
-      setModal(true)
+      setHistories(response.data);
+      setModal(true);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -447,28 +447,51 @@ export default function AddSiteStep3(props) {
       </Form.Row>,
     ]),
   );
-  console.log(histories,"histories")
   const historyRows = [];
-  histories && histories?.map((level, index) =>
-  historyRows.push([
-      level.name,
-      moment(level.createdAt).format("DD/MM/YYYY"),
-      <Form.Row style={{ justifyContent: "center" }}>
-        <SmallButton
-          text="Download"
-          color={theme.palette.primary.contrastText}
-          onClick={() => {
-            alert("downloading.....")
-          }}
-          style={{
-            marginLeft: 10,
-            borderRadius: 4,
-          }}
-        />
-       
-      </Form.Row>,
-    ]),
-  );
+  histories &&
+    histories?.map((level, index) => {
+      console.log(level, "level");
+      historyRows.push([
+        level.name,
+        moment(level.createdAt).format("DD/MM/YYYY"),
+        <Form.Row style={{ justifyContent: "center" }}>
+          <SmallButton
+            text="Download"
+            color={theme.palette.primary.contrastText}
+            onClick={async () => {
+              let fileName = level.name;
+              var url = GLOBALS.Constants.BASE_URL  + fileName;
+              var req = new XMLHttpRequest();
+              req.open("GET", url, true);
+              req.responseType = "blob";
+              req.onload = function () {
+                var blob = new Blob([req.response], {
+                  type: "application/octetstream",
+                });
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                  window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                  var url = window.URL || window.webkitURL;
+                  let link = url.createObjectURL(blob);
+                  var a = document.createElement("a");
+                  a.setAttribute("download", fileName);
+                  a.setAttribute("href", link);
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }
+              };
+              req.send();
+            }}
+            style={{
+              marginLeft: 10,
+              borderRadius: 4,
+            }}
+          />
+        </Form.Row>,
+      ]);
+    });
 
   return (
     <div>
@@ -479,7 +502,10 @@ export default function AddSiteStep3(props) {
           setModal((st) => !st);
         }}
         body={
-          <Table rows={historyRows} headers={GLOBALS.Data.pdfHistory.headings} />
+          <Table
+            rows={historyRows}
+            headers={GLOBALS.Data.pdfHistory.headings}
+          />
         }
       />
       {!activeBuilding && (
