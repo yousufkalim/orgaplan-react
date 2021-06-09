@@ -177,7 +177,7 @@ export default function AddCompanies(props) {
         // for (let [key, value] of formdata) {
         //   console.log(`formdatais ${key}: ${value}`);
         // }
-        console.log("company type", formdata.get("parentCompanyId"));
+        // console.log("company type", formdata.get("parentCompanyId"));
 
         const response = await GLOBALS.API({
           method: "POST",
