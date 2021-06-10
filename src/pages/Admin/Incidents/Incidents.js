@@ -477,9 +477,9 @@ const Incidents = (props) => {
           />
         </Form.Row>
       </Form.Row>
-      <div>
+      {/* <div>
         <h1>pdf</h1>
-      </div>
+      </div> */}
       <div className={classes.content}>
         <Table
           headers={GLOBALS.Data.incidents.headings}
