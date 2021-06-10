@@ -128,7 +128,6 @@ export default function AddMean(props) {
       );
     }
   };
-console.log(image,"image")
   const handleChange = (name, value) => {
     if (name === "name") {
       setName(value);

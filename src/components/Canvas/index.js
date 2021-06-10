@@ -54,6 +54,7 @@ class App extends Component {
     } else if (prevState.shapes !== this.state.shapes) {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
+      this.setState({meanCheck:""})
       await Promise.all(
         this.props.shapes &&
           this.props.shapes.map(async (tempShap) => {
@@ -400,6 +401,7 @@ class App extends Component {
       // ********************************
       // ********************************
     }
+    // console.log(meanCheck,"meanCheck")
   
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
