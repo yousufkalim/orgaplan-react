@@ -72,7 +72,7 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [newPoints, setnewPoints] = useState("");
+  const [rendering, setRendering] = useState(false);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -84,9 +84,10 @@ const PicCanvas = (props) => {
   const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
     fetchSitePic();
+    setLevel("");
     // eslint-disable-next-line
-  }, [adminStore]);
- 
+  }, [adminStore, rendering]);
+
   const expiredShapes = (shapes) => {
     let array = [];
 
@@ -155,10 +156,13 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
+
       if (newShapes) {
         newShapes.map((st) => handleColorAndNameOfShape(st));
+
         setShapes(newShapes);
       } else {
         shapes.map((st) => handleColorAndNameOfShape(st));
@@ -176,6 +180,7 @@ const PicCanvas = (props) => {
       );
     }
   };
+
   const fetchLevelPic = async (levelId) => {
     try {
       let response = await GLOBALS.API({
@@ -273,39 +278,28 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
-
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
-      Object.keys(selectedShape).length > 0
+      Object.keys(selectedShape).length > 0 &&
+      level === ""
     ) {
       let newShape = selectedShape;
-      getShape.color = newShape.color;
-      getShape.opacity = newShape.opacity;
-      getShape.type = newShape.type;
-      getShape.name = newShape.name;
-      // getShape._id = newShape._id;
-      if (newShape.type === "STORAGEAREA") {
-        getShape.storageArea = newShape.storageArea;
-      } else if (newShape.type === "DELIVERYAREA") {
-        getShape.deliveryArea = newShape.deliveryArea;
-      } else if (newShape.type === "BUILDING") {
-        getShape.building = newShape.building;
-      }
 
       var removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
         .indexOf(newShape._id);
-      shapesArray[removeIndex] = getShape;
+      shapesArray[removeIndex].points = getShape.points;
 
+      let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
-      getShape && setShape(getShape);
+      updatedShape && setShape(updatedShape);
       setShapes(shapesArray);
-      updateShape(getShape);
+      updateShape(updatedShape);
       // remove object
-      removeIndex && shapesArray.splice(removeIndex, 1);
+      // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
@@ -320,15 +314,21 @@ const PicCanvas = (props) => {
   // update Building
 
   const updateShape = async (newShape) => {
-    let response = await GLOBALS.API({
-      method: "PUT",
-      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
-      token: store.token,
-      body: JSON.stringify({
-        points: newShape.points,
-        picID: newShape._id,
-      }),
-    });
+    try {
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+      setRendering(true);
+    } catch (error) {
+      setRendering(false);
+    }
+
     // setShapes(response.data.shapes)
     // console.log(response,"response");
   };

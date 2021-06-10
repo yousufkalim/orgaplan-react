@@ -81,6 +81,7 @@ const endpoints = {
   MEAN: BASE_URL_V1 + "mean",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
+  GET_VALIDATED_MEAN: BASE_URL_V1 + "mean_booking/getValidatedMean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
@@ -104,6 +105,7 @@ const endpoints = {
   GET_DELIVERY: BASE_URL_V1 + "delivery/get",
   GET_VALIDATED_DELIVERY_MEAN:
     BASE_URL_V1 + "delivery/getValidatedDeliveryMean",
+
   SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
@@ -143,6 +145,7 @@ const endpoints = {
 
   CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  GET_ALL_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",

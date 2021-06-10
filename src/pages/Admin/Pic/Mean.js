@@ -128,7 +128,6 @@ export default function AddMean(props) {
       );
     }
   };
-
   const handleChange = (name, value) => {
     if (name === "name") {
       setName(value);

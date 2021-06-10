@@ -381,7 +381,7 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
-              values={notificationTo}
+              values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
               validateError="Invalid Email"
               placeholder="Enter email address"

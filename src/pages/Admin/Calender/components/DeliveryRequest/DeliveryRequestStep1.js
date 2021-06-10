@@ -16,6 +16,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
+  const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
   const [date, setDate] = useState("");
@@ -27,54 +28,119 @@ export default function AddSiteStep1(props) {
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
-  // let arr = [2, 3];
-  // function disabledHours() {
-  //   return arr;
-  // }
-  // console.log("start time", moment(startTime).format("h"));
-
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
-  // console.log("adminStore", adminStore);
+  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
   var minutes = [];
+
   const getDisabledHoursEndTime = () => {
-    // console.log("start time", moment(startTime).format("h:m"));
-    // console.log("start minute", moment(startTime).format("m"));
     for (var i = 0; i <= moment(startTime).format("h"); i++) {
       endTimeDisabledHours.push(i);
     }
-
-    // console.log("endTimeDisabledHours", endTimeDisabledHours);
     return;
   };
 
   const getDisabledHoursStartTime = () => {
-    // console.log("start time", moment(endTime).format("h"));
-    // for (var i = 23; i >= moment(endTime).format("h"); i--) {
-    //   startTimeDisabledHours.push(i);
-    // }
-    // console.log("startTimeDisabledHours", startTimeDisabledHours);
     return endTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
-    // if (value > customDate) {
-    //   alert("notavailable");
-    //   return false;
-    // } else {
-    //   return true;
-    // }
     return true;
   };
-  const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
+  const getAllDeliveryMean = async (meanArray) => {
+    let deliveryMeanArray = [];
+    let meanBooking = [];
+    if (meanArray.length !== 0) {
+      // Start  checking mean Availabilty in Delivery Request
+      const getAllDelivery = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
+        token: store.token,
+      });
+      getAllDelivery.data?.map((delivery, dIndex) => {
+        /*start hours and mints Convert into Date Object*/
+        let DBstartDate = new Date(delivery.date);
+        let startHours = delivery.startTime.slice(0, 2);
+        let startmint = delivery.startTime.slice(3, 5);
+        DBstartDate.setHours(startHours);
+        DBstartDate.setMinutes(startmint);
+        /*start hours and mints Convert into Date Object*/
+
+        /*End hours and mints Convert into Date Object*/
+        let DBEndDate = new Date(delivery.date);
+        let endHours = delivery.endTime.slice(0, 2);
+        let endmint = delivery.endTime.slice(3, 5);
+        DBEndDate.setHours(endHours);
+        DBEndDate.setMinutes(endmint);
+        /*End hours and mints Convert into Date Object*/
+
+        delivery?.liftingMeans.map((dmean, dmIndex) => {
+          deliveryMeanArray = meanArray?.filter((mean, mIndex) => {
+            if (
+              dmean === mean.value &&
+              (moment(DBstartDate).isBetween(
+                startTime,
+                endTime,
+                undefined,
+                "[]",
+              ) ||
+                moment(DBEndDate).isBetween(
+                  startTime,
+                  endTime,
+                  undefined,
+                  "[]",
+                ))
+            ) {
+              // remove matched array
+              // console.log("mean matched", mean.label);
+            } else {
+              //console.log("mean not matched", mean.label);
+              return mean;
+            }
+          });
+        });
+      });
+      // END checking mean Availabilty in Delivery Request
+    }
+    // Start checking mean Availabilty in Mean Booking
+    const getAllMeanBooking = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
+      token: store.token,
+    });
+    // value: currentValue._id,
+    // label: currentValue.name,
+
+    getAllMeanBooking.data.map((meanB, Bindex) => {
+      meanBooking = deliveryMeanArray.filter((dmean, dindex) => {
+        if (
+          dmean.value === meanB._id &&
+          (moment(meanB.startDate).isBetween(
+            startTime,
+            endTime,
+            undefined,
+            "[]",
+          ) ||
+            moment(meanB.endDate).isBetween(
+              startTime,
+              endTime,
+              undefined,
+              "[]",
+            ))
+        ) {
+          //match mean remove
+          console.log("mean are matched");
+        } else {
+          // return filtered mean
+          return dmean;
+        }
+      });
+    });
+    // console.log(meanBooking);
+    // END checking mean Availabilty in Mean Booking
+    return meanBooking;
+  };
   useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
@@ -111,32 +177,36 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
-
+  //console.log(date, startTime, endTime);
   useEffect(() => {
-    setMeans(
-      props.means.reduce((accumulator, currentValue) => {
-        if (
-          currentValue.meanType === "LIFTING" &&
-          currentValue.location.find(
-            (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
-          ) &&
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
-          });
-        }
-        return accumulator;
-      }, []),
-    );
+    let mean_array = props.means.reduce((accumulator, currentValue) => {
+      if (
+        currentValue.meanType === "LIFTING" &&
+        currentValue.location.find(
+          (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+        ) &&
+        moment(props.date).isBetween(
+          currentValue.availability.start,
+          currentValue.availability.end,
+          "day",
+          "[]",
+        )
+      ) {
+        accumulator.push({
+          value: currentValue._id,
+          label: currentValue.name,
+        });
+      }
+
+      return accumulator;
+    }, []);
+    let delivery_means = getAllDeliveryMean(mean_array);
+    delivery_means.then((mean) => {
+      setMeans(mean);
+    });
+
     // eslint-disable-next-line
-  }, [deliveryArea]);
+  }, [deliveryArea, startTime, endTime]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -163,11 +233,7 @@ export default function AddSiteStep1(props) {
 
   const DateRangeforminmax2 = (value) => {
     let customDate = "2021-06-06";
-    // console.log(
-    //   "date format",
-    //   moment(siteAvailabilityEnd).format("YYYY-MM-DD"),
-    // );
-    // console.log("date value", value);
+
     if (value === customDate) {
       alert("notavailable");
       return false;

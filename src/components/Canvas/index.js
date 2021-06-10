@@ -54,6 +54,7 @@ class App extends Component {
     } else if (prevState.shapes !== this.state.shapes) {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
+      this.setState({meanCheck:""})
       await Promise.all(
         this.props.shapes &&
           this.props.shapes.map(async (tempShap) => {
@@ -82,11 +83,11 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-    // console.log("this.props.shapes", this.props.shapes);
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
         this.props.shapes.map(async (tempShape) => {
+
           if (tempShape.image && typeof tempShape.image === "string") {
             const image = await loadImage(
               `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
@@ -301,7 +302,6 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    this.props && this.props.setSelectedShape("");
     if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
@@ -401,6 +401,7 @@ class App extends Component {
       // ********************************
       // ********************************
     }
+    // console.log(meanCheck,"meanCheck")
   
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
