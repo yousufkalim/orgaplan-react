@@ -86,11 +86,7 @@ const PicCanvas = (props) => {
     fetchSitePic();
     setLevel("");
     // eslint-disable-next-line
-<<<<<<< HEAD
-  }, [adminStore,rendering]);
-=======
   }, [adminStore, rendering]);
->>>>>>> bb4cba164289f74dc4aa6c1d55fa2fb3cfca1380
 
   const expiredShapes = (shapes) => {
     let array = [];
