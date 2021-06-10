@@ -54,6 +54,7 @@ class App extends Component {
     } else if (prevState.shapes !== this.state.shapes) {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
+      this.setState({meanCheck:""})
       await Promise.all(
         this.props.shapes &&
           this.props.shapes.map(async (tempShap) => {
@@ -214,7 +215,6 @@ class App extends Component {
   };
   handleDisableShape = (id) => {
     const { shapes, shapeId, shapeColor, meanShapeId } = this.state;
-
     if (meanShapeId) {
       let tempArr = shapes.find((sp) => sp._id === meanShapeId);
       if (tempArr) {
@@ -455,6 +455,7 @@ class App extends Component {
             this.setState({
               points: [],
             });
+            this.props.setLevel("")
           } else if (points.length >= 10) {
             alert("You only can make upto Decagon shape");
             return;

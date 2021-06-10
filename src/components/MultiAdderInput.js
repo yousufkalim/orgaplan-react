@@ -117,7 +117,6 @@ export default function MultiAdderInput(props) {
     );
     props.onChange(newValues);
   };
-console.log(props.values,"props.values")
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <div className={classes.container}>
