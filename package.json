@@ -21,10 +21,7 @@
     "globalize": "^1.6.0",
     "i18next": "^19.8.4",
     "jspdf": "^2.3.1",
-<<<<<<< HEAD
     "jspdf-autotable": "^3.5.14",
-=======
->>>>>>> bb4cba164289f74dc4aa6c1d55fa2fb3cfca1380
     "konva": "^7.2.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
