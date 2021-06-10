@@ -143,18 +143,7 @@ class App extends Component {
       this.props.setSelectedShape("");
       this.props.onClear();
       //Do whatever when esc is pressed
-    } else {
-      this.setState({
-        shapeId: "",
-        checkDisable: true,
-        meanDisable: true,
-        meanCheck: "",
-        meanShapeId: "",
-        points: [],
-      });
-      this.props.setSelectedShape("");
-
-    }
+    } 
   };
   showPdf = async (uri) => {
     const PDFJS = window.pdfjsLib;
