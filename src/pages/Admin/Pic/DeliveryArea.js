@@ -103,7 +103,7 @@ export default function DeliveryArea(props) {
   }
 
   function handleChange(name, value) {
-    if (name === "name") setName(value);
+      if (name === "name") setName(value);
     else if (name === "color") setColor(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);

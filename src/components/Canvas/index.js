@@ -389,6 +389,7 @@ class App extends Component {
       // ********************************
       // ********************************
     }
+    // console.log(meanCheck,"meanCheck")
   
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {

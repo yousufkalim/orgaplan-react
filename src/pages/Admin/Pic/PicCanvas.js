@@ -84,8 +84,13 @@ const PicCanvas = (props) => {
   const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
     fetchSitePic();
+    setLevel("");
     // eslint-disable-next-line
+<<<<<<< HEAD
   }, [adminStore,rendering]);
+=======
+  }, [adminStore, rendering]);
+>>>>>>> bb4cba164289f74dc4aa6c1d55fa2fb3cfca1380
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -280,7 +285,8 @@ const PicCanvas = (props) => {
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
-      Object.keys(selectedShape).length > 0 && level===''
+      Object.keys(selectedShape).length > 0 &&
+      level === ""
     ) {
       let newShape = selectedShape;
 
