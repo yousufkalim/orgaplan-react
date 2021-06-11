@@ -64,8 +64,6 @@ export default function AddSiteStep1(props) {
     // eslint-disable-next-line
   }, []);
   const getAllDeliveryMean = async (meanArray) => {
-    let deliveryMeanArray = [];
-    let meanBooking = [];
     if (meanArray.length !== 0) {
       // Start  checking mean Availabilty in Delivery Request
       const getAllDelivery = await GLOBALS.API({
@@ -90,21 +88,16 @@ export default function AddSiteStep1(props) {
         /*End hours and mints Convert into Date Object*/
 
         delivery?.routingMeans.map((dmean, dmIndex) => {
-          deliveryMeanArray = meanArray?.filter((mean, mIndex) => {
+          meanArray = meanArray?.filter((mean, mIndex) => {
             if (
               dmean === mean.value &&
-              (moment(DBstartDate).isBetween(
+              moment(DBstartDate).isBetween(
                 startTime,
                 endTime,
                 undefined,
                 "[]",
-              ) ||
-                moment(DBEndDate).isBetween(
-                  startTime,
-                  endTime,
-                  undefined,
-                  "[]",
-                ))
+              ) &&
+              moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
             ) {
               // remove matched array
               // console.log("mean matched", mean.label);
@@ -124,21 +117,16 @@ export default function AddSiteStep1(props) {
     });
 
     getAllMeanBooking.data.map((meanB, Bindex) => {
-      meanBooking = deliveryMeanArray.filter((dmean, dindex) => {
+      meanArray = meanArray.filter((dmean, dindex) => {
         if (
           dmean.value === meanB._id &&
-          (moment(meanB.startDate).isBetween(
+          moment(meanB.startDate).isBetween(
             startTime,
             endTime,
             undefined,
             "[]",
-          ) ||
-            moment(meanB.endDate).isBetween(
-              startTime,
-              endTime,
-              undefined,
-              "[]",
-            ))
+          ) &&
+          moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
         ) {
           //match mean remove
           //  console.log("mean are matched");
@@ -150,7 +138,7 @@ export default function AddSiteStep1(props) {
     });
     // console.log(meanBooking);
     // END checking mean Availabilty in Mean Booking
-    return meanBooking;
+    return meanArray;
   };
   useEffect(() => {
     let mean_array = props.means.reduce((accumulator, currentValue) => {

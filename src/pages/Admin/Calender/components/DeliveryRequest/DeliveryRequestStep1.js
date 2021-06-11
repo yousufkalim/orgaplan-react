@@ -77,27 +77,22 @@ export default function AddSiteStep1(props) {
         /*End hours and mints Convert into Date Object*/
 
         delivery?.liftingMeans.map((dmean, dmIndex) => {
-          deliveryMeanArray = meanArray?.filter((mean, mIndex) => {
+          meanArray = meanArray?.filter((mean, mIndex) => {
             if (
               dmean === mean.value &&
-              (moment(DBstartDate).isBetween(
+              moment(DBstartDate).isBetween(
                 startTime,
                 endTime,
                 undefined,
                 "[]",
-              ) ||
-                moment(DBEndDate).isBetween(
-                  startTime,
-                  endTime,
-                  undefined,
-                  "[]",
-                ))
+              ) &&
+              moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
             ) {
               // remove matched array
               // console.log("mean matched", mean.label);
             } else {
-              //console.log("mean not matched", mean.label);
               return mean;
+              //console.log("mean not matched", mean.label);
             }
           });
         });
@@ -113,24 +108,19 @@ export default function AddSiteStep1(props) {
     // label: currentValue.name,
 
     getAllMeanBooking.data.map((meanB, Bindex) => {
-      meanBooking = deliveryMeanArray.filter((dmean, dindex) => {
+      meanArray = meanArray.filter((dmean, dindex) => {
         if (
           dmean.value === meanB._id &&
-          (moment(meanB.startDate).isBetween(
+          moment(meanB.startDate).isBetween(
             startTime,
             endTime,
             undefined,
             "[]",
-          ) ||
-            moment(meanB.endDate).isBetween(
-              startTime,
-              endTime,
-              undefined,
-              "[]",
-            ))
+          ) &&
+          moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
         ) {
           //match mean remove
-          console.log("mean are matched");
+          //   console.log("mean are matched");
         } else {
           // return filtered mean
           return dmean;
@@ -139,7 +129,7 @@ export default function AddSiteStep1(props) {
     });
     // console.log(meanBooking);
     // END checking mean Availabilty in Mean Booking
-    return meanBooking;
+    return meanArray;
   };
   useEffect(() => {
     if (props.step1Data) {

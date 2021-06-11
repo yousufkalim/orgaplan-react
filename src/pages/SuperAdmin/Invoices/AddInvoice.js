@@ -145,6 +145,9 @@ export default function AddInvoice(props) {
       formdata.append("amount", amount);
       formdata.append("description", description);
       formdata.append("file", pdfFile);
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdatais in add site step 2 ${key}: ${value}`);
+      // }
       // end test
 
       // const formdata = JSON.stringify({

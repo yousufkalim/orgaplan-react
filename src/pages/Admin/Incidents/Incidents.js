@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import generatePDF from "./generatePDF";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
@@ -72,6 +73,23 @@ const Incidents = (props) => {
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
 
+  const reportTickets = [
+    {
+      id: 1,
+      title: "title1",
+      request: "req1",
+      status: "status1",
+      name: "samar",
+    },
+    {
+      id: 2,
+      title: "title2",
+      request: "req2",
+      status: "status2",
+      name: "asfand",
+    },
+    { id: 3, title: "title3", request: "req3", status: "status3" },
+  ];
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -459,6 +477,9 @@ const Incidents = (props) => {
           />
         </Form.Row>
       </Form.Row>
+      {/* <div>
+        <h1>pdf</h1>
+      </div> */}
       <div className={classes.content}>
         <Table
           headers={GLOBALS.Data.incidents.headings}
