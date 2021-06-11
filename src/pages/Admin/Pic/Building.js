@@ -438,7 +438,13 @@ export default function AddSiteStep3(props) {
           text="Historique des plans"
           disabled={loading}
           color={theme.palette.primary.contrastText}
-          onClick={() => getHistoryPlan(level._id)}
+          onClick={() => {
+            if (level._id) {
+              getHistoryPlan(level._id);
+            } else {
+              alert("Please add a level");
+            }
+          }}
           style={{
             marginLeft: 10,
             borderRadius: 4,

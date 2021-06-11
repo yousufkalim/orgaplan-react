@@ -303,12 +303,12 @@ const PicCanvas = (props) => {
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
-      setSelectedShape("");
 
       getShape && setShape(getShape);
 
       setShapes(shapesArray);
       setModal(true);
+      setSelectedShape("");
     }
   };
   // update Building
@@ -325,9 +325,8 @@ const PicCanvas = (props) => {
         }),
       });
       setRendering(response);
-
     } catch (error) {
-      console.log(error, "update shape error")
+      console.log(error, "update shape error");
     }
 
     // setShapes(response.data.shapes)
@@ -398,7 +397,18 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setlevelPic(response.data);
-          setShapes(response.data.shapes);
+
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         } else {
@@ -408,7 +418,17 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setSitePic(response.data);
-          setShapes(response.data.shapes);
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         }
@@ -435,8 +455,8 @@ const PicCanvas = (props) => {
               onChange={handleChange}
               setSelectedShape={setSelectedShape}
               onClear={onClear}
-                pdf={pdf}
-                setLevel={setLevel}
+              pdf={pdf}
+              setLevel={setLevel}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />
