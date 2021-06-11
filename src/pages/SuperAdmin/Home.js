@@ -280,7 +280,7 @@ export default function Home(props) {
     const siteTemp = [];
     const clientTemp = [];
     data.siteIncidents.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+      return siteTemp.push({ [item?.siteId.name]: item.count });
     });
 
     data.clientIncidents?.map((item, index) => {
@@ -293,7 +293,7 @@ export default function Home(props) {
     const siteTemp = [];
     const clientTemp = [];
     data.siteMean.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+      return siteTemp.push({ [item?.siteId.name]: item.count });
     });
 
     data.clientMean?.map((item, index) => {
@@ -307,7 +307,7 @@ export default function Home(props) {
     const siteTemp = [];
     const clientTemp = [];
     data.siteDeliveries.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+      return siteTemp.push({ [item?.siteId.name]: item.count });
     });
 
     data.clientDeliveries?.map((item, index) => {
@@ -334,7 +334,7 @@ export default function Home(props) {
     const temp = [];
     data.map((item, index) => {
       const invoiceObject = {
-        [item.siteId.name]: item.totalAmount,
+        [item?.siteId.name]: item.totalAmount,
       };
       return temp.push(invoiceObject);
     });
