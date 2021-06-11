@@ -104,7 +104,9 @@ export default function AddUser(props) {
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("companyId", selectedCompany);
       formdata.append("role", selectedRole);
-
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdata in add user ${key}: ${value}`);
+      // }
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.ADD_COMPANY_USER,
@@ -217,6 +219,18 @@ export default function AddUser(props) {
                 style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
                 onChange={(e) => setLastName(e.target.value)}
               />
+              {/* 
+              <FormMultipleUpload
+                name="logo"
+                values={logo}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(values) => setLogo(values)}
+              /> */}
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE " />
+            <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
                 values={logo}

@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddMean(props) {
   const classes = useStyles();
+  const { setSelectedShape } = props;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -44,12 +45,10 @@ export default function AddMean(props) {
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [rate, setRate] = useState("0");
   const [addInfo, setAddInfo] = useState("");
-
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
-
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -82,6 +81,12 @@ export default function AddMean(props) {
         setName(props.selectedShape.mean.name);
         setMeanType(props.selectedShape.mean.meanType);
         setColor(props.selectedShape.mean.color);
+        setUnavailabilities(
+          props.selectedShape.mean.unavailability?.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setStartDate(props.selectedShape.mean.availability.start);
         setEndDate(props.selectedShape.mean.availability.end || "");
         setRate(props.selectedShape.mean.pricePerHour);
@@ -123,7 +128,6 @@ export default function AddMean(props) {
       );
     }
   };
-
   const handleChange = (name, value) => {
     if (name === "name") {
       setName(value);
@@ -174,7 +178,6 @@ export default function AddMean(props) {
       formdata.append("unavailability", JSON.stringify(unavailabilities));
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-
       const response = await GLOBALS.API({
         method: props.selectedShape ? "PUT" : "POST",
         uri: props.selectedShape
@@ -241,6 +244,7 @@ export default function AddMean(props) {
       }
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(

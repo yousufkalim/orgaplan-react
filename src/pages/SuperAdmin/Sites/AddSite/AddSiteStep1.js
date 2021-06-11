@@ -37,9 +37,17 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     fetchData();
+    fetchStateData();
     // eslint-disable-next-line
-  }, []);
+  }, [props.setStep1Data]);
 
+  const fetchStateData = () => {
+    if (props.step1Data) {
+      Object.keys(props.step1Data).map((key) => {
+        handleChange(key, props.step1Data[key]);
+      });
+    }
+  };
   useEffect(() => {
     clients.map((client) =>
       client.adminIds.map((admin) =>

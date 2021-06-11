@@ -43,10 +43,12 @@ export default function DeliveryRequest(props) {
   const [buildings, setBuildings] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
 
+  const [deliveryArea, setDeliveryArea] = useState([]);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [deliveryArea]);
 
   const fetchData = async () => {
     try {
@@ -72,6 +74,26 @@ export default function DeliveryRequest(props) {
       });
       setMeans(means.data);
 
+      deliveryAreas.data.forEach((val, index) => {
+        val.unavailability?.map((key) => {
+          if (key.dayOff === true) {
+            if (moment(props.date).isSame(key.date, "day")) {
+              deliveryAreas.data[index].isDisable = true;
+            }
+          }
+        });
+      });
+
+      storageAreas.data.forEach((val1, index1) => {
+        val1.unavailability?.map((key1) => {
+          if (key1.dayOff === true) {
+            if (moment(props.date).isSame(key1.date, "day")) {
+              storageAreas.data[index1].isDisable = true;
+            }
+          }
+        });
+      });
+
       setDeliveryAreas(
         deliveryAreas.data.reduce((accumulator, currentValue) => {
           if (
@@ -82,42 +104,53 @@ export default function DeliveryRequest(props) {
               "[]",
             )
           ) {
-            accumulator.push({
-              value: currentValue._id,
-              label: currentValue.name,
-            });
+            if (!currentValue.isDisable) {
+              accumulator.push({
+                value: currentValue._id,
+                label: currentValue.name,
+              });
+            }
           }
           return accumulator;
         }, []),
       );
       setCompanies(
-        response.data.map((company) => ({
+        response.data?.map((company) => ({
           label: company.companyId.name,
           value: company.companyId._id,
         })),
       );
       setTrades(
-        adminStore.site.siteId.trades.map((trade) => ({
+        adminStore.site.siteId.trades?.map((trade) => ({
           label: trade,
           value: trade,
         })),
       );
       setStorageAreas(
+        //deliveryArea
         storageAreas.data.reduce((accumulator, currentValue) => {
-          if (
-            moment(props.date).isBetween(
-              currentValue.availability.start,
-              currentValue.availability.end,
-              "day",
-              "[]",
-            )
-          ) {
-            accumulator.push({
-              value: currentValue._id,
-              label: currentValue.name,
-              level: currentValue.level,
-            });
-          }
+          currentValue.deliveryArea?.map((key, index) => {
+            if (key === deliveryArea) {
+              if (
+                moment(props.date).isBetween(
+                  currentValue.availability.start,
+                  currentValue.availability.end,
+                  "day",
+                  "[]",
+                )
+              ) {
+                if (!currentValue.isDisable) {
+                  accumulator.push({
+                    value: currentValue._id,
+                    label: currentValue.name,
+                    level: currentValue.level,
+                    companies: currentValue.companies,
+                  });
+                }
+              }
+            }
+            return;
+          });
           return accumulator;
         }, []),
       );
@@ -147,14 +180,14 @@ export default function DeliveryRequest(props) {
         startTime: response.data.startTime,
         endTime: response.data.endTime,
         trades: response.data.trades,
-        liftingMeans: response.data.liftingMeans.map((item) => item._id),
+        liftingMeans: response.data.liftingMeans?.map((item) => item._id),
         materials: response.data.materials,
       });
       setStep2Data({
         building: response.data.building,
         level: response.data.level,
         storageArea: response.data.storageArea._id,
-        routingMeans: response.data.routingMeans.map((item) => item._id),
+        routingMeans: response.data.routingMeans?.map((item) => item._id),
       });
       setStep3Data({
         comment: response.data.comment,
@@ -199,6 +232,8 @@ export default function DeliveryRequest(props) {
             trades={trades}
             means={means}
             eventId={props.eventId}
+            deliveryArea={deliveryArea}
+            setDeliveryArea={setDeliveryArea}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2
@@ -233,6 +268,8 @@ export default function DeliveryRequest(props) {
             history={props.history}
             onClose={props.onClose}
             eventId={props.eventId}
+            event={props.event}
+            editDelivery={props.editDelivery}
           />
         )}
       </div>

@@ -26,12 +26,8 @@ const addUnavailabilityYup = Yup.object().shape({
 });
 
 export default function MultiAdderInputModal(props) {
-  const {
-    unavailabilityDates,
-    setUnavailabilityDates,
-    startRange,
-    endRange,
-  } = props;
+  const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
+    props;
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -321,7 +317,7 @@ export default function MultiAdderInputModal(props) {
               </Form.Row>
             </Form.Form>
             <table className="table">
-              {unavailabilityDates.length > 0 && (
+              {unavailabilityDates?.length > 0 && (
                 <>
                   <thead>
                     <tr>

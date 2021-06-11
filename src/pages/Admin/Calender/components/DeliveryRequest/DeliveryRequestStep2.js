@@ -8,19 +8,40 @@ import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
-
+import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
+  console.log(props);
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
+  const store = useSelector((state) => state.auth);
   const [building, setBuilding] = useState("");
   const [buildings, setBuildings] = useState([]);
   const [level, setLevel] = useState("");
   const [levels, setLevels] = useState([]);
   const [storageArea, setStorageArea] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
-  const [deliverStroageArea, setDeliveryStroageAre] = useState([]);
+  const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
+
+  useEffect(() => {
+    if (props.step1Data) {
+      props.step1Data.startTime &&
+        setStartTime(
+          moment(props.step1Data.date)
+            .set("hours", props.step1Data.startTime.split(":")[0])
+            .set("minutes", props.step1Data.startTime.split(":")[1]),
+        );
+      props.step1Data.endTime &&
+        setEndTime(
+          moment(props.step1Data.date)
+            .set("hours", props.step1Data.endTime.split(":")[0])
+            .set("minutes", props.step1Data.endTime.split(":")[1]),
+        );
+    }
+  }, []);
 
   useEffect(() => {
     if (props.step2Data) {
@@ -42,32 +63,111 @@ export default function AddSiteStep1(props) {
     );
     // eslint-disable-next-line
   }, []);
+  const getAllDeliveryMean = async (meanArray) => {
+    if (meanArray.length !== 0) {
+      // Start  checking mean Availabilty in Delivery Request
+      const getAllDelivery = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
+        token: store.token,
+      });
+      getAllDelivery.data?.map((delivery, dIndex) => {
+        /*start hours and mints Convert into Date Object*/
+        let DBstartDate = new Date(delivery.date);
+        let startHours = delivery.startTime.slice(0, 2);
+        let startmint = delivery.startTime.slice(3, 5);
+        DBstartDate.setHours(startHours);
+        DBstartDate.setMinutes(startmint);
+        /*start hours and mints Convert into Date Object*/
 
-  useEffect(() => {
-    setMeans(
-      props.means.reduce((accumulator, currentValue) => {
-        if (
-          currentValue.meanType === "ROUTING" &&
-          currentValue.location.find(
-            (loc) => loc.storageArea && loc.storageArea === storageArea,
-          ) &&
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
+        /*End hours and mints Convert into Date Object*/
+        let DBEndDate = new Date(delivery.date);
+        let endHours = delivery.endTime.slice(0, 2);
+        let endmint = delivery.endTime.slice(3, 5);
+        DBEndDate.setHours(endHours);
+        DBEndDate.setMinutes(endmint);
+        /*End hours and mints Convert into Date Object*/
+
+        delivery?.routingMeans.map((dmean, dmIndex) => {
+          meanArray = meanArray?.filter((mean, mIndex) => {
+            if (
+              dmean === mean.value &&
+              moment(DBstartDate).isBetween(
+                startTime,
+                endTime,
+                undefined,
+                "[]",
+              ) &&
+              moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
+            ) {
+              // remove matched array
+              // console.log("mean matched", mean.label);
+            } else {
+              //console.log("mean not matched", mean.label);
+              return mean;
+            }
           });
+        });
+      });
+      // END checking mean Availabilty in Delivery Request
+    }
+    // Start checking mean Availabilty in Mean Booking
+    const getAllMeanBooking = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
+      token: store.token,
+    });
+
+    getAllMeanBooking.data.map((meanB, Bindex) => {
+      meanArray = meanArray.filter((dmean, dindex) => {
+        if (
+          dmean.value === meanB._id &&
+          moment(meanB.startDate).isBetween(
+            startTime,
+            endTime,
+            undefined,
+            "[]",
+          ) &&
+          moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
+        ) {
+          //match mean remove
+          //  console.log("mean are matched");
+        } else {
+          // return filtered mean
+          return dmean;
         }
-        return accumulator;
-      }, []),
-    );
+      });
+    });
+    // console.log(meanBooking);
+    // END checking mean Availabilty in Mean Booking
+    return meanArray;
+  };
+  useEffect(() => {
+    let mean_array = props.means.reduce((accumulator, currentValue) => {
+      if (
+        currentValue.meanType === "ROUTING" &&
+        currentValue.location.find(
+          (loc) => loc.storageArea && loc.storageArea === storageArea,
+        ) &&
+        moment(props.date).isBetween(
+          currentValue.availability.start,
+          currentValue.availability.end,
+          "day",
+          "[]",
+        )
+      ) {
+        accumulator.push({
+          value: currentValue._id,
+          label: currentValue.name,
+        });
+      }
+      return accumulator;
+    }, []);
+
+    let delivery_means = getAllDeliveryMean(mean_array);
+    delivery_means.then((mean) => {
+      setMeans(mean);
+    });
     // eslint-disable-next-line
-  }, [storageArea]);
+  }, [storageArea, startTime, endTime]);
 
   useEffect(() => {
     if (building) {
@@ -84,16 +184,19 @@ export default function AddSiteStep1(props) {
       }
       if (props.step2Data && !rendered) {
         setLevel(props.step2Data.level);
-        setStorageArea(deliverStroageArea);
-        setRoutingMeans(props.step2Data.routingMeans);
+        setStorageArea(props.step2Data.storageArea);
+
+        if (props.step2Data.routingMeans.length === 0) {
+          setDisableRoutingMeans(true);
+        } else {
+          setRoutingMeans(props.step2Data.routingMeans);
+        }
+
         setRendered(true);
       }
     }
     // eslint-disable-next-line
   }, [building]);
-  useEffect(() => {
-    getDeliveryallStorageArea();
-  }, []);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
@@ -105,40 +208,17 @@ export default function AddSiteStep1(props) {
     props.setStep2Data(values);
     props.setStep(3);
   }
-  const getDeliveryallStorageArea = async () => {
-    try {
-      const response = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.getDeliveryallStorageArea}/${adminStore.site.siteId._id}/${props.step1Data.deliveryArea}`,
-      });
-      // setDeliveryStroageAre(response.data);
 
-      const data = response.data.reduce((accumulator, currentValue) => {
-        if (
-          moment(props.date).isBetween(
-            currentValue.availability.start,
-            currentValue.availability.end,
-            "day",
-            "[]",
-          )
-        ) {
-          accumulator.push({
-            value: currentValue._id,
-            label: currentValue.name,
-            level: currentValue.level,
-          });
-        }
-        return accumulator;
-      }, []);
-      setDeliveryStroageAre(data);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.response, "error"),
-        ),
-      );
-    }
-  };
-  console.log(props);
+  const selectedCompanyId = props.step1Data.company;
+  const filterStorageAreas = [];
+  props.storageAreas.forEach((val) => {
+    val.companies.map((cP) => {
+      if (cP === selectedCompanyId) {
+        filterStorageAreas.push(val);
+      }
+    });
+  });
+
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -166,13 +246,13 @@ export default function AddSiteStep1(props) {
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="STORAGE AREA* :" />
+        <FormLabel bold primary="STORAGE AREA*:" />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"
             value={storageArea}
             placeholder="Select Storage Area"
-            values={deliverStroageArea.filter((item) =>
+            values={filterStorageAreas.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
                 : item.level === level,
@@ -184,6 +264,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
+
       <Form.Row>
         <FormLabel bold primary="TRANSPORTING MEANS* :" />
         <Form.Row noMargin width="48%">
@@ -192,10 +273,27 @@ export default function AddSiteStep1(props) {
             values={means}
             placeholder="Means"
             value={routingMeans}
-            disabled={!storageArea}
+            disabled={!storageArea || disableRoutingMeans}
             onChange={({ target: { value } }) => setRoutingMeans(value)}
           />
         </Form.Row>
+      </Form.Row>
+      <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+          <FormLabel bold primary="" />
+        </div>
+        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+          <FormCheckbox
+            name={disableRoutingMeans}
+            checked={disableRoutingMeans}
+            onChange={(event) => {
+              setDisableRoutingMeans(event.target.checked);
+              setRoutingMeans([]);
+            }}
+            style={{ color: "#DBB20A" }}
+            label="none"
+          />
+        </div>
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -204,10 +302,7 @@ export default function AddSiteStep1(props) {
           text="VALIDATE"
           fullWidth={false}
           disabled={
-            !building ||
-            (building !== "Exterior" && !level) ||
-            !storageArea ||
-            routingMeans.length === 0
+            !building || (building !== "Exterior" && !level) || !storageArea
           }
         />
       </Form.ButtonContainer>

@@ -30,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const { setSelectedShape } = props;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -101,7 +103,7 @@ export default function DeliveryArea(props) {
   }
 
   function handleChange(name, value) {
-    if (name === "name") setName(value);
+      if (name === "name") setName(value);
     else if (name === "color") setColor(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
@@ -158,6 +160,8 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: formdata,
       });
+    
+
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
@@ -187,6 +191,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

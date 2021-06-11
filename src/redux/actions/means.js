@@ -103,5 +103,25 @@ export const delete_mean = (id) => async (dispatch) => {
   }
 };
 
- 
 // get single mean
+
+// validate a mean
+
+export const validateMean = (id) => async (dispatch) => {
+  try {
+    dispatch(set_loading(true));
+    const token = localStorage.getItem("orgaplan");
+
+    const result = await GLOBALS.API({
+      method: "PUT",
+      token: token,
+      uri: GLOBALS.Constants.Update_BOOKING_MEAN_STATUS + "/" + id,
+    });
+    dispatch(
+      Notistack.enqueueSnackbar(Notistack.snackBar(result.message, "success")),
+    );
+  } catch ({ message }) {
+    dispatch(set_loading(false));
+    dispatch(Notistack.enqueueSnackbar(Notistack.snackBar(message, "error")));
+  }
+};

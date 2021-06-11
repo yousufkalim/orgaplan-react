@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import _ from "lodash";
-
+import moment from "moment";
 import Mean from "./Mean";
 import Building from "./Building";
 import GLOBALS from "../../../globals";
@@ -65,12 +65,15 @@ const PicCanvas = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const SITE_ID = adminStore.site.siteId._id;
 
   const [sitePic, setSitePic] = useState("");
   const [levelPic, setlevelPic] = useState("");
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
+  const [rendering, setRendering] = useState("");
+
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
@@ -78,11 +81,69 @@ const PicCanvas = (props) => {
 
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
-  const [levelsDropdown, setLevelsDropdown] = useState([]);  
+  const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
     fetchSitePic();
+    setLevel("");
     // eslint-disable-next-line
-  }, []);
+  }, [adminStore, rendering]);
+
+  const expiredShapes = (shapes) => {
+    let array = [];
+
+    shapes.map((sp) => {
+      if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
+        let isExist = sp?.storageArea?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.mean && Object.keys(sp.mean).length > 0) {
+        let isExist = sp?.mean?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
+        let isExist = sp?.deliveryArea?.availability?.end;
+        if (isExist) {
+          let check = Date.now() > new Date(isExist);
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.building && Object.keys(sp.building).length > 0) {
+        array.push(sp);
+      }
+    });
+
+    return array;
+  };
+  const handleColorAndNameOfShape = (shape) => {
+    if (shape.deliveryArea && Object.keys(shape?.deliveryArea).length > 0) {
+      shape.name = shape?.deliveryArea.name;
+      shape.color = shape.deliveryArea.color;
+    } else if (
+      shape.storageArea &&
+      Object.keys(shape?.storageArea).length > 0
+    ) {
+      shape.name = shape.storageArea.name;
+      shape.color = shape.storageArea.color;
+    } else if (shape.building && Object.keys(shape?.building).length > 0) {
+      shape.name = shape.building.name;
+      shape.color = shape.building.color;
+    } else if (shape.mean && Object.keys(shape?.mean).length > 0) {
+      if (shape.mean.image) {
+        shape.image = shape.mean.image;
+      } else {
+        shape.color = shape.mean.color;
+      }
+    }
+  };
 
   const fetchSitePic = async () => {
     try {
@@ -95,8 +156,21 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
+      let shapes = response.data.shapes;
+      let newShapes = expiredShapes(shapes);
+
+      if (newShapes) {
+        newShapes.map((st) => handleColorAndNameOfShape(st));
+
+        setShapes(newShapes);
+      } else {
+        shapes.map((st) => handleColorAndNameOfShape(st));
+        setShapes(shapes);
+      }
+      // setShapes(response.data.shapes);
+
       setSitePic(response.data);
-      setShapes(response.data.shapes);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -114,7 +188,9 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
-      setShapes(response.data.shapes);
+      let shapes = response.data.shapes;
+      shapes.map((st) => handleColorAndNameOfShape(st));
+      setShapes(shapes);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -202,11 +278,59 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
-    level && (selectedShapeReserver = selectedShape);
-    setSelectedShape("");
-    getShape && setShape(getShape);
-    setShapes(shapesArray);
-    setModal(true);
+    if (
+      selectedShape &&
+      getShape.type !== "MEAN" &&
+      Object.keys(selectedShape).length > 0 &&
+      level === ""
+    ) {
+      let newShape = selectedShape;
+
+      var removeIndex = shapesArray
+        ?.map(function (item) {
+          return item._id;
+        })
+        .indexOf(newShape._id);
+      shapesArray[removeIndex].points = getShape.points;
+
+      let updatedShape = shapesArray[removeIndex];
+      level && (selectedShapeReserver = selectedShape);
+      updatedShape && setShape(updatedShape);
+      setShapes(shapesArray);
+      updateShape(updatedShape);
+      // remove object
+      // removeIndex && shapesArray.splice(removeIndex, 1);
+      setSelectedShape("");
+    } else {
+      level && (selectedShapeReserver = selectedShape);
+
+      getShape && setShape(getShape);
+
+      setShapes(shapesArray);
+      setModal(true);
+      setSelectedShape("");
+    }
+  };
+  // update Building
+
+  const updateShape = async (newShape) => {
+    try {
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+      setRendering(response);
+    } catch (error) {
+      console.log(error, "update shape error");
+    }
+
+    // setShapes(response.data.shapes)
+    // console.log(response,"response");
   };
 
   const handleClick = (id, shape) => {
@@ -273,7 +397,18 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setlevelPic(response.data);
-          setShapes(response.data.shapes);
+
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         } else {
@@ -283,7 +418,17 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setSitePic(response.data);
-          setShapes(response.data.shapes);
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         }
@@ -308,8 +453,10 @@ const PicCanvas = (props) => {
               shapes={shapes}
               onClick={handleClick}
               onChange={handleChange}
+              setSelectedShape={setSelectedShape}
               onClear={onClear}
               pdf={pdf}
+              setLevel={setLevel}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />
@@ -325,6 +472,7 @@ const PicCanvas = (props) => {
                           adminStore.site.siteId?.plan
                       : undefined,
                   );
+
                   setShapes(sitePic.shapes);
                   setLevel("");
                   selectedShapeReserver = null;
@@ -343,6 +491,7 @@ const PicCanvas = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
+
                       if (value) {
                         fetchLevelPic(value);
                         const leve = allLeves.find((lev) => lev._id === value);
@@ -365,32 +514,36 @@ const PicCanvas = (props) => {
                   >
                     <Pencil className={classes.infoIcon} />
                   </IconButton>
-                  {selectedShape.type === "MEAN" ? <>
-                  <NavLink
-                    disabled={loading}
-                    to={{
-                      pathname: "/means/calendar",
-                      selectedShape: selectedShape,
-                    }}
-                  >
-                    <IconButton>
-                      <Calendar className={classes.infoIcon} />
-                    </IconButton>
-                  </NavLink>
-                  </> : <>
-                  <NavLink
-                    disabled={loading}
-                    to={{
-                      pathname: "/",
-                      selectedShape: selectedShape,
-                    }}
-                  >
-                    <IconButton>
-                      <Calendar className={classes.infoIcon} />
-                    </IconButton>
-                  </NavLink>
-                  </>}
-             
+                  {selectedShape.type === "MEAN" ? (
+                    <>
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/means/calendar",
+                          selectedShape: selectedShape,
+                        }}
+                      >
+                        <IconButton>
+                          <Calendar className={classes.infoIcon} />
+                        </IconButton>
+                      </NavLink>
+                    </>
+                  ) : (
+                    <>
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/",
+                          selectedShape: selectedShape,
+                        }}
+                      >
+                        <IconButton>
+                          <Calendar className={classes.infoIcon} />
+                        </IconButton>
+                      </NavLink>
+                    </>
+                  )}
+
                   <IconButton
                     disabled={loading}
                     onClick={(e) => {
@@ -429,6 +582,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -452,6 +606,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -475,6 +630,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />
@@ -496,6 +652,7 @@ const PicCanvas = (props) => {
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
+                  setSelectedShape={setSelectedShape}
                 />
               }
             />

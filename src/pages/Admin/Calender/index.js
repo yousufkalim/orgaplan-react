@@ -70,6 +70,7 @@ const Calender = (props) => {
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
+
   const [show, setShow] = useState(false);
   let [startTime] = useState("");
   let [endTime] = useState("");
@@ -95,6 +96,7 @@ const Calender = (props) => {
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
   const [filterDate, setFilterDate] = useState(new Date());
+
   const [typeOfPlace, setTypeOfPlace] = useState([]);
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
@@ -120,6 +122,7 @@ const Calender = (props) => {
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
+  const [editDelivery, setEditDelivery] = useState(false);
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -367,7 +370,6 @@ const Calender = (props) => {
     let disableDayFlag = false;
     let pastdayFlag = false;
     let betweenDay = false;
-
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
@@ -552,7 +554,11 @@ const Calender = (props) => {
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
-  const handlePopoverClose = () => setpopoverShow(false);
+  const handlePopoverClose = () => {
+    seteventID("");
+    setEditDelivery(false);
+    setpopoverShow(false);
+  };
   const handleEditEvent = () => {
     setpopoverShow(!popoverShow);
     setShowEdit(true);
@@ -619,6 +625,7 @@ const Calender = (props) => {
   };
 
   const handlePopoverShow = (event) => {
+    // console.log("handlepopup show", event.id);
     setAlertBoxTime(false);
     seteventID(event.id);
     const fill = events.filter((e) => e.id === event.id);
@@ -677,7 +684,7 @@ const Calender = (props) => {
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
     ) {
-      console.log("Add time in array ");
+      // console.log("Add time in array ");
     } else {
       setAlertBoxTime(true);
       setTimeout(function () {
@@ -827,7 +834,6 @@ const Calender = (props) => {
               value: item._id,
             });
           });
-
           setTypeOfPlace(temp);
         }
       } else {
@@ -970,7 +976,6 @@ const Calender = (props) => {
           let fontColor = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
-            console.log(key);
             if (!(key.startTime && key.endTime)) {
               return {};
             }
@@ -1133,9 +1138,10 @@ const Calender = (props) => {
     <>
       <FullScreenModal
         open={addDelivery}
-        title={`Delivery Request`}
+        title={editDelivery ? "Edit Delivery Request" : "Delivery Request"}
         onClose={() => {
           setAddDelivery(false);
+          setEditDelivery(false);
           seteventID("");
         }}
         body={
@@ -1145,9 +1151,12 @@ const Calender = (props) => {
             history={props.history}
             start={deliverStartHours}
             eventId={eventID}
+            event={event}
+            editDelivery={editDelivery}
             onClose={() => {
               setAddDelivery(false);
               seteventID("");
+              setEditDelivery(false);
             }}
           />
         }
@@ -1469,12 +1478,15 @@ const Calender = (props) => {
           handleEditEvent={handleEditEvent}
           handleValidateMeans={handleValidateMeans}
           event={event}
+          setEvent={setEvent}
+          setEditDelivery={setEditDelivery}
           setAlertBoxTime={setAlertBoxTime}
           alertBoxTime={alertBoxTime}
           handleValidateDelivery={handleValidateDelivery}
           handleDeleteDelivery={handleDeleteDelivery}
           onEditDelivery={(data) => {
             setOnEditDeliveryData(data);
+            // setEditDelivery(true);
             setpopoverShow(false);
             setAddDelivery(true);
           }}
@@ -1639,7 +1651,6 @@ const Calender = (props) => {
               }}
               eventPropGetter={(events, start, end, isSelected) => {
                 let { background, fontColor } = events;
-                console.log(events);
                 let newStyle = {
                   clear: "both",
                   display: "block",

@@ -32,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const { setSelectedShape } = props;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -57,7 +59,7 @@ export default function DeliveryArea(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [props]);
 
   async function fetchData() {
     try {
@@ -82,7 +84,6 @@ export default function DeliveryArea(props) {
           label: item.name,
         })),
       );
-
       if (props.selectedShape) {
         const means = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,
@@ -91,11 +92,18 @@ export default function DeliveryArea(props) {
         setMeans(means.data.map((item) => item.name));
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
-        setColor(props.selectedShape.color);
+        props.selectedShape.storageArea.color !== undefined
+          ? setColor(props.selectedShape.storageArea.color)
+          : setColor(color);
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
-        setUnavailabilities(props.selectedShape.storageArea.unavailability);
+        setUnavailabilities(
+          props.selectedShape.storageArea.unavailability?.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setSelectedCompanies(props.selectedShape.storageArea.companies);
         setNotificationPriorToDays(
           props.selectedShape.storageArea.notificationPriorToDays,
@@ -144,7 +152,7 @@ export default function DeliveryArea(props) {
         siteId: adminStore.site.siteId._id,
         isFull: isFull,
         name,
-        color: props.shape.color,
+        color: color,
         availability: {
           start: startDate,
           end: endDate,
@@ -177,7 +185,7 @@ export default function DeliveryArea(props) {
       propShapes[inde].name = name;
       propShape.name = response.data.name;
       propShapes[inde].color = color;
-      propShape.color = color;
+      propShape.color = response.data.color;
       propShapes[inde].storageArea = response.data;
       propShape.storageArea = response.data;
 
@@ -209,6 +217,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -374,7 +383,7 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
-              values={notificationTo}
+              values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
               validateError="Invalid Email"
               placeholder="Enter email address"

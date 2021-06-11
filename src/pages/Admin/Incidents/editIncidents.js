@@ -15,8 +15,9 @@ import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
-
+import { useHistory } from "react-router-dom";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
 const useStyles = makeStyles(() => ({
@@ -34,6 +35,7 @@ const useStyles = makeStyles(() => ({
 
 export default function AddIncidents(props) {
   const classes = useStyles();
+  const history = useHistory();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
   const dispatch = useDispatch();
@@ -67,12 +69,11 @@ export default function AddIncidents(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [adminStore, history]);
   useEffect(() => {
     fetchLocationDataOnTypeChange();
     // eslint-disable-next-line
   }, [selectedLocationType]);
-
   useEffect(() => {
     if (companyId) {
       let comp = companies.find((com) => com.companyId._id === companyId);
@@ -108,7 +109,7 @@ export default function AddIncidents(props) {
     }
   };
   const setValues = () => {
-    const incident = props?.location?.data;
+    const incident = history.location?.data;
     setName(incident.name);
     setCompanyId(incident?.companyId?._id);
     setDate(incident?.date);
@@ -144,6 +145,7 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const nameChange = (e) => {
+
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
@@ -153,7 +155,7 @@ export default function AddIncidents(props) {
     if (e.target.name === "comment") setComment(e.target.value);
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") setType(e.target.value);
-    if (e.target.name === "status") setType(e.target.status);
+    if (e.target.name === "status") setStatus(e.target.value);
     if (e.target.name === "comapnyId") setCompanyId(e.target.value);
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
@@ -225,7 +227,7 @@ export default function AddIncidents(props) {
       formdata.append("location", JSON.stringify(location));
 
       if (image[0]?.file) formdata.append("photos", image[0].file);
-      formdata.append("siteId", adminStore.site.siteId._id);   
+      formdata.append("siteId", adminStore.site.siteId._id);
 
       await GLOBALS.API({
         method: "PUT",
@@ -251,8 +253,6 @@ export default function AddIncidents(props) {
   const timeChange = (e) => {
     setTime(moment(e?._d).format("HH:mm:ss"));
   };
-
-
 
   return (
     <div className={classes.root}>
@@ -351,7 +351,7 @@ export default function AddIncidents(props) {
                 placeholder="LOCATION"
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
-                 onChange={locationChange}
+                onChange={locationChange}
                 value={selectedLocation}
                 values={dropdownLocation}
                 disabled={!selectedLocationType}
@@ -428,6 +428,30 @@ export default function AddIncidents(props) {
                   { value: false, label: "No" },
                 ]}
               />
+            </Form.Row>
+          </Form.Row>
+
+          <Form.Row>
+            <FormLabel bold primary="Status:" />
+            <Form.Row width="48%" noMargin>
+              <Form.Column noMargin>
+                <RadioButton
+                  name="status"
+                  value={status}
+                  // onChange={({ target: { name, value } }) =>
+                  //   nameChange(name, value)
+                  // }
+
+                  onChange={nameChange}
+                  items={[
+                    {
+                      value: "OPEN",
+                      label: "Open",
+                    },
+                    { value: "CLOSED", label: "Closed" },
+                  ]}
+                />                
+              </Form.Column>
             </Form.Row>
           </Form.Row>
 

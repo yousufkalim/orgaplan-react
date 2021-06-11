@@ -46,7 +46,7 @@ export default function Companies(props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storageAreaRequest, setStorageAreaRequest] = useState([]);
-
+  // console.log("companies", companies);
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -251,6 +251,23 @@ export default function Companies(props) {
           >
             <img
               src={Images.incidents}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </NavLink>
+        </IconButton>
+        <IconButton
+          style={{ padding: "6px", color: "#1890ff" }}
+          onClick={() => {}}
+        >
+          <NavLink
+            to={{
+              pathname: `/companies/download-csv/${item.companyId._id}`,
+              search: `?companyId=${item.companyId._id}`,
+            }}
+          >
+            <img
+              src={Images.downloadIcon}
               style={{ width: 18, height: 17 }}
               alt="Icon"
             />

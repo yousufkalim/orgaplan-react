@@ -3,10 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import _ from "lodash";
-
+import FullScreenModal from "../../../components/FullScreenModal";
+import moment from "moment";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-
+import { jsPDF } from "jspdf";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -52,6 +53,8 @@ const levelNumberList = [
 let propsShapesCon = [];
 let propsShapeCon = "";
 export default function AddSiteStep3(props) {
+  const { setSelectedShape } = props;
+
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -60,8 +63,11 @@ export default function AddSiteStep3(props) {
 
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false);
 
   const [levelNumber, setLevelNumber] = useState("");
+  const [histories, setHistories] = useState("");
+
   const [buildingName, setBuildingName] = useState("");
   const [activeBuilding, setActiveBuilding] = useState("");
 
@@ -120,7 +126,8 @@ export default function AddSiteStep3(props) {
       setLoading(true);
       let color;
       if (props.selectedShape) color = props.selectedShape.building.color;
-      else color = GLOBALS.Functions.randomColor();
+      // else color = GLOBALS.Functions.randomColor();
+      else color = "white";
 
       const formdata = JSON.stringify({
         name: buildingName,
@@ -175,6 +182,7 @@ export default function AddSiteStep3(props) {
       propsShapeCon = _.cloneDeep(propShape);
 
       props.setShapes(propShapes, propShape, true);
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -230,13 +238,17 @@ export default function AddSiteStep3(props) {
     }
   };
 
+  const fetchHistoryPdf = (levelId) => {
+    let findLevel = activeBuilding.levels.find((dt) => dt._id === levelId);
+    return findLevel.plan;
+  };
   const onAddLevelImage = async (levelId, file, index) => {
     try {
+      let plan = fetchHistoryPdf(levelId);
       setLoading(true);
       const formdata = new FormData();
       formdata.append("image", file);
       formdata.append("levelId", levelId);
-
       const response = await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.ADMIN_PIC_PDF,
@@ -245,6 +257,20 @@ export default function AddSiteStep3(props) {
         },
         body: formdata,
       });
+
+      if (plan) {
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.HistoryOfPlan,
+          token: store.token,
+          body: JSON.stringify({
+            name: plan,
+            siteId: storeAdmin.site.siteId._id,
+            LevelId: levelId,
+            BuildingId: props.selectedShape.building._id,
+          }),
+        });
+      }
 
       const activeBuildingObj = activeBuilding;
       activeBuildingObj.levels[index].plan = response.data.plan;
@@ -277,6 +303,29 @@ export default function AddSiteStep3(props) {
     }
   };
 
+  const getHistoryPlan = async (levelId) => {
+    try {
+      let response = await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.GetHistoryOfPlans,
+        token: store.token,
+        body: JSON.stringify({
+          siteId: storeAdmin.site.siteId._id,
+          LevelId: levelId,
+          BuildingId: props.selectedShape.building._id,
+        }),
+      });
+      setHistories(response.data);
+      setModal(true);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
   const addExistingBuilding = async () => {
     try {
       setLoading(true);
@@ -384,12 +433,88 @@ export default function AddSiteStep3(props) {
             }
           }}
         />
+        <SmallButton
+          text="Historique des plans"
+          disabled={loading}
+          color={theme.palette.primary.contrastText}
+          onClick={() => {
+            if (level._id) {
+              getHistoryPlan(level._id);
+            } else {
+              alert("Please add a level");
+            }
+          }}
+          style={{
+            marginLeft: 10,
+            borderRadius: 4,
+          }}
+        />
       </Form.Row>,
     ]),
   );
+  const historyRows = [];
+  histories &&
+    histories?.map((level, index) => {
+      historyRows.push([
+        level.name,
+        moment(level.createdAt).format("DD/MM/YYYY"),
+        <Form.Row style={{ justifyContent: "center" }}>
+          <SmallButton
+            text="Download"
+            disabled={level.name ? false : true}
+            color={theme.palette.primary.contrastText}
+            onClick={async () => {
+              let fileName = level.name;
+              var url = GLOBALS.Constants.BASE_URL + fileName;
+              var req = new XMLHttpRequest();
+              req.open("GET", url, true);
+              req.responseType = "blob";
+              req.onload = function () {
+                var blob = new Blob([req.response], {
+                  type: "application/octetstream",
+                });
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                  window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                  var url = window.URL || window.webkitURL;
+                  let link = url.createObjectURL(blob);
+                  console.log(link, "link");
+
+                  var a = document.createElement("a");
+                  a.setAttribute("download", fileName);
+                  a.setAttribute("href", link);
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }
+              };
+              req.send();
+            }}
+            style={{
+              marginLeft: 10,
+              borderRadius: 4,
+            }}
+          />
+        </Form.Row>,
+      ]);
+    });
 
   return (
     <div>
+      <FullScreenModal
+        title={`Historique des plans`}
+        open={modal}
+        onClose={() => {
+          setModal((st) => !st);
+        }}
+        body={
+          <Table
+            rows={historyRows}
+            headers={GLOBALS.Data.pdfHistory.headings}
+          />
+        }
+      />
       {!activeBuilding && (
         <Form.Form>
           <Form.Row justifyContent="center">

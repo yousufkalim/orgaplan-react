@@ -13,7 +13,11 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
+
+import invoiceImg from "../../../assets/images/invoices.png";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
+import { Upload } from "antd";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +44,10 @@ export default function AddInvoice(props) {
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");
   const [amount, setAmount] = useState(0);
+  const [pdf, setPdf] = useState(null);
+  const [newpdf, setNewPdf] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfFileName, setPdfFileName] = useState(null);
   const [description, setDescription] = useState("");
 
   useEffect(() => {
@@ -74,7 +82,9 @@ export default function AddInvoice(props) {
       setEndDate(moment(invoiceResult.data.endDate).format("YYYY-MM-DD"));
       setSiteId(invoiceResult.data.siteId._id);
       setAmount(invoiceResult.data.amount);
+      setPdf(invoiceResult.data.file ? invoiceResult.data.file : "");
       setDescription(invoiceResult.data.description);
+      setPdfFile([{ key: 0, file: undefined, uri: invoiceResult.data.file }]);
       //
       setClients(itemsArray);
       setLoading(false);
@@ -86,7 +96,6 @@ export default function AddInvoice(props) {
       );
     }
   }
-
   async function fetchSitesByClient() {
     try {
       const result = await GLOBALS.API({
@@ -108,6 +117,27 @@ export default function AddInvoice(props) {
     }
   }
 
+  const handlePdfChange = (e) => {
+    if (e.target.files.length) {
+      let file = e.target.files[0];
+      const uri = URL.createObjectURL(file);
+      if (file.size > 15000000) {
+        return dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(
+              `File is large,Max size can be 15 MB`,
+              "error",
+            ),
+          ),
+        );
+      }
+
+      setPdfFile(file);
+      setNewPdf(file);
+      setPdfFileName(file.name);
+    }
+  };
+
   const handleChange = (name, value) => {
     if (name === "clientId") setClientId(value);
     else if (name === "startDate") setStartDate(value);
@@ -116,24 +146,48 @@ export default function AddInvoice(props) {
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
   };
+  console.log("pdf", pdf);
+  console.log("pdf file", pdfFile);
+  console.log("newpdf file", newpdf);
 
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
-      const formdata = JSON.stringify({
-        invoiceId: invoice._id,
-        clientId: clientId,
-        startDate: startDate,
-        endDate: endDate,
-        siteId: siteId,
-        amount: amount,
-        description: description,
-      });
+
+      // test formdata
+      var formdata = new FormData();
+      formdata.append("invoiceId", invoice._id);
+      formdata.append("clientId", clientId);
+      formdata.append("startDate", startDate);
+      formdata.append("endDate", endDate);
+      formdata.append("siteId", siteId);
+      formdata.append("amount", amount);
+      formdata.append("description", description);
+      formdata.append(
+        "file",
+        !pdf && !newpdf ? pdf : newpdf ? newpdf : pdfFile,
+      );
+      // end test
+      // const formdata = JSON.stringify({
+      //   invoiceId: invoice._id,
+      //   clientId: clientId,
+      //   startDate: startDate,
+      //   endDate: endDate,
+      //   siteId: siteId,
+      //   amount: amount,
+      //   description: description,
+      // });
+      for (let [key, value] of formdata) {
+        console.log(`formdatais in add site step 2 ${key}: ${value}`);
+      }
 
       await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.INVOICES,
+        headers: {
+          Authorization: store.token,
+        },
         token: store.token,
         body: formdata,
       });
@@ -148,7 +202,8 @@ export default function AddInvoice(props) {
       );
     }
   };
-
+  // console.log("invoice is in pdf ", pdf);
+  // console.log("invoice is ", invoice.file ? invoice.file : "");
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -228,6 +283,58 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
+            <FormLabel bold primary="PDF File:" />
+
+            {pdf && pdf != "null" ? (
+              <div
+                style={GLOBALS.Styles.pdffile}
+                // style={{
+                //   width: "48%",
+                //   display: "flex",
+                //   justifyContent: "space-between",
+                // }}
+              >
+                <div style={{ marginTop: "7px" }}>
+                  <img
+                    src={invoiceImg}
+                    alt={`invoive-pdf`}
+                    style={{ marginRight: "25px" }}
+                    // className={classes.addSiteCardImage}
+                  />
+                  <a
+                    href={GLOBALS.Constants.BASE_URL + invoice.file}
+                    target="_blank"
+                  >
+                    Downlod
+                  </a>
+                </div>
+                <IconButton onClick={() => setPdf(null)}>
+                  <Cross style={{ width: 15, height: 15, color: "red" }} />
+                </IconButton>
+              </div>
+            ) : (
+              <div style={GLOBALS.Styles.pdffile}>
+                <Button
+                  fullWidth={false}
+                  // disabled={isLoading}
+                  text={"Upload PDF"}
+                  onClick={() =>
+                    document.getElementById("upload-canvas-pdf-button").click()
+                  }
+                />
+                <input
+                  hidden
+                  type="file"
+                  accept="application/pdf"
+                  id="upload-canvas-pdf-button"
+                  onChange={(e) => handlePdfChange(e)}
+                />
+                <p className="m-2">{pdfFileName && pdfFileName}</p>
+              </div>
+            )}
+          </Form.Row>
+
+          <Form.Row alignItems="flex-start">
             <FormLabel bold primary="DESCRIPTION:" />
             <FormInput
               textArea
@@ -242,6 +349,7 @@ export default function AddInvoice(props) {
               }
             />
           </Form.Row>
+
           <Form.ButtonContainer>
             <Button
               type="submit"
