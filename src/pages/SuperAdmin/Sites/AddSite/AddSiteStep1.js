@@ -42,9 +42,10 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     clients.map((client) =>
-      client.adminIds.map(
-        (admin) =>
-          admin._id === adminId && setClientName(client.companyId.name),
+      client.adminIds.map((admin) =>
+        adminId !== ""
+          ? admin._id === adminId && setClientName(client.companyId.name)
+          : setClientName(""),
       ),
     );
   }, [clients, adminId]);

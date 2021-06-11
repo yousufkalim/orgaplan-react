@@ -164,7 +164,7 @@ export default function AddSiteStep3(props) {
 
       // FormData Creation
       const formdata = JSON.stringify({
-        number: Number(levelNumber),
+        number: levelNumber,
         building: activeBuilding._id,
       });
 
@@ -450,21 +450,30 @@ export default function AddSiteStep3(props) {
                     <FormLabel noMargin bold primary="Level Number" />
                   </Form.Row>
                   {activeBuilding && (
-                    <FormSelect
+                    <FormInput
                       name="levelNumber"
                       value={levelNumber}
-                      // error={levelNumber}
+                      placeholder="Level Name"
                       style={GLOBALS.Styles.inputWidth}
                       onChange={({ target: { name, value } }) =>
                         handleChange(name, value)
                       }
-                      values={levelNumberList.filter(
-                        (item) =>
-                          !activeBuilding.levels.some(
-                            (item2) => item2.number === item.value,
-                          ),
-                      )}
                     />
+                    // <FormSelect
+                    //   name="levelNumber"
+                    //   value={levelNumber}
+                    //   // error={levelNumber}
+                    //   style={GLOBALS.Styles.inputWidth}
+                    //   onChange={({ target: { name, value } }) =>
+                    //     handleChange(name, value)
+                    //   }
+                    //   values={levelNumberList.filter(
+                    //     (item) =>
+                    //       !activeBuilding.levels.some(
+                    //         (item2) => item2.number === item.value,
+                    //       ),
+                    //   )}
+                    // />
                   )}
                 </Form.Row>
                 <Form.Row justifyContent="center">
