@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DeliveryArea(props) {
   const { setSelectedShape } = props;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -40,7 +41,7 @@ export default function DeliveryArea(props) {
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
-  const [unavailabilityDates, setUnavailabilityDates] = useState([]);
+  const [unavailability, setUnavailabilities] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
   const [vehicles, setVehicles] = useState([]);
@@ -49,6 +50,7 @@ export default function DeliveryArea(props) {
 
   const [means, setMeans] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -81,14 +83,7 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.deliveryArea.availability.start);
         setEndDate(props.selectedShape.deliveryArea.availability.end || "");
         setAddresses(addressAr);
-        setUnavailabilityDates(
-          props.selectedShape.deliveryArea.unavailabilityDates?.map(
-            (key, index) => {
-              delete key._id;
-              return key;
-            },
-          ),
-        );
+        setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
         setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
@@ -108,7 +103,7 @@ export default function DeliveryArea(props) {
   }
 
   function handleChange(name, value) {
-    if (name === "name") setName(value);
+      if (name === "name") setName(value);
     else if (name === "color") setColor(value);
     else if (name === "startDate") setStartDate(value);
     else if (name === "endDate") setEndDate(value);
@@ -117,7 +112,7 @@ export default function DeliveryArea(props) {
       setAddresses(value);
     } else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
-      setUnavailabilityDates(value);
+      setUnavailabilities(value);
     } else if (name === "vehicles") setVehicles(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
@@ -145,7 +140,7 @@ export default function DeliveryArea(props) {
       const formdata = JSON.stringify({
         name,
         addresses: addressesAr,
-        unavailabilityDates,
+        unavailability,
         color: color,
         availability: {
           start: startDate,
@@ -165,6 +160,7 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: formdata,
       });
+    
 
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
@@ -195,7 +191,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("");
+      setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -268,10 +264,10 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
-              values={unavailabilityDates}
+              values={unavailability}
               style={GLOBALS.Styles.inputWidth}
-              unavailabilityDates={unavailabilityDates}
-              setUnavailabilityDates={setUnavailabilityDates}
+              unavailabilityDates={unavailability}
+              setUnavailabilityDates={setUnavailabilities}
               startRange={startDate}
               endRange={moment(endDate).add(1, "days")}
               onChange={(values) => handleChange("unavailabilityDates", values)}

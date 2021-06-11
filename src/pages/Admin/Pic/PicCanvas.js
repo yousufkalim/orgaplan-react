@@ -72,7 +72,7 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [rendering, setRendering] = useState(false);
+  const [rendering, setRendering] = useState("");
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -84,8 +84,9 @@ const PicCanvas = (props) => {
   const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
     fetchSitePic();
+    setLevel("");
     // eslint-disable-next-line
-  }, [adminStore, selectedShape, rendering]);
+  }, [adminStore, rendering]);
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -280,7 +281,8 @@ const PicCanvas = (props) => {
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
-      Object.keys(selectedShape).length > 0 && level===''
+      Object.keys(selectedShape).length > 0 &&
+      level === ""
     ) {
       let newShape = selectedShape;
 
@@ -313,7 +315,6 @@ const PicCanvas = (props) => {
 
   const updateShape = async (newShape) => {
     try {
-      setRendering(true);
       let response = await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
@@ -323,8 +324,10 @@ const PicCanvas = (props) => {
           picID: newShape._id,
         }),
       });
+      setRendering(response);
+
     } catch (error) {
-      setRendering(false);
+      console.log(error, "update shape error")
     }
 
     // setShapes(response.data.shapes)
@@ -432,7 +435,8 @@ const PicCanvas = (props) => {
               onChange={handleChange}
               setSelectedShape={setSelectedShape}
               onClear={onClear}
-              pdf={pdf}
+                pdf={pdf}
+                setLevel={setLevel}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />

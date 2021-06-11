@@ -438,7 +438,7 @@ export default function AddSiteStep3(props) {
           text="Historique des plans"
           disabled={loading}
           color={theme.palette.primary.contrastText}
-          onClick={() =>  getHistoryPlan(level._id)}
+          onClick={() => getHistoryPlan(level._id)}
           style={{
             marginLeft: 10,
             borderRadius: 4,
@@ -450,7 +450,6 @@ export default function AddSiteStep3(props) {
   const historyRows = [];
   histories &&
     histories?.map((level, index) => {
-      console.log(level, "level");
       historyRows.push([
         level.name,
         moment(level.createdAt).format("DD/MM/YYYY"),
@@ -475,6 +474,8 @@ export default function AddSiteStep3(props) {
                 } else {
                   var url = window.URL || window.webkitURL;
                   let link = url.createObjectURL(blob);
+                  console.log(link, "link");
+
                   var a = document.createElement("a");
                   a.setAttribute("download", fileName);
                   a.setAttribute("href", link);

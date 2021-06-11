@@ -44,7 +44,8 @@ export default function AddInvoice(props) {
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");
   const [amount, setAmount] = useState(0);
-  const [pdf, setPdf] = useState("");
+  const [pdf, setPdf] = useState(null);
+  const [newpdf, setNewPdf] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfFileName, setPdfFileName] = useState(null);
   const [description, setDescription] = useState("");
@@ -132,6 +133,7 @@ export default function AddInvoice(props) {
       }
 
       setPdfFile(file);
+      setNewPdf(file);
       setPdfFileName(file.name);
     }
   };
@@ -144,6 +146,9 @@ export default function AddInvoice(props) {
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
   };
+  console.log("pdf", pdf);
+  console.log("pdf file", pdfFile);
+  console.log("newpdf file", newpdf);
 
   const onSubmit = async (e) => {
     try {
@@ -159,7 +164,10 @@ export default function AddInvoice(props) {
       formdata.append("siteId", siteId);
       formdata.append("amount", amount);
       formdata.append("description", description);
-      formdata.append("file", pdf ? pdf : pdfFile);
+      formdata.append(
+        "file",
+        !pdf && !newpdf ? pdf : newpdf ? newpdf : pdfFile,
+      );
       // end test
       // const formdata = JSON.stringify({
       //   invoiceId: invoice._id,
@@ -170,6 +178,9 @@ export default function AddInvoice(props) {
       //   amount: amount,
       //   description: description,
       // });
+      for (let [key, value] of formdata) {
+        console.log(`formdatais in add site step 2 ${key}: ${value}`);
+      }
 
       await GLOBALS.API({
         method: "PUT",
@@ -274,7 +285,7 @@ export default function AddInvoice(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary="PDF File:" />
 
-            {pdf ? (
+            {pdf && pdf != "null" ? (
               <div
                 style={GLOBALS.Styles.pdffile}
                 // style={{
@@ -297,7 +308,7 @@ export default function AddInvoice(props) {
                     Downlod
                   </a>
                 </div>
-                <IconButton onClick={() => setPdf("")}>
+                <IconButton onClick={() => setPdf(null)}>
                   <Cross style={{ width: 15, height: 15, color: "red" }} />
                 </IconButton>
               </div>
