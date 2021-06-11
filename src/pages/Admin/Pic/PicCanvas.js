@@ -72,7 +72,7 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [rendering, setRendering] = useState(false);
+  const [rendering, setRendering] = useState("");
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -324,9 +324,10 @@ const PicCanvas = (props) => {
           picID: newShape._id,
         }),
       });
-      setRendering(true);
+      setRendering(response);
+
     } catch (error) {
-      setRendering(false);
+      console.log(error, "update shape error")
     }
 
     // setShapes(response.data.shapes)
@@ -434,7 +435,8 @@ const PicCanvas = (props) => {
               onChange={handleChange}
               setSelectedShape={setSelectedShape}
               onClear={onClear}
-              pdf={pdf}
+                pdf={pdf}
+                setLevel={setLevel}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />
