@@ -456,7 +456,7 @@ class App extends Component {
             this.setState({
               points: [],
             });
-            this.props.setLevel("")
+            
           } else if (points.length >= 10) {
             alert("You only can make upto Decagon shape");
             return;
