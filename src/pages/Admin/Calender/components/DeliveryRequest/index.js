@@ -75,7 +75,7 @@ export default function DeliveryRequest(props) {
       setMeans(means.data);
 
       deliveryAreas.data.forEach((val, index) => {
-        val.unavailability?.map((key) => {
+        val.unavailabilityDates?.map((key) => {
           if (key.dayOff === true) {
             if (moment(props.date).isSame(key.date, "day")) {
               deliveryAreas.data[index].isDisable = true;
@@ -108,6 +108,7 @@ export default function DeliveryRequest(props) {
               accumulator.push({
                 value: currentValue._id,
                 label: currentValue.name,
+                unavailability: currentValue.unavailabilityDates,
               });
             }
           }
@@ -145,6 +146,7 @@ export default function DeliveryRequest(props) {
                     label: currentValue.name,
                     level: currentValue.level,
                     companies: currentValue.companies,
+                    unavailability: currentValue.unavailability,
                   });
                 }
               }
