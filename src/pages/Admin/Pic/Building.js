@@ -304,7 +304,7 @@ export default function AddSiteStep3(props) {
     }
   };
 
-  const getHistoryPlan = async (levelId) => {
+  const getHistoryPlan = async (level) => {
     try {
       let response = await GLOBALS.API({
         method: "POST",
@@ -312,8 +312,8 @@ export default function AddSiteStep3(props) {
         token: store.token,
         body: JSON.stringify({
           siteId: storeAdmin.site.siteId._id,
-          LevelId: levelId,
-          BuildingId: props.selectedShape.building._id,
+          LevelId: level._id,
+          BuildingId: level.building,
         }),
       });
       setHistories(response.data);
@@ -439,8 +439,9 @@ export default function AddSiteStep3(props) {
           disabled={loading}
           color={theme.palette.primary.contrastText}
           onClick={() => {
-            if (level._id) {
-              getHistoryPlan(level._id);
+            if (level) {
+              
+              getHistoryPlan(level);
             } else {
               alert("Please add a level");
             }

@@ -151,6 +151,7 @@ export default function FormMultipleUpload(props) {
         )}
       </div>
       {update && ""}
+      {console.log(props.values,"value")}
       {props.values.map((value, index) => (
         <div className={classes.imageWrapper} key={index}>
           <Avatar
@@ -164,6 +165,7 @@ export default function FormMultipleUpload(props) {
           {!props.disabled && (
             <div onClick={handleDelete(value)} className={classes.imageCross}>
               <ClearIcon fontSize="inherit" color="inherit" />
+
             </div>
           )}
         </div>
