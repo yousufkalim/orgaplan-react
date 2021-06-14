@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as QueryString from "query-string";
 import { makeStyles } from "@material-ui/core/styles";
+import { Images } from "../../../assets/Assets";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -44,11 +45,14 @@ const useStyles = makeStyles((theme) => ({
 const Incidents = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const storeAdmin = useSelector((state) => state.admin);
 
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
+  const [incidentsdata, setIncidentsdata] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
   const [siteComapny, setSiteComapny] = useState([]);
+  const [sitedata, setSiteData] = useState({});
   const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
   const [tatalInvoices, seTatalInvoices] = useState([]);
@@ -57,6 +61,7 @@ const Incidents = (props) => {
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState("");
   const [companyId, setCompanyId] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [siteBuilding, setSiteBuilding] = useState([]);
@@ -90,6 +95,9 @@ const Incidents = (props) => {
     },
     { id: 3, title: "title3", request: "req3", status: "status3" },
   ];
+
+  // console.log("{storeAdmin.site.siteId.name}", storeAdmin.site.siteId);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -113,9 +121,11 @@ const Incidents = (props) => {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
+      // console.log("result is ", result.data.incidents);
       setIncidents(result.data.incidents);
       if (result.data.incidents) {
         seTatalInvoices(result.data.incidents.length);
+
         getIncidentsfiltered(result.data.incidents);
       }
 
@@ -160,6 +170,7 @@ const Incidents = (props) => {
     try {
       setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
+
       if (nameText.length !== 0) params["name"] = nameText;
       if (companyId.length !== 0) params["company"] = companyId;
       if (selectedType.length !== 0) params["type"] = selectedType;
@@ -248,9 +259,10 @@ const Incidents = (props) => {
   }
 
   function getIncidentsfiltered(data) {
+    setIncidentsdata(data);
     let temp = [];
     let total = 0;
-
+    console.log("data", data);
     data.map((item, index) => {
       total = total + item.price;
       let data = [];
@@ -260,7 +272,9 @@ const Incidents = (props) => {
       data[3] = item.companyId?.name;
       data[4] = item.status;
       data[5] =
-        item.location?.deliveryArea?.name || item.location?.storageArea?.name;
+        item.location?.deliveryArea?.name ||
+        item.location?.storageArea?.name ||
+        "";
       data[6] = item?.isBillable ? "Yes" : "No";
       data[7] = item?.price;
       data[8] = item?.isPaid ? "Yes" : "No";
@@ -271,6 +285,7 @@ const Incidents = (props) => {
   }
 
   const rows = items.map((item, index) => {
+    // console.log("item is", item);
     return [
       item[0] ? item[0] : "",
       item[1] ? item[1] : " ",
@@ -283,6 +298,17 @@ const Incidents = (props) => {
       item[8] ? item[8] : " ",
     ];
   });
+  // console.log("items", items);
+  // console.log("row is ", rows);
+  const getCompanyName = (id) => {
+    if (id) {
+      let getcompany = siteComapny.filter((s) => s.value === id);
+      let cName = getcompany[0].label;
+      setCompanyName(cName);
+    } else {
+      return setCompanyName("");
+    }
+  };
 
   function fetchLevelesOfSelectedBuilding(buildingId) {
     const data = allBuilding.filter((x) => x._id === buildingId)[0].levels;
@@ -298,10 +324,46 @@ const Incidents = (props) => {
     }
   }
 
+  // console.log("incidentsdata", incidentsdata);
+  // console.log("companyId", companyId);
+  // console.log("siteComapny", siteComapny);
+  // console.log("companyName", companyName);
+  // console.log(selectedType, "selectedType");
+  // console.log("incidents", incidents);
+  const handleReInvoiving = () => {
+    if (companyId) {
+      // generatePDF(
+      //   incidentsdata,
+      //   companyName,
+      //   storeAdmin?.site?.siteId,
+      //   tatalPrice,
+      // );
+      alert(" Generate Reinvoicing");
+    } else {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            "Please Select a Company to Generate PDF",
+            "error",
+          ),
+        ),
+      );
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
-        <Heading icon primary="RE-INVOICING" noWrap />
+        <Heading primary="RE-INVOICING" noWrap />
+        <span className="pl-5" style={{ width: "40%", marginBottom: "15px" }}>
+          <img
+            alt="custom"
+            src={Images.uploadIcon}
+            style={{ width: "1.5rem", cursor: "pointer" }}
+            onClick={handleReInvoiving}
+          />
+        </span>
+        {/* <Heading icon primary="" noWrap onClick={handleReInvoiving} /> */}
         <div>
           <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
             <SubHeading
@@ -359,7 +421,7 @@ const Incidents = (props) => {
             onChange={(event) => {
               const index = event.target.selectedIndex - 1;
               setSelectedBuilding(event.target.value);
-              console.log(event.target.value);
+              // console.log(event.target.value);
               if (index !== -1) {
                 if (event.target.value === "Exterior") {
                   setDisableLevelDropdown(true);
@@ -436,6 +498,7 @@ const Incidents = (props) => {
             values={siteComapny}
             onChange={(event) => {
               setCompanyId(event.target.value);
+              getCompanyName(event.target.value);
             }}
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
@@ -479,6 +542,19 @@ const Incidents = (props) => {
       </Form.Row>
       {/* <div>
         <h1>pdf</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() =>
+            generatePDF(
+              incidentsdata,
+              companyName,
+              storeAdmin?.site?.siteId,
+              tatalPrice,
+            )
+          }
+        >
+          Export report
+        </button>
       </div> */}
       <div className={classes.content}>
         <Table

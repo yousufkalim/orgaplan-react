@@ -169,7 +169,10 @@ export default function AddMean(props) {
       formdata.append("isInside", props.level ? true : false);
       props.level && formdata.append("level", props.level);
       formdata.append("color", color);
-      image[0] && image[0].file && formdata.append("image", image[0].file);
+      image[0] && image[0].file
+        ? formdata.append("image", image[0].file)
+        : formdata.append("image", "uploads/mean/1623669914133-grey.png");
+
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
       techSheet[0] &&
@@ -207,6 +210,9 @@ export default function AddMean(props) {
         });
         propShapes[inde].image = imageData.image;
         propShape.image = imageData.image;
+      } else {
+        propShapes[inde].image = "uploads/mean/1623669914133-grey.png";
+        propShape.image = "uploads/mean/1623669914133-grey.png";
       }
       propShapes[inde].color = color;
       propShape.color = color;
@@ -254,7 +260,7 @@ export default function AddMean(props) {
       );
     }
   };
-
+  var obj = [{ uri: "uploads/mean/1623669914133-grey.png" }];
   return (
     <div className={classes.content}>
       <Form.Form>
@@ -305,7 +311,13 @@ export default function AddMean(props) {
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="image"
-              values={image}
+              values={
+                image[0] && image[0].file
+                  ? image
+                  : image[0] && image[0].uri
+                  ? image
+                  : obj
+              }
               onChange={(values) => {
                 handleChange("image", values);
               }}

@@ -44,11 +44,28 @@ const useStyles = makeStyles((theme) => ({
   infoDrawerContainer: {
     width: "20%",
     height: "100%",
+    marginRight: "12px",
   },
   infoDrawer: {
     width: "100%",
-    height: "100%",
+    height: "80%",
     display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  infoDrawer3: {
+    width: "100%",
+    height: "50%",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  infoDrawer2: {
+    marginTop: "20px",
+    display: "flex",
+
     alignItems: "center",
     flexDirection: "column",
     justifyContent: "center",
@@ -78,13 +95,17 @@ const PicCanvas = (props) => {
   const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
+  const [selectedBuilding, setselectedBuilding] = useState("");
 
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
-    fetchSitePic();
-    setLevel("");
+    if (level) {
+      fetchLevelPic(level);
+    } else {
+      fetchSitePic();
+    }
     // eslint-disable-next-line
   }, [adminStore, rendering]);
 
@@ -188,6 +209,7 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
+      console.log(response.data,"responseData")
       let shapes = response.data.shapes;
       shapes.map((st) => handleColorAndNameOfShape(st));
       setShapes(shapes);
@@ -276,6 +298,7 @@ const PicCanvas = (props) => {
     }
   };
 
+
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
     if (
@@ -301,7 +324,34 @@ const PicCanvas = (props) => {
       // remove object
       // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
-    } else {
+    } 
+    
+    // else if (
+    //   selectedShape &&
+    //   getShape.type !== "MEAN" &&
+    //   getShape.type === "STORAGEAREA" &&
+    //   Object.keys(selectedShape).length > 0 &&
+    //   level
+    // ) {
+    //   let newShape = selectedShape;
+    //   var removeIndex = shapesArray
+    //     ?.map(function (item) {
+    //       return item._id;
+    //     })
+    //     .indexOf(newShape._id);
+    //   shapesArray[removeIndex].points = getShape.points;
+
+    //   let updatedShape = shapesArray[removeIndex];
+    //   level && (selectedShapeReserver = selectedShape);
+    //   updatedShape && setShape(updatedShape);
+    //   setShapes(shapesArray);
+    //   updateShape(updatedShape);
+    //   // remove object
+    //   // removeIndex && shapesArray.splice(removeIndex, 1);
+    //   setSelectedShape("");
+    // } 
+    
+    else {
       level && (selectedShapeReserver = selectedShape);
 
       getShape && setShape(getShape);
@@ -336,6 +386,7 @@ const PicCanvas = (props) => {
   const handleClick = (id, shape) => {
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
+      setselectedBuilding(shape);
       let levelsArr = _.cloneDeep(shape.building.levels);
       setAllLevels(_.cloneDeep(levelsArr));
       let levs = [];
@@ -441,6 +492,31 @@ const PicCanvas = (props) => {
       );
     }
   };
+  const BuildingComponent = () => {
+    return (
+      <>
+        <SubHeading primary={selectedBuilding.name} bold fontSize={22} />
+        <SubHeading primary={`Type : ${selectedBuilding.type}`} />
+        <FormSelect
+          name="level"
+          value={level}
+          values={levelsDropdown}
+          placeholder="Select Level"
+          onChange={({ target: { value } }) => {
+            setLevel(value);
+
+            if (value) {
+              fetchLevelPic(value);
+              const leve = allLeves.find((lev) => lev._id === value);
+              setPdf(
+                leve?.plan ? GLOBALS.Constants.BASE_URL + leve.plan : undefined,
+              );
+            }
+          }}
+        />
+      </>
+    );
+  };
 
   return (
     <div className={classes.root}>
@@ -456,7 +532,7 @@ const PicCanvas = (props) => {
               setSelectedShape={setSelectedShape}
               onClear={onClear}
               pdf={pdf}
-              setLevel={setLevel}
+              setRendering={setRendering}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />
@@ -465,6 +541,7 @@ const PicCanvas = (props) => {
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
                 text="Show Exterior"
+                className="mt-2"
                 onClick={() => {
                   setPdf(
                     adminStore.site.siteId?.plan
@@ -475,12 +552,43 @@ const PicCanvas = (props) => {
 
                   setShapes(sitePic.shapes);
                   setLevel("");
+                  setSelectedShape("");
+                  setselectedBuilding("");
                   selectedShapeReserver = null;
                 }}
               />
             )}
+
+            {selectedShape && selectedShape.type !== "BUILDING" && level && (
+              <>
+                <Button
+                  text="Show Exterior"
+                  className="mt-2"
+                  onClick={() => {
+                    setPdf(
+                      adminStore.site.siteId?.plan
+                        ? GLOBALS.Constants.BASE_URL +
+                            adminStore.site.siteId?.plan
+                        : undefined,
+                    );
+
+                    setShapes(sitePic.shapes);
+                    setLevel("");
+                    selectedShapeReserver = null;
+                  }}
+                />
+                <div className={classes.infoDrawer2}>{BuildingComponent()}</div>
+              </>
+            )}
+
             {selectedShape && (
-              <div className={classes.infoDrawer}>
+              <div
+                className={
+                  selectedShape && selectedShape.type !== "BUILDING" && level
+                    ? classes.infoDrawer3
+                    : classes.infoDrawer
+                }
+              >
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
                 <SubHeading primary={`Type : ${selectedShape.type}`} />
                 {selectedShape.type === "BUILDING" && (
