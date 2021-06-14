@@ -72,7 +72,7 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [rendering, setRendering] = useState(false);
+  const [rendering, setRendering] = useState("");
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -303,12 +303,12 @@ const PicCanvas = (props) => {
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
-      setSelectedShape("");
 
       getShape && setShape(getShape);
 
       setShapes(shapesArray);
       setModal(true);
+      setSelectedShape("");
     }
   };
   // update Building
@@ -324,9 +324,9 @@ const PicCanvas = (props) => {
           picID: newShape._id,
         }),
       });
-      setRendering(true);
+      setRendering(response);
     } catch (error) {
-      setRendering(false);
+      console.log(error, "update shape error");
     }
 
     // setShapes(response.data.shapes)
@@ -397,7 +397,18 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setlevelPic(response.data);
-          setShapes(response.data.shapes);
+
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         } else {
@@ -407,7 +418,17 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setSitePic(response.data);
-          setShapes(response.data.shapes);
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         }
@@ -435,6 +456,7 @@ const PicCanvas = (props) => {
               setSelectedShape={setSelectedShape}
               onClear={onClear}
               pdf={pdf}
+              setLevel={setLevel}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />

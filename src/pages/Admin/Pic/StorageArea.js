@@ -59,7 +59,7 @@ export default function DeliveryArea(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [props]);
 
   async function fetchData() {
     try {
@@ -92,7 +92,9 @@ export default function DeliveryArea(props) {
         setMeans(means.data.map((item) => item.name));
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
-        setColor(props.selectedShape.storageArea.color);
+        props.selectedShape.storageArea.color !== undefined
+          ? setColor(props.selectedShape.storageArea.color)
+          : setColor(color);
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
