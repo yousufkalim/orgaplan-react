@@ -6,7 +6,7 @@ import GLOBALS from "../../globals";
 import _ from "lodash";
 
 export const width = 1000;
-export const height = 600;
+export const height = 420;
 
 const loadImage = (data) =>
   new Promise((res, rej) => {
@@ -54,15 +54,17 @@ class App extends Component {
     } else if (prevState.shapes !== this.state.shapes) {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
-      this.setState({meanCheck:""})
+      this.setState({ meanCheck: "" });
       await Promise.all(
         this.props.shapes &&
           this.props.shapes.map(async (tempShap) => {
             const tempShape = _.cloneDeep(tempShap);
             if (tempShape.image && typeof tempShape.image === "string") {
+
               const image = await loadImage(
                 `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
               );
+             
               tempShape.image = image;
             }
             newArray.push(tempShape);
@@ -81,13 +83,13 @@ class App extends Component {
     document.removeEventListener("keydown", this.escFunction, false);
   }
   async componentDidMount() {
+   
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
         this.props.shapes.map(async (tempShape) => {
-
           if (tempShape.image && typeof tempShape.image === "string") {
             const image = await loadImage(
               `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
@@ -142,9 +144,12 @@ class App extends Component {
         points: [],
       });
       this.props.setSelectedShape("");
+      this.props.setRendering("hello");
+   
+
       this.props.onClear();
       //Do whatever when esc is pressed
-    } 
+    }
   };
   showPdf = async (uri) => {
     const PDFJS = window.pdfjsLib;
@@ -160,12 +165,16 @@ class App extends Component {
       } else {
         rotate = (page.rotate + 270) % 360;
       }
+
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
-      var scale = Math.min(
-        canvas.height / unscaledViewport.height,
-        canvas.width / unscaledViewport.width,
-      );
+      var scale;
+      if (unscaledViewport.height > unscaledViewport.width) {
+        scale = Math.min(canvas.height, canvas.width / unscaledViewport.height);
+      } else {
+        scale = Math.min(canvas.height, canvas.width / unscaledViewport.width);
+      }
+
       var viewport = page.getViewport(scale, rotate);
 
       var render_context = {
@@ -390,7 +399,7 @@ class App extends Component {
       // ********************************
     }
     // console.log(meanCheck,"meanCheck")
-  
+
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
         if (meanCheck === "MEAN") {
@@ -456,7 +465,6 @@ class App extends Component {
             this.setState({
               points: [],
             });
-            
           } else if (points.length >= 10) {
             alert("You only can make upto Decagon shape");
             return;
@@ -475,7 +483,7 @@ class App extends Component {
         return;
       }
     } else if (image === null) {
-      if (checkMean === true  || finishDisable === true) return;
+      if (checkMean === true || finishDisable === true) return;
       else alert("Upload a pdf first");
     } else {
       if (checkMean === true || finishDisable === true) return;
@@ -1064,15 +1072,16 @@ class App extends Component {
       handleConvaCircleClick,
       handleConvaCircleImageClick,
     } = this;
+
     return (
-      <div className="bg-white">
+      <div>
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
           level={this.props.level}
         />
-        <div className="py-2 px-4">
+        <div className="py-2 px-4" id="stage-parent">
           <ConvaExample
             onClick={handleConvaClick}
             onMouseMove={handleMouseMove}
@@ -1093,16 +1102,18 @@ class App extends Component {
             width={width}
             height={height}
           />
+          <div className="mt-3">
+            <Button
+              fullWidth={false}
+              disabled={isLoading}
+              text={isLoading === true ? "LOADING..." : "Upload PDF"}
+              onClick={() =>
+                document.getElementById("upload-canvas-pdf-button").click()
+              }
+            />
+          </div>
         </div>
         <div className="pl-4">
-          <Button
-            fullWidth={false}
-            disabled={isLoading}
-            text={isLoading === true ? "LOADING..." : "Upload PDF"}
-            onClick={() =>
-              document.getElementById("upload-canvas-pdf-button").click()
-            }
-          />
           <input
             hidden
             type="file"
