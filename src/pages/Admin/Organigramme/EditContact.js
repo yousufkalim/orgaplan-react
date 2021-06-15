@@ -12,8 +12,8 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
-
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
@@ -90,7 +90,8 @@ export default function EditContact(props) {
     if (name === "email") {
       setEmail(value);
       // eslint-disable-next-line
-      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      var mailformat =
+        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError("Please enter valid format");
       } else {
@@ -98,15 +99,7 @@ export default function EditContact(props) {
       }
     } else if (name === "phone") {
       setPhone(value);
-      if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
-        // if(value.length !== 10){
-        //   setPhoneError("Telephone must have 10 digits")
-        // }
-        // else{
-        //   setPhoneError("");
-        // }
-      } else if (value.charAt(0) === "0" && value.length > 25) {
+      if (value.length < 10 || value.length > 25) {
         setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
@@ -186,7 +179,7 @@ export default function EditContact(props) {
         setLoading(true);
         var formdata = new FormData();
         formdata.append("email", email);
-        formdata.append("phone", phone);
+        formdata.append("phone", "+" + parseInt(phone));
         formdata.append("firstName", firstName);
         formdata.append("lastName", lastName);
         formdata.append("image", image[0].file);
@@ -215,6 +208,7 @@ export default function EditContact(props) {
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
+      setLoading(false);
     }
   };
 
@@ -277,9 +271,9 @@ export default function EditContact(props) {
                 )}
               </div>
               <div style={{ width: "45%" }}>
-                <FormInput
+                <PhoneBox
                   name="phone"
-                  value={phone}
+                  value={parseInt(phone)}
                   type="number"
                   // error={lastName}
                   placeholder="Téléphone"

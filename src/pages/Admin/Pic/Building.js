@@ -581,7 +581,7 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Level Number" />
+                <FormLabel noMargin bold primary="Level Name" />
               </Form.Row>
               {activeBuilding && (
                 <FormInput

@@ -11,6 +11,7 @@ import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
+import PhoneBox from "../../../components/PhoneBox";
 import SmallText from "../../../components/SmallText";
 import FormLabel from "../../../components/FormLabel";
 import ColorPicker from "../../../components/ColorPcker";
@@ -33,24 +34,25 @@ export default function AddClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const plus = "+";
 
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
 
   const [logo, setLogo] = useState([]);
   const [name, setName] = useState("");
-  const [color, setColor] = useState("green");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [contractType, setContractType] = useState("CLIENTPERSITE");
-  const [contractStartDate, setContractStartDate] = useState("");
-  const [contractEndDate, setContractEndDate] = useState("");
-  const [functionality, setFunctionality] = useState("DELIVERY");
-  const [additionalInfo, setAdditionalInfo] = useState("");
-  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
+  const [color, setColor] = useState("green");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [notificationTo, setNotificationTo] = useState([]);
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [contractEndDate, setContractEndDate] = useState("");
+  const [contractStartDate, setContractStartDate] = useState("");
+  const [functionality, setFunctionality] = useState("DELIVERY");
+  const [contractType, setContractType] = useState("CLIENTPERSITE");
+  const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
 
   const [errors, setErrors] = useState({});
 
@@ -120,7 +122,6 @@ export default function AddClient(props) {
       e.preventDefault();
       setLoading(true);
       const notificationToArray = notificationTo.map((item) => item.label);
-
       var formdata = new FormData();
       formdata.append("logo", logo[0].file);
       formdata.append("name", name);
@@ -128,7 +129,7 @@ export default function AddClient(props) {
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
-      formdata.append("phone", phone);
+      formdata.append("phone", plus + phone);
       formdata.append("contractType", contractType);
       formdata.append("contractStartDate", contractStartDate);
       formdata.append("contractEndDate", contractEndDate);
@@ -247,7 +248,7 @@ export default function AddClient(props) {
                   handleChange(name, value)
                 }
               />
-              <FormInput
+              <PhoneBox
                 name="phone"
                 value={phone}
                 type="number"
@@ -255,10 +256,10 @@ export default function AddClient(props) {
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
+                  value.length < 26 ? validation(name, value) : ""
                 }
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value.length < 26 ? handleChange(name, value) : ""
                 }
               />
             </Form.Row>

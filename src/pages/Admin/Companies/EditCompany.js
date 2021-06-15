@@ -8,6 +8,7 @@ import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -198,7 +199,8 @@ export default function AddCompanies(props) {
     } else if (name === "email") {
       setEmail(value);
       // eslint-disable-next-line
-      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      var mailformat =
+        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError(true);
       } else {
@@ -224,7 +226,8 @@ export default function AddCompanies(props) {
       setAddInfo(value);
     } else if (name === "website") {
       setWebsite(value);
-      const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+      const web =
+        /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
       if (!value.match(web)) {
         setWebsiteError("Invalid Url");
       } else {
@@ -354,10 +357,10 @@ export default function AddCompanies(props) {
                 )}
               </Form.Column>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
-                <FormInput
+                <PhoneBox
                   name="phone"
                   type="number"
-                  value={phone}
+                  value={parseInt(phone)}
                   disabled={true}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>

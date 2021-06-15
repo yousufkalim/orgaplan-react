@@ -505,15 +505,20 @@ const PicCanvas = (props) => {
                   />
                 )}
                 <Form.Row>
-                  <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal(true);
-                    }}
-                  >
-                    <Pencil className={classes.infoIcon} />
-                  </IconButton>
+                  {level === "" ? (
+                    <IconButton
+                      disabled={loading}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal(true);
+                      }}
+                    >
+                      <Pencil className={classes.infoIcon} />
+                    </IconButton>
+                  ) : (
+                    <></>
+                  )}
+
                   {selectedShape.type === "MEAN" ? (
                     <>
                       <NavLink
@@ -568,7 +573,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} DELIVERY AREA`}
+              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -592,7 +597,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} STORAGE AREA`}
+              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -616,7 +621,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} BUILDING`}
+              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -638,7 +643,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} MEAN`}
+              title={`${shape ? "ADD" : "EDIT"} MEAN`}
               open={modal}
               onClose={() => {
                 checkShape();

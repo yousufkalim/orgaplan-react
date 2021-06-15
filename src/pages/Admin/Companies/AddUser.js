@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -128,6 +129,11 @@ export default function AddUser(props) {
     }
   };
 
+  function inputChange(name, value) {
+    if (name === "phone") {
+      setPhone(value);
+    }
+  }
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -153,7 +159,7 @@ export default function AddUser(props) {
                       setEmail(item.email);
                       setFirstName(item.firstName);
                       setLastName(item.lastName);
-                      setPhone(item.phone);
+                      setPhone(parseInt(item.phone));
                       setLogo([{ uri: item.image }]);
                       setDisableUser(true);
                     } else {
@@ -187,16 +193,17 @@ export default function AddUser(props) {
                   />
                 )}
               />
-              <FormInput
+              <PhoneBox
                 name="phone"
                 type="number"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                placeholder="Téléphone"
+                maxLength="25"
                 value={phone}
                 disabled={disableUser}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
+                placeholder="Téléphone"
+                onChange={({ target: { name, value } }) =>
+                  value.length < 26 ? inputChange(name, value) : ""
+                }
               />
             </Form.Row>
           </Form.Row>
