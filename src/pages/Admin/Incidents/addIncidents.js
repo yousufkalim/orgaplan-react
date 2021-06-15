@@ -107,7 +107,7 @@ export default function AddIncidents(props) {
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
-      
+
       const locationObject = {
         [selectedLocationType]: e.target.value,
       };
@@ -164,7 +164,6 @@ export default function AddIncidents(props) {
     } catch (err) {}
   };
   const locationTypeChange = (e) => {
-   
     setselectedLocationType(e.target.value);
   };
   const timeChange = (e) => {
@@ -187,6 +186,9 @@ export default function AddIncidents(props) {
     formdata.append("comment", comment);
     formdata.append("companyId", companyId);
     formdata.append("siteId", adminStore.site.siteId._id);
+    // for (let [key, value] of formdata) {
+    //   console.log(`formdata in add user ${key}: ${value}`);
+    // }
     await GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,

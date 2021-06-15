@@ -127,16 +127,17 @@ export default function AddIncidents(props) {
     }
     if (incident.location?.storageArea) {
       setselectedLocationType("storageArea");
-      setselectedLocation(incident.location?.storageArea._id);
+      setselectedLocation(incident.location?.storageArea);
       const locationObject = {
-        ["storageArea"]: incident.location?.storageArea._id,
+        ["storageArea"]: incident.location?.storageArea,
       };
       setLocation(locationObject);
     } else if (incident.location?.deliveryArea) {
       setselectedLocationType("deliveryArea");
-      setselectedLocation(incident.location?.deliveryArea._id);
+
+      setselectedLocation(incident.location?.deliveryArea);
       const locationObject = {
-        ["deliveryArea"]: incident.location?.deliveryArea._id,
+        ["deliveryArea"]: incident.location?.deliveryArea,
       };
       setLocation(locationObject);
     }
@@ -145,7 +146,6 @@ export default function AddIncidents(props) {
     if (name === "image") setImage(value);
   };
   const nameChange = (e) => {
-
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "date") setDate(e.target.value);
     if (e.target.name === "time") setTime(e.target.value);
@@ -228,7 +228,9 @@ export default function AddIncidents(props) {
 
       if (image[0]?.file) formdata.append("photos", image[0].file);
       formdata.append("siteId", adminStore.site.siteId._id);
-
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdata in add user ${key}: ${value}`);
+      // }
       await GLOBALS.API({
         method: "PUT",
         uri:
@@ -253,6 +255,8 @@ export default function AddIncidents(props) {
   const timeChange = (e) => {
     setTime(moment(e?._d).format("HH:mm:ss"));
   };
+  console.log("selectedLocation", selectedLocation);
+  console.log("location", location);
 
   return (
     <div className={classes.root}>
@@ -450,7 +454,7 @@ export default function AddIncidents(props) {
                     },
                     { value: "CLOSED", label: "Closed" },
                   ]}
-                />                
+                />
               </Form.Column>
             </Form.Row>
           </Form.Row>

@@ -1,43 +1,70 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-// Date Fns is used to format the dates we receive
-// from our API call
-import { format } from "date-fns";
+import moment from "moment";
+import SiteImage from "../../../assets/images/Site.png";
+import GLOBALS from "../../../globals";
 
-// define a generatePDF function that accepts a tickets argument
-const generatePDF = (tickets) => {
-  // initialize jsPDF
+const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
+  var today = moment(new Date()).format("DD/MM/YYYY");
+  var newdat = "Date: " + today;
+
+  var companyName = "Company : " + companyName;
+  var siteName = "Site : " + sitedata?.name;
+  var totalReinvoices = "" + tickets.length;
+
+  var siteLogo = sitedata.logo
+    ? GLOBALS.Constants.BASE_URL + sitedata?.logo
+    : SiteImage;
   const doc = new jsPDF();
-
-  // define the columns we want and their titles
-  const tableColumn = ["Id", "Title", "Issue", "Status", "Closed on"];
-  // define an empty array of rows
+  const tableColumn = [
+    "Name_of_re-invoicng",
+    "Type_of_re-invoicng",
+    "Date/Time",
+    "Amount",
+    "Status",
+  ];
   const tableRows = [];
 
-  // for each ticket pass all its data into an array
+  console.log("tickets", tickets);
   tickets.forEach((ticket) => {
     const ticketData = [
-      ticket.id,
-      ticket.title,
-      ticket.request,
-      ticket.status,
       ticket.name,
-      // called date-fns to format the date on the ticket
+      ticket.type,
+      moment(ticket.date).format("DD/MM/YYYY HH:mm"),
+      ticket.price,
+      ticket.status,
+
       //   format(new Date(ticket.updated_at), "yyyy-MM-dd"),
     ];
-    // push each tickcet's info into a row
     tableRows.push(ticketData);
   });
+  // doc.text(145, 8, newdat);
+  doc.setFont("", "bold");
+  doc.text("Invoices", 105, 10, null, null, "center");
+  doc.text(companyName, 14, 25);
+  doc.text("Admin's client :  ", 14, 35);
+  doc.addImage(siteLogo, "JPEG", 180, 25, 18, 18);
+  doc.setFont("", "bold");
+  doc.text(siteName, 200, 20, null, null, "right");
+  doc.autoTable(tableColumn, tableRows, {
+    startY: 50,
+    theme: "grid",
+    styles: {
+      halign: "center",
+    },
+  });
+  doc.setFontSize(10);
+  doc.text("Total Re-Invoicing : ", 185, 100, null, null, "right");
 
-  // startY is basically margin-top
-  doc.autoTable(tableColumn, tableRows, { startY: 20 });
+  doc.text("Total Amount : ", 185, 105, null, null, "right");
+  doc.setTextColor(255, 0, 0);
+  doc.text(totalReinvoices, 195, 100, null, null, "right");
+  // doc.text(totalPrice, 195, 105, null, null, "right");
   const date = Date().split(" ");
-  // we use a date string to generate our filename.
-  const dateStr = date[0] + date[1] + date[2] + date[3] + date[4];
-  // ticket title. and margin-top + margin-left
-  doc.text("Hello downloaded the  tickets within the last one month.", 14, 15);
-  // we define the name of our PDF file.
-  doc.save(`report_${dateStr}.pdf`);
+
+  const dateStr = date[0] + "_" + date[1] + "_" + date[2];
+  // doc.text("Hello downloaded the  tickets within the last one month.", 14, 30);
+  doc.save(`invoice_of_${dateStr}.pdf`);
 };
 
 export default generatePDF;
