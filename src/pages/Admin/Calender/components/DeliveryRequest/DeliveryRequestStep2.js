@@ -138,36 +138,6 @@ export default function AddSiteStep1(props) {
         });
       });
       // END checking mean Availabilty in Delivery Request
-
-      // check mean unavailability //
-
-      meanArray = meanArray.filter((filter, index) => {
-        let flag = 0;
-        filter.unavailability?.map((key, index) => {
-          if (key.dayOff === false) {
-            let DBStartTime = moment(key.date).set("hours", key.startHour);
-            let DBEndTime = moment(key.date).set("hours", key.endHour);
-            if (
-              moment(startTime).isBetween(
-                DBStartTime,
-                DBEndTime,
-                undefined,
-                "[]",
-              ) ||
-              moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
-            ) {
-              // matched
-              flag = 1;
-            } else {
-              // not matched
-            }
-          }
-        });
-        if (flag === 0) {
-          return filter;
-        }
-      });
-      // check mean unavailability  //
     }
     // Start checking mean Availabilty in Mean Booking
     const getAllMeanBooking = await GLOBALS.API({
@@ -178,17 +148,17 @@ export default function AddSiteStep1(props) {
     getAllMeanBooking.data.map((meanB, Bindex) => {
       meanArray = meanArray.filter((dmean, dindex) => {
         if (
-          dmean.value === meanB._id &&
-          moment(meanB.startDate).isBetween(
-            startTime,
-            endTime,
-            undefined,
-            "[]",
-          ) &&
+          (dmean.value === meanB._id &&
+            moment(meanB.startDate).isBetween(
+              startTime,
+              endTime,
+              undefined,
+              "[]",
+            )) ||
+          // remove &&
           moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
         ) {
           //match mean remove
-          //  console.log("mean are matched");
         } else {
           // return filtered mean
           return dmean;
@@ -197,10 +167,10 @@ export default function AddSiteStep1(props) {
     });
     // END checking mean Availabilty in Mean Booking
 
-    // check mean unavailability //
-
+    // check mean Unavailability   //
     meanArray = meanArray.filter((filter, index) => {
       let flag = 0;
+      console.log(filter);
       filter.unavailability?.map((key, index) => {
         if (key.dayOff === false) {
           let DBStartTime = moment(key.date).set("hours", key.startHour);
@@ -215,9 +185,11 @@ export default function AddSiteStep1(props) {
             moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
           ) {
             // matched
+            console.log("flag on");
             flag = 1;
           } else {
             // not matched
+            console.log("flag off");
           }
         }
       });
@@ -245,6 +217,7 @@ export default function AddSiteStep1(props) {
         accumulator.push({
           value: currentValue._id,
           label: currentValue.name,
+          unavailability: currentValue.unavailability,
         });
       }
       return accumulator;
@@ -256,7 +229,7 @@ export default function AddSiteStep1(props) {
     });
     filterUnavailableStorageArea();
     // eslint-disable-next-line
-  }, [storageArea, startTime, endTime]);
+  }, [props, storageArea, startTime, endTime]);
 
   useEffect(() => {
     if (building) {
@@ -300,7 +273,7 @@ export default function AddSiteStep1(props) {
 
   const selectedCompanyId = props.step1Data.company;
   const filterStorageAreas = [];
-  propsFilterStorageArea.forEach((val) => {
+  propsFilterStorageArea?.forEach((val) => {
     val.companies.map((cP) => {
       if (cP === selectedCompanyId) {
         filterStorageAreas.push(val);

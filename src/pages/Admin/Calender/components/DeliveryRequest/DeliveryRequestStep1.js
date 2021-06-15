@@ -242,6 +242,7 @@ export default function AddSiteStep1(props) {
         accumulator.push({
           value: currentValue._id,
           label: currentValue.name,
+          unavailability: currentValue.unavailability,
         });
       }
 
