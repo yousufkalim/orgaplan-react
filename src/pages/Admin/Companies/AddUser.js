@@ -101,7 +101,7 @@ export default function AddUser(props) {
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("companyId", selectedCompany);
       formdata.append("role", selectedRole);

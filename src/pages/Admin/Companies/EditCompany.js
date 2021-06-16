@@ -118,7 +118,7 @@ export default function AddCompanies(props) {
       company.companyId.incharge.email &&
         setEmail(company.companyId.incharge.email);
       company.companyId.incharge.phone &&
-        setPhone(company.companyId.incharge.phone);
+        setPhone(company.companyId.incharge.phone.substring(1));
       company.companyId.website && setPhone(company.companyId.website);
       company.companyId.description &&
         setAddInfo(company.companyId.description);
@@ -360,7 +360,7 @@ export default function AddCompanies(props) {
                 <PhoneBox
                   name="phone"
                   type="number"
-                  value={parseInt(phone)}
+                  value={phone}
                   disabled={true}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>

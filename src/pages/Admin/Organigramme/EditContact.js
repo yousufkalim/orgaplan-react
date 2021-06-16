@@ -65,7 +65,7 @@ export default function EditContact(props) {
     const contactInfo = props.location.data;
     setType(contactInfo.type);
     setEmail(contactInfo.email);
-    setPhone(contactInfo.phone);
+    setPhone(contactInfo.phone.substring(1));
     setFirstName(contactInfo.firstName);
     setLastName(contactInfo.lastName);
     setImage([{ key: 0, file: undefined, uri: contactInfo.image }]);
@@ -179,7 +179,7 @@ export default function EditContact(props) {
         setLoading(true);
         var formdata = new FormData();
         formdata.append("email", email);
-        formdata.append("phone", "+" + parseInt(phone));
+        formdata.append("phone", "+" + phone);
         formdata.append("firstName", firstName);
         formdata.append("lastName", lastName);
         formdata.append("image", image[0].file);
@@ -273,7 +273,7 @@ export default function EditContact(props) {
               <div style={{ width: "45%" }}>
                 <PhoneBox
                   name="phone"
-                  value={parseInt(phone)}
+                  value={phone}
                   type="number"
                   // error={lastName}
                   placeholder="Téléphone"

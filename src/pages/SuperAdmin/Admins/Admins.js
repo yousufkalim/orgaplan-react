@@ -238,7 +238,7 @@ export default function Admins(props) {
           setFirstName(item.firstName);
           setEmail(item.email);
           setLastName(item.lastName);
-          setPhone(item.phone);
+          setPhone(item.phone.substring(1));
           item.adminType && setAdminType(item.adminType);
           setCompanyId(item.company._id);
           item.company._id &&
@@ -374,7 +374,7 @@ export default function Admins(props) {
                 <PhoneBox
                   name="phone"
                   type="number"
-                  value={parseInt(phone)}
+                  value={phone}
                   error={phoneError}
                   placeholder="Phone Number"
                   onChange={({ target: { name, value } }) =>

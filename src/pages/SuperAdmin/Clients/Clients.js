@@ -127,7 +127,7 @@ export default function Clients(props) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
       setEmail(item.companyId.incharge.email || "");
-      setPhone(item.companyId.incharge.phone || "");
+      setPhone(item.companyId.incharge.phone.substring(1) || "");
     }
     setContractType(contract.contractType);
     if (contract.contractType === "MASTERCLIENT") {
@@ -463,7 +463,7 @@ export default function Clients(props) {
               />
               <PhoneBox
                 name="phone"
-                value={parseInt(phone)}
+                value={phone}
                 type="number"
                 error={errors.phone}
                 placeholder="Phone Number"
