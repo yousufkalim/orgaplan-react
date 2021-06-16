@@ -84,6 +84,10 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
+    this.props.pdf && this.showPdf(this.props.pdf);
+    if (!this.props.pdf) {
+      this.setState({ isLoading: false });
+    }
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -96,7 +100,6 @@ class App extends Component {
           }
 
           newArray.push(tempShape);
-
           return tempShape;
         }),
       );
@@ -104,10 +107,7 @@ class App extends Component {
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
-    this.props.pdf && this.showPdf(this.props.pdf);
-    if (!this.props.pdf) {
-      this.setState({ isLoading: false });
-    }
+   
   }
 
   // ******************
@@ -150,6 +150,7 @@ class App extends Component {
   };
   showPdf = async (uri) => {
     const PDFJS = window.pdfjsLib;
+
     try {
       var _PDF_DOC = await PDFJS.getDocument({
         url: uri,
@@ -186,6 +187,7 @@ class App extends Component {
       catImage2.onload = () => {
         this.setState({ image: catImage2 });
       };
+
       this.setState({ isLoading: false });
 
       // this.setState({ tempImage: "" });
@@ -246,14 +248,14 @@ class App extends Component {
           if (shapeId !== id) {
             tempArr2.color = shapeColor;
             tempArr2.opacity = 1;
+          } else {
+            return;
           }
-          // else {
-          //   tempArr.color = "white";
-          // }
         }
       }
     }
     this.setState({ checkDisable: false, shapeId: id });
+    return;
   };
   handleDeleteShape = () => {
     const { shapes, shapeId } = this.state;
