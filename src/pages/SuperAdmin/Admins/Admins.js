@@ -220,6 +220,7 @@ export default function Admins(props) {
       else setLastNameError("");
     }
   }
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
