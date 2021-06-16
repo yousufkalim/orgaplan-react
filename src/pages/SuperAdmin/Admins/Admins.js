@@ -121,7 +121,7 @@ export default function Admins(props) {
       formdata.append("phone", "+" + phone);
       formdata.append("lastName", lastName);
       formdata.append("firstName", firstName);
-      formdata.append("email", email);
+      // formdata.append("email", email);
       formdata.append("companyId", companyId);
       formdata.append("adminType", adminType);
       formdata.append("adminId", selectedItem._id);
@@ -220,6 +220,7 @@ export default function Admins(props) {
       else setLastNameError("");
     }
   }
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
