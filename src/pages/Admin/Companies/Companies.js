@@ -46,11 +46,63 @@ export default function Companies(props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storageAreaRequest, setStorageAreaRequest] = useState([]);
-  // console.log("companies", companies);
   useEffect(() => {
     getData();
     // eslint-disable-next-line
   }, []);
+  const uploadCsvFile = async (file, companyId) => {
+    const formData = new FormData();
+    formData.append("companiesdata", file);
+    try {
+      const response = await GLOBALS.API({
+        method: "POST",
+        uri: `${GLOBALS.Constants.ADDCOMPANYDATA}/${companyId}`,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formData,
+      });
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("File Uploaded successfully ", "success"),
+        ),
+      );
+      getData();
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  const uploadFile = async (fileName) => {
+    var url = GLOBALS.Constants.BASE_URL + fileName;
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "blob";
+    req.onload = function () {
+      var blob = new Blob([req.response], {
+        type: "application/octetstream",
+      });
+      var isIE = false || !!document.documentMode;
+      if (isIE) {
+        window.navigator.msSaveBlob(blob, fileName);
+      } else {
+        var url = window.URL || window.webkitURL;
+        let link = url.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.setAttribute("download", fileName);
+        a.setAttribute("href", link);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    };
+    req.send();
+  };
 
   const getData = async () => {
     try {
@@ -185,7 +237,7 @@ export default function Companies(props) {
     ];
   });
 
-  const rows = companies.map((item) => {
+  const rows = companies.map((item, index) => {
     return [
       <img src={Images.site} alt="Icon" />,
       item.companyId.name,
@@ -256,14 +308,11 @@ export default function Companies(props) {
             />
           </NavLink>
         </IconButton>
-        <IconButton
-          style={{ padding: "6px", color: "#1890ff" }}
-          onClick={() => {}}
-        >
-          <NavLink
-            to={{
-              pathname: `/companies/download-csv/${item.companyId._id}`,
-              search: `?companyId=${item.companyId._id}`,
+        {item.companyId.companiesdata ? (
+          <IconButton
+            style={{ padding: "6px", color: "#1890ff" }}
+            onClick={() => {
+              uploadFile(item.companyId.companiesdata);
             }}
           >
             <img
@@ -271,8 +320,32 @@ export default function Companies(props) {
               style={{ width: 18, height: 17 }}
               alt="Icon"
             />
-          </NavLink>
-        </IconButton>
+          </IconButton>
+        ) : null}
+        {console.log(item.companyId._id)}
+        <input
+          className={classes.input}
+          id={`${item.companyId._id}`}
+          type="file"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            uploadCsvFile(e.target.files[0], item.companyId._id);
+          }}
+        />
+
+        <label htmlFor={`${item.companyId._id}`}>
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="span"
+          >
+            <img
+              src={Images.uploadIcon}
+              style={{ width: 18, height: 17 }}
+              alt="Icon"
+            />
+          </IconButton>
+        </label>
       </div>,
     ];
   });

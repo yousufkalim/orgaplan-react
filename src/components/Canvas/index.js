@@ -60,11 +60,10 @@ class App extends Component {
           this.props.shapes.map(async (tempShap) => {
             const tempShape = _.cloneDeep(tempShap);
             if (tempShape.image && typeof tempShape.image === "string") {
-
               const image = await loadImage(
                 `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
               );
-             
+
               tempShape.image = image;
             }
             newArray.push(tempShape);
@@ -83,9 +82,12 @@ class App extends Component {
     document.removeEventListener("keydown", this.escFunction, false);
   }
   async componentDidMount() {
-   
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
+    this.props.pdf && this.showPdf(this.props.pdf);
+    if (!this.props.pdf) {
+      this.setState({ isLoading: false });
+    }
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -98,7 +100,6 @@ class App extends Component {
           }
 
           newArray.push(tempShape);
-
           return tempShape;
         }),
       );
@@ -106,10 +107,7 @@ class App extends Component {
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
-    this.props.pdf && this.showPdf(this.props.pdf);
-    if (!this.props.pdf) {
-      this.setState({ isLoading: false });
-    }
+   
   }
 
   // ******************
@@ -145,7 +143,6 @@ class App extends Component {
       });
       this.props.setSelectedShape("");
       this.props.setRendering("hello");
-   
 
       this.props.onClear();
       //Do whatever when esc is pressed
@@ -153,6 +150,7 @@ class App extends Component {
   };
   showPdf = async (uri) => {
     const PDFJS = window.pdfjsLib;
+
     try {
       var _PDF_DOC = await PDFJS.getDocument({
         url: uri,
@@ -189,6 +187,7 @@ class App extends Component {
       catImage2.onload = () => {
         this.setState({ image: catImage2 });
       };
+
       this.setState({ isLoading: false });
 
       // this.setState({ tempImage: "" });
@@ -249,14 +248,14 @@ class App extends Component {
           if (shapeId !== id) {
             tempArr2.color = shapeColor;
             tempArr2.opacity = 1;
+          } else {
+            return;
           }
-          // else {
-          //   tempArr.color = "white";
-          // }
         }
       }
     }
     this.setState({ checkDisable: false, shapeId: id });
+    return;
   };
   handleDeleteShape = () => {
     const { shapes, shapeId } = this.state;

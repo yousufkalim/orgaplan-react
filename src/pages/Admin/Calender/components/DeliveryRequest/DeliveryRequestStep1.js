@@ -19,6 +19,7 @@ export default function AddSiteStep1(props) {
   const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
   let { deliveryArea, setDeliveryArea } = props;
+  const [filterdeliveryArea, setFilterdeliveryArea] = useState([]);
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -50,6 +51,37 @@ export default function AddSiteStep1(props) {
     let customDate = "2021-06-06";
     return true;
   };
+  // filter delivery area Which are not availbile
+  const filterUnavailableDeliveryArea = () => {
+    let tempArray = props.deliveryAreas.filter((filter, index) => {
+      let flag = 0;
+      filter.unavailability?.map((key, index) => {
+        if (key.dayOff === false) {
+          let DBStartTime = moment(key.date).set("hours", key.startHour);
+          let DBEndTime = moment(key.date).set("hours", key.endHour);
+          if (
+            moment(startTime).isBetween(
+              DBStartTime,
+              DBEndTime,
+              undefined,
+              "[]",
+            ) ||
+            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
+          ) {
+            // matched
+            flag = 1;
+          } else {
+            // not matched
+          }
+        }
+      });
+      if (flag === 0) {
+        return filter;
+      }
+    });
+    setFilterdeliveryArea(tempArray);
+  };
+
   const getAllDeliveryMean = async (meanArray) => {
     let deliveryMeanArray = [];
     let meanBooking = [];
@@ -89,10 +121,9 @@ export default function AddSiteStep1(props) {
               moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
             ) {
               // remove matched array
-              // console.log("mean matched", mean.label);
             } else {
+              // means which are not matched
               return mean;
-              //console.log("mean not matched", mean.label);
             }
           });
         });
@@ -104,31 +135,58 @@ export default function AddSiteStep1(props) {
       uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
       token: store.token,
     });
-    // value: currentValue._id,
-    // label: currentValue.name,
 
     getAllMeanBooking.data.map((meanB, Bindex) => {
       meanArray = meanArray.filter((dmean, dindex) => {
         if (
-          dmean.value === meanB._id &&
-          moment(meanB.startDate).isBetween(
-            startTime,
-            endTime,
-            undefined,
-            "[]",
-          ) &&
+          (dmean.value === meanB._id &&
+            moment(meanB.startDate).isBetween(
+              startTime,
+              endTime,
+              undefined,
+              "[]",
+            )) ||
+          // remove && operaator
           moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
         ) {
           //match mean remove
-          //   console.log("mean are matched");
         } else {
           // return filtered mean
           return dmean;
         }
       });
     });
-    // console.log(meanBooking);
     // END checking mean Availabilty in Mean Booking
+
+    // check mean unavailability //
+
+    meanArray = meanArray.filter((filter, index) => {
+      let flag = 0;
+      filter.unavailability?.map((key, index) => {
+        if (key.dayOff === false) {
+          let DBStartTime = moment(key.date).set("hours", key.startHour);
+          let DBEndTime = moment(key.date).set("hours", key.endHour);
+          if (
+            moment(startTime).isBetween(
+              DBStartTime,
+              DBEndTime,
+              undefined,
+              "[]",
+            ) ||
+            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
+          ) {
+            // matched
+            flag = 1;
+          } else {
+            // not matched
+          }
+        }
+      });
+      if (flag === 0) {
+        return filter;
+      }
+    });
+    // check mean unavailability  //
     return meanArray;
   };
   useEffect(() => {
@@ -167,7 +225,6 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
-  //console.log(date, startTime, endTime);
   useEffect(() => {
     let mean_array = props.means.reduce((accumulator, currentValue) => {
       if (
@@ -185,6 +242,7 @@ export default function AddSiteStep1(props) {
         accumulator.push({
           value: currentValue._id,
           label: currentValue.name,
+          unavailability: currentValue.unavailability,
         });
       }
 
@@ -194,9 +252,9 @@ export default function AddSiteStep1(props) {
     delivery_means.then((mean) => {
       setMeans(mean);
     });
-
+    filterUnavailableDeliveryArea();
     // eslint-disable-next-line
-  }, [deliveryArea, startTime, endTime]);
+  }, [deliveryArea, date, startTime, endTime]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -252,7 +310,8 @@ export default function AddSiteStep1(props) {
           name="deliveryArea"
           value={deliveryArea}
           disabled={props.eventId}
-          values={props.deliveryAreas}
+          // values={props.deliveryAreas}
+          values={filterdeliveryArea}
           style={GLOBALS.Styles.inputWidth}
           placeholder="Select a Delivery Area"
           onChange={({ target: { value } }) => setDeliveryArea(value)}

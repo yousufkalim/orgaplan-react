@@ -16,6 +16,7 @@ import Heading from "../../components/Heading";
 import FormInput from "../../components/FormInput";
 import SmallText from "../../components/SmallText";
 import FormLabel from "../../components/FormLabel";
+import PhoneBox from "../../components/PhoneBox";
 import SubHeading from "../../components/SubHeading";
 import AvatarUpload from "../../components/AvatarUpload";
 import OutlinedCapsuledButton from "../../components/OutlinedCapsuledButton";
@@ -108,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 
 function generatePhone(phone) {
   var str = String(phone);
-  str = "0" + str;
+  // str = "+" + str;
   var parts = str.match(/.{1,2}/g);
   var new_value = parts.join(".");
   return new_value;
@@ -235,7 +236,8 @@ export default function Sites(props) {
     setImage({
       uri: GLOBALS.Constants.BASE_URL + store.user.image,
     });
-    setPhone(store.user.phone);
+    let s = store.user.phone.substring(1);
+    setPhone(s);
     // eslint-disable-next-line
   }, []);
 
@@ -303,7 +305,7 @@ export default function Sites(props) {
       const formdata = new FormData();
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       image.file && formdata.append("image", image.file);
 
       const response = await GLOBALS.API({
@@ -322,7 +324,7 @@ export default function Sites(props) {
       const user = _.cloneDeep(store.user);
       user.firstName = firstName;
       user.lastName = lastName;
-      user.phone = phone;
+      user.phone = "+" + phone;
       user.image = response.data.image;
       dispatch(Actions.auth.set_user(user));
       setProfileModal(false);
@@ -529,13 +531,13 @@ export default function Sites(props) {
             <Form.Row>
               <FormLabel bold primary="PHONE *: " />
               <Form.Row noMargin width="48%">
-                <FormInput
+                <PhoneBox
                   type="number"
                   name="phone"
                   value={phone}
                   placeholder="Phone"
                   onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
+                    value.length < 26 ? handleChange(name, value) : ""
                   }
                 />
               </Form.Row>
