@@ -481,7 +481,6 @@ export default function AddSiteStep3(props) {
                 } else {
                   var url = window.URL || window.webkitURL;
                   let link = url.createObjectURL(blob);
-                  console.log(link, "link");
 
                   var a = document.createElement("a");
                   a.setAttribute("download", fileName);

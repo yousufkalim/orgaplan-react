@@ -209,7 +209,6 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
-      console.log(response.data, "responseData");
       let shapes = response.data.shapes;
       shapes.map((st) => handleColorAndNameOfShape(st));
       setShapes(shapes);
@@ -410,7 +409,6 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
-  console.log(selectedBuilding, "setselectedBuilding");
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
