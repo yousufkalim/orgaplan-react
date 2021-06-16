@@ -14,6 +14,7 @@ import Modal from "../../../components/Modal";
 import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import SmallText from "../../../components/SmallText";
 import Pagination from "../../../components/Pagination";
@@ -126,7 +127,7 @@ export default function Clients(props) {
       setFirstName(item.companyId.incharge.firstName || "");
       setLastName(item.companyId.incharge.lastName || "");
       setEmail(item.companyId.incharge.email || "");
-      setPhone(`0${item.companyId.incharge.phone}` || "");
+      setPhone(item.companyId.incharge.phone.substring(1) || "");
     }
     setContractType(contract.contractType);
     if (contract.contractType === "MASTERCLIENT") {
@@ -154,7 +155,7 @@ export default function Clients(props) {
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("contractType", contractType);
       formdata.append("contractStartDate", contractStartDate);
       formdata.append("contractEndDate", contractEndDate);
@@ -275,7 +276,7 @@ export default function Clients(props) {
             : "",
           item.companyId.incharge
             ? item.companyId.incharge.phone
-              ? `0${item.companyId.incharge.phone}`
+              ? item.companyId.incharge.phone
               : ""
             : "",
           item.sites,
@@ -315,9 +316,7 @@ export default function Clients(props) {
         item.companyId.incharge.firstName +
           " " +
           item.companyId.incharge.lastName,
-        item.companyId.incharge.phone
-          ? `0${item.companyId.incharge.phone}`
-          : "",
+        item.companyId.incharge.phone ? item.companyId.incharge.phone : "",
         item.sites,
         "-",
         "-",
@@ -462,7 +461,7 @@ export default function Clients(props) {
                   handleChange(name, value)
                 }
               />
-              <FormInput
+              <PhoneBox
                 name="phone"
                 value={phone}
                 type="number"

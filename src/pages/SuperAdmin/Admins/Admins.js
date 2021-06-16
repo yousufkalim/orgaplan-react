@@ -13,6 +13,7 @@ import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Loader from "../../../components/Loader";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
@@ -117,10 +118,10 @@ export default function Admins(props) {
       e.preventDefault();
       setLoading(true);
       var formdata = new FormData();
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("lastName", lastName);
       formdata.append("firstName", firstName);
-      formdata.append("email", email);
+      // formdata.append("email", email);
       formdata.append("companyId", companyId);
       formdata.append("adminType", adminType);
       formdata.append("adminId", selectedItem._id);
@@ -219,12 +220,12 @@ export default function Admins(props) {
       else setLastNameError("");
     }
   }
-  console.log("1212", items);
+
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
       item.firstName + " " + item.lastName,
-      `0${item.phone}`,
+      item.phone,
       item.sites,
     ];
     return [
@@ -238,7 +239,7 @@ export default function Admins(props) {
           setFirstName(item.firstName);
           setEmail(item.email);
           setLastName(item.lastName);
-          setPhone(`0${item.phone}`);
+          setPhone(item.phone.substring(1));
           item.adminType && setAdminType(item.adminType);
           setCompanyId(item.company._id);
           item.company._id &&
@@ -371,7 +372,7 @@ export default function Admins(props) {
             </Form.Row>
             <Form.Row justifyContent="center">
               <div style={{ width: "50%" }}>
-                <FormInput
+                <PhoneBox
                   name="phone"
                   type="number"
                   value={phone}

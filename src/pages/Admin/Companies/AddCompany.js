@@ -10,6 +10,7 @@ import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -159,7 +160,7 @@ export default function AddCompanies(props) {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          phone: phone,
+          phone: "+" + phone,
         };
         var formdata = new FormData();
         image[0].file && formdata.append("logo", image[0].file);
@@ -235,9 +236,7 @@ export default function AddCompanies(props) {
       }
     } else if (name === "phone") {
       setPhone(value);
-      if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
-      } else if (value.charAt(0) === "0" && value.length > 25) {
+      if (value.length < 10 || value.length > 25) {
         setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
@@ -421,14 +420,15 @@ export default function AddCompanies(props) {
                 )}
               </Form.Column>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
-                <FormInput
+                <PhoneBox
                   name="phone"
                   type="number"
+                  maxLength="25"
                   value={phone}
                   disabled={companyId}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>
-                    inputChange(name, value)
+                    value.length < 26 ? inputChange(name, value) : ""
                   }
                 />
                 {phoneError && (

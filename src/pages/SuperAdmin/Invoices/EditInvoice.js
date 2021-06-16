@@ -146,10 +146,6 @@ export default function AddInvoice(props) {
     else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
   };
-  console.log("pdf", pdf);
-  console.log("pdf file", pdfFile);
-  console.log("newpdf file", newpdf);
-
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -179,7 +175,6 @@ export default function AddInvoice(props) {
       //   description: description,
       // });
       for (let [key, value] of formdata) {
-        console.log(`formdatais in add site step 2 ${key}: ${value}`);
       }
 
       await GLOBALS.API({
@@ -202,8 +197,6 @@ export default function AddInvoice(props) {
       );
     }
   };
-  // console.log("invoice is in pdf ", pdf);
-  // console.log("invoice is ", invoice.file ? invoice.file : "");
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
