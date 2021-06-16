@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -86,7 +87,7 @@ export default function AddAdmin(props) {
       setLoading(true);
       var formdata = new FormData();
       formdata.append("email", email);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("lastName", lastName);
       formdata.append("firstName", firstName);
       formdata.append("adminType", adminType);
@@ -174,7 +175,7 @@ export default function AddAdmin(props) {
                   handleChange(name, value)
                 }
               />
-              <FormInput
+              <PhoneBox
                 name="phone"
                 type="number"
                 value={phone}
@@ -182,10 +183,10 @@ export default function AddAdmin(props) {
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
+                  value.length < 26 ? validation(name, value) : ""
                 }
                 onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
+                  value.length < 26 ? handleChange(name, value) : ""
                 }
               />
             </Form.Row>
