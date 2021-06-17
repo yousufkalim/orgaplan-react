@@ -227,7 +227,7 @@ const Calender = (props) => {
     }
   };
 
-  const saveEvent = () => {
+  const saveEvent = async () => {
     let disableHoursSiteUnavailabilityDatesFlag = false;
     if (title !== "" && selectedCompany !== "") {
       /* start time*/
@@ -356,6 +356,58 @@ const Calender = (props) => {
               setAlertBoxTime(false);
             }, 1000);
           } else {
+            // let storageArea = props.location.mean?.location[0].storageArea
+            //   ? props.location.mean?.location[0].storageArea._id
+            //   : "";
+            // let deliveryArea = props.location.mean?.location[0].deliveryArea
+            //   ? props.location.mean?.location[0].deliveryArea._id
+            //   : "";
+            // const locationObjectstorageArea = {
+            //   storageArea: storageArea,
+            // };
+            // const locationObjectdeliveryArea = {
+            //   deliveryArea: deliveryArea,
+            // };
+            // console.log(
+            //   "get",
+            //   storageArea
+            //     ? locationObjectstorageArea
+            //     : locationObjectdeliveryArea,
+            // );
+            let startHour = moment(startTime).format("H");
+            let endHour = moment(endTime).format("H");
+            // create invoive
+            // 1Booking
+            var formdata = new FormData();
+
+            formdata.append("name", props.location.mean?.name);
+            formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
+            formdata.append("time", startTime);
+            formdata.append("type", "MEAN");
+            // props.location.mean?.meanType
+
+            formdata.append("isBillable", true);
+            formdata.append(
+              "price",
+              props.location.mean?.pricePerHour * (endHour - startHour),
+            );
+            formdata.append("isPaid", false);
+            formdata.append("companyId", selectedCompany);
+            formdata.append("siteId", adminStore.site.siteId._id);
+
+            // for (let [key, value] of formdata) {
+            //   console.log(`formdata in meanbook invoice ${key}: ${value}`);
+            // }
+            await GLOBALS.API({
+              method: "POST",
+              uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+              headers: {
+                Authorization: store.token,
+              },
+              body: formdata,
+            });
+            // invice end in 1meanbook
+
             dispatch(add_mean(DbElement));
             setTitle("");
             setSelectedCompany("");
@@ -373,6 +425,7 @@ const Calender = (props) => {
           }, 1000);
         } else {
           setShow(false);
+          console.log("props mean at 377", props.location.mean);
           dispatch(add_mean(DbElement));
           setTitle("");
           setSelectedCompany("");
@@ -588,9 +641,41 @@ const Calender = (props) => {
     dispatch(delete_mean(eventID));
     // dispatch(get_means());
   };
-  const handleValidateEvent = () => {
+  const handleValidateEvent = async () => {
     setpopoverShow(!popoverShow);
     dispatch(validateMean(eventID));
+    // creaet 1book invoice on validate mean
+    console.log("mean id", event.meanId._id);
+    let startHour = moment(event.start).format("H");
+    let endHour = moment(event.end).format("H");
+    var formdata1 = new FormData();
+    formdata1.append("name", event?.meanId?.name);
+    formdata1.append("date", moment(event.start).format("YYYY-MM-DD"));
+    formdata1.append("time", event.start);
+    formdata1.append("type", "MEAN");
+    // props.location.mean?.meanType
+    formdata1.append("isBillable", true);
+    formdata1.append(
+      "price",
+      event?.meanId?.pricePerHour * (endHour - startHour),
+    );
+    formdata1.append("isPaid", false);
+    formdata1.append("companyId", event.companyId?._id);
+    formdata1.append("siteId", adminStore.site.siteId._id);
+
+    // for (let [key, value] of formdata1) {
+    //   console.log(`formdata1 in meanbook delivery invoice ${key}: ${value}`);
+    // }
+    await GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+      headers: {
+        Authorization: store.token,
+      },
+      body: formdata1,
+    });
+    // end invoice
+
     onChangeMeans();
   };
   const handlePopoverShow = (event) => {

@@ -82,11 +82,67 @@ export default function DeliveryRequestStep3(props) {
             ? props.event.status
             : "VALIDATED",
       };
+      if (props.event) {
+        // console.log(props.event.status);
+        // console.log("formdata status", formdata.status);
+        // console.log("status pending", props.step1Data.selectedMeans);
+      } else {
+        if (props.step1Data.selectedMeans.length >= 1) {
+          if (props.step2Data.selectedRoutingMeans.length >= 1) {
+            // console.log(
+            //   "here is routing means",
+            //   props.step2Data.selectedRoutingMeans,
+            // );
+          }
+          if (props.step1Data.selectedMeans.length >= 1) {
+            props.step1Data.selectedMeans.map(async (m) => {
+              let startHour = moment(props.step1Data.date)
+                .set("hours", props.step1Data.startTime.split(":")[0])
+                .format("H");
+              let endHour = moment(props.step1Data.date)
+                .set("hours", props.step1Data.endTime.split(":")[0])
+                .format("H");
+
+              // create invoive
+              var formdata1 = new FormData();
+              formdata1.append("name", m.currentValue?.name);
+              formdata1.append(
+                "date",
+                moment(props.step1Data.date).format("YYYY-MM-DD"),
+              );
+              formdata1.append("time", props.step1Data.date);
+              formdata1.append("type", "MEAN");
+              formdata1.append("isBillable", true);
+              formdata1.append(
+                "price",
+                m.currentValue?.pricePerHour * (endHour - startHour),
+              );
+              formdata1.append("isPaid", false);
+              formdata1.append("companyId", props.step1Data?.company);
+              formdata1.append("siteId", m.currentValue?.siteId);
+
+              // for (let [key, value] of formdata1) {
+              //   console.log(
+              //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+              //   );
+              // }
+              await GLOBALS.API({
+                method: "POST",
+                uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+                headers: {
+                  Authorization: store.token,
+                },
+                body: formdata1,
+              });
+              // invice end
+            });
+          }
+        }
+      }
 
       props.step2Data.building !== "Exterior" &&
         (formdata["building"] = props.step2Data.building);
       props.step2Data.level && (formdata["level"] = props.step2Data.level);
-
       await GLOBALS.API({
         method: props.eventId ? "PUT" : "POST",
         uri: props.eventId
