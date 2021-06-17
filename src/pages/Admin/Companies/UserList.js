@@ -9,7 +9,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import SmallButton from "../../../components/SmallButton";
-
+import { Images } from "../../../assets/Assets";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -19,7 +19,8 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
-
+import uploadIcon from "../../../assets/images/upload.png";
+import IconButton from "@material-ui/core/IconButton";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -44,6 +45,7 @@ export default function UserList(props) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
@@ -55,7 +57,95 @@ export default function UserList(props) {
   const [userId, setUserId] = useState("");
   const [siteName, setSiteName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [uploadFlag, setUploadFlag] = useState(false);
 
+  const DonwloadFile = async () => {
+    var fileName = "uploads/company/csvTemplate.csv";
+    var url = GLOBALS.Constants.BASE_URL + fileName;
+    console.log(url);
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "blob";
+    req.onload = function () {
+      var blob = new Blob([req.response], {
+        type: "application/octetstream",
+      });
+      var isIE = false || !!document.documentMode;
+      if (isIE) {
+        window.navigator.msSaveBlob(blob, fileName);
+      } else {
+        var url = window.URL || window.webkitURL;
+        let link = url.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.setAttribute("download", fileName);
+        a.setAttribute("href", link);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    };
+    req.send();
+  };
+  const uploadCsvFile = async (file) => {
+    const formData = new FormData();
+    formData.append("companiesdata", file);
+    try {
+      const response = await GLOBALS.API({
+        method: "POST",
+        uri: `${GLOBALS.Constants.ADDCOMPANYDATA}/${filterCompanyId}`,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formData,
+      });
+      response.data.map(async (key, index) => {
+        try {
+          var formdata = new FormData();
+          // logo[0]?.file && formdata.append("image", logo[0].file);
+          formdata.append("firstName", key["Prénom *"]);
+          formdata.append("lastName", key["Nom *"]);
+          formdata.append("email", key["E-mail *"]);
+          formdata.append("phone", "+" + key["Telephone *"]);
+          formdata.append("siteId", adminStore.site.siteId._id);
+          formdata.append("companyId", filterCompanyId);
+          formdata.append("role", key["Role *"]);
+
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.ADD_COMPANY_USER,
+            headers: {
+              Authorization: store.token,
+            },
+            body: formdata,
+          });
+
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar(err.message, "error"),
+            ),
+          );
+        }
+        setUploadFlag(true);
+      });
+
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar("File Uploaded successfully ", "success"),
+        ),
+      );
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -63,8 +153,10 @@ export default function UserList(props) {
 
   useEffect(() => {
     filteredUser();
+    console.log("filteredUser");
+    setUploadFlag(false);
     // eslint-disable-next-line
-  }, [filterCompanyId, filterUserName]);
+  }, [filterCompanyId, filterUserName, uploadFlag]);
 
   async function filteredUser() {
     try {
@@ -284,6 +376,44 @@ export default function UserList(props) {
                 }
               }}
             />
+
+            <input
+              className={classes.input}
+              id="uploadPicture"
+              type="file"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                uploadCsvFile(e.target.files[0]);
+              }}
+            />
+
+            <label htmlFor="uploadPicture">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+              >
+                <img
+                  src={Images.uploadIcon}
+                  style={{ width: 18, height: 17 }}
+                  alt="Icon"
+                />
+              </IconButton>
+            </label>
+            <label style={{ "padding-top": "8px" }}>
+              <IconButton
+                style={{ padding: "6px", color: "#1890ff" }}
+                onClick={() => {
+                  DonwloadFile();
+                }}
+              >
+                <img
+                  src={Images.downloadIcon}
+                  style={{ width: 18, height: 17 }}
+                  alt="Icon"
+                />
+              </IconButton>
+            </label>
           </Form.Row>
         </Form.Row>
         <div className={classes.content}>
