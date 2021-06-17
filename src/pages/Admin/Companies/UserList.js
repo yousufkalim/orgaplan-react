@@ -13,6 +13,7 @@ import SmallButton from "../../../components/SmallButton";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
@@ -146,7 +147,7 @@ export default function UserList(props) {
       formdata.append("email", email);
       formdata.append("companyId", companyId);
       formdata.append("userId", userId);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       image.file && formdata.append("image", image.file);
 
       await GLOBALS.API({
@@ -225,7 +226,7 @@ export default function UserList(props) {
         );
         setEmail(editModel.userId.email);
         setSelectedRole(editModel.role);
-        setPhone(editModel.userId.phone);
+        setPhone(editModel.userId.phone.substring(1));
         setCompanyId(editModel.companyId._id);
         setImage({
           uri: GLOBALS.Constants.BASE_URL + editModel.userId.image,
@@ -315,7 +316,7 @@ export default function UserList(props) {
               />
             </Form.Row>
             <Form.Row justifyContent="center">
-              <FormInput
+              <PhoneBox
                 name="phone"
                 type="number"
                 value={phone}

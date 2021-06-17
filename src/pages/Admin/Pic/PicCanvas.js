@@ -107,7 +107,7 @@ const PicCanvas = (props) => {
       fetchSitePic();
     }
     // eslint-disable-next-line
-  }, [adminStore, rendering]);
+  }, [adminStore, rendering, level]);
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -209,7 +209,6 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
-      console.log(response.data,"responseData")
       let shapes = response.data.shapes;
       shapes.map((st) => handleColorAndNameOfShape(st));
       setShapes(shapes);
@@ -298,7 +297,6 @@ const PicCanvas = (props) => {
     }
   };
 
-
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
     if (
@@ -324,34 +322,31 @@ const PicCanvas = (props) => {
       // remove object
       // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
-    } 
-    
-    // else if (
-    //   selectedShape &&
-    //   getShape.type !== "MEAN" &&
-    //   getShape.type === "STORAGEAREA" &&
-    //   Object.keys(selectedShape).length > 0 &&
-    //   level
-    // ) {
-    //   let newShape = selectedShape;
-    //   var removeIndex = shapesArray
-    //     ?.map(function (item) {
-    //       return item._id;
-    //     })
-    //     .indexOf(newShape._id);
-    //   shapesArray[removeIndex].points = getShape.points;
+    } else if (
+      selectedShape &&
+      getShape.type !== "MEAN" &&
+      getShape.type === "STORAGEAREA" &&
+      selectedShape.type !== "BUILDING" &&
+      Object.keys(selectedShape).length > 0 &&
+      level
+    ) {
+      let newShape = selectedShape;
+      var removeIndex = shapesArray
+        ?.map(function (item) {
+          return item._id;
+        })
+        .indexOf(newShape._id);
+      shapesArray[removeIndex].points = getShape.points;
 
-    //   let updatedShape = shapesArray[removeIndex];
-    //   level && (selectedShapeReserver = selectedShape);
-    //   updatedShape && setShape(updatedShape);
-    //   setShapes(shapesArray);
-    //   updateShape(updatedShape);
-    //   // remove object
-    //   // removeIndex && shapesArray.splice(removeIndex, 1);
-    //   setSelectedShape("");
-    // } 
-    
-    else {
+      let updatedShape = shapesArray[removeIndex];
+      level && (selectedShapeReserver = selectedShape);
+      updatedShape && setShape(updatedShape);
+      setShapes(shapesArray);
+      updateLevelShape(updatedShape);
+      // remove object
+      // removeIndex && shapesArray.splice(removeIndex, 1);
+      setSelectedShape("");
+    } else {
       level && (selectedShapeReserver = selectedShape);
 
       getShape && setShape(getShape);
@@ -378,9 +373,22 @@ const PicCanvas = (props) => {
     } catch (error) {
       console.log(error, "update shape error");
     }
-
-    // setShapes(response.data.shapes)
-    // console.log(response,"response");
+  };
+  const updateLevelShape = async (newShape) => {
+    try {
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE_POINTS}/${level}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+      setRendering(response);
+    } catch (error) {
+      console.log(error, "update shape error");
+    }
   };
 
   const handleClick = (id, shape) => {
@@ -401,7 +409,6 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
-
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
@@ -558,8 +565,7 @@ const PicCanvas = (props) => {
                 }}
               />
             )}
-
-            {selectedShape && selectedShape.type !== "BUILDING" && level && (
+            {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
               <>
                 <Button
                   text="Show Exterior"
@@ -574,6 +580,8 @@ const PicCanvas = (props) => {
 
                     setShapes(sitePic.shapes);
                     setLevel("");
+                    setSelectedShape("");
+                    setselectedBuilding("");
                     selectedShapeReserver = null;
                   }}
                 />
@@ -613,15 +621,20 @@ const PicCanvas = (props) => {
                   />
                 )}
                 <Form.Row>
-                  <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal(true);
-                    }}
-                  >
-                    <Pencil className={classes.infoIcon} />
-                  </IconButton>
+                  {level === "" ? (
+                    <IconButton
+                      disabled={loading}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal(true);
+                      }}
+                    >
+                      <Pencil className={classes.infoIcon} />
+                    </IconButton>
+                  ) : (
+                    <></>
+                  )}
+
                   {selectedShape.type === "MEAN" ? (
                     <>
                       <NavLink
@@ -676,7 +689,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} DELIVERY AREA`}
+              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -700,7 +713,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} STORAGE AREA`}
+              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -724,7 +737,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} BUILDING`}
+              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -746,7 +759,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} MEAN`}
+              title={`${shape ? "ADD" : "EDIT"} MEAN`}
               open={modal}
               onClose={() => {
                 checkShape();

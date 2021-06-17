@@ -72,10 +72,9 @@ export default function DeliveryRequest(props) {
         uri: `${GLOBALS.Constants.GET_STORAGE_AREAS_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
-      setMeans(means.data);
 
       deliveryAreas.data.forEach((val, index) => {
-        val.unavailability?.map((key) => {
+        val.unavailabilityDates?.map((key) => {
           if (key.dayOff === true) {
             if (moment(props.date).isSame(key.date, "day")) {
               deliveryAreas.data[index].isDisable = true;
@@ -89,6 +88,15 @@ export default function DeliveryRequest(props) {
           if (key1.dayOff === true) {
             if (moment(props.date).isSame(key1.date, "day")) {
               storageAreas.data[index1].isDisable = true;
+            }
+          }
+        });
+      });
+      means.data.forEach((val1, index1) => {
+        val1.unavailability?.map((key1) => {
+          if (key1.dayOff === true) {
+            if (moment(props.date).isSame(key1.date, "day")) {
+              means.data[index1].isDisable = true;
             }
           }
         });
@@ -108,23 +116,12 @@ export default function DeliveryRequest(props) {
               accumulator.push({
                 value: currentValue._id,
                 label: currentValue.name,
+                unavailability: currentValue.unavailabilityDates,
               });
             }
           }
           return accumulator;
         }, []),
-      );
-      setCompanies(
-        response.data?.map((company) => ({
-          label: company.companyId.name,
-          value: company.companyId._id,
-        })),
-      );
-      setTrades(
-        adminStore.site.siteId.trades?.map((trade) => ({
-          label: trade,
-          value: trade,
-        })),
       );
       setStorageAreas(
         //deliveryArea
@@ -145,6 +142,7 @@ export default function DeliveryRequest(props) {
                     label: currentValue.name,
                     level: currentValue.level,
                     companies: currentValue.companies,
+                    unavailability: currentValue.unavailability,
                   });
                 }
               }
@@ -154,6 +152,41 @@ export default function DeliveryRequest(props) {
           return accumulator;
         }, []),
       );
+      setMeans(
+        means.data.reduce((accumulator, currentValue) => {
+          if (
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
+              "[]",
+            )
+          ) {
+            if (!currentValue.isDisable) {
+              // accumulator.push({
+              //   value: currentValue._id,
+              //   label: currentValue.name,
+              //   unavailability: currentValue.unavailability,
+              // });
+              accumulator.push(currentValue);
+            }
+          }
+          return accumulator;
+        }, []),
+      );
+      setCompanies(
+        response.data?.map((company) => ({
+          label: company.companyId.name,
+          value: company.companyId._id,
+        })),
+      );
+      setTrades(
+        adminStore.site.siteId.trades?.map((trade) => ({
+          label: trade,
+          value: trade,
+        })),
+      );
+
       setBuildings(buildings.data.items);
       props.eventId && fetchEvent();
       setLoading(false);

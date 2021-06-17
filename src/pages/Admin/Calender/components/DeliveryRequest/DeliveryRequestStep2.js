@@ -10,7 +10,6 @@ import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 export default function AddSiteStep1(props) {
-  console.log(props);
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -19,6 +18,7 @@ export default function AddSiteStep1(props) {
   const [level, setLevel] = useState("");
   const [levels, setLevels] = useState([]);
   const [storageArea, setStorageArea] = useState("");
+  const [propsFilterStorageArea, setPropsFilterStorageArea] = useState();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [means, setMeans] = useState([]);
@@ -26,6 +26,35 @@ export default function AddSiteStep1(props) {
   const [rendered, setRendered] = useState(false);
   const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
 
+  const filterUnavailableStorageArea = () => {
+    let tempArray = props.storageAreas.filter((filter, index) => {
+      let flag = 0;
+      filter.unavailability?.map((key, index) => {
+        if (key.dayOff === false) {
+          let DBStartTime = moment(key.date).set("hours", key.startHour);
+          let DBEndTime = moment(key.date).set("hours", key.endHour);
+          if (
+            moment(startTime).isBetween(
+              DBStartTime,
+              DBEndTime,
+              undefined,
+              "[]",
+            ) ||
+            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
+          ) {
+            // matched
+            flag = 1;
+          } else {
+            // not matched
+          }
+        }
+      });
+      if (flag === 0) {
+        return filter;
+      }
+    });
+    setPropsFilterStorageArea(tempArray);
+  };
   useEffect(() => {
     if (props.step1Data) {
       props.step1Data.startTime &&
@@ -119,25 +148,56 @@ export default function AddSiteStep1(props) {
     getAllMeanBooking.data.map((meanB, Bindex) => {
       meanArray = meanArray.filter((dmean, dindex) => {
         if (
-          dmean.value === meanB._id &&
-          moment(meanB.startDate).isBetween(
-            startTime,
-            endTime,
-            undefined,
-            "[]",
-          ) &&
+          (dmean.value === meanB._id &&
+            moment(meanB.startDate).isBetween(
+              startTime,
+              endTime,
+              undefined,
+              "[]",
+            )) ||
+          // remove &&
           moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
         ) {
           //match mean remove
-          //  console.log("mean are matched");
         } else {
           // return filtered mean
           return dmean;
         }
       });
     });
-    // console.log(meanBooking);
     // END checking mean Availabilty in Mean Booking
+
+    // check mean Unavailability   //
+    meanArray = meanArray.filter((filter, index) => {
+      let flag = 0;
+      console.log(filter);
+      filter.unavailability?.map((key, index) => {
+        if (key.dayOff === false) {
+          let DBStartTime = moment(key.date).set("hours", key.startHour);
+          let DBEndTime = moment(key.date).set("hours", key.endHour);
+          if (
+            moment(startTime).isBetween(
+              DBStartTime,
+              DBEndTime,
+              undefined,
+              "[]",
+            ) ||
+            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
+          ) {
+            // matched
+            console.log("flag on");
+            flag = 1;
+          } else {
+            // not matched
+            console.log("flag off");
+          }
+        }
+      });
+      if (flag === 0) {
+        return filter;
+      }
+    });
+    // check mean unavailability  //
     return meanArray;
   };
   useEffect(() => {
@@ -158,6 +218,7 @@ export default function AddSiteStep1(props) {
           value: currentValue._id,
           label: currentValue.name,
           currentValue,
+          unavailability: currentValue.unavailability,
         });
       }
       return accumulator;
@@ -167,8 +228,9 @@ export default function AddSiteStep1(props) {
     delivery_means.then((mean) => {
       setMeans(mean);
     });
+    filterUnavailableStorageArea();
     // eslint-disable-next-line
-  }, [storageArea, startTime, endTime]);
+  }, [props, storageArea, startTime, endTime]);
 
   useEffect(() => {
     if (building) {
@@ -218,7 +280,7 @@ export default function AddSiteStep1(props) {
 
   const selectedCompanyId = props.step1Data.company;
   const filterStorageAreas = [];
-  props.storageAreas.forEach((val) => {
+  propsFilterStorageArea?.forEach((val) => {
     val.companies.map((cP) => {
       if (cP === selectedCompanyId) {
         filterStorageAreas.push(val);
