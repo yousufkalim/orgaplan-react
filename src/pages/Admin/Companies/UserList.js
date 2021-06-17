@@ -57,6 +57,7 @@ export default function UserList(props) {
   const [userId, setUserId] = useState("");
   const [siteName, setSiteName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [uploadFlag, setUploadFlag] = useState(false);
 
   const DonwloadFile = async () => {
     var fileName = "uploads/company/csvTemplate.csv";
@@ -97,7 +98,6 @@ export default function UserList(props) {
         },
         body: formData,
       });
-      console.log(response);
       response.data.map(async (key, index) => {
         try {
           var formdata = new FormData();
@@ -128,6 +128,7 @@ export default function UserList(props) {
             ),
           );
         }
+        setUploadFlag(true);
       });
 
       setLoading(false);
@@ -136,7 +137,6 @@ export default function UserList(props) {
           Actions.notistack.snackbar("File Uploaded successfully ", "success"),
         ),
       );
-      getData();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -153,8 +153,10 @@ export default function UserList(props) {
 
   useEffect(() => {
     filteredUser();
+    console.log("filteredUser");
+    setUploadFlag(false);
     // eslint-disable-next-line
-  }, [filterCompanyId, filterUserName]);
+  }, [filterCompanyId, filterUserName, uploadFlag]);
 
   async function filteredUser() {
     try {
