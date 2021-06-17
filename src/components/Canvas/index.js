@@ -86,9 +86,7 @@ class App extends Component {
     // this.props.onChange(this.state.shapes);
 
     this.props.pdf && this.showPdf(this.props.pdf);
-    if (!this.props.pdf) {
-      this.setState({ isLoading: false });
-    }
+    
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -120,6 +118,9 @@ class App extends Component {
 
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
+    }
+    if (!this.props.pdf) {
+      this.setState({ isLoading: false });
     }
   }
 
