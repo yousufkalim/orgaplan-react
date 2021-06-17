@@ -84,7 +84,7 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-console.log(this.props.shapes,"this.props.shapes")
+
     this.props.pdf && this.showPdf(this.props.pdf);
     if (this.props.shapes) {
       const newArray = [];
@@ -102,14 +102,15 @@ console.log(this.props.shapes,"this.props.shapes")
                 })
                 .indexOf(tempShape._id);
               removeIndex && this.props.shapes.splice(removeIndex, 1);
-            } else {
+            }
+            
               const image = await loadImage(
                 `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
               );
               tempShape.image = image;
-            }
+            
           }
-
+      console.log(tempShape,"tempShape")
           newArray.push(tempShape);
           return tempShape;
         }),

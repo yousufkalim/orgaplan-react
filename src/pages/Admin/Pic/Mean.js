@@ -172,7 +172,7 @@ export default function AddMean(props) {
       formdata.append("color", color);
       image[0] && image[0].file
         ? formdata.append("image", image[0].file)
-        : formdata.append("image", "uploads/mean/1623669914133-grey.png");
+        : formdata.append("image", "uploads/mean/grey.png");
 
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
@@ -212,8 +212,8 @@ export default function AddMean(props) {
         propShapes[inde].image = imageData.image;
         propShape.image = imageData.image;
       } else {
-        propShapes[inde].image = "uploads/mean/1623669914133-grey.png";
-        propShape.image = "uploads/mean/1623669914133-grey.png";
+        propShapes[inde].image = "uploads/mean/grey.png";
+        propShape.image = "uploads/mean/grey.png";
       }
       propShapes[inde].color = color;
       propShape.color = color;
@@ -261,7 +261,7 @@ export default function AddMean(props) {
       );
     }
   };
-  var obj = [{ uri: "uploads/mean/1623669914133-grey.png" }];
+  var obj = [{ uri: "uploads/mean/grey.png" }];
   return (
     <div className={classes.content}>
       <Form.Form>
