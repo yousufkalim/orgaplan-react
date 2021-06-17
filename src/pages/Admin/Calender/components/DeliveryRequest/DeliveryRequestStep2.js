@@ -157,6 +157,7 @@ export default function AddSiteStep1(props) {
         accumulator.push({
           value: currentValue._id,
           label: currentValue.name,
+          currentValue,
         });
       }
       return accumulator;
@@ -199,10 +200,16 @@ export default function AddSiteStep1(props) {
   }, [building]);
   async function onSubmit(e) {
     e.preventDefault();
+    let selectedRoutingMeans = means.filter((o1) =>
+      routingMeans?.some((o2) => o1.value === o2),
+    );
+    console.log("selectedRoutingMeans", selectedRoutingMeans);
+
     const values = {
       building,
       level,
       storageArea,
+      selectedRoutingMeans,
       routingMeans,
     };
     props.setStep2Data(values);

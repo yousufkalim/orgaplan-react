@@ -305,7 +305,7 @@ export default function AddInvoice(props) {
                     href={GLOBALS.Constants.BASE_URL + invoice.file}
                     target="_blank"
                   >
-                    Downlod
+                    Download
                   </a>
                 </div>
                 <IconButton onClick={() => setPdf(null)}>

@@ -54,6 +54,10 @@ export default function AddSiteStep1(props) {
     let deliveryMeanArray = [];
     let meanBooking = [];
     if (meanArray.length !== 0) {
+      // if edit validate DR then
+      // if (props.editDelivery) {
+      //   return meanArray;
+      // }
       // Start  checking mean Availabilty in Delivery Request
       const getAllDelivery = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
@@ -167,7 +171,6 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
-  //console.log(date, startTime, endTime);
   useEffect(() => {
     let mean_array = props.means.reduce((accumulator, currentValue) => {
       if (
@@ -185,12 +188,15 @@ export default function AddSiteStep1(props) {
         accumulator.push({
           value: currentValue._id,
           label: currentValue.name,
+          currentValue: currentValue,
         });
       }
 
       return accumulator;
     }, []);
+
     let delivery_means = getAllDeliveryMean(mean_array);
+
     delivery_means.then((mean) => {
       setMeans(mean);
     });
@@ -200,10 +206,14 @@ export default function AddSiteStep1(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
+    let selectedMeans = means.filter((o1) =>
+      liftingMeans?.some((o2) => o1.value === o2),
+    );
     const values = {
       company,
       deliveryArea,
       date,
+      selectedMeans,
       startTime: moment(startTime).format("HH:mm"),
       endTime: moment(endTime).format("HH:mm"),
       trades,
