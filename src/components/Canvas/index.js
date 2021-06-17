@@ -84,19 +84,31 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
+
     this.props.pdf && this.showPdf(this.props.pdf);
-    if (!this.props.pdf) {
-      this.setState({ isLoading: false });
-    }
+    
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
         this.props.shapes.map(async (tempShape) => {
           if (tempShape.image && typeof tempShape.image === "string") {
-            const image = await loadImage(
-              `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
-            );
-            tempShape.image = image;
+            let response = await GLOBALS.API({
+              method: "GET",
+              uri: `${GLOBALS.Constants.GET_MEAN_PATH}/?path=${tempShape.image}`,
+            });
+            if (response.data !== "true") {
+              let removeIndex = this.props.shapes
+                ?.map(function (item) {
+                  return item._id;
+                })
+                .indexOf(tempShape._id);
+              removeIndex && this.props.shapes.splice(removeIndex, 1);
+            } else {
+              const image = await loadImage(
+                `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
+              );
+              tempShape.image = image;
+            }
           }
 
           newArray.push(tempShape);
@@ -107,7 +119,9 @@ class App extends Component {
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
-   
+    if (!this.props.pdf) {
+      this.setState({ isLoading: false });
+    }
   }
 
   // ******************
@@ -150,7 +164,6 @@ class App extends Component {
   };
   showPdf = async (uri) => {
     const PDFJS = window.pdfjsLib;
-
     try {
       var _PDF_DOC = await PDFJS.getDocument({
         url: uri,
@@ -193,8 +206,13 @@ class App extends Component {
       // this.setState({ tempImage: "" });
 
       canvas.display = "none";
+    return true
+
     } catch (error) {
-      console.log("error", error.message);
+      console.log("error pdf", error.message);
+
+    return false
+
     }
   };
 
