@@ -312,7 +312,6 @@ const PicCanvas = (props) => {
     } else {
       level && (selectedShapeReserver = selectedShape);
       setSelectedShape("");
-
       getShape && setShape(getShape);
 
       setShapes(shapesArray);
