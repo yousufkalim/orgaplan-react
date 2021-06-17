@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../../globals";
@@ -22,12 +23,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddSite(props) {
   const classes = useStyles();
-
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState("");
   const [step2Data, setStep2Data] = useState("");
   const [step2SubmittedData, setStep2SubmittedData] = useState("");
+  const history = useHistory();
+  const prevstep = usePrevious(step);
+  // Hook
+  function usePrevious(value) {
+    // The ref object is a generic container whose current property is mutable ...
+    // ... and can hold any value, similar to an instance property on a class
+    const ref = useRef();
+    // Store current value in ref
+    useEffect(() => {
+      ref.current = value;
+    }, [value]); // Only re-run if value changes
+    // Return previous value (happens before update in useEffect above)
+    return ref.current;
+  }
 
+  if (prevstep === 3) {
+    Object.keys(step2Data.data).map((key) => {
+      if (key === "_id") {
+        history.push(`/sites/edit-site/${step2Data.data[key]}`);
+      }
+    });
+  }
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -53,7 +74,7 @@ export default function AddSite(props) {
             step2SubmittedData={step2SubmittedData}
             setStep2SubmittedData={setStep2SubmittedData}
           />
-        ) : step === 2 ? (
+        ) : step === 2 && step1Data !== "" ? (
           <AddSiteStep2
             {...props}
             step={step}
@@ -65,7 +86,7 @@ export default function AddSite(props) {
             step2SubmittedData={step2SubmittedData}
             setStep2SubmittedData={setStep2SubmittedData}
           />
-        ) : (
+        ) : step === 3 && step1Data !== "" && step2Data !== "" ? (
           <AddSiteStep3
             {...props}
             step={step}
@@ -77,6 +98,8 @@ export default function AddSite(props) {
             step2SubmittedData={step2SubmittedData}
             setStep2SubmittedData={setStep2SubmittedData}
           />
+        ) : (
+          <>{setStep(prevstep)}</>
         )}
       </div>
     </div>

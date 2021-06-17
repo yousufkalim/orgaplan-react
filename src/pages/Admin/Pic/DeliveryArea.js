@@ -41,7 +41,7 @@ export default function DeliveryArea(props) {
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
   const [addresses, setAddresses] = useState([]);
-  const [unavailability, setUnavailabilities] = useState([]);
+  const [unavailabilityDates, setUnavailabilityDates] = useState([]);
   const [endDate, setEndDate] = useState("");
   const [update, setUpdate] = useState(false);
   const [vehicles, setVehicles] = useState([]);
@@ -83,7 +83,14 @@ export default function DeliveryArea(props) {
         setStartDate(props.selectedShape.deliveryArea.availability.start);
         setEndDate(props.selectedShape.deliveryArea.availability.end || "");
         setAddresses(addressAr);
-        setUnavailabilities(props.selectedShape.deliveryArea.unavailability);
+        setUnavailabilityDates(
+          props.selectedShape.deliveryArea.unavailabilityDates?.map(
+            (key, index) => {
+              delete key._id;
+              return key;
+            },
+          ),
+        );
         setVehicles(vehiclesAr);
         setNotificationPriorToDays(
           props.selectedShape.deliveryArea.notificationPriorToDays,
@@ -112,7 +119,7 @@ export default function DeliveryArea(props) {
       setAddresses(value);
     } else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
-      setUnavailabilities(value);
+      setUnavailabilityDates(value);
     } else if (name === "vehicles") setVehicles(value);
     else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
@@ -140,7 +147,7 @@ export default function DeliveryArea(props) {
       const formdata = JSON.stringify({
         name,
         addresses: addressesAr,
-        unavailability,
+        unavailabilityDates,
         color: color,
         availability: {
           start: startDate,
@@ -160,7 +167,6 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: formdata,
       });
-    
 
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
@@ -191,7 +197,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("")
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -264,10 +270,10 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
-              values={unavailability}
+              values={unavailabilityDates}
               style={GLOBALS.Styles.inputWidth}
-              unavailabilityDates={unavailability}
-              setUnavailabilityDates={setUnavailabilities}
+              unavailabilityDates={unavailabilityDates}
+              setUnavailabilityDates={setUnavailabilityDates}
               startRange={startDate}
               endRange={moment(endDate).add(1, "days")}
               onChange={(values) => handleChange("unavailabilityDates", values)}

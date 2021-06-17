@@ -37,14 +37,23 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     fetchData();
+    fetchStateData();
     // eslint-disable-next-line
-  }, []);
+  }, [props.setStep1Data]);
 
+  const fetchStateData = () => {
+    if (props.step1Data) {
+      Object.keys(props.step1Data).map((key) => {
+        handleChange(key, props.step1Data[key]);
+      });
+    }
+  };
   useEffect(() => {
     clients.map((client) =>
-      client.adminIds.map(
-        (admin) =>
-          admin._id === adminId && setClientName(client.companyId.name),
+      client.adminIds.map((admin) =>
+        adminId !== ""
+          ? admin._id === adminId && setClientName(client.companyId.name)
+          : setClientName(""),
       ),
     );
   }, [clients, adminId]);
@@ -54,13 +63,16 @@ export default function AddSiteStep1(props) {
       const zacsResult = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ZACS}`,
       });
+
       const clientsResult = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
       });
+
       const zacsArray = zacsResult.data.items.map((zac) => ({
         value: zac._id,
         label: zac.name,
       }));
+
       const adminsArray = [];
       clientsResult.data.items.map((client) => {
         client.adminIds.map((admin) =>
@@ -69,12 +81,14 @@ export default function AddSiteStep1(props) {
             label: `${admin.firstName} ${admin.lastName}`,
           }),
         );
+
         return true;
       });
+
       setZacs(zacsArray);
       setAdmins(adminsArray);
       setClients(clientsResult.data.items);
-      setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
+      // setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -94,8 +108,10 @@ export default function AddSiteStep1(props) {
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
-    } else if (name === "trades") setTrades(value);
-    else if (name === "penaltyforLateDelivery")
+    } else if (name === "trades") {
+      setUpdate((st) => !st);
+      setTrades(value);
+    } else if (name === "penaltyforLateDelivery")
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
@@ -212,7 +228,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="TRADES : " />
+          <FormLabel bold primary="TRADES* : " />
           <MultiAdderInput
             name="trades"
             values={trades}
@@ -259,7 +275,13 @@ export default function AddSiteStep1(props) {
             text="VALIDATE"
             fullWidth={false}
             loading={loading}
-            disabled={loading || !name || !adminId || addresses.length === 0}
+            disabled={
+              loading ||
+              !name ||
+              !adminId ||
+              trades.length === 0 ||
+              addresses.length === 0
+            }
           />
         </Form.ButtonContainer>
       </Form.Form>

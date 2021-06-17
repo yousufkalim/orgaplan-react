@@ -185,7 +185,7 @@ export default function Home(props) {
         uri: `${GLOBALS.Constants.DASHBOARD}/invoices`,
       });
       setInvoices(result.data);
-      fetchInvoicesArray(result.data.invoices);
+      fetchInvoicesArray(result.data?.invoices);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -279,11 +279,11 @@ export default function Home(props) {
   async function fetchIncidentArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data.siteIncidents.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+    data?.siteIncidents?.map((item, index) => {
+      return siteTemp.push({ [item?.siteId?.name]: item.count });
     });
 
-    data.clientIncidents?.map((item, index) => {
+    data?.clientIncidents?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
     });
     setSiteIncidentArray(siteTemp);
@@ -292,11 +292,11 @@ export default function Home(props) {
   async function fetchMeanArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data.siteMean.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+    data?.siteMean.map((item, index) => {
+      return siteTemp.push({ [item?.siteId.name]: item.count });
     });
 
-    data.clientMean?.map((item, index) => {
+    data?.clientMean?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
     });
     setSiteMeanArray(siteTemp);
@@ -306,13 +306,15 @@ export default function Home(props) {
   async function fetchDeliveriesArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data.siteDeliveries.map((item, index) => {
-      return siteTemp.push({ [item.siteId.name]: item.count });
+   
+    data?.siteDeliveries.map((item, index) => {
+      return siteTemp.push({ [item?.siteId.name]: item.count });
     });
 
-    data.clientDeliveries?.map((item, index) => {
+    data?.clientDeliveries?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
     });
+    
     setSiteDeliveryArray(siteTemp);
     setClientDeliveryArray(clientTemp);
   }
@@ -320,11 +322,11 @@ export default function Home(props) {
   async function fetchEndOfSubscriptionArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data.site.map((item, index) => {
+    data?.site.map((item, index) => {
       return siteTemp.push({ [item.name]: item.daysLeft });
     });
 
-    data.client.map((item, index) => {
+    data?.client.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.daysLeft });
     });
     setSubSiteArray(siteTemp);
@@ -332,9 +334,9 @@ export default function Home(props) {
   }
   async function fetchInvoicesArray(data) {
     const temp = [];
-    data.map((item, index) => {
+    data?.map((item, index) => {
       const invoiceObject = {
-        [item.siteId.name]: item.totalAmount,
+        [item?.siteId.name]: item.totalAmount,
       };
       return temp.push(invoiceObject);
     });
@@ -343,11 +345,11 @@ export default function Home(props) {
   async function fetchCustomerRateArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data.clientPerSite.map((item, index) => {
+    data?.clientPerSite.map((item, index) => {
       return siteTemp.push({ [item.comapanyName]: item.amount });
     });
 
-    data.masterClient.map((item, index) => {
+    data?.masterClient.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.amount });
     });
     setSiteCustomerRateArray(siteTemp);
@@ -361,12 +363,12 @@ export default function Home(props) {
         {
           title: "CLIENTS",
           tabs: false,
-          total: data && data.clients.total,
+          total: data && data?.clients.total,
           path: "/clients",
           text: "Clients list",
           items: [
-            { "Delivery Module": data && data.clients.delivery },
-            { "Lockers module": data && data.clients.lockers },
+            { "Delivery Module": data && data?.clients.delivery },
+            { "Lockers module": data && data?.clients.lockers },
           ],
         },
         {

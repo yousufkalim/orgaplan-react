@@ -59,7 +59,7 @@ export default function DeliveryArea(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [props]);
 
   async function fetchData() {
     try {
@@ -92,11 +92,18 @@ export default function DeliveryArea(props) {
         setMeans(means.data.map((item) => item.name));
         setName(props.selectedShape.storageArea.name);
         setIsFull(props.selectedShape.storageArea.isFull);
-        setColor(props.selectedShape.storageArea.color);
+        props.selectedShape.storageArea.color !== undefined
+          ? setColor(props.selectedShape.storageArea.color)
+          : setColor(color);
         setStartDate(props.selectedShape.storageArea.availability.start);
         setEndDate(props.selectedShape.storageArea.availability.end || "");
         setSelectedDeliveryAreas(props.selectedShape.storageArea.deliveryArea);
-        setUnavailabilities(props.selectedShape.storageArea.unavailability);
+        setUnavailabilities(
+          props.selectedShape.storageArea.unavailability?.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setSelectedCompanies(props.selectedShape.storageArea.companies);
         setNotificationPriorToDays(
           props.selectedShape.storageArea.notificationPriorToDays,
@@ -210,7 +217,7 @@ export default function DeliveryArea(props) {
 
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("")
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -376,7 +383,7 @@ export default function DeliveryArea(props) {
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
-              values={notificationTo}
+              values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
               validateError="Invalid Email"
               placeholder="Enter email address"

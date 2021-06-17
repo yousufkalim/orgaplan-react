@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -100,11 +101,13 @@ export default function AddUser(props) {
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("siteId", adminStore.site.siteId._id);
       formdata.append("companyId", selectedCompany);
       formdata.append("role", selectedRole);
-
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdata in add user ${key}: ${value}`);
+      // }
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.ADD_COMPANY_USER,
@@ -126,6 +129,11 @@ export default function AddUser(props) {
     }
   };
 
+  function inputChange(name, value) {
+    if (name === "phone") {
+      setPhone(value);
+    }
+  }
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -151,7 +159,7 @@ export default function AddUser(props) {
                       setEmail(item.email);
                       setFirstName(item.firstName);
                       setLastName(item.lastName);
-                      setPhone(item.phone);
+                      setPhone(parseInt(item.phone));
                       setLogo([{ uri: item.image }]);
                       setDisableUser(true);
                     } else {
@@ -185,16 +193,17 @@ export default function AddUser(props) {
                   />
                 )}
               />
-              <FormInput
+              <PhoneBox
                 name="phone"
                 type="number"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
-                placeholder="Téléphone"
+                maxLength="25"
                 value={phone}
                 disabled={disableUser}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
+                placeholder="Téléphone"
+                onChange={({ target: { name, value } }) =>
+                  value.length < 26 ? inputChange(name, value) : ""
+                }
               />
             </Form.Row>
           </Form.Row>
@@ -217,6 +226,18 @@ export default function AddUser(props) {
                 style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
                 onChange={(e) => setLastName(e.target.value)}
               />
+              {/* 
+              <FormMultipleUpload
+                name="logo"
+                values={logo}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(values) => setLogo(values)}
+              /> */}
+            </Form.Row>
+          </Form.Row>
+          <Form.Row>
+            <FormLabel bold primary="IMAGE " />
+            <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
                 values={logo}

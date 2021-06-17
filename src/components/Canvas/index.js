@@ -6,7 +6,7 @@ import GLOBALS from "../../globals";
 import _ from "lodash";
 
 export const width = 1000;
-export const height = 600;
+export const height = 420;
 
 const loadImage = (data) =>
   new Promise((res, rej) => {
@@ -47,7 +47,6 @@ class App extends Component {
     shapeColor: "",
     meanColor: "",
   };
-
   // LifeCycle Hooks
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.tempImage !== this.state.tempImage) {
@@ -55,6 +54,7 @@ class App extends Component {
     } else if (prevState.shapes !== this.state.shapes) {
     } else if (!_.isEqual(prevProps.shapes, this.props.shapes)) {
       const newArray = [];
+      this.setState({ meanCheck: "" });
       await Promise.all(
         this.props.shapes &&
           this.props.shapes.map(async (tempShap) => {
@@ -63,6 +63,7 @@ class App extends Component {
               const image = await loadImage(
                 `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
               );
+
               tempShape.image = image;
             }
             newArray.push(tempShape);
@@ -83,25 +84,41 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     // this.props.onChange(this.state.shapes);
-    // console.log("this.props.shapes", this.props.shapes);
+
+    this.props.pdf && this.showPdf(this.props.pdf);
+    
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
         this.props.shapes.map(async (tempShape) => {
           if (tempShape.image && typeof tempShape.image === "string") {
-            const image = await loadImage(
-              `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
-            );
-            tempShape.image = image;
+            let response = await GLOBALS.API({
+              method: "GET",
+              uri: `${GLOBALS.Constants.GET_MEAN_PATH}/?path=${tempShape.image}`,
+            });
+            if (response.data !== "true") {
+              let removeIndex = this.props.shapes
+                ?.map(function (item) {
+                  return item._id;
+                })
+                .indexOf(tempShape._id);
+              removeIndex && this.props.shapes.splice(removeIndex, 1);
+            } else {
+              const image = await loadImage(
+                `${GLOBALS.Constants.BASE_URL}${tempShape.image}`,
+              );
+              tempShape.image = image;
+            }
           }
+
           newArray.push(tempShape);
           return tempShape;
         }),
       );
+
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
-    this.props.pdf && this.showPdf(this.props.pdf);
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
     }
@@ -138,6 +155,9 @@ class App extends Component {
         meanShapeId: "",
         points: [],
       });
+      this.props.setSelectedShape("");
+      this.props.setRendering("hello");
+
       this.props.onClear();
       //Do whatever when esc is pressed
     }
@@ -156,12 +176,16 @@ class App extends Component {
       } else {
         rotate = (page.rotate + 270) % 360;
       }
+
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
-      var scale = Math.min(
-        canvas.height / unscaledViewport.height,
-        canvas.width / unscaledViewport.width,
-      );
+      var scale;
+      if (unscaledViewport.height > unscaledViewport.width) {
+        scale = Math.min(canvas.height, canvas.width / unscaledViewport.height);
+      } else {
+        scale = Math.min(canvas.height, canvas.width / unscaledViewport.width);
+      }
+
       var viewport = page.getViewport(scale, rotate);
 
       var render_context = {
@@ -176,13 +200,19 @@ class App extends Component {
       catImage2.onload = () => {
         this.setState({ image: catImage2 });
       };
+
       this.setState({ isLoading: false });
 
       // this.setState({ tempImage: "" });
 
       canvas.display = "none";
+    return true
+
     } catch (error) {
-      console.log("error", error.message);
+      console.log("error pdf", error.message);
+
+    return false
+
     }
   };
 
@@ -211,7 +241,6 @@ class App extends Component {
   };
   handleDisableShape = (id) => {
     const { shapes, shapeId, shapeColor, meanShapeId } = this.state;
-
     if (meanShapeId) {
       let tempArr = shapes.find((sp) => sp._id === meanShapeId);
       if (tempArr) {
@@ -237,14 +266,14 @@ class App extends Component {
           if (shapeId !== id) {
             tempArr2.color = shapeColor;
             tempArr2.opacity = 1;
+          } else {
+            return;
           }
-          // else {
-          //   tempArr.color = "white";
-          // }
         }
       }
     }
     this.setState({ checkDisable: false, shapeId: id });
+    return;
   };
   handleDeleteShape = () => {
     const { shapes, shapeId } = this.state;
@@ -287,7 +316,6 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    this.props && this.props.setSelectedShape("");
     if (e.target.value === "MEAN") {
       this.setState({
         meanCheck: e.target.value,
@@ -317,7 +345,8 @@ class App extends Component {
         meanFinish,
         meanPoints,
         image,
-        shapeId,meanShapeId
+        shapeId,
+        meanShapeId,
       },
       getMousePos,
     } = this;
@@ -336,8 +365,7 @@ class App extends Component {
         } else {
           return;
         }
-      }
-      if (meanShapeId) {
+      } else if (meanShapeId) {
         let tempArr = shapes.find((sp) => sp._id === meanShapeId);
         if (tempArr) {
           tempArr.color = this.state.meanColor;
@@ -384,9 +412,11 @@ class App extends Component {
       } else {
         checkMean = false;
       }
-      // s********************************
-      // s********************************
+      // ********************************
+      // ********************************
     }
+    // console.log(meanCheck,"meanCheck")
+
     if (meanCheck !== "" && image !== null) {
       if (finishDisable !== true && checkMean !== true) {
         if (meanCheck === "MEAN") {
@@ -1012,7 +1042,6 @@ class App extends Component {
     let y2 = arr[3];
     let x3 = arr[4];
     let y3 = arr[5];
-
     let x = p1;
     let y = p2;
 
@@ -1029,7 +1058,11 @@ class App extends Component {
     /* Calculate AreaOfTriangle of triangle PAB */
     let A3 = AreaOfTriangle(x1, y1, x2, y2, x, y);
     /* Check if sum of A1, A2 and A3 is same as A */
-    return A === A1 + A2 + A3;
+    let check = false;
+    if (A === A1 + A2 + A3) {
+      check = true;
+    }
+    return check;
   };
 
   render() {
@@ -1056,15 +1089,16 @@ class App extends Component {
       handleConvaCircleClick,
       handleConvaCircleImageClick,
     } = this;
+
     return (
-      <div className="bg-white">
+      <div>
         <Header
           meanCheck={meanCheck}
           handleElementChange={handleElementChange}
           image={image}
           level={this.props.level}
         />
-        <div className="py-2 px-4">
+        <div className="py-2 px-4" id="stage-parent">
           <ConvaExample
             onClick={handleConvaClick}
             onMouseMove={handleMouseMove}
@@ -1085,16 +1119,18 @@ class App extends Component {
             width={width}
             height={height}
           />
+          <div className="mt-3">
+            <Button
+              fullWidth={false}
+              disabled={isLoading}
+              text={isLoading === true ? "LOADING..." : "Upload PDF"}
+              onClick={() =>
+                document.getElementById("upload-canvas-pdf-button").click()
+              }
+            />
+          </div>
         </div>
         <div className="pl-4">
-          <Button
-            fullWidth={false}
-            disabled={isLoading}
-            text={isLoading === true ? "LOADING..." : "Upload PDF"}
-            onClick={() =>
-              document.getElementById("upload-canvas-pdf-button").click()
-            }
-          />
           <input
             hidden
             type="file"

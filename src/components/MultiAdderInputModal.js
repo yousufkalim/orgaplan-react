@@ -66,7 +66,7 @@ export default function MultiAdderInputModal(props) {
     if (name === "street") setStreet(value);
     else if (name === "city") setCity(value);
     else if (name === "postal") {
-      if (value.length <= 7) {
+      if (value.length <= 5) {
         setPostal(value);
       }
     }
@@ -166,8 +166,7 @@ export default function MultiAdderInputModal(props) {
               <FormInput
                 type="number"
                 name="postal"
-                max="7"
-                maxLength={11}
+                maxLength={5}
                 value={postal}
                 textAlign="center"
                 placeholder="Postal (5 digits only)"

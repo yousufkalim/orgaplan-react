@@ -67,6 +67,8 @@ export default function Input(props) {
         value={props.value}
         style={datepickerStyle}
         required={props.required}
+        disabledHours={() => props.disabledHours}
+        disabledMinutes={props.disabledMinutes}
         disabled={props.disabled}
         onChange={props.onChange}
         minuteStep={props.minuteStep}

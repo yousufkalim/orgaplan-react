@@ -10,6 +10,7 @@ import Actions from "../../../redux/actions";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import TextField from "@material-ui/core/TextField";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
@@ -77,6 +78,7 @@ export default function AddCompanies(props) {
   const [websiteError, setWebsiteError] = useState("");
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [companies, setCompanies] = useState([]);
 
   // Dropdowns
   const [allTrades, setAllTrades] = useState([]);
@@ -94,6 +96,10 @@ export default function AddCompanies(props) {
 
   async function getData() {
     try {
+      const getAllCompaniesResponse = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.ADMIN_COMPANY_EXCLUDE_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
@@ -102,6 +108,8 @@ export default function AddCompanies(props) {
         uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
+      setCompanies(getAllCompaniesResponse.data);
       setNonSiteCompanies(response.data);
       setAllNonSiteCompanies(
         response.data.map((item) => ({
@@ -129,18 +137,30 @@ export default function AddCompanies(props) {
       );
     }
   }
-
   async function onSubmit() {
     try {
       if (emailError || phoneError || websiteError || !image[0]) {
         alert("something went wrong");
       } else {
+        let checkCompanyExists = companies.filter(
+          (company) => company.companyId.name === name,
+        );
+        if (checkCompanyExists.length > 0) {
+          return dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar(
+                "Company already Exists With this name,Please use another name",
+                "error",
+              ),
+            ),
+          );
+        }
         setLoading(true);
         const incharge = {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          phone: phone,
+          phone: "+" + phone,
         };
         var formdata = new FormData();
         image[0].file && formdata.append("logo", image[0].file);
@@ -152,7 +172,13 @@ export default function AddCompanies(props) {
         formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("incharge", JSON.stringify(incharge));
         companyId && formdata.append("companyId", companyId);
-        parentCompanyId && formdata.append("parentCompanyId", parentCompanyId);
+        companyType === "subcontractor" &&
+          parentCompanyId &&
+          formdata.append("parentCompanyId", parentCompanyId);
+        // for (let [key, value] of formdata) {
+        //   console.log(`formdatais ${key}: ${value}`);
+        // }
+        // console.log("company type", formdata.get("parentCompanyId"));
 
         const response = await GLOBALS.API({
           method: "POST",
@@ -201,7 +227,8 @@ export default function AddCompanies(props) {
     } else if (name === "email") {
       setEmail(value);
       // eslint-disable-next-line
-      var mailformat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      var mailformat =
+        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
         setEmailError(true);
       } else {
@@ -209,9 +236,7 @@ export default function AddCompanies(props) {
       }
     } else if (name === "phone") {
       setPhone(value);
-      if (value.charAt(0) !== "0") {
-        setPhoneError("Telephone shoud starts with 0");
-      } else if (value.charAt(0) === "0" && value.length > 25) {
+      if (value.length < 10 || value.length > 25) {
         setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
@@ -227,7 +252,8 @@ export default function AddCompanies(props) {
       setAddInfo(value);
     } else if (name === "website") {
       setWebsite(value);
-      const web = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+      const web =
+        /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
       if (!value.match(web)) {
         setWebsiteError("Invalid Url");
       } else {
@@ -394,14 +420,15 @@ export default function AddCompanies(props) {
                 )}
               </Form.Column>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
-                <FormInput
+                <PhoneBox
                   name="phone"
                   type="number"
+                  maxLength="25"
                   value={phone}
                   disabled={companyId}
                   placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>
-                    inputChange(name, value)
+                    value.length < 26 ? inputChange(name, value) : ""
                   }
                 />
                 {phoneError && (

@@ -21,12 +21,12 @@ const api = ({ method = "GET", uri, body, headers, token }) =>
       });
       if (!response.ok) throw await response.json();
       let data = await response.json();
-      // process.env.NODE_ENV === "development" &&
-      // console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[API Data at ${new Date().toLocaleString()}]:`, uri, data);
       resolve(data);
     } catch (err) {
-      // process.env.NODE_ENV === "development" &&
-      // console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[API Error at ${new Date().toLocaleString()}]:`, err);
       reject(err);
     }
   });

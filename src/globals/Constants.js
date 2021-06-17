@@ -68,6 +68,8 @@ const endpoints = {
   ADMIN_PIC_SITE: BASE_URL_V1 + "site-pic/site",
   ADMIN_PIC_SHAPE: BASE_URL_V1 + "site-pic/shape",
   ADMIN_PIC_SHAPE_POINTS: BASE_URL_V1 + "site-pic/shape",
+  ADMIN_LEVEL_PIC_SHAPE_POINTS: BASE_URL_V1 + "level-pic/shape",
+
 
   ADMIN_PIC_BY_SITE: BASE_URL_V1 + "site-pic/site",
 
@@ -81,9 +83,12 @@ const endpoints = {
   MEAN: BASE_URL_V1 + "mean",
   UPDATE_MEAN: BASE_URL_V1 + "mean",
   GET_MEAN_HISTORY: BASE_URL_V1 + "mean_booking",
+  GET_VALIDATED_MEAN: BASE_URL_V1 + "mean_booking/getValidatedMean",
   SITE_MEANS: BASE_URL_V1 + "mean/get_site_means",
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
+  GET_MEAN_PATH: BASE_URL_V1 + "mean/get_path",
+
 
   // STORAGE AREA
   CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",
@@ -102,6 +107,8 @@ const endpoints = {
   // DELIVERY
   DELIVERY: BASE_URL_V1 + "delivery",
   GET_DELIVERY: BASE_URL_V1 + "delivery/get",
+  GET_VALIDATED_DELIVERY_MEAN:
+    BASE_URL_V1 + "delivery/getValidatedDeliveryMean",
 
   SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
@@ -115,6 +122,7 @@ const endpoints = {
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
   ADMIN_SITE_COMPANY_FILTER: BASE_URL_V1 + "company/filter",
   ADMIN_COMPANY_EXCLUDE_SITE: BASE_URL_V1 + "company/site-exclude",
+  ADDCOMPANYDATA: BASE_URL_V1 + "company/add_companiesData",
 
   GET_ALL_USERS: BASE_URL_V1 + "users",
   UPDATE_USER: BASE_URL_V1 + "users/update",
@@ -142,6 +150,8 @@ const endpoints = {
 
   CREATE_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   Update_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  GET_ALL_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
+  Update_BOOKING_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
   Delete_BOOKING_MEAN: BASE_URL_V1 + "mean_booking",
   FILTER_BOOKING: BASE_URL_V1 + "mean_booking/filter",
   UPDATE_MEAN_STATUS: BASE_URL_V1 + "mean_booking/updateStatus",
@@ -149,6 +159,9 @@ const endpoints = {
   filterBookingCalendar: BASE_URL_V1 + "mean_booking/filter_Booking_calendar",
   updateDeliveryStatus: BASE_URL_V1 + "delivery/updateStatus",
   getBuildingsBySiteId: BASE_URL_V1 + "building/get_by_site_id",
+  HistoryOfPlan: BASE_URL_V1 + "building/history",
+  GetHistoryOfPlans: BASE_URL_V1 + "building/getHistory",
+
   delete_Delivery: BASE_URL_V1 + "delivery",
   getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
 };

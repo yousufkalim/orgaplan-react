@@ -20,6 +20,8 @@
     "formik": "^2.2.6",
     "globalize": "^1.6.0",
     "i18next": "^19.8.4",
+    "jspdf": "^2.3.1",
+    "jspdf-autotable": "^3.5.14",
     "konva": "^7.2.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -42,6 +44,7 @@
     "react-time-picker": "^4.1.2",
     "react-toast-notifications": "^2.4.3",
     "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^3.1.0",
     "use-image": "^1.0.7",
@@ -58,7 +61,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test", 
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "eject": "react-scripts eject"
   },

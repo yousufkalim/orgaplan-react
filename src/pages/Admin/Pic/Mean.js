@@ -45,12 +45,10 @@ export default function AddMean(props) {
   const [unavailabilities, setUnavailabilities] = useState([]);
   const [rate, setRate] = useState("0");
   const [addInfo, setAddInfo] = useState("");
-
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
-
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -83,6 +81,12 @@ export default function AddMean(props) {
         setName(props.selectedShape.mean.name);
         setMeanType(props.selectedShape.mean.meanType);
         setColor(props.selectedShape.mean.color);
+        setUnavailabilities(
+          props.selectedShape.mean.unavailability?.map((key, index) => {
+            delete key._id;
+            return key;
+          }),
+        );
         setStartDate(props.selectedShape.mean.availability.start);
         setEndDate(props.selectedShape.mean.availability.end || "");
         setRate(props.selectedShape.mean.pricePerHour);
@@ -124,7 +128,6 @@ export default function AddMean(props) {
       );
     }
   };
-
   const handleChange = (name, value) => {
     if (name === "name") {
       setName(value);
@@ -166,7 +169,10 @@ export default function AddMean(props) {
       formdata.append("isInside", props.level ? true : false);
       props.level && formdata.append("level", props.level);
       formdata.append("color", color);
-      image[0] && image[0].file && formdata.append("image", image[0].file);
+      image[0] && image[0].file
+        ? formdata.append("image", image[0].file)
+        : formdata.append("image", "uploads/mean/1623669914133-grey.png");
+
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
       techSheet[0] &&
@@ -175,7 +181,6 @@ export default function AddMean(props) {
       formdata.append("unavailability", JSON.stringify(unavailabilities));
       formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
-
       const response = await GLOBALS.API({
         method: props.selectedShape ? "PUT" : "POST",
         uri: props.selectedShape
@@ -205,6 +210,9 @@ export default function AddMean(props) {
         });
         propShapes[inde].image = imageData.image;
         propShape.image = imageData.image;
+      } else {
+        propShapes[inde].image = "uploads/mean/1623669914133-grey.png";
+        propShape.image = "uploads/mean/1623669914133-grey.png";
       }
       propShapes[inde].color = color;
       propShape.color = color;
@@ -242,7 +250,7 @@ export default function AddMean(props) {
       }
       setLoading(false);
       props.setShapes(propShapes, propShape);
-      setSelectedShape("")
+      setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -252,7 +260,7 @@ export default function AddMean(props) {
       );
     }
   };
-
+  var obj = [{ uri: "uploads/mean/1623669914133-grey.png" }];
   return (
     <div className={classes.content}>
       <Form.Form>
@@ -303,7 +311,13 @@ export default function AddMean(props) {
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="image"
-              values={image}
+              values={
+                image[0] && image[0].file
+                  ? image
+                  : image[0] && image[0].uri
+                  ? image
+                  : obj
+              }
               onChange={(values) => {
                 handleChange("image", values);
               }}

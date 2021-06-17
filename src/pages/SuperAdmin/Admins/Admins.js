@@ -13,6 +13,7 @@ import Table from "../../../components/Table";
 import Button from "../../../components/Button";
 import Loader from "../../../components/Loader";
 import Heading from "../../../components/Heading";
+import PhoneBox from "../../../components/PhoneBox";
 import FormInput from "../../../components/FormInput";
 import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
@@ -63,11 +64,13 @@ export default function Admins(props) {
   const [image, setImage] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [adminType, setAdminType] = useState("ADMINPERSITE");
 
   const [phoneError, setPhoneError] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
 
   useEffect(() => {
@@ -115,9 +118,10 @@ export default function Admins(props) {
       e.preventDefault();
       setLoading(true);
       var formdata = new FormData();
-      formdata.append("phone", phone);
+      formdata.append("phone", "+" + phone);
       formdata.append("lastName", lastName);
       formdata.append("firstName", firstName);
+      // formdata.append("email", email);
       formdata.append("companyId", companyId);
       formdata.append("adminType", adminType);
       formdata.append("adminId", selectedItem._id);
@@ -175,6 +179,7 @@ export default function Admins(props) {
 
   function resetForm() {
     setFirstName("");
+    setEmail("");
     setLastName("");
     setPhone("");
     setImage("");
@@ -184,6 +189,7 @@ export default function Admins(props) {
   function handleChange(name, value) {
     if (name === "phone") setPhone(value);
     else if (name === "firstName") setFirstName(value);
+    else if (name === "email") setEmail(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "adminType") setAdminType(value);
     else if (name === "image") setImage(value);
@@ -205,6 +211,9 @@ export default function Admins(props) {
       if (GLOBALS.Functions.empty(value))
         setFirstNameError("First name is required");
       else setFirstNameError("");
+    } else if (name === "email") {
+      if (GLOBALS.Functions.empty(value)) setEmailError("email  is required");
+      else setEmailError("");
     } else if (name === "lastName") {
       if (GLOBALS.Functions.empty(value))
         setLastNameError("Last name is required");
@@ -216,7 +225,7 @@ export default function Admins(props) {
     const sendTo = [
       item.company.name,
       item.firstName + " " + item.lastName,
-      `0${item.phone}`,
+      item.phone,
       item.sites,
     ];
     return [
@@ -228,8 +237,9 @@ export default function Admins(props) {
             uri: GLOBALS.Constants.BASE_URL + item.image,
           });
           setFirstName(item.firstName);
+          setEmail(item.email);
           setLastName(item.lastName);
-          setPhone(`0${item.phone}`);
+          setPhone(item.phone.substring(1));
           item.adminType && setAdminType(item.adminType);
           setCompanyId(item.company._id);
           item.company._id &&
@@ -346,6 +356,23 @@ export default function Admins(props) {
             <Form.Row justifyContent="center">
               <div style={{ width: "50%" }}>
                 <FormInput
+                  name="email"
+                  value={email}
+                  error={emailError}
+                  disabled
+                  placeholder="Email "
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  onChange={({ target: { name, value } }) =>
+                    handleChange(name, value)
+                  }
+                />
+              </div>
+            </Form.Row>
+            <Form.Row justifyContent="center">
+              <div style={{ width: "50%" }}>
+                <PhoneBox
                   name="phone"
                   type="number"
                   value={phone}

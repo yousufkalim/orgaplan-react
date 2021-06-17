@@ -44,11 +44,28 @@ const useStyles = makeStyles((theme) => ({
   infoDrawerContainer: {
     width: "20%",
     height: "100%",
+    marginRight: "12px",
   },
   infoDrawer: {
     width: "100%",
-    height: "100%",
+    height: "80%",
     display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  infoDrawer3: {
+    width: "100%",
+    height: "50%",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  infoDrawer2: {
+    marginTop: "20px",
+    display: "flex",
+
     alignItems: "center",
     flexDirection: "column",
     justifyContent: "center",
@@ -72,58 +89,62 @@ const PicCanvas = (props) => {
   const [loading, setLoading] = useState(true);
 
   const [shape, setShape] = useState("");
-  const [newPoints, setnewPoints] = useState("");
+  const [rendering, setRendering] = useState("");
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
+  const [selectedBuilding, setselectedBuilding] = useState("");
 
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
   useEffect(() => {
-    fetchSitePic();
+    if (level) {
+      fetchLevelPic(level);
+    } else {
+      fetchSitePic();
+    }
     // eslint-disable-next-line
-  }, [adminStore]);
+  }, [adminStore, rendering, level]);
 
-  const expiredShapes = async (shapes) => {
+  const expiredShapes = (shapes) => {
     let array = [];
-    await Promise.all(
-      shapes.map(async (sp) => {
-        if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
-          let isExist = sp?.storageArea?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
+
+    shapes.map((sp) => {
+      if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
+        let isExist = sp?.storageArea?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
           }
-        } else if (sp.mean && Object.keys(sp.mean).length > 0) {
-          let isExist = sp?.mean?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
-          }
-        } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
-          let isExist = sp?.deliveryArea?.availability?.end;
-          if (isExist) {
-            let check = Date.now() > new Date(isExist);
-            if (check == false) {
-              array.push(sp);
-            }
-          }
-        } else if (sp.building && Object.keys(sp.building).length > 0) {
-          array.push(sp);
         }
-      }),
-    );
+      } else if (sp.mean && Object.keys(sp.mean).length > 0) {
+        let isExist = sp?.mean?.availability?.end;
+        if (isExist) {
+          let check = moment(isExist).isSame(new Date(), "day");
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
+        let isExist = sp?.deliveryArea?.availability?.end;
+        if (isExist) {
+          let check = Date.now() > new Date(isExist);
+          if (check == false) {
+            array.push(sp);
+          }
+        }
+      } else if (sp.building && Object.keys(sp.building).length > 0) {
+        array.push(sp);
+      }
+    });
+
     return array;
   };
   const handleColorAndNameOfShape = (shape) => {
-    console.log(shape, "shape");
     if (shape.deliveryArea && Object.keys(shape?.deliveryArea).length > 0) {
       shape.name = shape?.deliveryArea.name;
       shape.color = shape.deliveryArea.color;
@@ -144,6 +165,7 @@ const PicCanvas = (props) => {
       }
     }
   };
+
   const fetchSitePic = async () => {
     try {
       setPdf(
@@ -155,16 +177,17 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
 
       if (newShapes) {
-        newShapes.then((shape) => {
-          shape.map((st) => handleColorAndNameOfShape(st));
-          setShapes(shape);
-        });
+        newShapes.map((st) => handleColorAndNameOfShape(st));
+
+        setShapes(newShapes);
       } else {
-        setShapes(response.data.shapes);
+        shapes.map((st) => handleColorAndNameOfShape(st));
+        setShapes(shapes);
       }
       // setShapes(response.data.shapes);
 
@@ -186,7 +209,9 @@ const PicCanvas = (props) => {
         token: store.token,
       });
       setlevelPic(response.data);
-      setShapes(response.data.shapes);
+      let shapes = response.data.shapes;
+      shapes.map((st) => handleColorAndNameOfShape(st));
+      setShapes(shapes);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -274,67 +299,102 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
-
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
-      Object.keys(selectedShape).length > 0
+      Object.keys(selectedShape).length > 0 &&
+      level === ""
     ) {
       let newShape = selectedShape;
-      getShape.color = newShape.color;
-      getShape.opacity = newShape.opacity;
-      getShape.type = newShape.type;
-      getShape.name = newShape.name;
-      getShape._id = newShape._id;
-
-      if (newShape.type === "STORAGEAREA") {
-        getShape.storageArea = newShape.storageArea;
-      } else if (newShape.type === "DELIVERYAREA") {
-        getShape.deliveryArea = newShape.deliveryArea;
-      } else if (newShape.type === "BUILDING") {
-        getShape.building = newShape.building;
-      }
 
       var removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
         .indexOf(newShape._id);
-      shapesArray[removeIndex] = getShape;
+      shapesArray[removeIndex].points = getShape.points;
 
+      let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
-      getShape && setShape(getShape);
+      updatedShape && setShape(updatedShape);
       setShapes(shapesArray);
-      updateShape(getShape);
+      updateShape(updatedShape);
+      // remove object
+      // removeIndex && shapesArray.splice(removeIndex, 1);
+      setSelectedShape("");
+    } else if (
+      selectedShape &&
+      getShape.type !== "MEAN" &&
+      getShape.type === "STORAGEAREA" &&
+      selectedShape.type !== "BUILDING" &&
+      Object.keys(selectedShape).length > 0 &&
+      level
+    ) {
+      let newShape = selectedShape;
+      var removeIndex = shapesArray
+        ?.map(function (item) {
+          return item._id;
+        })
+        .indexOf(newShape._id);
+      shapesArray[removeIndex].points = getShape.points;
+
+      let updatedShape = shapesArray[removeIndex];
+      level && (selectedShapeReserver = selectedShape);
+      updatedShape && setShape(updatedShape);
+      setShapes(shapesArray);
+      updateLevelShape(updatedShape);
       // remove object
       // removeIndex && shapesArray.splice(removeIndex, 1);
       setSelectedShape("");
     } else {
       level && (selectedShapeReserver = selectedShape);
-      setSelectedShape("");
+
       getShape && setShape(getShape);
 
       setShapes(shapesArray);
       setModal(true);
+      setSelectedShape("");
     }
   };
   // update Building
 
   const updateShape = async (newShape) => {
-    await GLOBALS.API({
-      method: "PUT",
-      uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
-      token: store.token,
-      body: JSON.stringify({
-        points: newShape.points,
-        picID: newShape._id,
-      }),
-    });
+    try {
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE_POINTS}/${SITE_ID}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+      setRendering(response);
+    } catch (error) {
+      console.log(error, "update shape error");
+    }
+  };
+  const updateLevelShape = async (newShape) => {
+    try {
+      let response = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE_POINTS}/${level}`,
+        token: store.token,
+        body: JSON.stringify({
+          points: newShape.points,
+          picID: newShape._id,
+        }),
+      });
+      setRendering(response);
+    } catch (error) {
+      console.log(error, "update shape error");
+    }
   };
 
   const handleClick = (id, shape) => {
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
+      setselectedBuilding(shape);
       let levelsArr = _.cloneDeep(shape.building.levels);
       setAllLevels(_.cloneDeep(levelsArr));
       let levs = [];
@@ -349,7 +409,6 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
-
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
@@ -396,7 +455,18 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setlevelPic(response.data);
-          setShapes(response.data.shapes);
+
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         } else {
@@ -406,7 +476,17 @@ const PicCanvas = (props) => {
             token: store.token,
           });
           setSitePic(response.data);
-          setShapes(response.data.shapes);
+          let shapes = response.data.shapes;
+          let newShapes = expiredShapes(shapes);
+
+          if (newShapes) {
+            newShapes.map((st) => handleColorAndNameOfShape(st));
+
+            setShapes(newShapes);
+          } else {
+            shapes.map((st) => handleColorAndNameOfShape(st));
+            setShapes(shapes);
+          }
           setSelectedShape("");
           setLoading(false);
         }
@@ -418,6 +498,31 @@ const PicCanvas = (props) => {
         ),
       );
     }
+  };
+  const BuildingComponent = () => {
+    return (
+      <>
+        <SubHeading primary={selectedBuilding.name} bold fontSize={22} />
+        <SubHeading primary={`Type : ${selectedBuilding.type}`} />
+        <FormSelect
+          name="level"
+          value={level}
+          values={levelsDropdown}
+          placeholder="Select Level"
+          onChange={({ target: { value } }) => {
+            setLevel(value);
+
+            if (value) {
+              fetchLevelPic(value);
+              const leve = allLeves.find((lev) => lev._id === value);
+              setPdf(
+                leve?.plan ? GLOBALS.Constants.BASE_URL + leve.plan : undefined,
+              );
+            }
+          }}
+        />
+      </>
+    );
   };
 
   return (
@@ -434,6 +539,7 @@ const PicCanvas = (props) => {
               setSelectedShape={setSelectedShape}
               onClear={onClear}
               pdf={pdf}
+              setRendering={setRendering}
               onPdfChange={handlePdfChange}
               level={level ? true : false}
             />
@@ -442,6 +548,7 @@ const PicCanvas = (props) => {
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
                 text="Show Exterior"
+                className="mt-2"
                 onClick={() => {
                   setPdf(
                     adminStore.site.siteId?.plan
@@ -449,14 +556,47 @@ const PicCanvas = (props) => {
                           adminStore.site.siteId?.plan
                       : undefined,
                   );
+
                   setShapes(sitePic.shapes);
                   setLevel("");
+                  setSelectedShape("");
+                  setselectedBuilding("");
                   selectedShapeReserver = null;
                 }}
               />
             )}
+            {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
+              <>
+                <Button
+                  text="Show Exterior"
+                  className="mt-2"
+                  onClick={() => {
+                    setPdf(
+                      adminStore.site.siteId?.plan
+                        ? GLOBALS.Constants.BASE_URL +
+                            adminStore.site.siteId?.plan
+                        : undefined,
+                    );
+
+                    setShapes(sitePic.shapes);
+                    setLevel("");
+                    setSelectedShape("");
+                    setselectedBuilding("");
+                    selectedShapeReserver = null;
+                  }}
+                />
+                <div className={classes.infoDrawer2}>{BuildingComponent()}</div>
+              </>
+            )}
+
             {selectedShape && (
-              <div className={classes.infoDrawer}>
+              <div
+                className={
+                  selectedShape && selectedShape.type !== "BUILDING" && level
+                    ? classes.infoDrawer3
+                    : classes.infoDrawer
+                }
+              >
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
                 <SubHeading primary={`Type : ${selectedShape.type}`} />
                 {selectedShape.type === "BUILDING" && (
@@ -467,6 +607,7 @@ const PicCanvas = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
+
                       if (value) {
                         fetchLevelPic(value);
                         const leve = allLeves.find((lev) => lev._id === value);
@@ -480,15 +621,20 @@ const PicCanvas = (props) => {
                   />
                 )}
                 <Form.Row>
-                  <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal(true);
-                    }}
-                  >
-                    <Pencil className={classes.infoIcon} />
-                  </IconButton>
+                  {level === "" ? (
+                    <IconButton
+                      disabled={loading}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal(true);
+                      }}
+                    >
+                      <Pencil className={classes.infoIcon} />
+                    </IconButton>
+                  ) : (
+                    <></>
+                  )}
+
                   {selectedShape.type === "MEAN" ? (
                     <>
                       <NavLink
@@ -543,7 +689,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} DELIVERY AREA`}
+              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -567,7 +713,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} STORAGE AREA`}
+              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -591,7 +737,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} BUILDING`}
+              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -613,7 +759,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "Edit"} MEAN`}
+              title={`${shape ? "ADD" : "EDIT"} MEAN`}
               open={modal}
               onClose={() => {
                 checkShape();
