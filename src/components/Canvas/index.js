@@ -83,10 +83,7 @@ class App extends Component {
   }
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
-    // this.props.onChange(this.state.shapes);
-
     this.props.pdf && this.showPdf(this.props.pdf);
-    
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -110,12 +107,10 @@ class App extends Component {
               tempShape.image = image;
             }
           }
-
           newArray.push(tempShape);
           return tempShape;
         }),
-      );
-
+      )
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
@@ -176,15 +171,12 @@ class App extends Component {
       } else {
         rotate = (page.rotate + 270) % 360;
       }
-
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
-      var scale;
-      if (unscaledViewport.height > unscaledViewport.width) {
-        scale = Math.min(canvas.height, canvas.width / unscaledViewport.height);
-      } else {
-        scale = Math.min(canvas.height, canvas.width / unscaledViewport.width);
-      }
+      var scale = Math.min(
+        canvas.height / unscaledViewport.height,
+        canvas.width / unscaledViewport.width,
+      );
 
       var viewport = page.getViewport(scale, rotate);
 
@@ -206,13 +198,11 @@ class App extends Component {
       // this.setState({ tempImage: "" });
 
       canvas.display = "none";
-    return true
-
+      return true;
     } catch (error) {
       console.log("error pdf", error.message);
 
-    return false
-
+      return false;
     }
   };
 

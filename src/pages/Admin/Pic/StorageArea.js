@@ -140,7 +140,7 @@ export default function DeliveryArea(props) {
       setNotificationTo(value);
     }
   }
-
+console.log(adminStore.site.siteId._id,"adminStore.site.siteId._id")
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
