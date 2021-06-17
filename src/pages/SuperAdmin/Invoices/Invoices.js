@@ -117,7 +117,7 @@ export default function Invoices(props) {
     item.clientId.companyId.name,
     moment(item.startDate).format("DD/MM/YYYY"),
     moment(item.endDate).format("DD/MM/YYYY"),
-    item.siteId.name,
+    item.siteId?.name,
     item.amount,
     item.description,
     <>

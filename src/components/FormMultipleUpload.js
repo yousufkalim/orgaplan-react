@@ -151,6 +151,7 @@ export default function FormMultipleUpload(props) {
         )}
       </div>
       {update && ""}
+  
       {props.values.map((value, index) => (
         <div className={classes.imageWrapper} key={index}>
           <Avatar
