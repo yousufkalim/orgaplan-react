@@ -262,6 +262,7 @@ export default function DeliveryRequest(props) {
             setStep2Data={setStep2Data}
             companies={companies}
             deliveryAreas={deliveryAreas}
+            editDelivery={props.editDelivery}
             trades={trades}
             means={means}
             eventId={props.eventId}

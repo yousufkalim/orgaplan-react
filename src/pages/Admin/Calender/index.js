@@ -556,6 +556,7 @@ const Calender = (props) => {
   };
   const handlePopoverClose = () => {
     seteventID("");
+    setEvent("");
     setEditDelivery(false);
     setpopoverShow(false);
   };
@@ -699,7 +700,6 @@ const Calender = (props) => {
         uri: `${GLOBALS.Constants.UPDATE_MEAN_STATUS}/${id}`,
         token: store.token,
       });
-
       if (response.success) {
         setUpdateMeanStatus(response._id);
       }
@@ -713,6 +713,39 @@ const Calender = (props) => {
   };
   const update_delivery_status = async (id) => {
     try {
+      // 1invoice on validate DR
+      console.log("validate delivery", event);
+      if (event.liftingMeans.length >= 1) {
+        let startHour = moment(event.start).format("H");
+        let endHour = moment(event.end).format("H");
+        event.liftingMeans.map(async (m) => {
+          var formdata1 = new FormData();
+          formdata1.append("name", m?.name);
+          formdata1.append("date", moment(event.start).format("YYYY-MM-DD"));
+          formdata1.append("time", event.start);
+          formdata1.append("type", "MEAN");
+          // props.location.mean?.meanType
+          formdata1.append("isBillable", true);
+          formdata1.append("price", m?.pricePerHour * (endHour - startHour));
+          formdata1.append("isPaid", false);
+          formdata1.append("companyId", event.company?._id);
+          formdata1.append("siteId", adminStore.site.siteId._id);
+
+          // for (let [key, value] of formdata1) {
+          //   console.log(
+          //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+          //   );
+          // }
+          await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+            headers: {
+              Authorization: store.token,
+            },
+            body: formdata1,
+          });
+        });
+      }
       const response = await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.updateDeliveryStatus}/${id}`,
