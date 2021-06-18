@@ -83,7 +83,7 @@ class App extends Component {
   }
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
-    this.props.pdf && this.showPdf(this.props.pdf);
+    
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -111,9 +111,12 @@ class App extends Component {
           return tempShape;
         }),
       )
+
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
+    this.props.pdf && this.showPdf(this.props.pdf);
+
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
     }
@@ -158,6 +161,7 @@ class App extends Component {
     }
   };
   showPdf = async (uri) => {
+    console.log(uri,"uri")
     const PDFJS = window.pdfjsLib;
     try {
       var _PDF_DOC = await PDFJS.getDocument({

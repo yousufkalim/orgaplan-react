@@ -122,6 +122,7 @@ export default function AddSiteStep3(props) {
   };
 
   const onCreateBuilding = async () => {
+    alert(storeAdmin.site.siteId._id)
     try {
       setLoading(true);
       let color;
