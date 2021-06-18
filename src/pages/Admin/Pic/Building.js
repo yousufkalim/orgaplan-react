@@ -122,7 +122,6 @@ export default function AddSiteStep3(props) {
   };
 
   const onCreateBuilding = async () => {
-    alert(storeAdmin.site.siteId._id)
     try {
       setLoading(true);
       let color;
@@ -184,6 +183,7 @@ export default function AddSiteStep3(props) {
 
       props.setShapes(propShapes, propShape, true);
       setSelectedShape("");
+      props.setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

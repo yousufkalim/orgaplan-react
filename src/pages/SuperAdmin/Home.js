@@ -355,7 +355,6 @@ export default function Home(props) {
     setSiteCustomerRateArray(siteTemp);
     setClientCustomerRateArray(clientTemp);
   }
-
   let renderArray = [
     {
       multiple: true,
@@ -363,7 +362,7 @@ export default function Home(props) {
         {
           title: "CLIENTS",
           tabs: false,
-          total: data && data?.clients.total,
+          total: data && data?.clients?.total,
           path: "/clients",
           text: "Clients list",
           items: [
