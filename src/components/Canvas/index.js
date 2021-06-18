@@ -183,7 +183,7 @@ class App extends Component {
         canvas.width / unscaledViewport.width,
       );
 
-      var viewport = page.getViewport(scale, rotate);
+      var viewport = page.getViewport(scale);
 
       var render_context = {
         canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
