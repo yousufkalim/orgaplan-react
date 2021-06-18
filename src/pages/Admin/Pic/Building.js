@@ -183,6 +183,7 @@ export default function AddSiteStep3(props) {
 
       props.setShapes(propShapes, propShape, true);
       setSelectedShape("");
+      props.setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

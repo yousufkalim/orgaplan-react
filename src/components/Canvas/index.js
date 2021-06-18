@@ -84,6 +84,7 @@ class App extends Component {
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     this.props.pdf && this.showPdf(this.props.pdf);
+
     if (this.props.shapes) {
       const newArray = [];
       await Promise.all(
@@ -110,10 +111,12 @@ class App extends Component {
           newArray.push(tempShape);
           return tempShape;
         }),
-      )
+      );
+
       this.setState({ shapes: newArray });
       // this.setState({ shapes: this.props.shapes });
     }
+
     if (!this.props.pdf) {
       this.setState({ isLoading: false });
     }
@@ -171,14 +174,16 @@ class App extends Component {
       } else {
         rotate = (page.rotate + 270) % 360;
       }
+
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
+
       var scale = Math.min(
         canvas.height / unscaledViewport.height,
         canvas.width / unscaledViewport.width,
       );
 
-      var viewport = page.getViewport(scale, rotate);
+      var viewport = page.getViewport(scale);
 
       var render_context = {
         canvasContext: document.querySelector("#pdf-canvas").getContext("2d"),
@@ -321,6 +326,33 @@ class App extends Component {
 
         meanDisable: true,
       });
+    }
+    if (this.props.selectedShape !== e.target.value) {
+      const { shapes, shapeId, meanShapeId } = this.state;
+
+      if (shapeId) {
+        let tempArr = shapes.find((sp) => sp._id === shapeId);
+
+        if (tempArr) {
+          tempArr.opacity = this.state.clickedShape.opacity;
+        } else {
+          return;
+        }
+      }
+      if (meanShapeId) {
+        let tempArr = shapes.find((sp) => sp._id === meanShapeId);
+        if (tempArr) {
+          tempArr.color = this.state.meanColor;
+        } else {
+          return;
+        }
+      }
+     
+      this.props.setSelectedShape("");
+      this.props.setRendering("hello");
+
+      this.props.onClear();
+      
     }
   };
 

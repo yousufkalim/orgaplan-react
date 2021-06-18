@@ -198,6 +198,7 @@ export default function DeliveryArea(props) {
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
+      props.setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(
