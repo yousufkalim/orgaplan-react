@@ -3,7 +3,7 @@ const styles = {
   pageContentMargin: 10,
   pageContentPadding: 4,
   pageContentNormalPadding: 30,
-  pagePadding: "18px 15px 20px 15px",
+  pagePadding: "30px 15px 20px 15px",
   pagePaddingNormal: "10px 30px 20px 30px",
   marginButtonContainer: "30px 0 10px 0",
   inputWidth: {

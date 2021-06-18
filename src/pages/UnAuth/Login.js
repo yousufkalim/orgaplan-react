@@ -242,7 +242,7 @@ export default function Login(props) {
   async function onProfileSubmit(values, { setSubmitting }) {
     try {
       const formdata = JSON.stringify({
-        phone: values.phone,
+        phone: "+" + values.phone,
         firstName: values.firstName,
         lastName: values.lastName,
         password: values.password,
@@ -500,7 +500,7 @@ export default function Login(props) {
                 initialValues={{
                   company: company,
                   email: email,
-                  phone: phone,
+                  phone: phone.substring(1),
                   firstName: firstName,
                   lastName: lastName,
                   password: "",
