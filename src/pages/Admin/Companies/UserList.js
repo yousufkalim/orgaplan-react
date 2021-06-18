@@ -62,7 +62,6 @@ export default function UserList(props) {
   const DonwloadFile = async () => {
     var fileName = "uploads/company/csvTemplate.xlsx";
     var url = GLOBALS.Constants.BASE_URL + fileName;
-    console.log(url);
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "blob";
