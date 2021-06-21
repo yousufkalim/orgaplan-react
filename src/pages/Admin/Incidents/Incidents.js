@@ -6,6 +6,8 @@ import { NavLink } from "react-router-dom";
 import * as QueryString from "query-string";
 import { makeStyles } from "@material-ui/core/styles";
 import { Images } from "../../../assets/Assets";
+import Modal from "react-bootstrap/Modal";
+import "./popover.scss";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -19,6 +21,7 @@ import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
+import { date } from "yup";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,11 +44,31 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
   },
 }));
+let statciincidentsdata = [
+  { name: "name", price: "2", date: new Date(), status: "true", type: "mean" },
+  {
+    name: "name1",
+    price: "22",
+    date: new Date(),
+    status: "true",
+    type: "delay",
+  },
+  {
+    name: "name2",
+    price: "222",
+    date: new Date(),
+    status: "true",
+    type: "mean",
+  },
+];
+let siteis = { name: "test site" };
 
 const Incidents = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const storeAdmin = useSelector((state) => state.admin);
+
+  const [popoverShow, setpopoverShow] = useState(false);
 
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
@@ -77,24 +100,6 @@ const Incidents = (props) => {
 
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
-  const reportTickets = [
-    {
-      id: 1,
-      title: "title1",
-      request: "req1",
-      status: "status1",
-      name: "samar",
-    },
-    {
-      id: 2,
-      title: "title2",
-      request: "req2",
-      status: "status2",
-      name: "asfand",
-    },
-    { id: 3, title: "title3", request: "req3", status: "status3" },
-  ];
 
   // console.log("{storeAdmin.site.siteId.name}", storeAdmin.site.siteId);
 
@@ -283,7 +288,7 @@ const Incidents = (props) => {
     seTatalPrice(total);
     setItems(temp);
   }
-
+  const handlePopoverClose = () => setpopoverShow(false);
   const rows = items.map((item, index) => {
     // console.log("item is", item);
     return [
@@ -325,6 +330,7 @@ const Incidents = (props) => {
   }
 
   // console.log("incidentsdata", incidentsdata);
+  // console.log("site data", storeAdmin?.site?.siteId);
   // console.log("companyId", companyId);
   // console.log("siteComapny", siteComapny);
   // console.log("companyName", companyName);
@@ -338,237 +344,333 @@ const Incidents = (props) => {
       //   storeAdmin?.site?.siteId,
       //   tatalPrice,
       // );
-      alert(" Generate Reinvoicing");
+      // alert(" Generate Reinvoicing");
+      setpopoverShow(true);
     } else {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(
-            "Please Select a Company to Generate PDF",
-            "error",
-          ),
-        ),
-      );
+      setpopoverShow(true);
+      // dispatch(
+      //   Actions.notistack.enqueueSnackbar(
+      //     Actions.notistack.snackbar(
+      //       "Please Select a Company to Generate PDF",
+      //       "error",
+      //     ),
+      //   ),
+      // );
     }
   };
 
   return (
-    <div className={classes.root}>
-      <Form.Row alignItems="center">
-        <Heading primary="RE-INVOICING" noWrap />
-        <span className="pl-5" style={{ width: "40%", marginBottom: "15px" }}>
-          <img
-            alt="custom"
-            src={Images.uploadIcon}
-            style={{ width: "1.5rem", cursor: "pointer" }}
-            onClick={handleReInvoiving}
-          />
-        </span>
-        {/* <Heading icon primary="" noWrap onClick={handleReInvoiving} /> */}
-        <div>
-          <Form.Row alignItems="flex-start" noMargin justifyContent="flex-end">
-            <SubHeading
-              noMargin
-              topPadding
-              style={{ color: "#F80303" }}
-              primary={`TOTAL: ${tatalInvoices} RE-INVOICING
-              ${tatalPrice}€`}
-              bold
+    <>
+      <div className={classes.root}>
+        <Form.Row alignItems="center">
+          <Heading primary="RE-INVOICING" noWrap />
+          <span className="pl-5" style={{ width: "40%", marginBottom: "15px" }}>
+            <img
+              alt="custom"
+              src={Images.uploadIcon}
+              style={{ width: "1.5rem", cursor: "pointer" }}
+              onClick={handleReInvoiving}
             />
-            <Form.Column style={{ width: "50%" }}>
-              <Button
-                fullWidth={false}
-                disabled={loading}
-                component={NavLink}
-                text="CREATE AN INCIDENT"
-                to={"/incidents/add-incidents"}
-                style={{
-                  marginLeft: "20px",
-                  marginBottom: "7px",
-                  width: "200px",
-                  fontWeight: "bold",
-                  backgroundColor: "#F80303",
-                }}
+          </span>
+          {/* <Heading icon primary="" noWrap onClick={handleReInvoiving} /> */}
+          <div>
+            <Form.Row
+              alignItems="flex-start"
+              noMargin
+              justifyContent="flex-end"
+            >
+              <SubHeading
+                noMargin
+                topPadding
+                style={{ color: "#F80303" }}
+                primary={`TOTAL: ${tatalInvoices} RE-INVOICING
+              ${tatalPrice}€`}
+                bold
               />
-            </Form.Column>
-          </Form.Row>
-        </div>
-      </Form.Row>
-      <Form.Row alignItems="center" noMargin>
-        <Form.Row justifyContent="flex-start" noMargin>
-          <FormSelect
-            values={siteDeliveryArea}
-            placeholder="Delivery area"
-            style={{ marginRight: "20px", maxWidth: 250 }}
-            value={selectedDeliveryArea}
-            onChange={(event) => {
-              setSelectedDeliveryArea(event.target.value);
-              // const index = event.target.selectedIndex - 1;
-              // if (index !== -1) {
-              //   setSelectedDeliveryArea(event.target.value);
-              // } else {
-              //   setSelectedDeliveryArea(" ");
-              // }
-            }}
-          />
-          <FormSelect
-            values={[
-              ...[{ label: "Exterior", value: "Exterior" }],
-              ...siteBuilding,
-            ]}
-            placeholder="Location"
-            style={{ marginRight: "20px", maxWidth: 250 }}
-            value={selectedBuilding}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              setSelectedBuilding(event.target.value);
-              // console.log(event.target.value);
-              if (index !== -1) {
-                if (event.target.value === "Exterior") {
-                  setDisableLevelDropdown(true);
-                  setDisableStorageDropdown(false);
+              <Form.Column style={{ width: "50%" }}>
+                <Button
+                  fullWidth={false}
+                  disabled={loading}
+                  component={NavLink}
+                  text="CREATE AN INCIDENT"
+                  to={"/incidents/add-incidents"}
+                  style={{
+                    marginLeft: "20px",
+                    marginBottom: "7px",
+                    width: "200px",
+                    fontWeight: "bold",
+                    backgroundColor: "#F80303",
+                  }}
+                />
+              </Form.Column>
+            </Form.Row>
+          </div>
+        </Form.Row>
+        <Form.Row alignItems="center" noMargin>
+          <Form.Row justifyContent="flex-start" noMargin>
+            <FormSelect
+              values={siteDeliveryArea}
+              placeholder="Delivery area"
+              style={{ marginRight: "20px", maxWidth: 250 }}
+              value={selectedDeliveryArea}
+              onChange={(event) => {
+                setSelectedDeliveryArea(event.target.value);
+                // const index = event.target.selectedIndex - 1;
+                // if (index !== -1) {
+                //   setSelectedDeliveryArea(event.target.value);
+                // } else {
+                //   setSelectedDeliveryArea(" ");
+                // }
+              }}
+            />
+            <FormSelect
+              values={[
+                ...[{ label: "Exterior", value: "Exterior" }],
+                ...siteBuilding,
+              ]}
+              placeholder="Location"
+              style={{ marginRight: "20px", maxWidth: 250 }}
+              value={selectedBuilding}
+              onChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                setSelectedBuilding(event.target.value);
+                // console.log(event.target.value);
+                if (index !== -1) {
+                  if (event.target.value === "Exterior") {
+                    setDisableLevelDropdown(true);
+                    setDisableStorageDropdown(false);
+                  } else {
+                    fetchLevelesOfSelectedBuilding(event.target.value);
+                    setDisableLevelDropdown(false);
+                    setDisableStorageDropdown(true);
+                  }
                 } else {
-                  fetchLevelesOfSelectedBuilding(event.target.value);
-                  setDisableLevelDropdown(false);
+                  setDisableLevelDropdown(true);
+                }
+              }}
+            />
+            <FormSelect
+              values={dropDownLevels}
+              placeholder="Level"
+              disabled={disableLevelDropdown}
+              value={selectedLevel}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+              onChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  setDisableStorageDropdown(false);
+                  setSelectedLevel(event.target.value);
+                } else {
                   setDisableStorageDropdown(true);
                 }
-              } else {
-                setDisableLevelDropdown(true);
-              }
-            }}
-          />
-          <FormSelect
-            values={dropDownLevels}
-            placeholder="Level"
-            disabled={disableLevelDropdown}
-            value={selectedLevel}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                setDisableStorageDropdown(false);
-                setSelectedLevel(event.target.value);
-              } else {
-                setDisableStorageDropdown(true);
-              }
-            }}
-          />
-          <FormSelect
-            values={dropDownStorageArea.filter((item) =>
-              selectedBuilding && selectedBuilding === "Exterior"
-                ? !item.level
-                : item.level === selectedLevel,
-            )}
-            placeholder="Storage area"
-            disabled={disableStorageDropdown}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                setSelectedStorageAreaValue(event.target.value);
-              }
-            }}
-          />
-          <FormSelect
-            placeholder="Type"
-            values={[
-              { value: "INCIDENT", label: "Incident" },
-              { value: "MEAN", label: "Mean" },
-              { value: "DELAY", label: "Delay" },
-              { value: "UNEXPRECTED", label: "Unexp" },
-            ]}
-            style={{ marginRight: "5px", maxWidth: 250 }}
-            onChange={(event) => {
-              const index = event.target.selectedIndex - 1;
-              if (index !== -1) {
-                const item = event.target.value;
-                setSelectedType(item);
-              } else {
-                setSelectedType("");
-              }
-            }}
-          />
+              }}
+            />
+            <FormSelect
+              values={dropDownStorageArea.filter((item) =>
+                selectedBuilding && selectedBuilding === "Exterior"
+                  ? !item.level
+                  : item.level === selectedLevel,
+              )}
+              placeholder="Storage area"
+              disabled={disableStorageDropdown}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+              onChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  setSelectedStorageAreaValue(event.target.value);
+                }
+              }}
+            />
+            <FormSelect
+              placeholder="Type"
+              value={selectedType}
+              values={[
+                { value: "INCIDENT", label: "Incident" },
+                { value: "MEAN", label: "Mean" },
+                { value: "DELAY", label: "Delay" },
+                { value: "UNEXPRECTED", label: "Unexp" },
+              ]}
+              style={{ marginRight: "5px", maxWidth: 250 }}
+              onChange={(event) => {
+                const index = event.target.selectedIndex - 1;
+                if (index !== -1) {
+                  const item = event.target.value;
+                  setSelectedType(item);
+                } else {
+                  setSelectedType("");
+                }
+              }}
+            />
+          </Form.Row>
         </Form.Row>
-      </Form.Row>
 
-      <Form.Row alignItems="center" className="mt-3">
-        <Form.Row justifyContent="flex-start" noMargin>
-          <FormSelect
-            placeholder="Company"
-            value={companyId}
-            values={siteComapny}
-            onChange={(event) => {
-              setCompanyId(event.target.value);
-              getCompanyName(event.target.value);
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
+        <Form.Row alignItems="center" className="mt-3">
+          <Form.Row justifyContent="flex-start" noMargin>
+            <FormSelect
+              placeholder="Company"
+              value={companyId}
+              values={siteComapny}
+              onChange={(event) => {
+                setCompanyId(event.target.value);
+                getCompanyName(event.target.value);
+              }}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+            />
 
-          <FormInput
-            type="date"
-            placeholder="Start date"
-            name="startDate"
-            icon
-            value={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormInput
-            type="date"
-            placeholder="End date"
-            name="endDate"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-            }}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-          />
-          <FormSelect
-            values={status}
-            style={{ marginRight: "20px", maxWidth: 250 }}
-            onChange={(event) => {
-              setselectedStatus(event.target.value);
-            }}
-          />
-          <SearchInput
-            placeholder="Designation"
-            style={{ marginRight: "5px", maxWidth: 250 }}
-            onChange={(event) => {
-              setNameText(event.target.value);
-            }}
-          />
+            <FormInput
+              type="date"
+              placeholder="Start date"
+              name="startDate"
+              icon
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+              }}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+            />
+            <FormInput
+              type="date"
+              placeholder="End date"
+              name="endDate"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+              }}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+            />
+            <FormSelect
+              values={status}
+              style={{ marginRight: "20px", maxWidth: 250 }}
+              onChange={(event) => {
+                setselectedStatus(event.target.value);
+              }}
+            />
+            <SearchInput
+              placeholder="Designation"
+              style={{ marginRight: "5px", maxWidth: 250 }}
+              onChange={(event) => {
+                setNameText(event.target.value);
+              }}
+            />
+          </Form.Row>
         </Form.Row>
-      </Form.Row>
-      {/* <div>
-        <h1>pdf</h1>
-        <button
-          className="btn btn-primary"
-          onClick={() =>
-            generatePDF(
-              incidentsdata,
-              companyName,
-              storeAdmin?.site?.siteId,
-              tatalPrice,
-            )
-          }
-        >
-          Export report
-        </button>
-      </div> */}
-      <div className={classes.content}>
-        <Table
-          headers={GLOBALS.Data.incidents.headings}
-          rows={rows}
-          onClick={(e) => {
-            return props.history.push({
-              pathname: "/incidents/edit-incidents",
-              data: incidents[e],
-            });
-          }}
-        />
+        <div>
+          <button
+            className="btn btn-primary"
+            onClick={() =>
+              generatePDF(statciincidentsdata, companyName, siteis, tatalPrice)
+            }
+          >
+            Export report
+          </button>
+        </div>
+
+        <div className={classes.content}>
+          <Table
+            headers={GLOBALS.Data.incidents.headings}
+            rows={rows}
+            onClick={(e) => {
+              return props.history.push({
+                pathname: "/incidents/edit-incidents",
+                data: incidents[e],
+              });
+            }}
+          />
+        </div>
       </div>
-    </div>
+      <Modal show={popoverShow} onHide={handlePopoverClose} className="">
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center">Invoice</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="showPopover">
+            <Form.Row alignItems="center" className="mt-3">
+              <Form.Row justifyContent="flex-start" noMargin>
+                <input
+                  type="date"
+                  placeholder="Start1 date"
+                  name="startDate"
+                  icon
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                  }}
+                  style={{
+                    height: "6vh",
+                    opacity: ".7",
+                    marginRight: "10px",
+                    width: "250px",
+                  }}
+                />
+                <input
+                  type="date"
+                  placeholder="End date"
+                  name="endDate"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                  }}
+                  style={{
+                    height: "6vh",
+                    opacity: ".7",
+                    marginRight: "10px",
+                    width: "250px",
+                  }}
+                />
+              </Form.Row>
+            </Form.Row>
+
+            <Form.Row alignItems="center" noMargin>
+              <Form.Row justifyContent="flex-start" noMargin>
+                <FormSelect
+                  placeholder="Company"
+                  value={companyId}
+                  values={siteComapny}
+                  onChange={(event) => {
+                    setCompanyId(event.target.value);
+                    getCompanyName(event.target.value);
+                  }}
+                  style={{ marginRight: "20px", maxWidth: 250 }}
+                />
+                <FormSelect
+                  placeholder="Type"
+                  value={selectedType}
+                  values={[
+                    { value: "INCIDENT", label: "Incident" },
+                    { value: "MEAN", label: "Mean" },
+                    { value: "DELAY", label: "Delay" },
+                    { value: "UNEXPRECTED", label: "Unexp" },
+                  ]}
+                  style={{ marginRight: "5px", maxWidth: 250 }}
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex - 1;
+                    if (index !== -1) {
+                      const item = event.target.value;
+                      setSelectedType(item);
+                    } else {
+                      setSelectedType("");
+                    }
+                  }}
+                />
+              </Form.Row>
+            </Form.Row>
+          </div>
+          <div className={classes.content}>
+            <Table
+              headers={GLOBALS.Data.incidents.headings}
+              rows={rows}
+              // onClick={(e) => {
+              //   return props.history.push({
+              //     pathname: "/incidents/edit-incidents",
+              //     data: incidents[e],
+              //   });
+              // }}
+            />
+          </div>
+          {/* {companyId && <h1>Table</h1>} */}
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 
