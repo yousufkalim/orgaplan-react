@@ -71,7 +71,7 @@ const Means = () => {
   useEffect(() => {
     filterMean();
     // eslint-disable-next-line
-  }, [deliveryArea, storageArea, type, status, startDate, endDate]);
+  }, [deliveryArea, storageArea, name, type, status, startDate, endDate]);
 
   useEffect(() => {
     company && fetchBookings();
@@ -142,6 +142,20 @@ const Means = () => {
         ),
       );
     }
+  };
+
+  const filterMeanByName = (name) => {
+    let tempName = name.toLowerCase();
+    const filters = { name: tempName };
+    const filteredUsers = means.filter((user) => {
+      let isValid = true;
+      for (let key in filters) {
+        let searchKey=user[key].toLowerCase()
+        isValid = isValid && searchKey.includes(filters[key]);
+      }
+      return isValid;
+    });
+    setMeans(filteredUsers);
   };
 
   const filterMean = async () => {
@@ -417,11 +431,11 @@ const Means = () => {
           />
           <SearchInput
             value={name}
-            onClick={filterMean}
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setName(value);
+              filterMeanByName(value);
             }}
           />
         </Form.Row>
