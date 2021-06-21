@@ -100,9 +100,6 @@ const Incidents = (props) => {
 
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
-  // console.log("{storeAdmin.site.siteId.name}", storeAdmin.site.siteId);
-
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -126,7 +123,6 @@ const Incidents = (props) => {
       const result = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_ALL_SITE_INCIDENTS}/${adminStore.site.siteId._id}`,
       });
-      // console.log("result is ", result.data.incidents);
       setIncidents(result.data.incidents);
       if (result.data.incidents) {
         seTatalInvoices(result.data.incidents.length);
@@ -267,7 +263,6 @@ const Incidents = (props) => {
     setIncidentsdata(data);
     let temp = [];
     let total = 0;
-    console.log("data", data);
     data.map((item, index) => {
       total = total + item.price;
       let data = [];
@@ -290,7 +285,6 @@ const Incidents = (props) => {
   }
   const handlePopoverClose = () => setpopoverShow(false);
   const rows = items.map((item, index) => {
-    // console.log("item is", item);
     return [
       item[0] ? item[0] : "",
       item[1] ? item[1] : " ",
@@ -303,8 +297,6 @@ const Incidents = (props) => {
       item[8] ? item[8] : " ",
     ];
   });
-  // console.log("items", items);
-  // console.log("row is ", rows);
   const getCompanyName = (id) => {
     if (id) {
       let getcompany = siteComapny.filter((s) => s.value === id);
@@ -328,36 +320,11 @@ const Incidents = (props) => {
       setDropDownLevels(temp);
     }
   }
-
-  // console.log("incidentsdata", incidentsdata);
-  // console.log("site data", storeAdmin?.site?.siteId);
   // console.log("companyId", companyId);
-  // console.log("siteComapny", siteComapny);
   // console.log("companyName", companyName);
   // console.log(selectedType, "selectedType");
   // console.log("incidents", incidents);
-  const handleReInvoiving = () => {
-    if (companyId) {
-      // generatePDF(
-      //   incidentsdata,
-      //   companyName,
-      //   storeAdmin?.site?.siteId,
-      //   tatalPrice,
-      // );
-      // alert(" Generate Reinvoicing");
-      setpopoverShow(true);
-    } else {
-      setpopoverShow(true);
-      // dispatch(
-      //   Actions.notistack.enqueueSnackbar(
-      //     Actions.notistack.snackbar(
-      //       "Please Select a Company to Generate PDF",
-      //       "error",
-      //     ),
-      //   ),
-      // );
-    }
-  };
+  // console.log("site", storeAdmin?.site?.siteId);
 
   return (
     <>
@@ -369,10 +336,9 @@ const Incidents = (props) => {
               alt="custom"
               src={Images.uploadIcon}
               style={{ width: "1.5rem", cursor: "pointer" }}
-              onClick={handleReInvoiving}
+              onClick={() => setpopoverShow(true)}
             />
           </span>
-          {/* <Heading icon primary="" noWrap onClick={handleReInvoiving} /> */}
           <div>
             <Form.Row
               alignItems="flex-start"
@@ -434,7 +400,6 @@ const Incidents = (props) => {
               onChange={(event) => {
                 const index = event.target.selectedIndex - 1;
                 setSelectedBuilding(event.target.value);
-                // console.log(event.target.value);
                 if (index !== -1) {
                   if (event.target.value === "Exterior") {
                     setDisableLevelDropdown(true);
@@ -554,16 +519,6 @@ const Incidents = (props) => {
             />
           </Form.Row>
         </Form.Row>
-        <div>
-          <button
-            className="btn btn-primary"
-            onClick={() =>
-              generatePDF(statciincidentsdata, companyName, siteis, tatalPrice)
-            }
-          >
-            Export report
-          </button>
-        </div>
 
         <div className={classes.content}>
           <Table
@@ -578,12 +533,20 @@ const Incidents = (props) => {
           />
         </div>
       </div>
-      <Modal show={popoverShow} onHide={handlePopoverClose} className="">
+      <Modal
+        size="lg"
+        show={popoverShow}
+        onHide={handlePopoverClose}
+        className=""
+      >
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Invoice</Modal.Title>
+          <Modal.Title className="text-center">Re-Invoice</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="showPopover">
+          <div
+            className="showPopover"
+            //  style={{ width: "90%", margin: "auto" }}
+          >
             <Form.Row alignItems="center" className="mt-3">
               <Form.Row justifyContent="flex-start" noMargin>
                 <input
@@ -599,7 +562,7 @@ const Incidents = (props) => {
                     height: "6vh",
                     opacity: ".7",
                     marginRight: "10px",
-                    width: "250px",
+                    width: "50%",
                   }}
                 />
                 <input
@@ -614,7 +577,7 @@ const Incidents = (props) => {
                     height: "6vh",
                     opacity: ".7",
                     marginRight: "10px",
-                    width: "250px",
+                    width: "50%",
                   }}
                 />
               </Form.Row>
@@ -630,7 +593,7 @@ const Incidents = (props) => {
                     setCompanyId(event.target.value);
                     getCompanyName(event.target.value);
                   }}
-                  style={{ marginRight: "20px", maxWidth: 250 }}
+                  style={{ marginRight: "20px", maxWidth: "50%" }}
                 />
                 <FormSelect
                   placeholder="Type"
@@ -641,7 +604,7 @@ const Incidents = (props) => {
                     { value: "DELAY", label: "Delay" },
                     { value: "UNEXPRECTED", label: "Unexp" },
                   ]}
-                  style={{ marginRight: "5px", maxWidth: 250 }}
+                  style={{ marginRight: "5px", maxWidth: "50%" }}
                   onChange={(event) => {
                     const index = event.target.selectedIndex - 1;
                     if (index !== -1) {
@@ -656,18 +619,25 @@ const Incidents = (props) => {
             </Form.Row>
           </div>
           <div className={classes.content}>
-            <Table
-              headers={GLOBALS.Data.incidents.headings}
-              rows={rows}
-              // onClick={(e) => {
-              //   return props.history.push({
-              //     pathname: "/incidents/edit-incidents",
-              //     data: incidents[e],
-              //   });
-              // }}
-            />
+            <Table headers={GLOBALS.Data.incidents.headings} rows={rows} />
           </div>
-          {/* {companyId && <h1>Table</h1>} */}
+          {incidentsdata.length >= 1 && companyId && selectedType && (
+            <div style={{ textAlign: "right", margin: "5px" }}>
+              <Button
+                fullWidth={false}
+                text="EXPORT"
+                style={{ marginLeft: "20px" }}
+                onClick={() =>
+                  generatePDF(
+                    incidentsdata,
+                    companyName,
+                    storeAdmin?.site?.siteId,
+                    tatalPrice,
+                  )
+                }
+              />
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     </>

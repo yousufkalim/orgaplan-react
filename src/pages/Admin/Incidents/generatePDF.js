@@ -6,7 +6,7 @@ import GLOBALS from "../../../globals";
 
 const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   var today = moment(new Date()).format("DD/MM/YYYY");
-  var newdat = "Date: " + today;
+  var newdate = "Date: " + today;
 
   var companyName = "Company : " + companyName;
   var siteName = "Site : " + sitedata?.name;
@@ -17,8 +17,8 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
     : SiteImage;
   const doc = new jsPDF();
   const tableColumn = [
-    "Name_of_re-invoicng",
-    "Type_of_re-invoicng",
+    "Name_of_Re-invoice",
+    "Type_of_Reinvoice",
     "Date/Time",
     "Amount",
     "Status",
@@ -40,12 +40,12 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   });
   // doc.text(145, 8, newdat);
   doc.setFont("", "bold");
-  doc.text("Invoices", 105, 10, null, null, "center");
-  doc.text(companyName, 14, 25);
-  doc.text("Admin's client :  ", 14, 35);
-  doc.addImage(siteLogo, "JPEG", 180, 25, 18, 18);
+  doc.text("Re-Invoice", 105, 10, null, null, "center");
+  // doc.text(newdate, 160, 25);
+  // doc.text("Admin's client :  ", 14, 35);
+  // doc.addImage(siteLogo, "JPEG", 20, 20, 18, 18);
   doc.setFont("", "bold");
-  doc.text(siteName, 200, 20, null, null, "right");
+  // doc.text(siteName, 75, 30, null, null, "right");
   doc.autoTable(tableColumn, tableRows, {
     startY: 50,
     theme: "grid",
@@ -54,11 +54,11 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
     },
   });
   doc.setFontSize(10);
-  doc.text("Total Re-Invoicing : ", 185, 100, null, null, "right");
+  // doc.text("Total Re-Invoicing : ", 185, 100, null, null, "right");
 
-  doc.text("Total Amount : ", 185, 105, null, null, "right");
+  // doc.text("Total Amount : ", 185, 105, null, null, "right");
   doc.setTextColor(255, 0, 0);
-  doc.text(totalReinvoices, 195, 100, null, null, "right");
+  // doc.text(totalReinvoices, 195, 100, null, null, "right");
   // doc.text(totalPrice, 195, 105, null, null, "right");
   const date = Date().split(" ");
 
