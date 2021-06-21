@@ -140,7 +140,6 @@ export default function DeliveryArea(props) {
       setNotificationTo(value);
     }
   }
-console.log(adminStore.site.siteId._id,"adminStore.site.siteId._id")
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -218,6 +217,7 @@ console.log(adminStore.site.siteId._id,"adminStore.site.siteId._id")
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
+      props.setSelectedShape("")
     } catch (err) {
       setLoading(false);
       dispatch(

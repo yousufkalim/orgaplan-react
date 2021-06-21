@@ -537,6 +537,7 @@ const PicCanvas = (props) => {
               onClick={handleClick}
               onChange={handleChange}
               setSelectedShape={setSelectedShape}
+              selectedShape={selectedShape}
               onClear={onClear}
               pdf={pdf}
               setRendering={setRendering}
@@ -631,8 +632,18 @@ const PicCanvas = (props) => {
                     >
                       <Pencil className={classes.infoIcon} />
                     </IconButton>
+                  ) : selectedShape.type === "BUILDING" ? (
+                    ""
                   ) : (
-                    <></>
+                    <IconButton
+                      disabled={loading}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal(true);
+                      }}
+                    >
+                      <Pencil className={classes.infoIcon} />
+                    </IconButton>
                   )}
 
                   {selectedShape.type === "MEAN" ? (

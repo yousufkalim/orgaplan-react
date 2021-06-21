@@ -60,9 +60,8 @@ export default function UserList(props) {
   const [uploadFlag, setUploadFlag] = useState(false);
 
   const DonwloadFile = async () => {
-    var fileName = "uploads/company/csvTemplate.csv";
+    var fileName = "uploads/company/csvTemplate.xlsx";
     var url = GLOBALS.Constants.BASE_URL + fileName;
-    console.log(url);
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "blob";
@@ -153,7 +152,6 @@ export default function UserList(props) {
 
   useEffect(() => {
     filteredUser();
-    console.log("filteredUser");
     setUploadFlag(false);
     // eslint-disable-next-line
   }, [filterCompanyId, filterUserName, uploadFlag]);
