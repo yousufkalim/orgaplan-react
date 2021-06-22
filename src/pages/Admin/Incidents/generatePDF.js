@@ -18,7 +18,7 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   const doc = new jsPDF();
   const tableColumn = [
     "Name_of_Re-invoice",
-    "Type_of_Reinvoice",
+    "Type_of_Re-invoice",
     "Date/Time",
     "Amount",
     "Status",
@@ -41,11 +41,11 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   // doc.text(145, 8, newdat);
   doc.setFont("", "bold");
   doc.text("Re-Invoice", 105, 10, null, null, "center");
-  // doc.text(newdate, 160, 25);
+  doc.text(newdate, 160, 25);
   // doc.text("Admin's client :  ", 14, 35);
-  // doc.addImage(siteLogo, "JPEG", 20, 20, 18, 18);
+  doc.addImage(siteLogo, "JPEG", 20, 20, 18, 18);
   doc.setFont("", "bold");
-  // doc.text(siteName, 75, 30, null, null, "right");
+  doc.text(siteName, 75, 30, null, null, "right");
   doc.autoTable(tableColumn, tableRows, {
     startY: 50,
     theme: "grid",

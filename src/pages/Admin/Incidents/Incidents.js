@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { DatePicker } from "antd";
+// import DatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -70,12 +72,16 @@ const Incidents = (props) => {
 
   const [popoverShow, setpopoverShow] = useState(false);
 
+  const [value, onChange] = useState(new Date());
+
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
   const [incidentsdata, setIncidentsdata] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
   const [siteComapny, setSiteComapny] = useState([]);
   const [sitedata, setSiteData] = useState({});
+  const [flagforStartdate, setFlag1] = useState(false);
+  const [flagforEnddate, setFlag2] = useState(false);
   const [selectedStatus, setselectedStatus] = useState([]);
   const [status, setStatus] = useState([]);
   const [tatalInvoices, seTatalInvoices] = useState([]);
@@ -114,6 +120,7 @@ const Incidents = (props) => {
     selectedType,
     selectedStatus,
     startDate,
+    endDate,
     selectedStorageAreaValue,
     selectedDeliveryArea,
   ]);
@@ -177,6 +184,7 @@ const Incidents = (props) => {
       if (selectedType.length !== 0) params["type"] = selectedType;
       if (selectedStatus.length !== 0) params["status"] = selectedStatus;
       if (!isNaN(moment(startDate))) params["startDate"] = startDate;
+      if (!isNaN(moment(endDate))) params["endDate"] = endDate;
       if (selectedStorageAreaValue.length !== 0)
         params["storageArea"] = selectedStorageAreaValue;
       if (selectedDeliveryArea.length !== 0)
@@ -549,37 +557,99 @@ const Incidents = (props) => {
           >
             <Form.Row alignItems="center" className="mt-3">
               <Form.Row justifyContent="flex-start" noMargin>
-                <input
-                  type="date"
-                  placeholder="Start1 date"
-                  name="startDate"
-                  icon
+                {/* <DatePicker
+                  size={"large"}
+                  name={"startDate"}
+                  format="DD-MM-YYYY"
+                  onChange={(v) => setStartDate(moment(v).format("yyyy-MM-DD"))}
                   value={startDate}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
-                  }}
-                  style={{
-                    height: "6vh",
-                    opacity: ".7",
-                    marginRight: "10px",
-                    width: "50%",
-                  }}
-                />
-                <input
-                  type="date"
-                  placeholder="End date"
+                  placeholderText={"Start Date"}
+                  icon
+                /> */}
+                {flagforStartdate ? (
+                  <input
+                    type="date"
+                    placeholder="Start Date"
+                    onBlur={() =>
+                      startDate ? setFlag1(flagforStartdate) : setFlag1(false)
+                    }
+                    name="startDate"
+                    icon
+                    value={startDate}
+                    onChange={(e) => {
+                      console.log("e", e.target.value);
+                      setStartDate(e.target.value);
+                    }}
+                    style={{
+                      height: "6vh",
+                      opacity: ".7",
+                      marginRight: "10px",
+                      width: "50%",
+                    }}
+                  />
+                ) : (
+                  <DatePicker
+                    size={"large"}
+                    onFocus={() => setFlag1(true)}
+                    onBlur={() => setFlag1(false)}
+                    placeholder="Start Date"
+                    value={startDate}
+                    style={{
+                      height: "6vh",
+                      opacity: ".7",
+                      marginRight: "10px",
+                      width: "50%",
+                      borderColor: "black",
+                      borderStyle: "solid",
+                    }}
+                  />
+                )}
+
+                {flagforEnddate ? (
+                  <input
+                    type="date"
+                    placeholder="End Date"
+                    onBlur={() =>
+                      endDate ? setFlag2(flagforEnddate) : setFlag2(false)
+                    }
+                    name="endDate"
+                    value={endDate}
+                    onChange={(e) => {
+                      setEndDate(e.target.value);
+                    }}
+                    style={{
+                      height: "6vh",
+                      opacity: ".7",
+                      marginRight: "10px",
+                      width: "50%",
+                    }}
+                  />
+                ) : (
+                  <DatePicker
+                    size={"large"}
+                    onFocus={() => setFlag2(true)}
+                    onBlur={() => setFlag2(false)}
+                    placeholder="End Date"
+                    style={{
+                      height: "6vh",
+                      opacity: ".7",
+                      marginRight: "10px",
+                      width: "50%",
+                      borderColor: "black",
+                      borderStyle: "solid",
+                    }}
+                  />
+                )}
+                {/* <DatePicker
+                  size={"large"}
                   name="endDate"
                   value={endDate}
-                  onChange={(e) => {
-                    setEndDate(e.target.value);
-                  }}
-                  style={{
-                    height: "6vh",
-                    opacity: ".7",
-                    marginRight: "10px",
-                    width: "50%",
-                  }}
+                  format="DD-MM-YYYY"
+                  onChange={(v) => setEndDate(moment(v).format("yyyy-MM-DD"))}
+                  placeholderText={"End Date"}
+                  icon
                 />
+                 */}
               </Form.Row>
             </Form.Row>
 
