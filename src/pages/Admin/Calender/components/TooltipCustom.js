@@ -16,7 +16,7 @@ export const IconStyle = {
 export const TooltipContent = ({ onClose, event }) => {
   return (
     <>
-      <div style={{ textAlign: "left" }}>
+      <div style={{ textAlign: "left", "font-size": "11px" }}>
         <div>Company: {event.event.company.name}</div>
         <div>Delivery Area: {event.event.deliveryArea.name}</div>
         <div>Storage Area: {event.event.storageArea.name}</div>

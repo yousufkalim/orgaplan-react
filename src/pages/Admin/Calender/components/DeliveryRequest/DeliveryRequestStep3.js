@@ -124,14 +124,14 @@ export default function DeliveryRequestStep3(props) {
                   `formdata1 in meanbook delivery invoice ${key}: ${value}`,
                 );
               }
-              // await GLOBALS.API({
-              //   method: "POST",
-              //   uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-              //   headers: {
-              //     Authorization: store.token,
-              //   },
-              //   body: formdata1,
-              // });
+              await GLOBALS.API({
+                method: "POST",
+                uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+                headers: {
+                  Authorization: store.token,
+                },
+                body: formdata1,
+              });
               // invice end
             });
           }
@@ -167,34 +167,34 @@ export default function DeliveryRequestStep3(props) {
               //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
               //   );
               // }
-              // await GLOBALS.API({
-              //   method: "POST",
-              //   uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-              //   headers: {
-              //     Authorization: store.token,
-              //   },
-              //   body: formdata1,
-              // });
+              await GLOBALS.API({
+                method: "POST",
+                uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+                headers: {
+                  Authorization: store.token,
+                },
+                body: formdata1,
+              });
               // invice end
             });
           }
         }
       }
 
-      // props.step2Data.building !== "Exterior" &&
-      //   (formdata["building"] = props.step2Data.building);
-      // props.step2Data.level && (formdata["level"] = props.step2Data.level);
-      // await GLOBALS.API({
-      //   method: props.eventId ? "PUT" : "POST",
-      //   uri: props.eventId
-      //     ? `${GLOBALS.Constants.DELIVERY}/${props.eventId}`
-      //     : GLOBALS.Constants.DELIVERY,
-      //   token: store.token,
-      //   body: JSON.stringify(formdata),
-      // });
+      props.step2Data.building !== "Exterior" &&
+        (formdata["building"] = props.step2Data.building);
+      props.step2Data.level && (formdata["level"] = props.step2Data.level);
+      await GLOBALS.API({
+        method: props.eventId ? "PUT" : "POST",
+        uri: props.eventId
+          ? `${GLOBALS.Constants.DELIVERY}/${props.eventId}`
+          : GLOBALS.Constants.DELIVERY,
+        token: store.token,
+        body: JSON.stringify(formdata),
+      });
 
-      // setLoading(false);
-      // props.onClose();
+      setLoading(false);
+      props.onClose();
     } catch (err) {
       setLoading(false);
       dispatch(
