@@ -107,7 +107,7 @@ const PicCanvas = (props) => {
       fetchSitePic();
     }
     // eslint-disable-next-line
-  }, [adminStore, rendering, level]);
+  }, [adminStore, rendering, level, modal]);
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -705,6 +705,7 @@ const PicCanvas = (props) => {
               onClose={() => {
                 checkShape();
                 setModal((st) => !st);
+                setSelectedShape("");
               }}
               body={
                 <DeliveryArea
@@ -729,6 +730,7 @@ const PicCanvas = (props) => {
               onClose={() => {
                 checkShape();
                 setModal((st) => !st);
+                setSelectedShape("");
               }}
               body={
                 <StorageArea
@@ -753,6 +755,7 @@ const PicCanvas = (props) => {
               onClose={() => {
                 checkShape();
                 setModal((st) => !st);
+                setSelectedShape("");
               }}
               body={
                 <Building
@@ -775,6 +778,7 @@ const PicCanvas = (props) => {
               onClose={() => {
                 checkShape();
                 setModal((st) => !st);
+                setSelectedShape("");
               }}
               body={
                 <Mean
