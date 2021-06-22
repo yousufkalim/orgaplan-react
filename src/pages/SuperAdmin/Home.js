@@ -279,7 +279,11 @@ export default function Home(props) {
   async function fetchIncidentArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data?.siteIncidents?.map((item, index) => {
+    let siteIncidentsTemp = data?.siteIncidents?.filter(
+      (item, index) => item?.siteId?.name !== undefined,
+    );
+
+    siteIncidentsTemp && siteIncidentsTemp.map((item, index) => {
       return siteTemp.push({ [item?.siteId?.name]: item.count });
     });
 
@@ -292,7 +296,10 @@ export default function Home(props) {
   async function fetchMeanArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data?.siteMean.map((item, index) => {
+    let siteMeanTemp =  data?.siteMean?.filter(
+      (item, index) => item?.siteId?.name !== undefined,
+    );
+    siteMeanTemp && siteMeanTemp.map((item, index) => {
       return siteTemp.push({ [item?.siteId?.name]: item.count });
     });
 
@@ -306,15 +313,17 @@ export default function Home(props) {
   async function fetchDeliveriesArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-   
-    data?.siteDeliveries.map((item, index) => {
+    let siteDeliveriesTemp =  data?.siteDeliveries?.filter(
+      (item, index) => item?.siteId?.name !== undefined,
+    );
+    siteDeliveriesTemp &&  siteDeliveriesTemp.map((item, index) => {
       return siteTemp.push({ [item?.siteId?.name]: item.count });
     });
 
     data?.clientDeliveries?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
     });
-    
+
     setSiteDeliveryArray(siteTemp);
     setClientDeliveryArray(clientTemp);
   }
@@ -322,7 +331,10 @@ export default function Home(props) {
   async function fetchEndOfSubscriptionArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data?.site.map((item, index) => {
+    let siteTempfill =  data?.site?.filter(
+      (item, index) => item?.name !== undefined,
+    );
+    siteTempfill && siteTempfill.map((item, index) => {
       return siteTemp.push({ [item.name]: item.daysLeft });
     });
 
@@ -334,7 +346,11 @@ export default function Home(props) {
   }
   async function fetchInvoicesArray(data) {
     const temp = [];
-    data?.map((item, index) => {
+    let siteTempfill =  data?.filter(
+      (item, index) => item?.siteId?.name !== undefined,
+    );
+    
+    siteTempfill && siteTempfill.map((item, index) => {
       const invoiceObject = {
         [item?.siteId?.name]: item.totalAmount,
       };
@@ -345,7 +361,10 @@ export default function Home(props) {
   async function fetchCustomerRateArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    data?.clientPerSite.map((item, index) => {
+    let clientTempfill =  data?.clientPerSite?.filter(
+      (item, index) => item?.comapanyName !== undefined,
+    );
+    clientTempfill && clientTempfill.map((item, index) => {
       return siteTemp.push({ [item.comapanyName]: item.amount });
     });
 
