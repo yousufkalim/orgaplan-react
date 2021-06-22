@@ -179,6 +179,7 @@ export default function DeliveryArea(props) {
       propShapes[inde].name = name;
       propShape._id = response.data._id;
       propShape.name = response.data.name;
+      
       propShape.color = response.data.color;
       propShape.deliveryArea = response.data;
 
