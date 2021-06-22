@@ -32,6 +32,7 @@ import {
 import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
+import { EventToolTips } from "./components/TooltipCustom";
 let view = {
   month: true,
   day: true,
@@ -1660,6 +1661,8 @@ const Calender = (props) => {
           </div>
           {events ? (
             <Calendar
+              tooltipAccessor={null}
+              components={{ event: EventToolTips }}
               slotPropGetter={slotPropGetter}
               popup
               selectable
