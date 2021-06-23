@@ -93,7 +93,6 @@ export default function DeliveryRequestStep3(props) {
             //   "here is routing means",
             //   props.step2Data.selectedRoutingMeans,
             // );
-
             props.step2Data.selectedRoutingMeans.map(async (m) => {
               let startHour = moment(props.step1Data.date)
                 .set("hours", props.step1Data.startTime.split(":")[0])
@@ -103,36 +102,36 @@ export default function DeliveryRequestStep3(props) {
                 .format("H");
 
               // create invoive
-              // var formdata1 = new FormData();
-              // formdata1.append("name", m.currentValue?.name);
-              // formdata1.append(
-              //   "date",
-              //   moment(props.step1Data.date).format("YYYY-MM-DD"),
-              // );
-              // formdata1.append("time", props.step1Data.date);
-              // formdata1.append("type", "MEAN");
-              // formdata1.append("isBillable", true);
-              // formdata1.append(
-              //   "price",
-              //   m.currentValue?.pricePerHour * (endHour - startHour),
-              // );
-              // formdata1.append("isPaid", false);
-              // formdata1.append("companyId", props.step1Data?.company);
-              // formdata1.append("siteId", m.currentValue?.siteId);
+              var formdata1 = new FormData();
+              formdata1.append("name", m.currentValue?.name);
+              formdata1.append(
+                "date",
+                moment(props.step1Data.date).format("YYYY-MM-DD"),
+              );
+              formdata1.append("time", props.step1Data.date);
+              formdata1.append("type", "MEAN");
+              formdata1.append("isBillable", true);
+              formdata1.append(
+                "price",
+                m.currentValue?.pricePerHour * (endHour - startHour),
+              );
+              formdata1.append("isPaid", false);
+              formdata1.append("companyId", props.step1Data?.company);
+              formdata1.append("siteId", m.currentValue?.siteId);
 
-              // for (let [key, value] of formdata1) {
-              //   console.log(
-              //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
-              //   );
-              // }
-              // await GLOBALS.API({
-              //   method: "POST",
-              //   uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-              //   headers: {
-              //     Authorization: store.token,
-              //   },
-              //   body: formdata1,
-              // });
+              for (let [key, value] of formdata1) {
+                console.log(
+                  `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+                );
+              }
+              await GLOBALS.API({
+                method: "POST",
+                uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+                headers: {
+                  Authorization: store.token,
+                },
+                body: formdata1,
+              });
               // invice end
             });
           }

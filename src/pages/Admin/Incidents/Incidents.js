@@ -291,7 +291,13 @@ const Incidents = (props) => {
     seTatalPrice(total);
     setItems(temp);
   }
-  const handlePopoverClose = () => setpopoverShow(false);
+  const handlePopoverClose = () => {
+    setpopoverShow(false);
+    setFlag2(false);
+    setFlag1(false);
+    setStartDate("");
+    setEndDate("");
+  };
   const rows = items.map((item, index) => {
     return [
       item[0] ? item[0] : "",
