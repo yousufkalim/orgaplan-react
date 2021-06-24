@@ -22,6 +22,7 @@ const exportsObj = {
   },
   admin: {
     set_site: AdminActions.set_site,
+    check_site: AdminActions.check_site,
     set_company: AdminActions.set_company,
     reset_state: AdminActions.reset_state,
   },

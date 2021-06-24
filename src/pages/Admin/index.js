@@ -1,6 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
+import Actions from "../../redux/actions";
+import Loader from "../../components/Loader";
 
 import Pic from "./Pic";
 import Means from "./Means";
@@ -13,25 +15,39 @@ import AdminHeader from "./AdminHeader";
 import Organigramme from "./Organigramme";
 
 export default function AdminIndex() {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  React.useEffect(() => {
+    dispatch(Actions.admin.check_site()).then(() => {
+      setLoading(false);
+    });
+    // eslint-disable-next-line
+  }, []);
   const store = useSelector((state) => state.admin);
-
-  return !store.site ? (
-    <Switch>
-      <Route exact path="/" component={Sites} />
-      <Route exact path="/add-site" component={AddSite} />
-      <Redirect from="*" to="/" />
-    </Switch>
-  ) : (
-    <AdminHeader>
-      <Switch>
-        <Route exact path="/" component={Calender} />
-        <Route path="/companies" component={Companies} />
-        <Route path="/incidents" component={Incidents} />
-        <Route path="/means" component={Means} />
-        <Route path="/pic-interactive" component={Pic} />
-        <Route path="/organigramme" component={Organigramme} />
-        <Redirect from="*" to="/" />
-      </Switch>
-    </AdminHeader>
+  return (
+    <>
+      {loading && <Loader.AbsoluteLinear />}
+      {loading ? (
+        <Loader.CenterProgress />
+      ) : !store.site ? (
+        <Switch>
+          <Route exact path="/" component={Sites} />
+          <Route exact path="/add-site" component={AddSite} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      ) : (
+        <AdminHeader>
+          <Switch>
+            <Route exact path="/" component={Calender} />
+            <Route path="/companies" component={Companies} />
+            <Route path="/incidents" component={Incidents} />
+            <Route path="/means" component={Means} />
+            <Route path="/pic-interactive" component={Pic} />
+            <Route path="/organigramme" component={Organigramme} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </AdminHeader>
+      )}
+    </>
   );
 }
