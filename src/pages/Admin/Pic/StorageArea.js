@@ -173,11 +173,11 @@ export default function DeliveryArea(props) {
         token: store.token,
         body: JSON.stringify(formdata),
       });
-
       let propShapes = _.cloneDeep(props.shapes);
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
         : _.cloneDeep(props.selectedShape);
+      
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;

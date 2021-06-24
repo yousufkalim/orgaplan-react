@@ -58,6 +58,7 @@ const Means = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [name, setName] = useState("");
+  const [filter, setFilter] = useState("");
 
   const [company, setCompany] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -71,7 +72,7 @@ const Means = () => {
   useEffect(() => {
     filterMean();
     // eslint-disable-next-line
-  }, [deliveryArea, storageArea, name, type, status, startDate, endDate]);
+  }, [deliveryArea, storageArea, type, status, startDate, endDate]);
 
   useEffect(() => {
     company && fetchBookings();
@@ -145,17 +146,17 @@ const Means = () => {
   };
 
   const filterMeanByName = (name) => {
-    let tempName = name.toLowerCase();
-    const filters = { name: tempName };
-    const filteredUsers = means.filter((user) => {
-      let isValid = true;
-      for (let key in filters) {
-        let searchKey=user[key].toLowerCase()
-        isValid = isValid && searchKey.includes(filters[key]);
-      }
-      return isValid;
-    });
-    setMeans(filteredUsers);
+    if (name) {
+      let tempName = name.toLowerCase();
+      const filters = { name: tempName };
+      const filteredUsers = means.filter((user) => {
+        let meanName = user.name.toLowerCase();
+        return meanName.includes(tempName);
+      });
+      setMeans(filteredUsers);
+    } else {
+      filterMean();
+    }
   };
 
   const filterMean = async () => {
@@ -430,11 +431,11 @@ const Means = () => {
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            value={name}
+            value={filter}
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
-              setName(value);
+              setFilter(value);
               filterMeanByName(value);
             }}
           />
