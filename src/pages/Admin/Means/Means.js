@@ -57,7 +57,6 @@ const Means = () => {
   const [statuses, setStatuses] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [name, setName] = useState("");
 
   const [company, setCompany] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -71,7 +70,7 @@ const Means = () => {
   useEffect(() => {
     filterMean();
     // eslint-disable-next-line
-  }, [deliveryArea, storageArea, name, type, status, startDate, endDate]);
+  }, [deliveryArea, storageArea, type, status, startDate, endDate]);
 
   useEffect(() => {
     company && fetchBookings();
@@ -144,18 +143,20 @@ const Means = () => {
     }
   };
 
-  const filterMeanByName = (name) => {
-    let tempName = name.toLowerCase();
-    const filters = { name: tempName };
-    const filteredUsers = means.filter((user) => {
-      let isValid = true;
-      for (let key in filters) {
-        let searchKey=user[key].toLowerCase()
-        isValid = isValid && searchKey.includes(filters[key]);
-      }
-      return isValid;
-    });
-    setMeans(filteredUsers);
+  // Filtering Means by Mean Name
+  const filterMeanByName = (input) => {
+    // If user is searching
+    if (input) {
+      let inputVal = input.toLowerCase();
+      const filteredMeans = means.filter((mean) => {
+        let meanName = mean.name.toLowerCase();
+        return meanName.includes(inputVal);
+      });
+      setMeans(filteredMeans);
+    } else {
+      // Getting all means if there is not search query
+      filterMean();
+    }
   };
 
   const filterMean = async () => {
@@ -169,7 +170,6 @@ const Means = () => {
       status && (params["status"] = status);
       startDate && (params["startDate"] = startDate);
       endDate && (params["endDate"] = endDate);
-      name && (params["name"] = name);
 
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
@@ -430,13 +430,9 @@ const Means = () => {
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            value={name}
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
-            onChange={({ target: { value } }) => {
-              setName(value);
-              filterMeanByName(value);
-            }}
+            onChange={(e) => filterMeanByName(e.target.value)}
           />
         </Form.Row>
       </Form.Row>

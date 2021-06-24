@@ -60,7 +60,7 @@ export default function UserList(props) {
   const [uploadFlag, setUploadFlag] = useState(false);
 
   const DonwloadFile = async () => {
-    var fileName = "uploads/company/template.xlsx";
+    var fileName = "uploads/company/Template.xlsx";
     var url = GLOBALS.Constants.BASE_URL + fileName;
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
@@ -118,6 +118,7 @@ export default function UserList(props) {
             },
             body: formdata,
           });
+
           setLoading(false);
         } catch (err) {
           setLoading(false);

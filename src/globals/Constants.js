@@ -70,7 +70,6 @@ const endpoints = {
   ADMIN_PIC_SHAPE_POINTS: BASE_URL_V1 + "site-pic/shape",
   ADMIN_LEVEL_PIC_SHAPE_POINTS: BASE_URL_V1 + "level-pic/shape",
 
-
   ADMIN_PIC_BY_SITE: BASE_URL_V1 + "site-pic/site",
 
   // LEVEL PIC
@@ -88,7 +87,6 @@ const endpoints = {
   GET_ADD_MEAN: BASE_URL_V1 + "mean/get_add_mean",
   GET_LIST_OF_MEANS: BASE_URL_V1 + "mean/get_list_of_means",
   GET_MEAN_PATH: BASE_URL_V1 + "mean/get_path",
-
 
   // STORAGE AREA
   CREATE_STORAGE_AREA: BASE_URL_V1 + "storage-area",

@@ -443,7 +443,6 @@ const PicCanvas = (props) => {
       }
     }
   };
-
   // InfoDrawer
   const onDeleteShape = async () => {
     try {
