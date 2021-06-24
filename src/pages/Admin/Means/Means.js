@@ -57,8 +57,6 @@ const Means = () => {
   const [statuses, setStatuses] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [name, setName] = useState("");
-  const [filter, setFilter] = useState("");
 
   const [company, setCompany] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -145,16 +143,18 @@ const Means = () => {
     }
   };
 
-  const filterMeanByName = (name) => {
-    if (name) {
-      let tempName = name.toLowerCase();
-      const filters = { name: tempName };
-      const filteredUsers = means.filter((user) => {
-        let meanName = user.name.toLowerCase();
-        return meanName.includes(tempName);
+  // Filtering Means by Mean Name
+  const filterMeanByName = (input) => {
+    // If user is searching
+    if (input) {
+      let inputVal = input.toLowerCase();
+      const filteredMeans = means.filter((mean) => {
+        let meanName = mean.name.toLowerCase();
+        return meanName.includes(inputVal);
       });
-      setMeans(filteredUsers);
+      setMeans(filteredMeans);
     } else {
+      // Getting all means if there is not search query
       filterMean();
     }
   };
@@ -170,7 +170,6 @@ const Means = () => {
       status && (params["status"] = status);
       startDate && (params["startDate"] = startDate);
       endDate && (params["endDate"] = endDate);
-      name && (params["name"] = name);
 
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.FILTER_MEANS}`,
@@ -431,13 +430,9 @@ const Means = () => {
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            value={filter}
             placeholder="Mean name"
             style={{ marginRight: "5px", maxWidth: 250 }}
-            onChange={({ target: { value } }) => {
-              setFilter(value);
-              filterMeanByName(value);
-            }}
+            onChange={(e) => filterMeanByName(e.target.value)}
           />
         </Form.Row>
       </Form.Row>
