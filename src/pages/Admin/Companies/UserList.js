@@ -60,7 +60,7 @@ export default function UserList(props) {
   const [uploadFlag, setUploadFlag] = useState(false);
 
   const DonwloadFile = async () => {
-    var fileName = "uploads/company/template.xlsx";
+    var fileName = "uploads/company/csvTemplate.xlsx";
     var url = GLOBALS.Constants.BASE_URL + fileName;
     var req = new XMLHttpRequest();
     req.open("GET", url, true);
@@ -97,18 +97,17 @@ export default function UserList(props) {
         },
         body: formData,
       });
-      response.data.shift();
       response.data.map(async (key, index) => {
         try {
           var formdata = new FormData();
           // logo[0]?.file && formdata.append("image", logo[0].file);
-          formdata.append("firstName", key[2]);
-          formdata.append("lastName", key[3]);
-          formdata.append("email", key[0]);
-          formdata.append("phone", key[1]);
+          formdata.append("firstName", key["Prénom *"]);
+          formdata.append("lastName", key["Nom *"]);
+          formdata.append("email", key["E-mail *"]);
+          formdata.append("phone", "+" + key["Telephone *"]);
           formdata.append("siteId", adminStore.site.siteId._id);
           formdata.append("companyId", filterCompanyId);
-          formdata.append("role", key[4]);
+          formdata.append("role", key["Role *"]);
 
           await GLOBALS.API({
             method: "POST",
@@ -118,6 +117,7 @@ export default function UserList(props) {
             },
             body: formdata,
           });
+
           setLoading(false);
         } catch (err) {
           setLoading(false);

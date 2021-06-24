@@ -223,7 +223,7 @@ export default function Login(props) {
       setAdmin(result.data);
       setCompany(result.data.company.name);
       setEmail(result.data.email);
-      setPhone(`0${result.data.phone}`);
+      setPhone(result.data.phone);
       setFirstName(result.data.firstName);
       setLastName(result.data.lastName);
       setExpired(false);
