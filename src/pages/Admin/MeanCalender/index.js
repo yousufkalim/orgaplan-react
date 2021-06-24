@@ -343,11 +343,11 @@ const Calender = (props) => {
             return {};
           });
           disableHoursSiteUnavailabilityDates.map((key, index) => {
-            if ((moment(key).isBetween(startTime, endTime), null, "[]")) {
+            if (moment(key).isBetween(startTime, endTime, undefined, "[]")) {
               disableHoursSiteUnavailabilityDatesFlag = true;
-              return {};
+              return 0;
             }
-            return true;
+            return 0;
           });
           if (flagHours || disableHoursSiteUnavailabilityDatesFlag) {
             setAlertMsg("you can not Select Disable Hours of a Day");
@@ -425,7 +425,6 @@ const Calender = (props) => {
           }, 1000);
         } else {
           setShow(false);
-          console.log("props mean at 377", props.location.mean);
           dispatch(add_mean(DbElement));
           setTitle("");
           setSelectedCompany("");
@@ -645,7 +644,6 @@ const Calender = (props) => {
     setpopoverShow(!popoverShow);
     dispatch(validateMean(eventID));
     // creaet 1book invoice on validate mean
-    console.log("mean id", event.meanId._id);
     let startHour = moment(event.start).format("H");
     let endHour = moment(event.end).format("H");
     var formdata1 = new FormData();

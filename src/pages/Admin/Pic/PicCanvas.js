@@ -107,7 +107,7 @@ const PicCanvas = (props) => {
       fetchSitePic();
     }
     // eslint-disable-next-line
-  }, [adminStore, rendering, level, modal]);
+  }, [adminStore, rendering, level]);
 
   const expiredShapes = (shapes) => {
     let array = [];
