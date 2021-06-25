@@ -238,6 +238,7 @@ const Means = () => {
               to={{
                 pathname: "/means/calendar",
                 mean: item,
+                fetchData: fetchData,
               }}
             >
               <img

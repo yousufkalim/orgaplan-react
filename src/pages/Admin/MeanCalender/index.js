@@ -46,6 +46,7 @@ let formats = {
 };
 
 const Calender = (props) => {
+  console.log("props", props);
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
@@ -118,6 +119,7 @@ const Calender = (props) => {
   useEffect(() => {
     unavailabilityDates();
     functionDisableDay();
+    // props.fetchData();
     // eslint-disable-next-line
   }, []);
 

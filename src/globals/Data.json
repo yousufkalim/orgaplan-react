@@ -671,7 +671,7 @@
     ]
   },
   "userList": {
-    "headings": ["Name", "Company", "Role", "Status", "Email", "Action", ""],
+    "headings": ["Name", "Company", "Role", "Status", "Email", "Action"],
     "items": [
       [
         "Thierry Marles",

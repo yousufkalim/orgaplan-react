@@ -310,13 +310,13 @@ export default function UserList(props) {
             borderRadius: 4,
           }}
         />,
-        <IconButton
-          onClick={(e) => {
-            delUser(item);
-          }}
-        >
-          <Cross style={{ width: 15, height: 15, color: "red" }} />
-        </IconButton>,
+        // <IconButton
+        //   onClick={(e) => {
+        //     delUser(item);
+        //   }}
+        // >
+        //   <Cross style={{ width: 15, height: 15, color: "red" }} />
+        // </IconButton>,
       ],
   );
   async function updateEditModel(editModel) {
