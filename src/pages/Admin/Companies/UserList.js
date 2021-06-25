@@ -9,6 +9,7 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import SmallButton from "../../../components/SmallButton";
+import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { Images } from "../../../assets/Assets";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -47,6 +48,7 @@ export default function UserList(props) {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
+  const [deleteflag, setDeletFlag] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
   const [filterUserName, setFilterUserName] = useState("");
@@ -155,8 +157,9 @@ export default function UserList(props) {
     filteredUser();
     setUploadFlag(false);
     // eslint-disable-next-line
-  }, [filterCompanyId, filterUserName, uploadFlag]);
+  }, [filterCompanyId, filterUserName, uploadFlag, deleteflag]);
 
+  console.log("deleteflag", deleteflag);
   async function filteredUser() {
     try {
       const params = { siteId: adminStore.site.siteId._id };
@@ -227,6 +230,7 @@ export default function UserList(props) {
       );
     }
   };
+  const delUser = async (item) => {};
 
   const onUpdate = async (e) => {
     try {
@@ -306,6 +310,13 @@ export default function UserList(props) {
             borderRadius: 4,
           }}
         />,
+        <IconButton
+          onClick={(e) => {
+            delUser(item);
+          }}
+        >
+          <Cross style={{ width: 15, height: 15, color: "red" }} />
+        </IconButton>,
       ],
   );
   async function updateEditModel(editModel) {

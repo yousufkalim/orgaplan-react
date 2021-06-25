@@ -119,11 +119,11 @@ export default function DeliveryRequestStep3(props) {
               formdata1.append("companyId", props.step1Data?.company);
               formdata1.append("siteId", m.currentValue?.siteId);
 
-              for (let [key, value] of formdata1) {
-                console.log(
-                  `formdata1 in meanbook delivery invoice ${key}: ${value}`,
-                );
-              }
+              // for (let [key, value] of formdata1) {
+              //   console.log(
+              //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+              //   );
+              // }
               await GLOBALS.API({
                 method: "POST",
                 uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,

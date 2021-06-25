@@ -671,7 +671,7 @@
     ]
   },
   "userList": {
-    "headings": ["Name", "Company", "Role", "Status", "Email", "Action"],
+    "headings": ["Name", "Company", "Role", "Status", "Email", "Action", ""],
     "items": [
       [
         "Thierry Marles",
@@ -864,13 +864,8 @@
       ]
     ]
   },
-    "accessToStorageArea": {
-    "headings": [
-      "Company",
-      "Reqested Date",
-      "Storage Area",
-      "Action"
-    ],
+  "accessToStorageArea": {
+    "headings": ["Company", "Reqested Date", "Storage Area", "Action"],
     "items": [
       ["ContructBTP", "Thierry Marles", "y", " "],
       ["ContructBTP", "Thierry Marles", "y", " "],

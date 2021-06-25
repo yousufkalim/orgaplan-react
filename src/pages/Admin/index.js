@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Switch, Route, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  useLocation,
+  useHistory,
+} from "react-router-dom";
 import Actions from "../../redux/actions";
 import Loader from "../../components/Loader";
 
@@ -16,8 +22,16 @@ import Organigramme from "./Organigramme";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  let history = useHistory();
   const [loading, setLoading] = useState(true);
-  React.useEffect(() => {
+  useEffect(() => {
+    if (
+      location.pathname === "/means/calendar" ||
+      location.pathname === "/means/mean-history"
+    ) {
+      history.push("/means");
+    }
     dispatch(Actions.admin.check_site()).then(() => {
       setLoading(false);
     });
