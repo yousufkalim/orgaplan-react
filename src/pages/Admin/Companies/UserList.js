@@ -257,6 +257,7 @@ export default function UserList(props) {
         body: formdata,
       });
       setDelBoxopen(false);
+      setOpen(false);
       filteredUser();
     } catch (err) {
       dispatch(
