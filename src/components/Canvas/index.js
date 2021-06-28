@@ -6,7 +6,7 @@ import GLOBALS from "../../globals";
 import _ from "lodash";
 
 export const width = 1000;
-export const height = 420;
+export const height = 600;
 
 const loadImage = (data) =>
   new Promise((res, rej) => {
@@ -178,10 +178,7 @@ class App extends Component {
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
 
-      var scale = Math.min(
-        canvas.height / unscaledViewport.height,
-        canvas.width / unscaledViewport.width,
-      );
+      var scale = 1;
 
       var viewport = page.getViewport(scale);
 
@@ -347,12 +344,11 @@ class App extends Component {
           return;
         }
       }
-     
+
       this.props.setSelectedShape("");
       this.props.setRendering("hello");
 
       this.props.onClear();
-      
     }
   };
 

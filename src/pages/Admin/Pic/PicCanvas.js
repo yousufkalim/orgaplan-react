@@ -21,6 +21,11 @@ import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
+
+import imggg from "./testpdf.pdf";
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
 // import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
 
@@ -36,8 +41,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   canvasRow: {
-    height: "735px",
+    height: "740px",
+    // width: "1000px",
     display: "flex",
+    // backgroundColor: "red",
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -74,6 +81,13 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
     height: 20,
   },
+  pdffff: {
+    position: "absolute",
+    // marginTop: "50px",
+  },
+  pagee: {
+    bottom: "-60px",
+  },
 }));
 
 let selectedShapeReserver;
@@ -108,7 +122,7 @@ const PicCanvas = (props) => {
     }
     // eslint-disable-next-line
   }, [adminStore, rendering, level]);
-
+  console.log("pdf", pdf);
   const expiredShapes = (shapes) => {
     let array = [];
 
@@ -531,18 +545,29 @@ const PicCanvas = (props) => {
           {loading ? (
             <Loader.Progress />
           ) : (
-            <Canvas
-              shapes={shapes}
-              onClick={handleClick}
-              onChange={handleChange}
-              setSelectedShape={setSelectedShape}
-              selectedShape={selectedShape}
-              onClear={onClear}
-              pdf={pdf}
-              setRendering={setRendering}
-              onPdfChange={handlePdfChange}
-              level={level ? true : false}
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <Document className={classes.pdffff} file={pdf ? pdf : imggg}>
+                <Page className={classes.pagee} pageNumber={1} height="600" />
+              </Document>
+              <Canvas
+                shapes={shapes}
+                onClick={handleClick}
+                onChange={handleChange}
+                setSelectedShape={setSelectedShape}
+                selectedShape={selectedShape}
+                onClear={onClear}
+                pdf={pdf}
+                setRendering={setRendering}
+                onPdfChange={handlePdfChange}
+                level={level ? true : false}
+              />
+            </div>
           )}
           <div className={classes.infoDrawerContainer}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (

@@ -4,6 +4,7 @@ import ConvaLine from "./Components/Line";
 import Rectangle from "./Components/Rectangle";
 import moment from "moment";
 import useImage from "use-image";
+
 export default function Canvas({
   onClick,
   onMouseMove,
@@ -82,6 +83,7 @@ export default function Canvas({
     <Stage
       width={width}
       height={height}
+      // style={{ backgroundColor: "chocolate" }}
       onMouseDown={onClick}
       onMouseMove={onMouseMove}
       onMouseEnter={(e) => {
@@ -95,11 +97,12 @@ export default function Canvas({
       }}
     >
       <Layer>
-        {image ? (
+        {/* {image ? (
           <Rectangle fillPatternImage={image} width={width} height={height} />
         ) : (
           <Rectangle fill={"#ccc"} width={width} height={height} />
-        )}
+        )} */}
+
         <ConvaLine
           points={flattenedPoints}
           stroke="black"
