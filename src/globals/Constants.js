@@ -130,6 +130,7 @@ const endpoints = {
   GET_USER_COMPANY: BASE_URL_V1 + "users/get_user_company",
   ADD_COMPANY_USER: BASE_URL_V1 + "users/add_company_user",
   UPDATE_COMPANY_USER: BASE_URL_V1 + "users/update_company_user",
+  DELETE_COMPANY_USER: BASE_URL_V1 + "users/delete_company_user",
 
   POST_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme",
   GET_SITE_ORGANIGRAMMES: BASE_URL_V1 + "organigramme/site",

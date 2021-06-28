@@ -48,7 +48,6 @@ export default function UserList(props) {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
-  const [deleteflag, setDeletFlag] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
   const [filterUserName, setFilterUserName] = useState("");
@@ -157,9 +156,7 @@ export default function UserList(props) {
     filteredUser();
     setUploadFlag(false);
     // eslint-disable-next-line
-  }, [filterCompanyId, filterUserName, uploadFlag, deleteflag]);
-
-  console.log("deleteflag", deleteflag);
+  }, [filterCompanyId, filterUserName, uploadFlag]);
   async function filteredUser() {
     try {
       const params = { siteId: adminStore.site.siteId._id };
@@ -230,7 +227,28 @@ export default function UserList(props) {
       );
     }
   };
-  const delUser = async (item) => {};
+  // Delete User Function
+  const delUser = async () => {
+    var formdata = new FormData();
+
+    formdata.append("siteId", adminStore.site.siteId._id);
+    formdata.append("role", selectedRole);
+    formdata.append("email", email);
+    formdata.append("companyId", companyId);
+    formdata.append("userId", userId);
+    for (let [key, value] of formdata) {
+      console.log(`user data ${key}: ${value}`);
+    }
+
+    await GLOBALS.API({
+      method: "PUT",
+      uri: GLOBALS.Constants.DELETE_COMPANY_USER,
+      headers: {
+        Authorization: store.token,
+      },
+      body: formdata,
+    });
+  };
 
   const onUpdate = async (e) => {
     try {
@@ -506,6 +524,17 @@ export default function UserList(props) {
                 minWidth={200}
                 text="VALIDATE"
                 fullWidth={false}
+              />
+            </Form.ButtonContainer>
+            <Form.ButtonContainer>
+              <Button
+                text="DELETE"
+                minWidth="30%"
+                fullWidth={false}
+                style={{ background: "#e85353" }}
+                onClick={(e) => {
+                  delUser();
+                }}
               />
             </Form.ButtonContainer>
           </Form.Form>
