@@ -14,7 +14,7 @@ import RadioButton from "../../../../components/RadioButton";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
 import MultiAdderInputModal from "../../../../components/MultiAdderInputModal";
-
+import FormMultiSelect from "../../../../components/FormMultiSelect";
 export default function EditSiteStep1(props) {
   const dispatch = useDispatch();
 
@@ -28,7 +28,7 @@ export default function EditSiteStep1(props) {
   const [name, setName] = useState("");
   const [logo, setLogo] = useState([]);
   const [zacId, setZacId] = useState("");
-  const [adminId, setAdminId] = useState("");
+  const [adminId, setAdminId] = useState([]);
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -66,7 +66,9 @@ export default function EditSiteStep1(props) {
         client.adminIds.map((admin) =>
           adminsArray.push({
             value: admin._id,
-            label: `${admin.firstName} ${admin.lastName}`,
+            label: `${admin.firstName} ${admin.lastName} (${client.companyId.name})`,
+            clientId: client._id,
+            companyId: client.companyId._id,
           }),
         );
         return true;
@@ -74,7 +76,7 @@ export default function EditSiteStep1(props) {
       setZacs(zacsArray);
       setAdmins(adminsArray);
       setClients(clientsResult.data.items);
-      setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
+      // setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
 
       // Filling the fields
       const propData = props.step1Data;
@@ -82,7 +84,10 @@ export default function EditSiteStep1(props) {
       propData.logo &&
         setLogo([{ key: 0, file: undefined, uri: propData.logo }]);
       propData.zacId && setZacId(propData.zacId);
-      propData.adminId && setAdminId(propData.adminId);
+      const propsadminIds = propData.adminId.map((key, index) => {
+        return key.adminId._id;
+      });
+      setAdminId(propsadminIds);
       propData.functionality && setFunctionality(propData.functionality);
       propData.addresses && setAddresses(propData.addresses);
       propData.trades && setTrades(propData.trades);
@@ -105,7 +110,10 @@ export default function EditSiteStep1(props) {
     if (name === "name") setName(value);
     else if (name === "logo") setLogo(value);
     else if (name === "zacId") setZacId(value);
-    else if (name === "adminId") setAdminId(value);
+    else if (name === "adminId") {
+      setUpdate((st) => !st);
+      setAdminId(value);
+    } else if (name === "functionality") setFunctionality(value);
     else if (name === "functionality") setFunctionality(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);
@@ -119,11 +127,23 @@ export default function EditSiteStep1(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
+    let clientAdmin = [];
+    admins.map((array, index) => {
+      adminId.map((select) => {
+        if (array.value.toString() === select.toString()) {
+          clientAdmin.push({
+            adminId: array.value,
+            clientId: array.clientId,
+            companyId: array.companyId,
+          });
+        }
+      });
+    });
     const values = {
       name,
       logo,
       zacId,
-      adminId,
+      clientAdmin,
       functionality,
       addresses,
       trades,
@@ -180,29 +200,21 @@ export default function EditSiteStep1(props) {
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary="SITE RESPONSIBLE* :" />
-          <Form.Row
-            noMargin
-            width="48%"
-            alignItems="center"
-            justifyContent="flex-start"
-          >
-            <FormSelect
-              name="adminId"
-              value={adminId}
-              values={admins}
-              // error={adminId}
-              placeholder="Select Admin"
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-            />
-            <SmallText
+
+          <FormMultiSelect
+            name="adminId"
+            value={adminId}
+            placeholder="Select Admins"
+            values={admins}
+            condition={true}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={({ target: { value } }) => handleChange("adminId", value)}
+          />
+          {/* <SmallText
               noMargin
               style={{ marginLeft: 10 }}
               primary={clientName}
-            />
-          </Form.Row>
+            /> */}
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary="AVAILABLE FUNCTIONALITY : " />
