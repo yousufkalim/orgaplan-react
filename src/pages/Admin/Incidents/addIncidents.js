@@ -63,6 +63,11 @@ export default function AddIncidents(props) {
   const [companies, setCompanies] = useState([]);
   const [generalContractor, setGeneralContractor] = useState("");
 
+  const [nameError, setNameError] = useState("");
+  const [companyError, setCompanyError] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [typeError, setTypeError] = useState("");
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -71,6 +76,14 @@ export default function AddIncidents(props) {
     fetchLocationDataOnTypeChange();
     // eslint-disable-next-line
   }, [selectedLocationType]);
+  useEffect(() => {
+    if (companyId) {
+      let comp = companies.find((com) => com.companyId._id === companyId);
+      if (comp.parentCompanyId) setGeneralContractor(comp.parentCompanyId.name);
+      else setGeneralContractor("");
+    }
+    // eslint-disable-next-line
+  }, [companyId]);
 
   const fetchData = async () => {
     try {
@@ -78,6 +91,7 @@ export default function AddIncidents(props) {
         uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
       if (response.data.site_companies) {
         setCompanies(response.data.site_companies);
         setDropdownCompanies(
@@ -99,11 +113,12 @@ export default function AddIncidents(props) {
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "comapnyId") {
       setCompanyId(e.target.value);
-      let comp = companies.find((com) => com.companyId._id === e.target.value);
-      if (comp.parentCompanyId) setGeneralContractor(comp.parentCompanyId.name);
-      else setGeneralContractor("");
+      validation("companyId", e.target.value);
     }
-    if (e.target.name === "date") setDate(e.target.value);
+    if (e.target.name === "date") {
+      setDate(e.target.value);
+      validation("date", e.target.value);
+    }
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
@@ -124,7 +139,10 @@ export default function AddIncidents(props) {
     if (e.target.name === "price") setPrice(e.target.value);
     if (e.target.name === "comment") setComment(e.target.value);
     if (e.target.name === "profile") setImage(e.target.value);
-    if (e.target.name === "type") setType(e.target.value);
+    if (e.target.name === "type") {
+      setType(e.target.value);
+      validation("type", e.target.value);
+    }
   };
   const handleChange = (name, value) => {
     if (name === "image") setImage(value);
@@ -201,6 +219,34 @@ export default function AddIncidents(props) {
     props.history.push("/incidents");
   };
 
+  const validation = (name, value) => {
+    if (name == "name") {
+      if (!value) {
+        setNameError("Please enter name of incident");
+      } else {
+        setNameError("");
+      }
+    } else if (name == "companyId") {
+      if (!value) {
+        setCompanyError("Please select name of company");
+      } else {
+        setCompanyError("");
+      }
+    } else if (name == "date") {
+      if (!value) {
+        setDateError("Please select date");
+      } else {
+        setDateError("");
+      }
+    } else if (name == "type") {
+      if (!value) {
+        setTypeError("Please select type of incident");
+      } else {
+        setTypeError("");
+      }
+    }
+  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -217,6 +263,8 @@ export default function AddIncidents(props) {
               placeholder="Name of incident"
               onChange={nameChange}
               value={name}
+              onBlur={({ target: { name, value } }) => validation(name, value)}
+              error={nameError}
             />
           </Form.Row>
           <Form.Row>
@@ -234,6 +282,7 @@ export default function AddIncidents(props) {
                 values={dropdownCompanies}
                 placeholder="Nom de I'enterprise"
                 style={GLOBALS.Styles.inputWidth}
+                error={companyError}
               />
               <SmallText
                 primary={generalContractor}
@@ -257,6 +306,7 @@ export default function AddIncidents(props) {
                 max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
                 onChange={nameChange}
                 value={date}
+                error={dateError}
               />
               <TimePicker
                 name="time"
@@ -282,6 +332,7 @@ export default function AddIncidents(props) {
                   { value: "DELAY", label: "Delay" },
                   { value: "UNEXPRECTED", label: "Unexpected delivery" },
                 ]}
+                error={typeError}
               />
             </Form.Row>
           </Form.Row>
