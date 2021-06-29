@@ -71,14 +71,15 @@ export default function AddCompanies(props) {
   const [website, setWebsite] = useState("");
   const [addInfo, setAddInfo] = useState("");
 
-  const [nameError, setNameError] = useState("");
-  const [companyTypeError, setCompanyTypeError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [websiteError, setWebsiteError] = useState("");
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
+
+  const [nameError, setNameError] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [ParentCompanyError, setParentCompanyError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
 
   // Dropdowns
   const [allTrades, setAllTrades] = useState([]);
@@ -139,7 +140,13 @@ export default function AddCompanies(props) {
   }
   async function onSubmit() {
     try {
-      if (emailError || phoneError || websiteError || !image[0]) {
+      if (
+        nameError ||
+        imageError ||
+        emailError ||
+        websiteError ||
+        !companyType
+      ) {
         alert("something went wrong");
       } else {
         let checkCompanyExists = companies.filter(
@@ -209,38 +216,15 @@ export default function AddCompanies(props) {
   function inputChange(name, value) {
     if (name === "name") {
       setName(value);
-      if (name === "" || name === null) {
-        setNameError(true);
-      } else {
-        setNameError(false);
-      }
     } else if (name === "color") setColor(value);
     else if (name === "companyType") {
       setCompanyType(value);
-      if (!value) {
-        setCompanyTypeError(true);
-      } else {
-        setCompanyTypeError(false);
-      }
     } else if (name === "parentCompanyId") {
       setParentCompanyId(value);
     } else if (name === "email") {
       setEmail(value);
-      // eslint-disable-next-line
-      var mailformat =
-        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!value.match(mailformat)) {
-        setEmailError(true);
-      } else {
-        setEmailError(false);
-      }
     } else if (name === "phone") {
       setPhone(value);
-      if (value.length < 10 || value.length > 25) {
-        setPhoneError("Telephone must have 10 to 25 digits");
-      } else {
-        setPhoneError("");
-      }
     } else if (name === "firstName") setFirstName(value);
     else if (name === "lastName") setLastName(value);
     else if (name === "image") {
@@ -252,15 +236,47 @@ export default function AddCompanies(props) {
       setAddInfo(value);
     } else if (name === "website") {
       setWebsite(value);
-      const web =
+    }
+
+    validation(name, value);
+  }
+
+  const validation = (name, value) => {
+    if (name == "name") {
+      if (!value) {
+        setNameError("Please enter name");
+      } else {
+        setNameError("");
+      }
+    } else if (name == "image") {
+      if (!value.length > 0) {
+        setImageError("Please provide image");
+      } else {
+        setImageError("");
+      }
+    } else if (name == "parentCompanyId") {
+      if (!value) {
+        setParentCompanyError("Please select a company");
+      } else {
+        setParentCompanyError("");
+      }
+    } else if (name == "email") {
+      const emailValidation = /\S+@\S+\.\S+/;
+      if (!value.match(emailValidation) && value !== "") {
+        setEmailError("Please enter valid email");
+      } else {
+        setEmailError("");
+      }
+    } else if (name == "website") {
+      const websiteValidation =
         /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
-      if (!value.match(web)) {
-        setWebsiteError("Invalid Url");
+      if (!value.match(websiteValidation) && value !== "") {
+        setWebsiteError("Please enter valid URL");
       } else {
         setWebsiteError("");
       }
     }
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -291,9 +307,6 @@ export default function AddCompanies(props) {
                       if (comp) {
                         setCompanyId(option.value);
                         if (comp.incharge) {
-                          setEmailError("");
-                          setPhoneError("");
-                          setWebsiteError("");
                           setEmail(comp.incharge.email);
                           setPhone(comp.incharge.phone);
                           setFirstName(comp.incharge.firstName);
@@ -321,12 +334,23 @@ export default function AddCompanies(props) {
                       name="name"
                       label="Name"
                       variant="outlined"
+                      onBlur={({ target: { name, value } }) =>
+                        validation(name, value)
+                      }
+                      error={nameError}
                     />
                   )}
                 />
-                {nameError && (
-                  <div className={classes.error}>Please enter name</div>
-                )}
+                <div
+                  style={{
+                    position: "relative",
+                    height: "5px",
+                    color: "red",
+                    fontSize: "12px",
+                  }}
+                >
+                  {nameError}
+                </div>
               </Form.Column>
               <div style={GLOBALS.Styles.inputWidth}>
                 <ColorPicker
@@ -344,6 +368,7 @@ export default function AddCompanies(props) {
               // enabled={companyId}
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => inputChange("image", values)}
+              error={imageError}
             />
           </Form.Row>
           <Form.Row>
@@ -364,9 +389,6 @@ export default function AddCompanies(props) {
                     { value: "subcontractor", label: "Subcontractor" },
                   ]}
                 />
-                {companyTypeError === true && (
-                  <div className={classes.error}>Please select company</div>
-                )}
               </Form.Column>
             </Form.Row>
           </Form.Row>
@@ -383,6 +405,11 @@ export default function AddCompanies(props) {
                   onChange={({ target: { name, value } }) => {
                     inputChange(name, value);
                   }}
+                  error={
+                    companyType === "generalcontractor"
+                      ? null
+                      : ParentCompanyError
+                  }
                 />
               </Form.Column>
             </Form.Row>
@@ -409,15 +436,17 @@ export default function AddCompanies(props) {
                 <FormInput
                   name="email"
                   value={email}
+                  type="email"
                   disabled={companyId}
                   placeholder="Adresse e-mail"
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={emailError}
                 />
-                {emailError === true && (
-                  <div className={classes.error}>Please enter valid email</div>
-                )}
               </Form.Column>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <PhoneBox
@@ -431,9 +460,6 @@ export default function AddCompanies(props) {
                     value.length < 26 ? inputChange(name, value) : ""
                   }
                 />
-                {phoneError && (
-                  <div className={classes.error}>{phoneError}</div>
-                )}
               </Form.Column>
             </Form.Row>
           </Form.Row>
@@ -474,10 +500,11 @@ export default function AddCompanies(props) {
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={websiteError}
                 />
-                {websiteError && (
-                  <div className={classes.error}>{websiteError}</div>
-                )}
               </Form.Column>
             </Form.Row>
           </Form.Row>
