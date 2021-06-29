@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Paper from "@material-ui/core/Paper";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -44,11 +50,11 @@ export default function UserList(props) {
   // const [companies, setCompanies] = useState([]);
   const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [delBoxopen, setDelBoxopen] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
-  const [deleteflag, setDeletFlag] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
   const [filterUserName, setFilterUserName] = useState("");
@@ -157,9 +163,7 @@ export default function UserList(props) {
     filteredUser();
     setUploadFlag(false);
     // eslint-disable-next-line
-  }, [filterCompanyId, filterUserName, uploadFlag, deleteflag]);
-
-  console.log("deleteflag", deleteflag);
+  }, [filterCompanyId, filterUserName, uploadFlag]);
   async function filteredUser() {
     try {
       const params = { siteId: adminStore.site.siteId._id };
@@ -230,7 +234,39 @@ export default function UserList(props) {
       );
     }
   };
-  const delUser = async (item) => {};
+  // Delete User Function by Admin
+  const delUser = async () => {
+    try {
+      var formdata = new FormData();
+
+      formdata.append("siteId", adminStore.site.siteId._id);
+      formdata.append("role", selectedRole);
+      formdata.append("email", email);
+      formdata.append("companyId", companyId);
+      formdata.append("userId", userId);
+      for (let [key, value] of formdata) {
+        console.log(`user data ${key}: ${value}`);
+      }
+
+      let res = await GLOBALS.API({
+        method: "DELETE",
+        uri: GLOBALS.Constants.DELETE_COMPANY_USER,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
+      setDelBoxopen(false);
+      setOpen(false);
+      filteredUser();
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
 
   const onUpdate = async (e) => {
     try {
@@ -265,6 +301,12 @@ export default function UserList(props) {
   };
   const handleClickOpen = () => {
     setOpen(true);
+  };
+  const handleDeleteOpen = () => {
+    setDelBoxopen(true);
+  };
+  const handleDeleteClose = () => {
+    setDelBoxopen(false);
   };
 
   const resendMail = async (email) => {
@@ -310,13 +352,6 @@ export default function UserList(props) {
             borderRadius: 4,
           }}
         />,
-        // <IconButton
-        //   onClick={(e) => {
-        //     delUser(item);
-        //   }}
-        // >
-        //   <Cross style={{ width: 15, height: 15, color: "red" }} />
-        // </IconButton>,
       ],
   );
   async function updateEditModel(editModel) {
@@ -508,9 +543,53 @@ export default function UserList(props) {
                 fullWidth={false}
               />
             </Form.ButtonContainer>
+            <Form.ButtonContainer>
+              <Button
+                text="DELETE"
+                minWidth="30%"
+                fullWidth={false}
+                style={{ background: "#e85353" }}
+                onClick={handleDeleteOpen}
+              />
+            </Form.ButtonContainer>
           </Form.Form>
         }
       />
+
+      {/* Delete User Dialog Box */}
+      <Dialog
+        open={delBoxopen}
+        onClose={handleDeleteClose}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          Delete User
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are You Sure You Want To Delete this User!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions style={{ width: "50%", marginLeft: "auto" }}>
+          <Button
+            autoFocus
+            style={{ height: "4vh" }}
+            onClick={handleDeleteClose}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            autoFocus
+            style={{ background: "e85353", height: "4vh" }}
+            onClick={(e) => {
+              delUser();
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
