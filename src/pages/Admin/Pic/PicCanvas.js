@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
     height: 20,
   },
-  pdffff: {
+  pdfstyle: {
     position: "absolute",
   },
   pagee: {
@@ -550,7 +550,7 @@ const PicCanvas = (props) => {
                 justifyContent: "center",
               }}
             >
-              <Document className={classes.pdffff} file={pdf ? pdf : imggg}>
+              <Document className={classes.pdfstyle} file={pdf ? pdf : imggg}>
                 <Page className={classes.pagee} pageNumber={1} height="680" />
               </Document>
               <Canvas
