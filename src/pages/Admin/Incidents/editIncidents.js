@@ -82,7 +82,7 @@ export default function AddIncidents(props) {
     }
     // eslint-disable-next-line
   }, [companyId]);
-
+  console.log("mean data in edit", history.location.data);
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -205,7 +205,6 @@ export default function AddIncidents(props) {
     };
     setLocation(locationObject);
   };
-
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
   };
@@ -344,6 +343,7 @@ export default function AddIncidents(props) {
                 placeholder="Type of location"
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth}
+                disabled={history.location.data?.meanLocation ? true : false}
                 onChange={locationTypeChange}
                 value={selectedLocationType}
                 values={[

@@ -152,6 +152,7 @@ const Means = () => {
         let meanName = mean.name.toLowerCase();
         return meanName.includes(inputVal);
       });
+
       setMeans(filteredMeans);
     } else {
       // Getting all means if there is not search query
