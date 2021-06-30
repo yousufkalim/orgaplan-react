@@ -371,11 +371,12 @@ const Calender = (props) => {
             //   deliveryArea: deliveryArea,
             // };
             // console.log(
-            //   "get",
+            //   "get location",
             //   storageArea
             //     ? locationObjectstorageArea
             //     : locationObjectdeliveryArea,
             // );
+            console.log("mean is ", props.location.mean);
             let startHour = moment(startTime).format("H");
             let endHour = moment(endTime).format("H");
             // create invoive
@@ -386,6 +387,15 @@ const Calender = (props) => {
             formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
             formdata.append("time", startTime);
             formdata.append("type", "MEAN");
+            props.location.mean?.isInside
+              ? formdata.append(
+                  "meanlocation",
+                  props.location.mean.levelName +
+                    "/" +
+                    props.location.mean.buildingName,
+                )
+              : formdata.append("meanLocation", "Exterior");
+
             // props.location.mean?.meanType
 
             formdata.append("isBillable", true);
@@ -397,23 +407,23 @@ const Calender = (props) => {
             formdata.append("companyId", selectedCompany);
             formdata.append("siteId", adminStore.site.siteId._id);
 
-            // for (let [key, value] of formdata) {
-            //   console.log(`formdata in meanbook invoice ${key}: ${value}`);
-            // }
-            await GLOBALS.API({
-              method: "POST",
-              uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-              headers: {
-                Authorization: store.token,
-              },
-              body: formdata,
-            });
-            // invice end in 1meanbook
+            for (let [key, value] of formdata) {
+              console.log(`formdata in meanbook invoice ${key}: ${value}`);
+            }
+            // await GLOBALS.API({
+            //   method: "POST",
+            //   uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+            //   headers: {
+            //     Authorization: store.token,
+            //   },
+            //   body: formdata,
+            // });
+            // // invice end in 1meanbook
 
-            dispatch(add_mean(DbElement));
-            setTitle("");
-            setSelectedCompany("");
-            setShow(false);
+            // dispatch(add_mean(DbElement));
+            // setTitle("");
+            // setSelectedCompany("");
+            // setShow(false);
           }
         } else if (
           overlap === "Disable" &&

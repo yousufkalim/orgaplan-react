@@ -177,6 +177,7 @@ const Means = () => {
         method: "POST",
         body: JSON.stringify(params),
       });
+
       setMeans(response.data);
       setLoading(false);
     } catch (err) {

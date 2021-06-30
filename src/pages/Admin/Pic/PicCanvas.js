@@ -96,7 +96,7 @@ const PicCanvas = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
   const [selectedBuilding, setselectedBuilding] = useState("");
-
+  const [levelName, setLevelName] = useState("");
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
@@ -108,6 +108,12 @@ const PicCanvas = (props) => {
     }
     // eslint-disable-next-line
   }, [adminStore, rendering, level]);
+  const findlevelName = (value) => {
+    let name = levelsDropdown.find((a) => a.value == value);
+    if (name) {
+      setLevelName(name.label);
+    }
+  };
 
   const expiredShapes = (shapes) => {
     let array = [];
@@ -510,7 +516,6 @@ const PicCanvas = (props) => {
           placeholder="Select Level"
           onChange={({ target: { value } }) => {
             setLevel(value);
-
             if (value) {
               fetchLevelPic(value);
               const leve = allLeves.find((lev) => lev._id === value);
@@ -607,7 +612,7 @@ const PicCanvas = (props) => {
                     placeholder="Select Level"
                     onChange={({ target: { value } }) => {
                       setLevel(value);
-
+                      findlevelName(value);
                       if (value) {
                         fetchLevelPic(value);
                         const leve = allLeves.find((lev) => lev._id === value);
@@ -772,7 +777,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} MEAN`}
+              title={`${shape ? "ADD" : "EDIT"} MEANs`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -784,6 +789,8 @@ const PicCanvas = (props) => {
                   shape={shape}
                   pic={level ? levelPic : sitePic}
                   level={level}
+                  levelName={levelName}
+                  selectedBuilding={selectedBuilding}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
