@@ -49,12 +49,12 @@ export default function EditContact(props) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
 
+  const [typeError, setTypeError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [companyError, setCompanyError] = useState("");
-  const [roleError, setRoleError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -89,52 +89,62 @@ export default function EditContact(props) {
   const handleChange = (name, value) => {
     if (name === "email") {
       setEmail(value);
-      // eslint-disable-next-line
-      var mailformat =
-        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!value.match(mailformat)) {
-        setEmailError("Please enter valid format");
+    } else if (name === "phone") {
+      setPhone(value);
+    } else if (name === "firstName") {
+      setFirstName(value);
+    } else if (name === "lastName") {
+      setLastName(value);
+    } else if (name === "company") {
+      setCompany(value);
+    } else if (name === "role") {
+      setRole(value);
+    } else if (name === "image") setImage(value);
+    else if (name === "company") setCompany(value);
+    else if (name === "role") setRole(value);
+
+    validation(name, value);
+  };
+
+  const validation = (name, value) => {
+    if (name == "email") {
+      const emailValidation = /\S+@\S+\.\S+/;
+      if (!value.match(emailValidation)) {
+        setEmailError("Please enter valid email");
       } else {
         setEmailError("");
       }
-    } else if (name === "phone") {
-      setPhone(value);
+    } else if (name == "phone") {
       if (value.length < 10 || value.length > 25) {
         setPhoneError("Telephone must have 10 to 25 digits");
       } else {
         setPhoneError("");
       }
-    } else if (name === "firstName") {
-      setFirstName(value);
-      if (value.length > 30) {
-        setFirstNameError("Maximum chracters limit 30");
+    } else if (name == "firstName") {
+      if (!value) {
+        setFirstNameError("Please enter firstname");
       } else {
         setFirstNameError("");
       }
-    } else if (name === "lastName") {
-      setLastName(value);
-      if (value.length > 30) {
-        setLastNameError("Maximum chracters limit 30");
+    } else if (name == "lastName") {
+      if (!value) {
+        setLastNameError("Please enter lastname");
       } else {
         setLastNameError("");
       }
-    } else if (name === "company") {
-      setCompany(value);
-      if (value.length > 30) {
-        setCompanyError("Maximum chracters limit 30");
+    } else if (name == "company") {
+      if (!value) {
+        setCompanyError("Please enter Company");
       } else {
         setCompanyError("");
       }
-    } else if (name === "role") {
-      setRole(value);
-      if (value.length > 30) {
-        setRoleError("Maximum chracters limit 30");
+    } else if (name == "type") {
+      if (!value) {
+        setTypeError("Please enter type of organigramme");
       } else {
-        setRoleError("");
+        setTypeError("");
       }
-    } else if (name === "image") setImage(value);
-    else if (name === "company") setCompany(value);
-    else if (name === "role") setRole(value);
+    }
   };
 
   async function onDelete() {
@@ -170,8 +180,7 @@ export default function EditContact(props) {
         phoneError !== "" ||
         firstNameError !== "" ||
         lastNameError !== "" ||
-        companyError !== "" ||
-        roleError !== ""
+        companyError !== ""
       ) {
         alert("something went wrong");
       } else {
@@ -244,7 +253,9 @@ export default function EditContact(props) {
                   } else {
                     setType("");
                   }
+                  validation("type", e.target.value);
                 }}
+                error={typeError}
               />
             </Form.Row>
           </Form.Row>
@@ -265,10 +276,11 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={emailError}
                 />
-                {emailError !== "" && (
-                  <div className={classes.error}>{emailError}</div>
-                )}
               </div>
               <div style={{ width: "45%" }}>
                 <PhoneBox
@@ -281,10 +293,11 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={phoneError}
                 />
-                {phoneError !== "" && (
-                  <div className={classes.error}>{phoneError}</div>
-                )}
               </div>
             </Form.Row>
           </Form.Row>
@@ -305,10 +318,11 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={firstNameError}
                 />
-                {firstNameError !== "" && (
-                  <div className={classes.error}>{firstNameError}</div>
-                )}
               </div>
               <div style={{ width: "30%" }}>
                 <FormInput
@@ -320,10 +334,11 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={lastNameError}
                 />
-                {lastNameError !== "" && (
-                  <div className={classes.error}>{lastNameError}</div>
-                )}
               </div>
               <div style={{ width: "30%" }}>
                 <FormMultipleUpload
@@ -349,10 +364,11 @@ export default function EditContact(props) {
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
+                  error={companyError}
                 />
-                {companyError !== "" && (
-                  <div className={classes.error}>{companyError}</div>
-                )}
               </div>
             </Form.Row>
           </Form.Row>
@@ -370,9 +386,6 @@ export default function EditContact(props) {
                     handleChange(name, value)
                   }
                 />
-                {roleError !== "" && (
-                  <div className={classes.error}>{roleError}</div>
-                )}
               </div>
             </Form.Row>
           </Form.Row>
