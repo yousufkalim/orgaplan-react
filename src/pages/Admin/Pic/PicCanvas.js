@@ -41,10 +41,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   canvasRow: {
-    height: "740px",
-    // width: "1000px",
+    height: "800px",
     display: "flex",
-    // backgroundColor: "red",
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -83,7 +81,6 @@ const useStyles = makeStyles((theme) => ({
   },
   pdffff: {
     position: "absolute",
-    // marginTop: "50px",
   },
   pagee: {
     bottom: "-60px",
@@ -553,7 +550,7 @@ const PicCanvas = (props) => {
               }}
             >
               <Document className={classes.pdffff} file={pdf ? pdf : imggg}>
-                <Page className={classes.pagee} pageNumber={1} height="600" />
+                <Page className={classes.pagee} pageNumber={2} height="680" />
               </Document>
               <Canvas
                 shapes={shapes}
