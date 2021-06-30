@@ -16,6 +16,7 @@ import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 // import { ReactComponent as Logs } from "../../assets/icons/Logs.svg";
 import { ReactComponent as Sites } from "../../assets/icons/Sites.svg";
+import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/Home.svg";
 import { ReactComponent as Admins } from "../../assets/icons/Admins.svg";
 import { ReactComponent as Clients } from "../../assets/icons/Clients.svg";
@@ -106,6 +107,11 @@ const userItems = [
     name: "Invoices",
     path: "/invoices",
     icon: <Invoices />,
+  },
+  {
+    name: "Logs",
+    path: "/logs",
+    icon: <Companies />,
   },
 ];
 
