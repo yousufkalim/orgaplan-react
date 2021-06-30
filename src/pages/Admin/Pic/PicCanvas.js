@@ -523,8 +523,9 @@ const PicCanvas = (props) => {
             setLevel(value);
 
             if (value) {
-              fetchLevelPic(value);
+              console.log();
               const leve = allLeves.find((lev) => lev._id === value);
+              fetchLevelPic(leve);
               setPdf(
                 leve?.plan ? GLOBALS.Constants.BASE_URL + leve.plan : undefined,
               );
@@ -550,7 +551,7 @@ const PicCanvas = (props) => {
               }}
             >
               <Document className={classes.pdffff} file={pdf ? pdf : imggg}>
-                <Page className={classes.pagee} pageNumber={2} height="680" />
+                <Page className={classes.pagee} pageNumber={1} height="680" />
               </Document>
               <Canvas
                 shapes={shapes}
