@@ -390,7 +390,7 @@ export default function Sites(props) {
                     site={site.siteId}
                     key={site.siteId._id}
                     onClick={() =>
-                      site.role === "ADMIN" &&
+                      (site.role === "ADMIN" || site.role === "ENTERPRISE") &&
                       dispatch(Actions.admin.set_site(site))
                     }
                   />

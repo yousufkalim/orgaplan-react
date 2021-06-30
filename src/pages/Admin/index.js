@@ -19,6 +19,8 @@ import Companies from "./Companies";
 import Incidents from "./Incidents";
 import AdminHeader from "./AdminHeader";
 import Organigramme from "./Organigramme";
+// Enterprise Routes
+import Main from "./Enterprise";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ export default function AdminIndex() {
     // eslint-disable-next-line
   }, []);
   const store = useSelector((state) => state.admin);
+
   return (
     <>
       {loading && <Loader.AbsoluteLinear />}
@@ -49,7 +52,7 @@ export default function AdminIndex() {
           <Route exact path="/add-site" component={AddSite} />
           <Redirect from="*" to="/" />
         </Switch>
-      ) : (
+      ) : store.site.role == "ADMIN" ? (
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={Calender} />
@@ -57,6 +60,14 @@ export default function AdminIndex() {
             <Route path="/incidents" component={Incidents} />
             <Route path="/means" component={Means} />
             <Route path="/pic-interactive" component={Pic} />
+            <Route path="/organigramme" component={Organigramme} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </AdminHeader>
+      ) : (
+        <AdminHeader>
+          <Switch>
+            <Route exact path="/" component={Main} />
             <Route path="/organigramme" component={Organigramme} />
             <Redirect from="*" to="/" />
           </Switch>
