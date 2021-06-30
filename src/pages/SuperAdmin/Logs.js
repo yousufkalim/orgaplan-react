@@ -52,7 +52,7 @@ export default function Logs(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(dumyData);
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -60,10 +60,10 @@ export default function Logs(props) {
   }, []);
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.LOGS}`,
-      // });
-      // setData(result.data);
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.LOGS}`,
+      });
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
