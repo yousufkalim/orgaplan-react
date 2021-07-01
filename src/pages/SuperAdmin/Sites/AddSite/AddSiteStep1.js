@@ -35,6 +35,11 @@ export default function AddSiteStep1(props) {
   const [penaltyforLateDelivery, setPenaltyforLateDelivery] = useState("");
   const [penaltyforUnexpDelivery, setPenaltyforUnexpDelivery] = useState("");
 
+  const [nameError, setNameError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [tradesError, setTradeError] = useState("");
+
   useEffect(() => {
     fetchData();
     fetchStateData();
@@ -115,7 +120,39 @@ export default function AddSiteStep1(props) {
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
+
+    validation(name, value);
   }
+
+  // Form Validation
+
+  const validation = (name, value) => {
+    if (name == "name") {
+      if (!value) {
+        setNameError("Please enter site name");
+      } else {
+        setNameError("");
+      }
+    } else if (name == "adminId") {
+      if (!value) {
+        setAdminError("Please enter site responsible");
+      } else {
+        setAdminError("");
+      }
+    } else if (name == "addresses") {
+      if (!value.length > 0) {
+        setAddressError("Please enter address");
+      } else {
+        setAddressError("");
+      }
+    } else if (name == "trades") {
+      if (!value || value.length < 1) {
+        setTradeError("Please enter atleast one trade");
+      } else {
+        setTradeError("");
+      }
+    }
+  };
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -149,6 +186,8 @@ export default function AddSiteStep1(props) {
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
+            onBlur={({ target: { name, value } }) => validation(name, value)}
+            error={nameError}
           />
         </Form.Row>
         {update && ""}
@@ -195,6 +234,7 @@ export default function AddSiteStep1(props) {
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
+              error={adminError}
             />
             <SmallText
               noMargin
@@ -225,6 +265,7 @@ export default function AddSiteStep1(props) {
             style={GLOBALS.Styles.inputWidth}
             placeholder="Enter site addresses"
             onChange={(values) => handleChange("addresses", values)}
+            error={addressError}
           />
         </Form.Row>
         <Form.Row>
@@ -235,6 +276,8 @@ export default function AddSiteStep1(props) {
             placeholder="Enter trades"
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
+            onBlur={({ target: { name, value } }) => validation(name, value)}
+            error={tradesError}
           />
         </Form.Row>
         <Form.Row>
@@ -276,11 +319,14 @@ export default function AddSiteStep1(props) {
             fullWidth={false}
             loading={loading}
             disabled={
-              loading ||
               !name ||
+              nameError ||
               !adminId ||
-              trades.length === 0 ||
-              addresses.length === 0
+              adminError ||
+              addresses.length === 0 ||
+              addressError ||
+              !trades ||
+              tradesError
             }
           />
         </Form.ButtonContainer>

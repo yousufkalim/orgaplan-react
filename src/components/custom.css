@@ -7,3 +7,7 @@
 .ant-picker-dropdown {
   z-index: 1400 !important;
 }
+
+.react-pdf__Page__canvas {
+  /* margin: auto !important; */
+}
