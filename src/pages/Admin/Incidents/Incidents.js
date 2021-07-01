@@ -271,6 +271,7 @@ const Incidents = (props) => {
     setIncidentsdata(data);
     let temp = [];
     let total = 0;
+
     data.map((item, index) => {
       total = total + item.price;
       let data = [];
@@ -286,6 +287,7 @@ const Incidents = (props) => {
       data[6] = item?.isBillable ? "Yes" : "No";
       data[7] = item?.price;
       data[8] = item?.isPaid ? "Yes" : "No";
+      data[9] = item?.meanLocation ? item?.meanLocation : "";
       return temp.push(data);
     });
     seTatalPrice(total);
@@ -305,7 +307,7 @@ const Incidents = (props) => {
       item[2] ? item[2] : " ",
       item[3] ? item[3] : " ",
       item[4] ? item[4] : " ",
-      item[5] ? item[5] : " ",
+      item[5] ? item[5] : item[9] ? item[9] : "",
       item[6] ? item[6] : " ",
       item[7] ? item[7] : " ",
       item[8] ? item[8] : " ",
