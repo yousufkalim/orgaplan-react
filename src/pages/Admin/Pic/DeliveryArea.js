@@ -36,7 +36,7 @@ export default function DeliveryArea(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
+  const [errors, setErrors] = useState({});
   const [name, setName] = useState("");
   const [color, setColor] = useState("#d71313");
   const [startDate, setStartDate] = useState("");
@@ -47,7 +47,7 @@ export default function DeliveryArea(props) {
   const [vehicles, setVehicles] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
-
+  const [ismodalFilled, setIsmodalFilled] = useState(false);
   const [means, setMeans] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -109,11 +109,29 @@ export default function DeliveryArea(props) {
     }
   }
 
+  const handleFormFilling = () => {
+    setIsmodalFilled(true);
+  };
+
   function handleChange(name, value) {
-    if (name === "name") setName(value);
-    else if (name === "color") setColor(value);
-    else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
+    if (name === "name") {
+      if (!GLOBALS.Functions.empty(value)) {
+        setName(value);
+        setErrors({ ...errors, name: "" });
+      } else if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+        setName("");
+      } else setErrors({ ...errors, name: "" });
+    } else if (name === "color") setColor(value);
+    else if (name === "startDate") {
+      if (value && value.length > 1) {
+        setStartDate(value);
+        setErrors({ ...errors, startDate: "" });
+      } else if ((value && value.length < 1) || value === null) {
+        setStartDate("");
+        setErrors({ ...errors, startDate: "Please enter starting date" });
+      } else setErrors({ ...errors, startDate: "" });
+    } else if (name === "endDate") setEndDate(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
@@ -126,6 +144,18 @@ export default function DeliveryArea(props) {
     else if (name === "notificationTo") {
       setUpdate((st) => !st);
       setNotificationTo(value);
+    }
+  }
+  function validation(name, value) {
+    if (name === "name") {
+      if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+      } else setErrors({ ...errors, name: "" });
+    }
+    if (!handleFormFilling) {
+      if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, addresses: "Address Info is required" });
+      } else setErrors({ ...errors, addresses: "" });
     }
   }
 
@@ -179,7 +209,7 @@ export default function DeliveryArea(props) {
       propShapes[inde].name = name;
       propShape._id = response.data._id;
       propShape.name = response.data.name;
-      
+
       propShape.color = response.data.color;
       propShape.deliveryArea = response.data;
 
@@ -199,7 +229,7 @@ export default function DeliveryArea(props) {
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
-      props.setSelectedShape("")
+      props.setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -214,12 +244,14 @@ export default function DeliveryArea(props) {
     <div className={classes.content}>
       <Form.Form onSubmit={onSubmit}>
         <Form.Row>
-          <FormLabel bold primary="Name : " />
+          <FormLabel bold primary="Name* : " />
           <Form.Row noMargin width="65%">
             <FormInput
               name="name"
+              error={errors.name}
               value={name}
               placeholder="Name"
+              onBlur={({ target: { name, value } }) => validation(name, value)}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -234,10 +266,11 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITY :" />
+          <FormLabel bold primary="AVAILABILITY* :" />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
+              error={errors.startDate}
               name="startDate"
               value={startDate}
               placeholder={`Date de début`}
@@ -283,14 +316,16 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY ADDRESSES :" />
+          <FormLabel bold primary="ACCESSIBILITY ADDRESSES* :" />
           <Form.Row noMargin width="65%">
             <DeliveryAreaAddressModal
               max={endDate}
               min={startDate}
+              handleFormFilling={handleFormFilling}
+              error={errors.addresses}
               name="addresses"
               values={addresses}
-              disabled={!startDate || !endDate}
+              disabled={!startDate || !endDate || !addresses}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Enter site addresses"
               onChange={(values) => handleChange("addresses", values)}
@@ -366,7 +401,9 @@ export default function DeliveryArea(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              disabled={loading || !name || !color || !startDate}
+              disabled={
+                loading || !name || !color || !startDate || !ismodalFilled
+              }
             />
           </Form.ButtonContainer>
         </Form.Row>

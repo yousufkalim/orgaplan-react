@@ -38,7 +38,7 @@ export default function AddInvoice(props) {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [invoice, setInvoice] = useState("");
-
+  const [errors, setErrors] = useState({});
   const [clientId, setClientId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -139,13 +139,43 @@ export default function AddInvoice(props) {
   };
 
   const handleChange = (name, value) => {
-    if (name === "clientId") setClientId(value);
-    else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "siteId") setSiteId(value);
-    else if (name === "amount") setAmount(value);
+    if (name === "clientId") {
+      if (value && value.length > 1) {
+        setClientId(value);
+        setErrors({ ...errors, clientId: "" });
+      } else if (value === "") {
+        setErrors({ ...errors, clientId: "Please enter client name" });
+        setClientId(value);
+      }
+    } else if (name === "startDate") {
+      if (value && value.length > 1) {
+        setStartDate(value);
+        setErrors({ ...errors, startDate: "" });
+      } else {
+        if ((value && value.length < 1) || value === null) {
+          setStartDate("");
+          setErrors({ ...errors, startDate: "Please enter starting date" });
+        } else setErrors({ ...errors, startDate: "" });
+      }
+    } else if (name === "endDate") setEndDate(value);
+    else if (name === "siteId") {
+      if (value && value.length > 1) {
+        setSiteId(value);
+        setErrors({ ...errors, siteId: "" });
+      } else if (value === "") {
+        setErrors({ ...errors, siteId: "Please enter site" });
+        setSiteId(value);
+      }
+    } else if (name === "amount") setAmount(value);
     else if (name === "description") setDescription(value);
   };
+  function validation(name, value) {
+    if (name === "amount") {
+      if (GLOBALS.Functions.empty(value))
+        setErrors({ ...errors, amount: "Please enter amount" });
+      else setErrors({ ...errors, amount: "" });
+    }
+  }
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -211,7 +241,7 @@ export default function AddInvoice(props) {
               name="clientId"
               values={clients}
               value={clientId}
-              // error={clientId}
+              error={errors.clientId}
               placeholder="Select Client"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -226,7 +256,7 @@ export default function AddInvoice(props) {
                 type="date"
                 name="startDate"
                 value={startDate}
-                // error={startDate}
+                error={errors.startDate}
                 placeholder="Start date"
                 style={GLOBALS.Styles.inputWidth}
                 min={moment().format("YYYY-MM-DD")}
@@ -254,7 +284,7 @@ export default function AddInvoice(props) {
               name="siteId"
               value={siteId}
               values={sites}
-              // error={siteId}
+              error={errors.siteId}
               placeholder="Select Site"
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -268,8 +298,9 @@ export default function AddInvoice(props) {
               type="number"
               name="amount"
               value={amount}
-              // error={amount}
+              error={errors.amount}
               style={GLOBALS.Styles.inputWidth}
+              onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 value >= 0 && handleChange(name, value)
               }

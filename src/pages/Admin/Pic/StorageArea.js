@@ -49,7 +49,7 @@ export default function DeliveryArea(props) {
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
-
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -123,23 +123,74 @@ export default function DeliveryArea(props) {
   }
 
   function handleChange(name, value) {
-    if (name === "name") setName(value);
-    else if (name === "isFull") setIsFull(value);
+    if (name === "name") {
+      if (!GLOBALS.Functions.empty(value)) {
+        setName(value);
+        setErrors({ ...errors, name: "" });
+      } else if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+        setName("");
+      } else setErrors({ ...errors, name: "" });
+    } else if (name === "isFull") setIsFull(value);
     else if (name === "color") setColor(value);
-    else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "deliveryAreas") setSelectedDeliveryAreas(value);
+    else if (name === "startDate") {
+      if (value && value.length > 1) {
+        setStartDate(value);
+        setErrors({ ...errors, startDate: "" });
+      } else if ((value && value.length < 1) || value === null) {
+        setStartDate("");
+        setErrors({ ...errors, startDate: "Please enter starting date" });
+      } else setErrors({ ...errors, startDate: "" });
+    } else if (name === "endDate") setEndDate(value);
+    ///////////////deliveryAreas
+    else if (name === "deliveryAreas") {
+      if (selectedDeliveryAreas.length > 1) {
+        setSelectedDeliveryAreas(value);
+        // setDeliveryAreas(value);
+      } else if (
+        (selectedDeliveryAreas && selectedDeliveryAreas.length < 1) ||
+        selectedDeliveryAreas === null
+      ) {
+        setErrors({
+          ...errors,
+          // selectedDeliveryAreas: "Please select Delivery areas",
+          deliveryAreas: "Please select Delivery areas",
+        });
+      } else setErrors({ ...errors, deliveryAreas: "" });
+    } /////end
     else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
-    } else if (name === "companies") setSelectedCompanies(value);
-    else if (name === "notificationPriorToDays")
+    } else if (name === "companies") {
+      if (selectedCompanies.length > 1) setSelectedCompanies(value);
+      else if (selectedCompanies.length < 1)
+        setErrors({
+          ...errors,
+          selectedCompanies: "Please select Companies",
+        });
+      else setErrors({ ...errors, selectedCompanies: "" });
+    } else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") {
       setUpdate((st) => !st);
       setNotificationTo(value);
     }
   }
+  function validation(name, value) {
+    if (name === "name") {
+      if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+      } else setErrors({ ...errors, name: "" });
+      // } else if (name === "selectedCompanies") {
+      //   if (GLOBALS.Functions.empty(value))
+      //     setErrors({
+      //       ...errors,
+      //       selectedCompanies: "Please select Companies",
+      //     });
+      //   else setErrors({ ...errors, selectedCompanies: "" });
+    }
+  }
+
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -177,7 +228,7 @@ export default function DeliveryArea(props) {
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
         : _.cloneDeep(props.selectedShape);
-      
+
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
@@ -217,7 +268,7 @@ export default function DeliveryArea(props) {
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
-      props.setSelectedShape("")
+      props.setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -247,13 +298,15 @@ export default function DeliveryArea(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Name : " />
+          <FormLabel bold primary="Name* : " />
           <Form.Row noMargin width="65%">
             <FormInput
               name="name"
               value={name}
               placeholder="Name"
+              error={errors.name}
               style={GLOBALS.Styles.inputWidth}
+              onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -267,12 +320,13 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITY :" />
+          <FormLabel bold primary="AVAILABILITY* :" />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
               name="startDate"
               value={startDate}
+              error={errors.startDate}
               min={
                 moment().isAfter(moment(adminStore.site.siteId.start), "day")
                   ? moment().format("YYYY-MM-DD")
@@ -281,6 +335,9 @@ export default function DeliveryArea(props) {
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               placeholder={`Date de début`}
               style={GLOBALS.Styles.inputWidth}
+              // onFocusOut={({ target: { name, value } }) =>
+              //   validation(name, value)
+              // }
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -293,6 +350,7 @@ export default function DeliveryArea(props) {
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
+              onFocus={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -316,14 +374,16 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Delivery Areas: " />
+          <FormLabel bold primary="Delivery Areas* : " />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="deliveryAreas"
+              error={errors.deliveryAreas}
               values={deliveryAreas}
               placeholder="Delivery Areas"
               value={selectedDeliveryAreas}
               style={GLOBALS.Styles.inputWidth}
+              // onFocus={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -331,14 +391,16 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Companies: " />
+          <FormLabel bold primary="Companies* : " />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="companies"
               values={companies}
+              error={errors.selectedCompanies}
               placeholder="Companies"
               value={selectedCompanies}
               style={GLOBALS.Styles.inputWidth}
+              onFocus={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -402,7 +464,14 @@ export default function DeliveryArea(props) {
               minWidth={200}
               text="VALIDATE"
               fullWidth={false}
-              disabled={loading || !name || !color || !startDate}
+              disabled={
+                loading ||
+                !name ||
+                !color ||
+                !startDate ||
+                selectedDeliveryAreas.length < 1 ||
+                selectedCompanies.length < 1
+              }
             />
           </Form.ButtonContainer>
         </Form.Row>
