@@ -17,6 +17,10 @@ import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 
+// Field to auto add email and text field to hold it
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -54,6 +58,10 @@ export default function AddAdmin(props) {
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
 
+  // States to get user data and disable fields
+  const [users, setUsers] = useState([]);
+  const [disableUser, setDisableUser] = useState(false);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -73,6 +81,13 @@ export default function AddAdmin(props) {
       setAllCompanies(result.data.items);
       setCompanies(itemsArray);
       setLoading(false);
+
+      // Getting users from API
+      const userResponse = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ALL_USERS}`,
+        token: store.token,
+      });
+      setUsers(userResponse.data);
     } catch (err) {
       dispatch(
         Actions.notistack.enqueueSnackbar(
@@ -161,19 +176,57 @@ export default function AddAdmin(props) {
           <Form.Row>
             <FormLabel bold primary="CONTACT INFO*: " />
             <Form.Row noMargin width="48%">
-              <FormInput
-                name="email"
-                type="email"
-                value={email}
-                error={emailError}
-                placeholder="E-mail Address"
-                style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
-                }
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+              <Autocomplete
+                id="free-solo-demo"
+                freeSolo
+                style={{
+                  ...GLOBALS.Styles.inputWidth,
+                  marginRight: "10px",
+                  marginTop: "-17px",
+                }}
+                onSelect={(event) => {
+                  users.forEach((item, index) => {
+                    if (item.email === event.target.value) {
+                      setEmail(item.email);
+                      setPhone(parseInt(item.phone));
+                      setFirstName(item.firstName);
+                      setLastName(item.lastName);
+                      setImage([{ uri: item.image }]);
+                      setDisableUser(true);
+                    } else {
+                      setDisableUser(false);
+                    }
+                  });
+                }}
+                options={users.map(
+                  (option) => option.email !== undefined && option.email,
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Email"
+                    margin="normal"
+                    variant="outlined"
+                    name="email"
+                    value={email}
+                    onBlur={({ target: { name, value } }) =>
+                      validation(name, value)
+                    }
+                    error={emailError}
+                    onChange={(e) => {
+                      users.forEach((item, index) => {
+                        if (item.email !== e.target.value) {
+                          setEmail(e.target.value);
+                          setFirstName("");
+                          setLastName("");
+                          setPhone("");
+                          setImage([]);
+                          setDisableUser(true);
+                        }
+                      });
+                    }}
+                  />
+                )}
               />
               <PhoneBox
                 name="phone"
@@ -182,6 +235,7 @@ export default function AddAdmin(props) {
                 error={phoneError}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
+                disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
                   value.length < 26 ? validation(name, value) : ""
                 }
@@ -201,6 +255,7 @@ export default function AddAdmin(props) {
                 error={firstNameError}
                 placeholder="First Name"
                 style={GLOBALS.Styles.inputWidth}
+                disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }
@@ -214,6 +269,7 @@ export default function AddAdmin(props) {
                 error={lastNameError}
                 placeholder="Last Name"
                 style={GLOBALS.Styles.inputWidth}
+                disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }
@@ -229,6 +285,7 @@ export default function AddAdmin(props) {
               name="image"
               values={image}
               style={GLOBALS.Styles.inputWidth}
+              disabled={disableUser}
               onChange={(values) => handleChange("image", values)}
             />
           </Form.Row>
