@@ -125,6 +125,7 @@ const PicCanvas = (props) => {
       setLevelName(name.label);
     }
   };
+
   const expiredShapes = (shapes) => {
     let array = [];
 
