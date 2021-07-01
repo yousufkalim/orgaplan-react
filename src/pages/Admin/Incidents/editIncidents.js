@@ -66,6 +66,11 @@ export default function AddIncidents(props) {
   const [isPaid, setIsPaid] = useState("");
   const [location, setLocation] = useState("");
 
+  const [nameError, setNameError] = useState("");
+  const [companyError, setCompanyError] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [typeError, setTypeError] = useState("");
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -82,7 +87,7 @@ export default function AddIncidents(props) {
     }
     // eslint-disable-next-line
   }, [companyId]);
-
+  console.log("mean data in edit", history.location.data);
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -147,7 +152,10 @@ export default function AddIncidents(props) {
   };
   const nameChange = (e) => {
     if (e.target.name === "name") setName(e.target.value);
-    if (e.target.name === "date") setDate(e.target.value);
+    if (e.target.name === "date") {
+      setDate(e.target.value);
+      validation("date", e.target.value);
+    }
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "description") setDescription(e.target.value);
     if (e.target.name === "isBillable") setIsBillable(e.target.value);
@@ -156,7 +164,10 @@ export default function AddIncidents(props) {
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") setType(e.target.value);
     if (e.target.name === "status") setStatus(e.target.value);
-    if (e.target.name === "comapnyId") setCompanyId(e.target.value);
+    if (e.target.name === "comapnyId") {
+      setCompanyId(e.target.value);
+      validation("companyId", e.target.value);
+    }
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
       const locationObject = {
@@ -205,7 +216,6 @@ export default function AddIncidents(props) {
     };
     setLocation(locationObject);
   };
-
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
   };
@@ -258,6 +268,34 @@ export default function AddIncidents(props) {
   console.log("selectedLocation", selectedLocation);
   console.log("location", location);
 
+  const validation = (name, value) => {
+    if (name == "name") {
+      if (!value) {
+        setNameError("Please enter name of incident");
+      } else {
+        setNameError("");
+      }
+    } else if (name == "companyId") {
+      if (!value) {
+        setCompanyError("Please select name of company");
+      } else {
+        setCompanyError("");
+      }
+    } else if (name == "date") {
+      if (!value) {
+        setDateError("Please select date");
+      } else {
+        setDateError("");
+      }
+    } else if (name == "type") {
+      if (!value) {
+        setTypeError("Please select type of incident");
+      } else {
+        setTypeError("");
+      }
+    }
+  };
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -293,6 +331,8 @@ export default function AddIncidents(props) {
               placeholder="Name of incident"
               onChange={nameChange}
               value={name}
+              onBlur={({ target: { name, value } }) => validation(name, value)}
+              error={nameError}
             />
           </Form.Row>
           <Form.Row>
@@ -310,6 +350,7 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 value={companyId}
                 values={dropdownCompanies}
+                error={companyError}
               />
               <SmallText
                 primary={generalContractor}
@@ -318,7 +359,7 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="DATE AND TIME : " />
+            <FormLabel bold primary="DATE AND TIME* : " />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
@@ -327,6 +368,7 @@ export default function AddIncidents(props) {
                 name="date"
                 onChange={nameChange}
                 value={date}
+                error={dateError}
               />
               <TimePicker
                 name="time"
@@ -344,6 +386,7 @@ export default function AddIncidents(props) {
                 placeholder="Type of location"
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth}
+                disabled={history.location.data?.meanLocation ? true : false}
                 onChange={locationTypeChange}
                 value={selectedLocationType}
                 values={[

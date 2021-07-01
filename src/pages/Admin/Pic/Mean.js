@@ -147,7 +147,6 @@ export default function AddMean(props) {
   };
 
   const createMean = async () => {
-    
     try {
       setLoading(true);
 
@@ -169,6 +168,9 @@ export default function AddMean(props) {
       formdata.append("meanType", meanType);
       formdata.append("isInside", props.level ? true : false);
       props.level && formdata.append("level", props.level);
+      props.levelName && formdata.append("levelName", props.levelName);
+      props.selectedBuilding &&
+        formdata.append("buildingName", props.selectedBuilding.name);
       formdata.append("color", color);
       image[0] && image[0].file
         ? formdata.append("image", image[0].file)
