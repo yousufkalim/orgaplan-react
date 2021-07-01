@@ -77,7 +77,6 @@ export default function Admins(props) {
     fetchData();
     // eslint-disable-next-line
   }, [page]);
-
   async function fetchData() {
     try {
       setLoading(true);
