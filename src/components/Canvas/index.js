@@ -346,9 +346,6 @@ class App extends Component {
       }
 
       this.props.setSelectedShape("");
-      this.props.setRendering("hello");
-
-      this.props.onClear();
     }
   };
 
