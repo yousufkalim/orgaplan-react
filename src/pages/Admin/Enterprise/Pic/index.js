@@ -1,11 +1,13 @@
 import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+// import Pic from "./Pic";
+import Pic from "./PicCanvas";
 
-const index = () => {
+export default function Index(props) {
   return (
-    <div>
-      <h1>PIC</h1>
-    </div>
+    <Switch>
+      <Route exact path={props.match.path + "/"} component={Pic} />
+      <Redirect from="*" to={props.match.path + "/"} />
+    </Switch>
   );
-};
-
-export default index;
+}

@@ -20,10 +20,10 @@ import Incidents from "./Incidents";
 import AdminHeader from "./AdminHeader";
 import Organigramme from "./Organigramme";
 // Enterprise Routes
-import Main from "./Enterprise";
-import eOrganigramme from "./Enterprise/Organigramme";
-import ePic from "./Enterprise/Pic";
-import eMeans from "./Enterprise/Means";
+import Main from "../Enterprise";
+import eOrganigramme from "../Enterprise/Organigramme";
+import ePic from "../Enterprise/Pic";
+import eMeans from "../Enterprise/Means";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();

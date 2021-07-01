@@ -108,7 +108,7 @@ export default function Organigramme(props) {
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
           <Heading primary="ORGANIGRAMME" noWrap />
-          <div>
+          {/* <div>
             <Form.Row alignItems="center" noMargin>
               <Button
                 fullWidth={false}
@@ -121,7 +121,7 @@ export default function Organigramme(props) {
                 }}
               />
             </Form.Row>
-          </div>
+          </div> */}
         </Form.Row>
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>

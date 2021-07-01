@@ -249,18 +249,6 @@ const Means = () => {
                 alt="Icon"
               />
             </NavLink>
-            <NavLink
-              to={{
-                pathname: "/means/mean-history",
-                mean: item,
-              }}
-            >
-              <img
-                src={Images.incidents}
-                style={{ width: 18, height: 15, paddingLeft: 5 }}
-                alt="Icon"
-              />
-            </NavLink>
           </div>,
         ]);
     } else {
@@ -299,25 +287,139 @@ const Means = () => {
               alt="Icon"
             />
           </NavLink>
-          <NavLink
-            to={{
-              pathname: "/means/mean-history",
-              mean: item,
-            }}
-          >
-            <img
-              src={Images.incidents}
-              style={{ width: 18, height: 15, paddingLeft: 5 }}
-              alt="Icon"
-            />
-          </NavLink>
         </div>,
       ]);
     }
     return accum;
   }, []);
 
-  return <h1>List of MEANS Screen</h1>;
+  return (
+    <div className={classes.root}>
+      <Form.Row alignItems="center" justifyContent="space-between">
+        <Heading primary="LIST OF MEANS" noWrap noMargin />
+        <Form.Row alignItems="center" justifyContent="flex-end" width="50%">
+          <SubHeading bold noMargin primary={`TOTAL : ${totalMeans} means`} />
+          <Button
+            fullWidth={false}
+            loading={loading}
+            disabled={loading}
+            component={NavLink}
+            text="MEANS REQUEST"
+            to={"/sites/means-request"}
+            style={{ marginLeft: "20px", width: "200px" }}
+          />
+        </Form.Row>
+      </Form.Row>
+      <Form.Row alignItems="center">
+        <Form.Row justifyContent="flex-start" noMargin>
+          <FormSelect
+            value={deliveryArea}
+            values={deliveryAreas}
+            placeholder="Select Delivery area"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setDeliveryArea(value);
+            }}
+          />
+          <FormSelect
+            value={building}
+            values={[
+              ...[{ label: "Exterior", value: "Exterior" }],
+              ...buildings,
+            ]}
+            placeholder="Location"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setBuilding(value);
+            }}
+          />
+          <FormSelect
+            value={level}
+            values={levels}
+            placeholder="Level"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            disabled={!building || building === "Exterior"}
+            onChange={({ target: { value } }) => {
+              setLevel(value);
+            }}
+          />
+          <FormSelect
+            value={storageArea}
+            placeholder="Select Storage area"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setStorageArea(value);
+            }}
+            disabled={!building || (building !== "Exterior" && !level)}
+            values={storageAreas.filter((item) =>
+              building && building === "Exterior"
+                ? !item.level
+                : item.level === level,
+            )}
+          />
+          <FormSelect
+            value={type}
+            values={types}
+            placeholder="Type"
+            style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setType(value);
+            }}
+          />
+        </Form.Row>
+      </Form.Row>
+      <Form.Row alignItems="center">
+        <Form.Row justifyContent="flex-start" noMargin>
+          <FormSelect
+            value={company}
+            values={companies}
+            placeholder="Company"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setCompany(value);
+            }}
+          />
+          <FormSelect
+            value={status}
+            values={statuses}
+            placeholder="Status"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            onChange={({ target: { value } }) => {
+              setStatus(value);
+            }}
+          />
+          <FormInput
+            type="date"
+            name="startDate"
+            value={startDate}
+            placeholder="Start date"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
+            max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+            onChange={({ target: { value } }) => setStartDate(value)}
+          />
+          <FormInput
+            type="date"
+            name="endDate"
+            value={endDate}
+            placeholder="End date"
+            style={{ marginRight: "20px", maxWidth: 250 }}
+            min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
+            max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+            onChange={({ target: { value } }) => setEndDate(value)}
+          />
+          <SearchInput
+            placeholder="Mean name"
+            style={{ marginRight: "5px", maxWidth: 250 }}
+            onChange={(e) => filterMeanByName(e.target.value)}
+          />
+        </Form.Row>
+      </Form.Row>
+      <div className={classes.content}>
+        <Table headers={GLOBALS.Data.means.headings} rows={rows} />
+      </div>
+    </div>
+  );
 };
 
 export default Means;

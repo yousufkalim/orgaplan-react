@@ -1142,7 +1142,7 @@ class App extends Component {
             width={width}
             height={height}
           />
-          <div className="mt-3">
+          {/* <div className="mt-3">
             <Button
               fullWidth={false}
               disabled={isLoading}
@@ -1151,7 +1151,7 @@ class App extends Component {
                 document.getElementById("upload-canvas-pdf-button").click()
               }
             />
-          </div>
+          </div> */}
         </div>
         <div className="pl-4">
           <input
