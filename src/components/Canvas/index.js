@@ -5,8 +5,8 @@ import Button from "../Button";
 import GLOBALS from "../../globals";
 import _ from "lodash";
 
-export const width = 1000;
-export const height = 420;
+export const width = 960;
+export const height = 680;
 
 const loadImage = (data) =>
   new Promise((res, rej) => {
@@ -178,10 +178,7 @@ class App extends Component {
       // var viewport = page.getViewport(1);
       var unscaledViewport = page.getViewport(1);
 
-      var scale = Math.min(
-        canvas.height / unscaledViewport.height,
-        canvas.width / unscaledViewport.width,
-      );
+      var scale = 1;
 
       var viewport = page.getViewport(scale);
 
@@ -347,12 +344,11 @@ class App extends Component {
           return;
         }
       }
-     
+
       this.props.setSelectedShape("");
       this.props.setRendering("hello");
 
       this.props.onClear();
-      
     }
   };
 
@@ -564,14 +560,19 @@ class App extends Component {
   handlePdfChange = (e) => {
     if (e.target.files.length) {
       let file = e.target.files[0];
-      if (file.type === "application/pdf") {
-        const uri = URL.createObjectURL(file);
-        this.props.onPdfChange(uri, file);
-        this.setState({ tempPdf: file });
-        this.setState({ isLoading: true });
-        this.setState({ tempImage: uri });
+      if (file.size <= 15 * 1024 * 1024) {
+        if (file.type === "application/pdf") {
+          const uri = URL.createObjectURL(file);
+          this.props.onPdfChange(uri, file);
+          console.log("asdasdasdasdasd", uri, file);
+          this.setState({ tempPdf: file });
+          this.setState({ isLoading: true });
+          this.setState({ tempImage: uri });
+        } else {
+          alert("You can upload only pdf file");
+        }
       } else {
-        alert("You can upload only pdf file");
+        alert("File too large");
       }
     }
   };

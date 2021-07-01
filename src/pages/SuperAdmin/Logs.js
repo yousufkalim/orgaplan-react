@@ -21,38 +21,12 @@ const useStyles = makeStyles((theme) => ({
     padding: "20px",
   },
 }));
-const dumyData = [
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY-HH-mmA"),
-    description: "Super admin has added CLIENT to the platform",
-  },
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY"),
-    description: "Super admin has added ADMIN to the platform",
-  },
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY"),
-    description: "Super admin has created the site SITE",
-  },
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY"),
-    description: "Super admin has added CLIENT to the platform",
-  },
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY"),
-    description: "Super admin has added ADMIN to the platform",
-  },
-  {
-    date: moment(Date.now()).format("DD/MM/YYYY"),
-    description: "Super admin has created the site SITE",
-  },
-];
 
 export default function Logs(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(dumyData);
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -60,10 +34,10 @@ export default function Logs(props) {
   }, []);
   async function fetchData() {
     try {
-      // const result = await GLOBALS.API({
-      //   uri: `${GLOBALS.Constants.LOGS}`,
-      // });
-      // setData(result.data);
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.LOGS}`,
+      });
+      setData(result.data);
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -86,14 +60,15 @@ export default function Logs(props) {
         ) : (
           <Table headers={GLOBALS.Data.logs.headings} rows={rows} />
         )}
-        {!loading && data.length > 4 && (
+        {/* This pagination block is temporary disabled and will enabled after backend pagination */}
+        {/* {!loading && data.length > 4 && (
           <Pagination
             page={page}
             onChange={(e, value) => {
               setPage(value);
             }}
           />
-        )}
+        )} */}
       </div>
     </>
   );

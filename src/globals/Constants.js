@@ -56,6 +56,8 @@ const endpoints = {
   SITES_BY_CLIENT: BASE_URL_V1 + "superadmin/sites/client",
   SITE_ARCHIVES: BASE_URL_V1 + "superadmin/sites/archives",
   SITE_UN_ARCHIVE: BASE_URL_V1 + "superadmin/sites/unarchive",
+  // LOGS
+  LOGS: BASE_URL_V1 + "superadmin/logs",
   // ZAC
   ZACS: BASE_URL_V1 + "superadmin/zacs",
   ZAC_DELETE: BASE_URL_V1 + "superadmin/zacs/delete",
