@@ -48,6 +48,7 @@ export default function AddAdmin(props) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [image, setImage] = useState([]);
+  const [imageURI, setImageURI] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [companyId, setCompanyId] = useState("");
@@ -107,7 +108,7 @@ export default function AddAdmin(props) {
       formdata.append("firstName", firstName);
       formdata.append("adminType", adminType);
       formdata.append("companyId", companyId);
-      formdata.append("image", image[0]?.file);
+      formdata.append("image", image[0]?.file || imageURI);
 
       await GLOBALS.API({
         method: "POST",
@@ -187,12 +188,13 @@ export default function AddAdmin(props) {
                 onSelect={(event) => {
                   users.forEach((item, index) => {
                     if (item.email === event.target.value) {
+                      setDisableUser(true);
                       setEmail(item.email);
                       setPhone(parseInt(item.phone));
                       setFirstName(item.firstName);
                       setLastName(item.lastName);
+                      setImageURI(item.image);
                       setImage([{ uri: item.image }]);
-                      setDisableUser(true);
                     } else {
                       setDisableUser(false);
                     }
