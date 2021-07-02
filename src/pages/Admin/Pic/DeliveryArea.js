@@ -121,7 +121,7 @@ export default function DeliveryArea(props) {
       } else if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, name: "Name is required" });
         setName("");
-      } else setErrors({ ...errors, name: "" });
+      }
     } else if (name === "color") setColor(value);
     else if (name === "startDate") {
       if (value && value.length > 1) {
@@ -130,7 +130,7 @@ export default function DeliveryArea(props) {
       } else if ((value && value.length < 1) || value === null) {
         setStartDate("");
         setErrors({ ...errors, startDate: "Please enter starting date" });
-      } else setErrors({ ...errors, startDate: "" });
+      }
     } else if (name === "endDate") setEndDate(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);

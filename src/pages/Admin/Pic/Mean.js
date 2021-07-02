@@ -136,7 +136,7 @@ export default function AddMean(props) {
       } else if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, name: "Name is required" });
         setName("");
-      } else setErrors({ ...errors, name: "" });
+      }
     } else if (name === "color") setColor(value);
     else if (name === "meanType") setMeanType(value);
     else if (name === "image") {
@@ -152,11 +152,10 @@ export default function AddMean(props) {
       } else if ((value && value.length < 1) || value === null) {
         setStartDate("");
         setErrors({ ...errors, startDate: "Please enter starting date" });
-      } else setErrors({ ...errors, startDate: "" });
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "techSheet") setTechSheet(value);
-    else if (name === "rate") setRate(value);
-    else if (name === "addInfo") setAddInfo(value);
+      } else if (name === "endDate") setEndDate(value);
+      else if (name === "techSheet") setTechSheet(value);
+      else if (name === "rate") setRate(value);
+      else if (name === "addInfo") setAddInfo(value);
   };
   function validation(name, value) {
     if (name === "name") {

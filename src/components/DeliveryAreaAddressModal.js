@@ -76,7 +76,7 @@ export default function MultiAdderInputModal(props) {
       } else if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, location: "location is required" });
         setLocation("");
-      } else setErrors({ ...errors, location: "" });
+      }
     } else if (name === "image") setImage(value);
     else if (name === "startDate") {
       if (value && value.length > 1) {
@@ -85,7 +85,7 @@ export default function MultiAdderInputModal(props) {
       } else if ((value && value.length < 1) || value === null) {
         setStartDate("");
         setErrors({ ...errors, startDate: "Please enter starting date" });
-      } else setErrors({ ...errors, startDate: "" });
+      }
     } else if (name === "endDate") setEndDate(value);
   };
 

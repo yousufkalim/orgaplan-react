@@ -130,7 +130,7 @@ export default function DeliveryArea(props) {
       } else if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, name: "Name is required" });
         setName("");
-      } else setErrors({ ...errors, name: "" });
+      }
     } else if (name === "isFull") setIsFull(value);
     else if (name === "color") setColor(value);
     else if (name === "startDate") {
@@ -140,35 +140,35 @@ export default function DeliveryArea(props) {
       } else if ((value && value.length < 1) || value === null) {
         setStartDate("");
         setErrors({ ...errors, startDate: "Please enter starting date" });
-      } else setErrors({ ...errors, startDate: "" });
+      }
     } else if (name === "endDate") setEndDate(value);
     ///////////////deliveryAreas
     else if (name === "deliveryAreas") {
-      if (selectedDeliveryAreas.length > 1) {
-        setSelectedDeliveryAreas(value);
-        // setDeliveryAreas(value);
-      } else if (
-        (selectedDeliveryAreas && selectedDeliveryAreas.length < 1) ||
-        selectedDeliveryAreas === null
-      ) {
+      if (deliveryAreas.length < 1) {
         setErrors({
           ...errors,
-          // selectedDeliveryAreas: "Please select Delivery areas",
           deliveryAreas: "Please select Delivery areas",
         });
-      } else setErrors({ ...errors, deliveryAreas: "" });
+        alert("error");
+      } else if (deliveryAreas.length > 1) {
+        setSelectedDeliveryAreas(value);
+        // setDeliveryAreas(value);
+      }
     } /////end
     else if (name === "unavailabilityDates") {
       setUpdate((st) => !st);
       setUnavailabilities(value);
     } else if (name === "companies") {
-      if (selectedCompanies.length > 1) setSelectedCompanies(value);
-      else if (selectedCompanies.length < 1)
+      if (companies.length > 1) {
+        setSelectedCompanies(value);
+        setErrors({ ...errors, setSelectedCompanies: "" });
+      } else if (companies.length < 1) {
         setErrors({
           ...errors,
-          selectedCompanies: "Please select Companies",
+          setSelectedCompanies: "Please select Companies",
         });
-      else setErrors({ ...errors, selectedCompanies: "" });
+        alert("ERROR");
+      }
     } else if (name === "notificationPriorToDays")
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") {
@@ -181,13 +181,6 @@ export default function DeliveryArea(props) {
       if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, name: "Name is required" });
       } else setErrors({ ...errors, name: "" });
-      // } else if (name === "selectedCompanies") {
-      //   if (GLOBALS.Functions.empty(value))
-      //     setErrors({
-      //       ...errors,
-      //       selectedCompanies: "Please select Companies",
-      //     });
-      //   else setErrors({ ...errors, selectedCompanies: "" });
     }
   }
 
