@@ -103,7 +103,7 @@ const PopoverModal = ({
               </div>
             </p>
 
-            <hr />
+            {/* <hr />
             <div className="popoverfooter">
               <div className="col-lg-2">
                 {event.status !== "VALIDATED" ? (
@@ -125,7 +125,7 @@ const PopoverModal = ({
                   <i class="fas fa-trash"></i> <span>Delete</span>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </Modal.Body>
       </Modal>

@@ -159,7 +159,7 @@ export default function DeliveryArea(props) {
       setUpdate((st) => !st);
       setUnavailabilities(value);
     } else if (name === "companies") {
-      if (companies.length > 1) {
+      if (companies.length >= 1) {
         setSelectedCompanies(value);
         setErrors({ ...errors, setSelectedCompanies: "" });
       } else if (companies.length < 1) {

@@ -80,7 +80,7 @@ export default function DeliveryRequestStep3(props) {
             ? "MODIFIED"
             : props?.event?.status
             ? props.event.status
-            : "VALIDATED",
+            : "PENDING",
       };
       if (props.event) {
         // console.log(props.event.status);

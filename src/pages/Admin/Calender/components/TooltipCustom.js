@@ -42,23 +42,22 @@ export const EventToolTips = (event) => {
   };
 
   return (
-    <span onMouseOver={openTooltip} onMouseOut={closeTooltip}>
-      <div ref={ref}>
+    <div ref={ref}>
+      <span onMouseOver={openTooltip} onMouseOut={closeTooltip}>
         {event.title}
-
-        <Overlay
-          rootClose
-          target={getTarget}
-          show={showTooltip}
-          placement="top"
-          onHide={closeTooltip}
-          onClose={closeTooltip}
-        >
-          <Tooltip id="test">
-            <TooltipContent event={event} onClose={closeTooltip} />
-          </Tooltip>
-        </Overlay>
-      </div>
-    </span>
+      </span>
+      <Overlay
+        rootClose
+        target={getTarget}
+        show={showTooltip}
+        placement="top"
+        onHide={closeTooltip}
+        onClose={closeTooltip}
+      >
+        <Tooltip id="test">
+          <TooltipContent event={event} onClose={closeTooltip} />
+        </Tooltip>
+      </Overlay>
+    </div>
   );
 };

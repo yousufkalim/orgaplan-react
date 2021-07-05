@@ -302,7 +302,7 @@ const PopoverModal = ({
                 </div>
                 {event.status === "PENDING" ? (
                   <>
-                    <hr />
+                    {/* <hr />
                     <div className="popoverfooter">
                       <div className="col-lg-2">
                         <button
@@ -328,7 +328,7 @@ const PopoverModal = ({
                           <i class="fas fa-trash"></i> <span>Refuse</span>
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 ) : (
                   <></>
@@ -425,7 +425,7 @@ const PopoverModal = ({
                         <i class="fas fa-trash"></i> <span>Edit</span>
                       </button>
                     </div>
-                    <hr />
+                    {/* <hr />
                     <div className="popoverfooter">
                       <div className="col-lg-2">
                         <button
@@ -443,7 +443,7 @@ const PopoverModal = ({
                           <i class="fas fa-trash"></i> <span>Refuse</span>
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 ) : (
                   <> </>

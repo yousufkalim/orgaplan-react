@@ -46,7 +46,6 @@ let formats = {
 };
 
 const Calender = (props) => {
-  console.log("props", props);
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
@@ -316,7 +315,7 @@ const Calender = (props) => {
               userId: store.user._id,
               companyId: selectedCompany,
               meanId: selectedMeanId,
-              status: "VALIDATED",
+              status: "PENDING",
             };
           } else {
             var DbElement = {
@@ -358,64 +357,6 @@ const Calender = (props) => {
               setAlertBoxTime(false);
             }, 1000);
           } else {
-            // let storageArea = props.location.mean?.location[0].storageArea
-            //   ? props.location.mean?.location[0].storageArea._id
-            //   : "";
-            // let deliveryArea = props.location.mean?.location[0].deliveryArea
-            //   ? props.location.mean?.location[0].deliveryArea._id
-            //   : "";
-            // const locationObjectstorageArea = {
-            //   storageArea: storageArea,
-            // };
-            // const locationObjectdeliveryArea = {
-            //   deliveryArea: deliveryArea,
-            // };
-            // console.log(
-            //   "get location",
-            //   storageArea
-            //     ? locationObjectstorageArea
-            //     : locationObjectdeliveryArea,
-            // );
-            console.log("mean is ", props.location.mean);
-            let startHour = moment(startTime).format("H");
-            let endHour = moment(endTime).format("H");
-            // create invoive
-            // 1Booking
-            var formdata = new FormData();
-
-            formdata.append("name", props.location.mean?.name);
-            formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
-            formdata.append("time", startTime);
-            formdata.append("type", "MEAN");
-            props.location.mean?.isInside
-              ? formdata.append(
-                  "meanLocation",
-                  props.location.mean.levelName +
-                    "/" +
-                    props.location.mean.buildingName,
-                )
-              : formdata.append("meanLocation", "Exterior");
-
-            // props.location.mean?.meanType
-
-            formdata.append("isBillable", true);
-            formdata.append(
-              "price",
-              props.location.mean?.pricePerHour * (endHour - startHour),
-            );
-            formdata.append("isPaid", false);
-            formdata.append("companyId", selectedCompany);
-            formdata.append("siteId", adminStore.site.siteId._id);
-            await GLOBALS.API({
-              method: "POST",
-              uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-              headers: {
-                Authorization: store.token,
-              },
-              body: formdata,
-            });
-            // invice end in 1meanbook
-
             dispatch(add_mean(DbElement));
             setTitle("");
             setSelectedCompany("");
@@ -892,7 +833,7 @@ const Calender = (props) => {
             siteId: key.siteId,
             userId: key.userId,
             _id: key._id,
-            color: "green",
+            color: "yellow",
             status: key.status,
           };
         });
