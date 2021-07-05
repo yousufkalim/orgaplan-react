@@ -93,7 +93,9 @@ export default function DataTable(props) {
                   component="th"
                   scope="row"
                   key={index}
-                  align="center"
+                  align={
+                    props.align ? (index === 1 ? "left" : "center") : "center"
+                  }
                 >
                   {cell}
                 </StyledTableCell>

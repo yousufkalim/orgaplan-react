@@ -62,17 +62,31 @@ export default function MultiAdderInputModal(props) {
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const [image, setImage] = useState([]);
   const [location, setLocation] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDate, setStartDate] = useState("");
 
   const handleChange = (name, value) => {
-    if (name === "location") setLocation(value);
-    else if (name === "image") setImage(value);
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "startDate") setStartDate(value);
+    if (name === "location") {
+      if (!GLOBALS.Functions.empty(value)) {
+        setLocation(value);
+        setErrors({ ...errors, location: "" });
+      } else if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, location: "location is required" });
+        setLocation("");
+      }
+    } else if (name === "image") setImage(value);
+    else if (name === "startDate") {
+      if (value && value.length > 1) {
+        setStartDate(value);
+        setErrors({ ...errors, startDate: "" });
+      } else if ((value && value.length < 1) || value === null) {
+        setStartDate("");
+        setErrors({ ...errors, startDate: "Please enter starting date" });
+      }
+    } else if (name === "endDate") setEndDate(value);
   };
 
   async function onSubmit() {
@@ -111,6 +125,7 @@ export default function MultiAdderInputModal(props) {
     setImage([]);
     setEndDate("");
     setStartDate("");
+    props.handleFormFilling();
   }
 
   const handleDelete = (value) => () => {
@@ -119,6 +134,13 @@ export default function MultiAdderInputModal(props) {
     setUpdate((st) => !st);
   };
 
+  function validation(name, value) {
+    if (name === "location") {
+      if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, location: "Location is required" });
+      } else setErrors({ ...errors, location: "" });
+    }
+  }
   return (
     <>
       <div className={`${classes.root} ${props.className}`} style={props.style}>
@@ -170,7 +192,11 @@ export default function MultiAdderInputModal(props) {
                   name="location"
                   maxLength="80"
                   value={location}
+                  error={errors.location}
                   placeholder="Location"
+                  onBlur={({ target: { name, value } }) =>
+                    validation(name, value)
+                  }
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -204,6 +230,7 @@ export default function MultiAdderInputModal(props) {
                 <FormInput
                   type="date"
                   name="startDate"
+                  error={errors.startDate}
                   value={startDate}
                   placeholder={`Start date`}
                   min={moment(props.min).format("YYYY-MM-DD")}
@@ -232,7 +259,9 @@ export default function MultiAdderInputModal(props) {
                 loading={loading}
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={!location || !startDate || !endDate || loading}
+                disabled={
+                  !location || !startDate || !endDate || loading || !image
+                }
               />
             </Form.Row>
           </Form.Form>

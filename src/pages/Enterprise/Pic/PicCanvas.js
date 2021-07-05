@@ -560,6 +560,7 @@ const PicCanvas = (props) => {
               </Document>
               <Canvas
                 shapes={shapes}
+                role={adminStore?.site?.role}
                 onClick={handleClick}
                 onChange={handleChange}
                 setSelectedShape={setSelectedShape}
@@ -617,7 +618,7 @@ const PicCanvas = (props) => {
               </>
             )}
 
-            {/* {selectedShape && (
+            {selectedShape && (
               <div
                 className={
                   selectedShape && selectedShape.type !== "BUILDING" && level
@@ -626,7 +627,7 @@ const PicCanvas = (props) => {
                 }
               >
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type : ${selectedShape.type}`} />
+                <SubHeading primary={`Type1 : ${selectedShape.type}`} />
                 {selectedShape.type === "BUILDING" && (
                   <FormSelect
                     name="level"
@@ -649,7 +650,7 @@ const PicCanvas = (props) => {
                   />
                 )}
                 <Form.Row>
-                  {level === "" ? (
+                  {/* {level === "" ? (
                     <IconButton
                       disabled={loading}
                       onClick={(e) => {
@@ -671,7 +672,7 @@ const PicCanvas = (props) => {
                     >
                       <Pencil className={classes.infoIcon} />
                     </IconButton>
-                  )}
+                  )} */}
 
                   {selectedShape.type === "MEAN" ? (
                     <>
@@ -703,7 +704,7 @@ const PicCanvas = (props) => {
                     </>
                   )}
 
-                  <IconButton
+                  {/* <IconButton
                     disabled={loading}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -711,10 +712,10 @@ const PicCanvas = (props) => {
                     }}
                   >
                     <Cross className={classes.infoIcon} />
-                  </IconButton>
+                  </IconButton> */}
                 </Form.Row>
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </div>

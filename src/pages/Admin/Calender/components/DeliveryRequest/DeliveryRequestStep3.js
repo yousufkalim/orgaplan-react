@@ -108,6 +108,15 @@ export default function DeliveryRequestStep3(props) {
                 "date",
                 moment(props.step1Data.date).format("YYYY-MM-DD"),
               );
+              m.currentValue?.isInside
+                ? formdata1.append(
+                    "meanLocation",
+                    m.currentValue.levelName +
+                      "/" +
+                      m.currentValue.buildingName,
+                  )
+                : formdata1.append("meanLocation", "Exterior");
+
               formdata1.append("time", props.step1Data.date);
               formdata1.append("type", "MEAN");
               formdata1.append("isBillable", true);
@@ -121,7 +130,7 @@ export default function DeliveryRequestStep3(props) {
 
               // for (let [key, value] of formdata1) {
               //   console.log(
-              //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+              //     `formdata1 in meanbook2 delivery invoice ${key}: ${value}`,
               //   );
               // }
               await GLOBALS.API({
@@ -151,6 +160,15 @@ export default function DeliveryRequestStep3(props) {
                 "date",
                 moment(props.step1Data.date).format("YYYY-MM-DD"),
               );
+              m.currentValue?.isInside
+                ? formdata1.append(
+                    "meanLocation",
+                    m.currentValue.levelName +
+                      "/" +
+                      m.currentValue.buildingName,
+                  )
+                : formdata1.append("meanLocation", "Exterior");
+
               formdata1.append("time", props.step1Data.date);
               formdata1.append("type", "MEAN");
               formdata1.append("isBillable", true);
@@ -164,7 +182,7 @@ export default function DeliveryRequestStep3(props) {
 
               // for (let [key, value] of formdata1) {
               //   console.log(
-              //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
+              //     `formdata1 in meanbook1 delivery invoice ${key}: ${value}`,
               //   );
               // }
               await GLOBALS.API({
