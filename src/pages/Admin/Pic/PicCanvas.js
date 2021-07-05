@@ -561,6 +561,7 @@ const PicCanvas = (props) => {
               <Canvas
                 shapes={shapes}
                 onClick={handleClick}
+                role={adminStore?.site?.role}
                 onChange={handleChange}
                 setSelectedShape={setSelectedShape}
                 selectedShape={selectedShape}

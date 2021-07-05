@@ -70,7 +70,7 @@ export default function AdminIndex() {
       ) : (
         <AdminHeader>
           <Switch>
-            <Route exact path="/" component={Main} />
+            <Route exact path="/" component={ePic} />
             <Route path="/means" component={eMeans} />
             <Route path="/organigramme" component={eOrganigramme} />
             <Route path="/pic-interactive" component={ePic} />

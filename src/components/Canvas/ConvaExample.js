@@ -2,6 +2,7 @@ import React from "react";
 import { Stage, Layer, Circle, Rect, Image } from "react-konva";
 import ConvaLine from "./Components/Line";
 import Rectangle from "./Components/Rectangle";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import useImage from "use-image";
 
@@ -25,6 +26,8 @@ export default function Canvas({
   width,
   height,
 }) {
+  const adminStore = useSelector((state) => state.admin);
+  console.log(" in conovaexample role", adminStore?.site?.role);
   const [img] = useImage(
     "https://cdn1.iconfinder.com/data/icons/round-ui/134/27-512.png",
   );
@@ -84,7 +87,7 @@ export default function Canvas({
       width={width}
       height={height}
       // style={{ backgroundColor: "chocolate" }}
-      onMouseDown={onClick}
+      onMouseDown={adminStore?.site?.role == "ADMIN" && onClick}
       onMouseMove={onMouseMove}
       onMouseEnter={(e) => {
         // style stage container:
