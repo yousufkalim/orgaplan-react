@@ -299,7 +299,7 @@ const Means = () => {
         <Heading primary="LIST OF MEANS" noWrap noMargin />
         <Form.Row alignItems="center" justifyContent="flex-end" width="50%">
           <SubHeading bold noMargin primary={`TOTAL : ${totalMeans} means`} />
-          <Button
+          {/* <Button
             fullWidth={false}
             loading={loading}
             disabled={loading}
@@ -307,7 +307,7 @@ const Means = () => {
             text="MEANS REQUEST"
             to={"/sites/means-request"}
             style={{ marginLeft: "20px", width: "200px" }}
-          />
+          /> */}
         </Form.Row>
       </Form.Row>
       <Form.Row alignItems="center">
