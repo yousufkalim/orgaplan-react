@@ -26,17 +26,22 @@ export default function Logs(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
 
+  const [data, setData] = useState("");
+
   useEffect(() => {
+    setLoading(true);
     fetchData();
-  }, []);
+  }, [page]);
+
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.LOGS}`,
+        uri: `${GLOBALS.Constants.LOGS}/?page=${page}`,
       });
+      setItems(result.data.items);
       setData(result.data);
       setLoading(false);
     } catch (err) {
@@ -48,7 +53,7 @@ export default function Logs(props) {
     }
   }
 
-  const rows = data.map((item) => [item.date, item.description]);
+  const rows = items.map((item) => [item.date, item.description]);
   return (
     <>
       <div className={classes.root}>
@@ -65,14 +70,16 @@ export default function Logs(props) {
           />
         )}
         {/* This pagination block is temporary disabled and will enabled after backend pagination */}
-        {/* {!loading && data.length > 4 && (
+        {!loading && data.totalItems > 4 && (
           <Pagination
             page={page}
+            count={data.totalPages}
             onChange={(e, value) => {
               setPage(value);
+              console.log(page);
             }}
           />
-        )} */}
+        )}
       </div>
     </>
   );
