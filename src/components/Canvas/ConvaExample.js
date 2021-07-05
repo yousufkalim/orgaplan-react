@@ -5,6 +5,7 @@ import Rectangle from "./Components/Rectangle";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import useImage from "use-image";
+import { message } from "antd";
 
 export default function Canvas({
   onClick,
@@ -81,7 +82,15 @@ export default function Canvas({
   };
   {
   }
-
+  const info = (area) => {
+    message.config({
+      duration: 2,
+      maxCount: 1,
+    });
+    message.warning(
+      `Your ${area.name} is going to expire after ${area.expireDay} days`,
+    );
+  };
   return (
     <Stage
       width={width}
@@ -209,16 +218,13 @@ export default function Canvas({
                         <Image
                           key={shape._id}
                           image={img}
-                          x={storageArea?.x}
-                          y={storageArea?.y}
-                          width={50}
-                          height={50}
-                          onMouseOver={() => {
-                            alert(
-                              `Your ${storageArea.name} is going to expire after ${storageArea.expireDay} days`,
-                            );
-                            return;
-                          }}
+                          // x={storageArea?.x}
+                          // y={storageArea?.y}
+                          x={shape.points[0][0] - 10}
+                          y={shape.points[0][1] - 10}
+                          width={24}
+                          height={24}
+                          onMouseOver={() => info(storageArea)}
                           onMouseEnter={(e) => {
                             // style stage container:
                             const container = e.target.getStage().container();
@@ -234,16 +240,11 @@ export default function Canvas({
                         <Image
                           key={shape._id}
                           image={img}
-                          x={deliveryArea?.x}
-                          y={deliveryArea?.y}
-                          width={50}
-                          height={50}
-                          onMouseOver={(e) => {
-                            alert(
-                              `Your ${deliveryArea.name} is going to expire after ${deliveryArea.expireDay} days`,
-                            );
-                            return;
-                          }}
+                          x={shape.points[0][0] - 10}
+                          y={shape.points[0][1] - 10}
+                          width={24}
+                          height={24}
+                          onMouseOver={() => info(deliveryArea)}
                           onMouseEnter={(e) => {
                             // style stage container:
                             const container = e.target.getStage().container();

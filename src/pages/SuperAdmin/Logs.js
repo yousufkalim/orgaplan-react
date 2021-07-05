@@ -58,7 +58,11 @@ export default function Logs(props) {
         {loading ? (
           <Loader.Progress />
         ) : (
-          <Table headers={GLOBALS.Data.logs.headings} rows={rows} />
+          <Table
+            headers={GLOBALS.Data.logs.headings}
+            rows={rows}
+            align="left"
+          />
         )}
         {/* This pagination block is temporary disabled and will enabled after backend pagination */}
         {/* {!loading && data.length > 4 && (

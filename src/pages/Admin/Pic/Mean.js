@@ -33,7 +33,7 @@ export default function AddMean(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
+  const [errors, setErrors] = useState({});
   const [name, setName] = useState("");
   const [meanType, setMeanType] = useState("");
   const [color, setColor] = useState("#d71313");
@@ -130,7 +130,13 @@ export default function AddMean(props) {
   };
   const handleChange = (name, value) => {
     if (name === "name") {
-      setName(value);
+      if (!GLOBALS.Functions.empty(value)) {
+        setName(value);
+        setErrors({ ...errors, name: "" });
+      } else if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+        setName("");
+      }
     } else if (name === "color") setColor(value);
     else if (name === "meanType") setMeanType(value);
     else if (name === "image") {
@@ -139,13 +145,25 @@ export default function AddMean(props) {
     } else if (name === "locations") {
       setLocations(value);
       setUpdate((st) => !st);
-    } else if (name === "startDate") setStartDate(value);
-    else if (name === "endDate") setEndDate(value);
-    else if (name === "techSheet") setTechSheet(value);
-    else if (name === "rate") setRate(value);
-    else if (name === "addInfo") setAddInfo(value);
+    } else if (name === "startDate")
+      if (value && value.length > 1) {
+        setStartDate(value);
+        setErrors({ ...errors, startDate: "" });
+      } else if ((value && value.length < 1) || value === null) {
+        setStartDate("");
+        setErrors({ ...errors, startDate: "Please enter starting date" });
+      } else if (name === "endDate") setEndDate(value);
+      else if (name === "techSheet") setTechSheet(value);
+      else if (name === "rate") setRate(value);
+      else if (name === "addInfo") setAddInfo(value);
   };
-
+  function validation(name, value) {
+    if (name === "name") {
+      if (GLOBALS.Functions.empty(value)) {
+        setErrors({ ...errors, name: "Name is required" });
+      } else setErrors({ ...errors, name: "" });
+    }
+  }
   const createMean = async () => {
     try {
       setLoading(true);
@@ -277,9 +295,11 @@ export default function AddMean(props) {
           >
             <FormInput
               name="name"
+              error={errors.name}
               value={name}
               placeholder="Name"
               style={{ width: "32%" }}
+              onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -362,6 +382,7 @@ export default function AddMean(props) {
             <FormInput
               type="date"
               name="startDate"
+              error={errors.startDate}
               value={startDate}
               style={{ width: "49%" }}
               placeholder={`Start date`}
