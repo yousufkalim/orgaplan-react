@@ -17,6 +17,10 @@ import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
+import deliverIcon from "../../../assets/icons/delivery.png";
+import alertIcon from "../../../assets/icons/alerticon.png";
+import alertIcon1 from "../../../assets/icons/alerticon1.png";
+
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
@@ -617,7 +621,60 @@ const PicCanvas = (props) => {
                 <div className={classes.infoDrawer2}>{BuildingComponent()}</div>
               </>
             )}
-
+            <div
+              style={{
+                backgroundColor: "#47A7EE",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
+              }}
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                {" "}
+                <img
+                  src={deliverIcon}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                2
+              </h3>
+              <h6 style={{ color: "white" }}>Deliveries</h6>
+            </div>
+            <div
+              style={{
+                backgroundColor: "#E15141",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
+              }}
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                {" "}
+                <img
+                  src={alertIcon1}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+                <img
+                  src={alertIcon}
+                  style={{
+                    width: "5px",
+                    height: "18px",
+                    position: "relative",
+                    right: "15px",
+                  }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                3
+              </h3>
+              <h6 style={{ color: "white" }}>Alerts</h6>
+            </div>
             {selectedShape && (
               <div
                 className={
