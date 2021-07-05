@@ -24,11 +24,7 @@ import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 
 import imggg from "./testpdf.pdf";
 import { Document, Page, pdfjs } from "react-pdf";
-
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
 // import { ReactComponent as PICIcon } from "../../../assets/icons/PICIcon.svg";
