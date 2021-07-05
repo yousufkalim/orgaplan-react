@@ -750,7 +750,7 @@ const PicCanvas = (props) => {
                       <NavLink
                         disabled={loading}
                         to={{
-                          pathname: "/",
+                          pathname: "/pic-interactive/calendar",
                           selectedShape: selectedShape,
                         }}
                       >
