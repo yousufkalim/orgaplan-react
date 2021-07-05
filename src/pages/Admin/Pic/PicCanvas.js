@@ -133,7 +133,7 @@ const PicCanvas = (props) => {
       if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
         let isExist = sp?.storageArea?.availability?.end;
         if (isExist) {
-          let check = moment(isExist).isSame(new Date(), "day");
+          let check = moment(isExist).isBefore(new Date(), "day");
           if (check == false) {
             array.push(sp);
           }
@@ -141,7 +141,7 @@ const PicCanvas = (props) => {
       } else if (sp.mean && Object.keys(sp.mean).length > 0) {
         let isExist = sp?.mean?.availability?.end;
         if (isExist) {
-          let check = moment(isExist).isSame(new Date(), "day");
+          let check = moment(isExist).isBefore(new Date(), "day");
           if (check == false) {
             array.push(sp);
           }
@@ -149,7 +149,7 @@ const PicCanvas = (props) => {
       } else if (sp.deliveryArea && Object.keys(sp.deliveryArea).length > 0) {
         let isExist = sp?.deliveryArea?.availability?.end;
         if (isExist) {
-          let check = Date.now() > new Date(isExist);
+          let check = moment(isExist).isBefore(new Date(), "day");
           if (check == false) {
             array.push(sp);
           }
