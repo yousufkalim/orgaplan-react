@@ -135,7 +135,8 @@ export default function AdminHeader(props) {
             icon: <Organigramme />,
           },
         ]
-      : [
+      : storeAdmin?.site?.role == "ADMIN"
+      ? [
           {
             name: "Calendar",
             path: ["/", "/calendar"],
@@ -156,11 +157,6 @@ export default function AdminHeader(props) {
             path: "/incidents",
             icon: <Incidents />,
           },
-          // {
-          //   name: "Invoices",
-          //   path: "/invoices",
-          //   icon: <Invoices />,
-          // },
           {
             name: "Companies",
             path: "/companies",
@@ -170,6 +166,23 @@ export default function AdminHeader(props) {
             name: "Organigramme",
             path: "/organigramme",
             icon: <Organigramme />,
+          },
+        ]
+      : [
+          {
+            name: "P.I.C intéractif",
+            path: "/pic-interactive",
+            icon: <Pic />,
+          },
+          {
+            name: "Planning",
+            path: "/Plannig",
+            icon: <Means />,
+          },
+          {
+            name: "Incidents",
+            path: "/incidents",
+            icon: <Incidents />,
           },
         ];
 

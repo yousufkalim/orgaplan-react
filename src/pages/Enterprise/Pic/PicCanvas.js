@@ -97,14 +97,15 @@ const PicCanvas = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const [userId, setUserId] = useState(store.user._id);
   const SITE_ID = adminStore.site.siteId._id;
 
   const [sitePic, setSitePic] = useState("");
   const [levelPic, setlevelPic] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const [shape, setShape] = useState("");
+  const [deliveryCount, setDeliveryCount] = useState("");
   const [rendering, setRendering] = useState("");
+  const [shape, setShape] = useState("");
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -123,6 +124,10 @@ const PicCanvas = (props) => {
     }
     // eslint-disable-next-line
   }, [adminStore, rendering, level]);
+  useEffect(() => {
+    filterBookingCalendar();
+    // eslint-disable-next-line
+  }, []);
   const findlevelName = (value) => {
     let name = levelsDropdown.find((a) => a.value == value);
     if (name) {
@@ -274,6 +279,43 @@ const PicCanvas = (props) => {
       );
     }
   };
+  // for delviry count
+  const filterBookingCalendar = async () => {
+    let count = 0;
+    let tempEvent;
+    try {
+      const response = await GLOBALS.API({
+        method: "POST",
+        token: store.token,
+        uri: `${GLOBALS.Constants.filterBookingCalendar}`,
+        body: JSON.stringify({
+          siteId: adminStore.site.siteId._id,
+          // companyId: enterprise,
+          typeOfPlaning: "Deliveries",
+          // status: status,
+          // typeOfPlace: typeOfPlacevalue,
+          // placeId: placeId,
+        }),
+      });
+
+      if (response.success) {
+        tempEvent = response.data.Deliveries.map((key, index) => {
+          if (key.userId._id === userId) {
+            count++;
+          }
+        });
+        setDeliveryCount(count);
+      }
+      setLoading(false);
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+  // end
 
   const onAddLevelPlan = async (file) => {
     try {
@@ -639,7 +681,7 @@ const PicCanvas = (props) => {
                 />
               </div>
               <h3 className="font-weight-bold" style={{ color: "white" }}>
-                2
+                {deliveryCount}
               </h3>
               <h6 style={{ color: "white" }}>Deliveries</h6>
             </div>

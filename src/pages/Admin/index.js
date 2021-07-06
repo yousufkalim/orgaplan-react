@@ -24,6 +24,9 @@ import Main from "../Enterprise";
 import eOrganigramme from "../Enterprise/Organigramme";
 import ePic from "../Enterprise/Pic";
 import eMeans from "../Enterprise/Means";
+// TRAFFIC ROUTES
+import tPic from "../TRAFFIC/Pic";
+import tIncidents from "../TRAFFIC/Incidents";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
@@ -67,13 +70,22 @@ export default function AdminIndex() {
             <Redirect from="*" to="/" />
           </Switch>
         </AdminHeader>
-      ) : (
+      ) : store.site.role == "ENETRPRISE" ? (
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={ePic} />
             <Route path="/means" component={eMeans} />
             <Route path="/organigramme" component={eOrganigramme} />
             <Route path="/pic-interactive" component={ePic} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </AdminHeader>
+      ) : (
+        <AdminHeader>
+          <Switch>
+            <Route exact path="/" component={tPic} />
+            <Route path="/incidents" component={tIncidents} />
+            <Route path="/pic-interactive" component={tPic} />
             <Redirect from="*" to="/" />
           </Switch>
         </AdminHeader>
