@@ -25,8 +25,9 @@ import eOrganigramme from "../Enterprise/Organigramme";
 import ePic from "../Enterprise/Pic";
 import eMeans from "../Enterprise/Means";
 // TRAFFIC ROUTES
-import tPic from "../TRAFFIC";
+import tPic from "../TRAFFIC/Pic";
 import tIncidents from "../TRAFFIC/Incidents";
+import tPlanning from "../TRAFFIC/Planning";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
@@ -84,7 +85,8 @@ export default function AdminIndex() {
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={tPic} />
-            {/* <Route path="/incidents" component={tIncidents} /> */}
+            <Route path="/incidents" component={tIncidents} />
+            <Route path="/Plannig" component={tPlanning} />
             <Route path="/pic-interactive" component={tPic} />
             <Redirect from="*" to="/" />
           </Switch>

@@ -672,19 +672,28 @@ const PicCanvas = (props) => {
                 margin: "5px",
               }}
             >
-              <div style={{ textAlign: "left", padding: "5px" }}>
-                {" "}
-                <img
-                  src={deliverIcon}
-                  style={{ width: 25, height: 25 }}
-                  alt="Icon"
-                />
-              </div>
+              <div style={{ textAlign: "left", padding: "5px" }}></div>
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {deliveryCount}
               </h3>
               <h6 style={{ color: "white" }}>Deliveries</h6>
             </div>
+            <div
+              style={{
+                backgroundColor: "#0EB227",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
+              }}
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}></div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                3
+              </h3>
+              <h6 style={{ color: "white" }}>COMPLETED</h6>
+            </div>
+
             <div
               style={{
                 backgroundColor: "#E15141",
@@ -694,29 +703,12 @@ const PicCanvas = (props) => {
                 margin: "5px",
               }}
             >
-              <div style={{ textAlign: "left", padding: "5px" }}>
-                {" "}
-                <img
-                  src={alertIcon1}
-                  style={{ width: 25, height: 25 }}
-                  alt="Icon"
-                />
-                <img
-                  src={alertIcon}
-                  style={{
-                    width: "5px",
-                    height: "18px",
-                    position: "relative",
-                    right: "15px",
-                  }}
-                  alt="Icon"
-                />
-              </div>
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 3
               </h3>
               <h6 style={{ color: "white" }}>Alerts</h6>
             </div>
+
             {selectedShape && (
               <div
                 className={
@@ -782,6 +774,20 @@ const PicCanvas = (props) => {
                           selectedShape: selectedShape,
                         }}
                       >
+                        {/* <IconButton>
+                          <Calendar className={classes.infoIcon} />
+                        </IconButton> */}
+                      </NavLink>
+                    </>
+                  ) : selectedShape.type === "DELIVERYAREA" ? (
+                    <>
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/pic-interactive/calendar",
+                          selectedShape: selectedShape,
+                        }}
+                      >
                         <IconButton>
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
@@ -796,9 +802,9 @@ const PicCanvas = (props) => {
                           selectedShape: selectedShape,
                         }}
                       >
-                        <IconButton>
-                          <Calendar className={classes.infoIcon} />
-                        </IconButton>
+                        {/* <IconButton>
+                        <Calendar className={classes.infoIcon} />
+                      </IconButton> */}
                       </NavLink>
                     </>
                   )}
