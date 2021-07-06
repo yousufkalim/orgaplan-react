@@ -70,7 +70,7 @@ export default function AdminIndex() {
             <Redirect from="*" to="/" />
           </Switch>
         </AdminHeader>
-      ) : store.site.role == "ENETRPRISE" ? (
+      ) : store.site.role == "ENTERPRISE" ? (
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={ePic} />
