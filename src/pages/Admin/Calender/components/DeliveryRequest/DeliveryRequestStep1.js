@@ -14,6 +14,7 @@ import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { getTime } from "date-fns";
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -40,11 +41,15 @@ export default function AddSiteStep1(props) {
     for (var i = 0; i <= moment(startTime).format("h"); i++) {
       endTimeDisabledHours.push(i);
     }
-    return;
+    return endTimeDisabledHours;
   };
 
+  var d = new Date();
   const getDisabledHoursStartTime = () => {
-    return endTimeDisabledHours;
+    for (var i = 0; i <= d.getHours(); i++) {
+      startTimeDisabledHours.push(i);
+    }
+    return startTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
@@ -312,7 +317,9 @@ export default function AddSiteStep1(props) {
           values={props.companies}
           placeholder="Select a Company"
           style={GLOBALS.Styles.inputWidth}
-          onChange={({ target: { value } }) => setCompany(value)}
+          onChange={({ target: { value } }) => {
+            setCompany(value);
+          }}
         />
       </Form.Row>
       <Form.Row>
@@ -349,7 +356,10 @@ export default function AddSiteStep1(props) {
             minuteStep={15}
             name="startTime"
             value={startTime}
-            disabledHours={getDisabledHoursEndTime()}
+            disabledHours={
+              moment(d).format("yyyy-DD-MM") ==
+                moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
+            }
             // disabledMinutes={(a) => getDisabledMinutes(a)}
             placeholder="Start Time"
             style={{ width: "31%" }}
@@ -360,7 +370,7 @@ export default function AddSiteStep1(props) {
             format="HH:mm"
             minuteStep={15}
             value={endTime}
-            disabledHours={getDisabledHoursStartTime()}
+            disabledHours={getDisabledHoursEndTime()}
             // disabledMinutes={(a) => getDisabledEndMinutes(a)}
             placeholder="End Time"
             style={{ width: "31%" }}
