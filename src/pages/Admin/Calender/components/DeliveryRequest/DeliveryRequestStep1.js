@@ -44,6 +44,7 @@ export default function AddSiteStep1(props) {
     return endTimeDisabledHours;
   };
 
+  // Function to disable previous time on current date
   var d = new Date();
   const getDisabledHoursStartTime = () => {
     for (var i = 0; i <= d.getHours(); i++) {
@@ -349,6 +350,29 @@ export default function AddSiteStep1(props) {
             // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
+
+              // Setting current time on current date and previous time
+              if (
+                moment(d).format("yyyy-DD-MM") ==
+                moment(value).format("yyyy-DD-MM")
+              ) {
+                if (
+                  moment(startTime).format("HH") <
+                  parseInt(moment(d).format("HH")) + 1
+                ) {
+                  const hour = new Date().getHours();
+                  setStartTime(
+                    moment(d)
+                      .set("hours", hour + 1)
+                      .set("minutes", 0),
+                  );
+                  setEndTime(
+                    moment(d)
+                      .set("hours", hour + 2)
+                      .set("minutes", 0),
+                  );
+                }
+              }
             }}
           />
           <TimeInput
@@ -356,6 +380,7 @@ export default function AddSiteStep1(props) {
             minuteStep={15}
             name="startTime"
             value={startTime}
+            // disabling previous time on current date
             disabledHours={
               moment(d).format("yyyy-DD-MM") ==
                 moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
