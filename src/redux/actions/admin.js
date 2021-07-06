@@ -1,4 +1,5 @@
 import * as actionTypes from "./actionTypes";
+import GLOBALS from "../../globals";
 
 // Sync
 export const reset_state = () => {
@@ -18,9 +19,15 @@ export const set_site = (site) => {
 export const check_site = () => async (dispatch) => {
   try {
     const site = JSON.parse(localStorage.getItem("site"));
-
     if (site) {
-      dispatch(set_site(site));
+      // Getting latest site data from api
+      const result = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ONE_SITE}/${site.siteId._id}`,
+      });
+
+      // Making object according to local storage
+      const res = { siteId: result.data, role: site.role };
+      dispatch(set_site(res));
       return Promise.resolve();
     } else {
       dispatch(reset_state());
