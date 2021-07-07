@@ -28,7 +28,6 @@ export default function Canvas({
   height,
 }) {
   const adminStore = useSelector((state) => state.admin);
-  console.log(" in conovaexample role", adminStore?.site?.role);
   const [img] = useImage(
     "https://cdn1.iconfinder.com/data/icons/round-ui/134/27-512.png",
   );

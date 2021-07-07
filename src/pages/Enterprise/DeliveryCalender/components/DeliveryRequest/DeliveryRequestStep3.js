@@ -40,11 +40,11 @@ export default function DeliveryRequestStep3(props) {
     );
     stor && setStorageArea(stor.label);
     let liftMea = props.means.filter((item) =>
-      props.step1Data.liftingMeans.includes(item._id),
+      props.step1Data.liftingMeans?.includes(item._id),
     );
     liftMea && setLiftingMeans(liftMea.map((item) => item.name));
     let routMeans = props.means.filter((item) =>
-      props.step2Data.routingMeans.includes(item._id),
+      props.step2Data.routingMeans?.includes(item._id),
     );
     routMeans && setRoutingMeans(routMeans.map((item) => item.name));
     if (props.step3Data) {
