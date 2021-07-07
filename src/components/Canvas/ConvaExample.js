@@ -100,7 +100,10 @@ export default function Canvas({
       onMouseEnter={(e) => {
         // style stage container:
         const container = e.target.getStage().container();
-        container.style.cursor = "crosshair";
+
+        if (adminStore?.site?.role == "ADMIN") {
+          container.style.cursor = "crosshair";
+        }
       }}
       onMouseLeave={(e) => {
         const container = e.target.getStage().container();
@@ -158,7 +161,11 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          container.style.cursor = "crosshair";
+                          if (adminStore?.site?.role == "ADMIN") {
+                            container.style.cursor = "crosshair";
+                          } else {
+                            container.style.cursor = "default";
+                          }
                         }}
                         image={shape.image}
                         stroke={shape.color}
@@ -178,7 +185,11 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          container.style.cursor = "crosshair";
+                          if (adminStore?.site?.role == "ADMIN") {
+                            container.style.cursor = "crosshair";
+                          } else {
+                            container.style.cursor = "default";
+                          }
                         }}
                         width={50}
                         fill={shape.color}
@@ -208,7 +219,11 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          container.style.cursor = "crosshair";
+                          if (adminStore?.site?.role == "ADMIN") {
+                            container.style.cursor = "crosshair";
+                          } else {
+                            container.style.cursor = "default";
+                          }
                         }}
                         onClick={() => handleConvaLineClick(shape._id)}
                         closed={true}
