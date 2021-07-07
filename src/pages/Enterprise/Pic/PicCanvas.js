@@ -294,6 +294,15 @@ const PicCanvas = (props) => {
       token: store.token,
     });
     setCompany(companyResponse?.data?.company);
+    // alert count api
+    const getAlertData = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.PIC_ALERT_COUNT}/${adminStore.site.siteId._id}`,
+      token: store.token,
+      method: "GET",
+    });
+    setAlertCount(getAlertData?.data?.count);
+
+    // alert count api end
 
     let count = 0;
     let alerts = 0;
@@ -323,7 +332,7 @@ const PicCanvas = (props) => {
           item.alert && alerts++;
         });
         setDeliveryCount(count);
-        setAlertCount(alerts);
+        // setAlertCount(alerts);
       }
       setLoading(false);
     } catch (err) {
