@@ -134,7 +134,7 @@ export default function DeliveryArea(props) {
     } else if (name === "isFull") setIsFull(value);
     else if (name === "color") setColor(value);
     else if (name === "startDate") {
-      if (value && value.length > 1) {
+      if (value && value.length >= 1) {
         setStartDate(value);
         setErrors({ ...errors, startDate: "" });
       } else if ((value && value.length < 1) || value === null) {
@@ -150,7 +150,7 @@ export default function DeliveryArea(props) {
           deliveryAreas: "Please select Delivery areas",
         });
         alert("error");
-      } else if (deliveryAreas.length > 1) {
+      } else if (deliveryAreas.length >= 1) {
         setSelectedDeliveryAreas(value);
         // setDeliveryAreas(value);
       }

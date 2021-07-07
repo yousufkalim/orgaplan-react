@@ -113,6 +113,7 @@ const endpoints = {
   SITE_VEHICLES: BASE_URL_V1 + "vehicles/get_site_vehicles",
 
   FILTER_MEANS: BASE_URL_V1 + "mean/filter",
+  GET_ONE_SITE: BASE_URL_V1 + "user-sites/get-one-site",
   GET_USER_SITES: BASE_URL_V1 + "user-sites/user",
 
   ADMIN_COMPANY: BASE_URL_V1 + "company",
