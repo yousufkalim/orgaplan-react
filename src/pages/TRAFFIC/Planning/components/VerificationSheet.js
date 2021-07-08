@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./VerificationSheet.css";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import TimePicker from "react-time-picker";
 import FormCheckbox from "../../../../components/FormCheckbox";
@@ -9,10 +10,129 @@ import validate from "../../../../components/Button";
 import ButtonGroup from "./btnGroup";
 import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.svg";
 import IconButton from "@material-ui/core/IconButton";
-const VarificationSheet = () => {
-  const [image, setImage] = useState([]);
+import GLOBALS from "../../../../globals";
+import Actions from "../../../../redux/actions";
+import moment from "moment";
+const VarificationSheet = (props) => {
   const history = useHistory();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.auth);
+  const [image, setImage] = useState([]);
+  const [eventdata, setEventData] = useState(location.state.event);
+  const [materials, setMaterials] = useState([]);
+  const [materialsData, setMaterialsData] = useState([]);
+
+  const [delayTime, setDelayTime] = useState("00:00");
+  const [delayCheckBox, setDelayCheckBox] = useState(false);
+  const [status, setStatus] = useState(eventdata.status);
+  const [checkStatus, setCheckStatus] = useState();
+  const [comments, setComments] = useState("");
+  const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
+  console.log(eventdata);
+  const liftingMeans = () => {
+    var data = eventdata.liftingMeans?.map((name, index) => {
+      return name.name;
+    });
+    return data.join(" , ");
+  };
+  const routingMeans = () => {
+    var data = eventdata.routingMeans?.map((name, index) => {
+      return name.name;
+    });
+    return data.join(" , ");
+  };
+  const materialData = () => {
+    let array = [];
+    const data = eventdata.materials?.map((name, index) => {
+      array.push(name);
+      return;
+    });
+    setMaterials(array);
+  };
+
+  useEffect(() => {
+    materialData();
+  }, []);
+
+  const onSubmit = async () => {
+    console.log(checkStatus);
+    let materialsArray = [];
+    for (const [key, value] of Object.entries(materialsData)) {
+      if (value) {
+        materialsArray.push(key);
+      }
+    }
+
+    try {
+      setLoading(true);
+
+      var formdata = new FormData();
+      formdata.append("delay", delayCheckBox);
+      formdata.append("status", checkStatus);
+      formdata.append("comments", comments);
+      // if (images) {
+      //   formdata.append('images', {
+      //     uri: images.uri,
+      //     name: images.fileName,
+      //     type: images.type,
+      //   });
+      // }
+      formdata.append("time", delayTime);
+      formdata.append("materialsDelivered", JSON.stringify(materialsArray));
+      formdata.append(
+        "username",
+        store.user.firstName + " " + store.user.lastName,
+      );
+
+      await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.COMPLETE_DELIVERY}/${eventdata.id}`,
+        body: formdata,
+        headers: {
+          Authorization: store.token,
+        },
+      });
+
+      // if (delay === true) {
+      //   let locationObj = { deliveryArea: deliveryAreaId };
+      //   var formdata = new FormData();
+      //   console.log("JSON.stringify(locationObj)", JSON.stringify(locationObj));
+      //   formdata.append("name", "Created by NameOfTrafficAgent");
+      //   formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
+      //   formdata.append("time", moment(startTime).format("HH:mm"));
+      //   formdata.append(
+      //     "price",
+      //     parseInt(storeUser.site.siteId.penaltyforLateDelivery),
+      //   );
+      //   formdata.append("isBillable", "true");
+      //   formdata.append("isPaid", "false");
+      //   formdata.append("location", JSON.stringify(locationObj));
+      //   formdata.append("siteId", storeUser.site.siteId._id);
+      //   formdata.append("companyId", companyId);
+      //   formdata.append("type", "DELAY");
+      //   await GLOBALS.API({
+      //     method: "POST",
+      //     uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+      //     headers: {
+      //       Authorization: store.token,
+      //     },
+      //     body: formdata,
+      //   });
+      // }
+      setLoading(false);
+
+      history.push("/Plannig");
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
   return (
     <>
       <div className="row">
@@ -27,7 +147,7 @@ const VarificationSheet = () => {
           </Button>
         </div>
       </div>
-
+      {/* <Form.Form> */}
       <div className="row box">
         <div className="col-sm-6">
           <div className="label">COMPANY : </div>
@@ -36,18 +156,46 @@ const VarificationSheet = () => {
           <div className="label">STORAGE AREA / MEAN : </div>
         </div>
         <div className="col-sm-6">
-          <div className="value">ConstructBTP</div>
-          <div className="value">12/03/2021 entre 8h et 12h</div>
-          <div className="value">Aire RRZR21 / Grue mobile</div>
-          <div className="value">RD32 / Fenwick</div>
+          <div className="value">{eventdata.company.name}</div>
+          <div className="value">
+            {moment(eventdata.start).format("DD-MM-YYYY") +
+              " entre " +
+              moment(eventdata.start).format("HH") +
+              "h et " +
+              moment(eventdata.end).format("HH") +
+              "h"}
+          </div>
+          <div className="value">
+            {eventdata.deliveryArea.name + " / " + liftingMeans()}
+          </div>
+          <div className="value">
+            {eventdata.storageArea.name + " / " + routingMeans()}
+          </div>
         </div>
         <div className="col-sm-6">
           <div className="label">REAL TIME OF DELIVERY : </div>
         </div>
         <div className="col-sm-6">
           <div className="value checkBoxTime">
-            <TimePicker value={"10:00"} onChange={(e) => {}} locale="sv-sv" />
-            <FormCheckbox name="delay" label="DELAY ?" />
+            <TimePicker
+              value={delayTime}
+              disabled={!delayCheckBox}
+              disableClock
+              onChange={(e) => {
+                setDelayTime(e);
+              }}
+              locale="sv-sv"
+            />
+
+            <FormCheckbox
+              name={delayCheckBox}
+              label="DELAY ?"
+              checked={delayCheckBox}
+              disabled={status != "VALIDATED"}
+              onChange={(e) => {
+                setDelayCheckBox(e.target.checked);
+              }}
+            />
           </div>
         </div>
 
@@ -59,7 +207,10 @@ const VarificationSheet = () => {
         </div>
         <div className="col-sm-6">
           <ButtonGroup
-            array={["Bardage", "Plaques béton", "Plaquettes", "CMU"]}
+            array={materials}
+            selected={materialsData}
+            setSelected={setMaterialsData}
+            disabled={status != "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -70,7 +221,12 @@ const VarificationSheet = () => {
             <Form.Control
               as="textarea"
               rows={3}
+              value={comments}
               placeholder="Ajouter un commentaire"
+              disabled={status != "VALIDATED"}
+              onChange={(e) => {
+                setComments(e.target.value);
+              }}
             />
           </Form.Group>
         </div>
@@ -80,7 +236,6 @@ const VarificationSheet = () => {
         <div className="col-sm-6">
           <FormMultipleUpload
             name="image"
-            values={"abc"}
             values={
               image[0] && image[0].file
                 ? image
@@ -88,7 +243,10 @@ const VarificationSheet = () => {
                 ? image
                 : obj
             }
-            onChange={(values) => {}}
+            onChange={(e) => {
+              setImage(e);
+            }}
+            disabled={status != "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -98,23 +256,62 @@ const VarificationSheet = () => {
         <div className="col-sm-6">
           <br />
           <div className="radioBtn">
-            <Form.Check type="radio" label="Completed" name="Completed" />
-            <Form.Check
-              type="radio"
-              label="Completed with issues"
-              name="CompletedWithIssues"
-            />
-            <Form.Check
-              type="radio"
-              label="Not completed"
-              name="NotCompleted"
-            />
+            {status === "PENDING" ? (
+              <>
+                <Form.Check
+                  type="radio"
+                  label="PENDING"
+                  name="status"
+                  checked
+                  className="pending"
+                />
+              </>
+            ) : (
+              <>
+                <Form.Check
+                  type="radio"
+                  label="Completed"
+                  name="status"
+                  className="green"
+                  value="COMPLETED"
+                  onChange={(e) => {
+                    setCheckStatus(e.target.value);
+                  }}
+                />
+                <Form.Check
+                  type="radio"
+                  label="Completed with issues"
+                  name="status"
+                  value="COMPLETEDWITHISSUE"
+                  onChange={(e) => {
+                    setCheckStatus(e.target.value);
+                  }}
+                />
+
+                <Form.Check
+                  type="radio"
+                  label="Not completed"
+                  name="status"
+                  value="VALIDATED"
+                  onChange={(e) => {
+                    setCheckStatus(e.target.value);
+                  }}
+                  defaultChecked
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
-      <Button variant="warning" className="validate_Btn">
+      <Button
+        variant="warning"
+        className="validate_Btn"
+        disabled={status != "VALIDATED"}
+        onClick={onSubmit}
+      >
         VALIDER
       </Button>
+      {/* </Form.Form> */}
     </>
   );
 };

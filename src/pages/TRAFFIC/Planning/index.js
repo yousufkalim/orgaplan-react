@@ -558,16 +558,10 @@ const Calender = (props) => {
   };
 
   const handlePopoverShow = (event) => {
-    // console.log("handlepopup show", event.id);
-    // setAlertBoxTime(false);
-    // seteventID(event.id);
-    // const fill = events.filter((e) => e.id === event.id);
-    // setEvent(fill[0]);
-    // setpopoverShow(!popoverShow);
-    // admin code end
-
-    // setAddVarification(true);
-    history.push("Plannig/varificationSheet");
+    history.push({
+      pathname: "/Plannig/varificationSheet",
+      state: { event },
+    });
   };
 
   const saveBooking = () => {

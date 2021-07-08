@@ -36,15 +36,15 @@
     display: none; 
 }
 .checkBoxTime .react-time-picker{
-    width: 100px;
-    height: 26px;
+    width: 100px; 
 }
 .checkBoxTime .PrivateSwitchBase-root-696 {
-    margin: 0px 1px 0px 48px;
+    margin: 0px 1px 0px 0px;
 }
 .checkBoxTime .MuiFormControlLabel-root{
     height: 10px;
     margin-top: 5px;
+    margin-left: 15px;
 
 }
 .btnselect { 
@@ -61,14 +61,21 @@
     display: flex;
     justify-content: space-between; 
 }
-.radioBtn .form-check:nth-child(1) label{ 
+.radioBtn .pending label{
+    color :yellow;
+    padding: 4px 10px;
+}
+.radioBtn .green label{ 
     color : #248E11;
+    padding: 4px 10px;
 }
 .radioBtn .form-check:nth-child(2) label{ 
     color : #8D7A29;
+    padding: 4px 10px;
 }
 .radioBtn .form-check:nth-child(3) label{ 
     color : #E5074B;
+    padding: 4px 10px;
 }
 .validate_Btn{
     color : white !important;
@@ -83,4 +90,8 @@
     
 }
  
+.radioBtn .form-check-input{
+    width: 20px;
+    height: 20px;
+}
  

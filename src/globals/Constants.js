@@ -166,6 +166,7 @@ const endpoints = {
   GetHistoryOfPlans: BASE_URL_V1 + "building/getHistory",
 
   delete_Delivery: BASE_URL_V1 + "delivery",
+  COMPLETE_DELIVERY: BASE_URL_V1 + "delivery/complete",
   getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
 };
 export default endpoints;
