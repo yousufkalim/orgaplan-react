@@ -91,7 +91,7 @@ const PopoverModal = ({
           <Alertbox message="Are you sure to Delete" />
           <div className="showPopover">
             <div style={{ textAlign: "right" }}>
-              <button
+              {/* <button
                 className="btn btn-light"
                 onClick={() => {
                   setEditDelivery(true);
@@ -99,7 +99,7 @@ const PopoverModal = ({
                 }}
               >
                 <i class="fas fa-trash"></i> <span>Edit</span>
-              </button>
+              </button> */}
             </div>
             {event.objectName === "Deliveries" ? (
               <>
