@@ -1053,7 +1053,7 @@ const PicCanvas = (props) => {
               >
                 Vous n'avez pas accès à cette zone de stockage.
               </p>
-              <Button
+              {/* <Button
                 // text="Demander Accès"
                 className="mt-2 "
                 disabled={requestFound}
@@ -1061,7 +1061,7 @@ const PicCanvas = (props) => {
                 onClick={onStorageClick}
               >
                 Demander Accès
-              </Button>
+              </Button> */}
             </>
           )}
         </DialogContent>
