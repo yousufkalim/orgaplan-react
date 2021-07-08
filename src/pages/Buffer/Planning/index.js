@@ -1606,7 +1606,7 @@ const Calender = (props) => {
               onSelectEvent={handlePopoverShow}
               // onSelectEvent={bookingSlot}
               onSelecting={true}
-              onSelectSlot={AddDeliveryRequest}
+              // onSelectSlot={AddDeliveryRequest}
               startAccessor="start"
               endAccessor="end"
               style={{
