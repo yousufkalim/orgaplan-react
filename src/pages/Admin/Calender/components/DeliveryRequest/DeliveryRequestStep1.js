@@ -14,6 +14,7 @@ import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { getTime } from "date-fns";
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -37,14 +38,20 @@ export default function AddSiteStep1(props) {
   var minutes = [];
 
   const getDisabledHoursEndTime = () => {
-    for (var i = 0; i <= moment(startTime).format("h"); i++) {
+    let startTimeIs = moment(startTime).toDate().getHours();
+    for (var i = 0; i <= startTimeIs; i++) {
       endTimeDisabledHours.push(i);
     }
-    return;
+    return endTimeDisabledHours;
   };
 
+  // Function to disable previous time on current date
+  var d = new Date();
   const getDisabledHoursStartTime = () => {
-    return endTimeDisabledHours;
+    for (var i = 0; i <= d.getHours(); i++) {
+      startTimeDisabledHours.push(i);
+    }
+    return startTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
@@ -312,7 +319,9 @@ export default function AddSiteStep1(props) {
           values={props.companies}
           placeholder="Select a Company"
           style={GLOBALS.Styles.inputWidth}
-          onChange={({ target: { value } }) => setCompany(value)}
+          onChange={({ target: { value } }) => {
+            setCompany(value);
+          }}
         />
       </Form.Row>
       <Form.Row>
@@ -342,6 +351,29 @@ export default function AddSiteStep1(props) {
             // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
+
+              // Setting current time on current date and previous time
+              if (
+                moment(d).format("yyyy-DD-MM") ==
+                moment(value).format("yyyy-DD-MM")
+              ) {
+                if (
+                  moment(startTime).format("HH") <
+                  parseInt(moment(d).format("HH")) + 1
+                ) {
+                  const hour = new Date().getHours();
+                  setStartTime(
+                    moment(d)
+                      .set("hours", hour + 1)
+                      .set("minutes", 0),
+                  );
+                  setEndTime(
+                    moment(d)
+                      .set("hours", hour + 2)
+                      .set("minutes", 0),
+                  );
+                }
+              }
             }}
           />
           <TimeInput
@@ -349,7 +381,11 @@ export default function AddSiteStep1(props) {
             minuteStep={15}
             name="startTime"
             value={startTime}
-            disabledHours={getDisabledHoursEndTime()}
+            // disabling previous time on current date
+            disabledHours={
+              moment(d).format("yyyy-DD-MM") ==
+                moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
+            }
             // disabledMinutes={(a) => getDisabledMinutes(a)}
             placeholder="Start Time"
             style={{ width: "31%" }}
@@ -360,7 +396,7 @@ export default function AddSiteStep1(props) {
             format="HH:mm"
             minuteStep={15}
             value={endTime}
-            disabledHours={getDisabledHoursStartTime()}
+            disabledHours={getDisabledHoursEndTime()}
             // disabledMinutes={(a) => getDisabledEndMinutes(a)}
             placeholder="End Time"
             style={{ width: "31%" }}

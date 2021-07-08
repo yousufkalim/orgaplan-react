@@ -121,7 +121,7 @@ export default function AdminHeader(props) {
       ? [
           {
             name: "P.I.C intéractif",
-            path: "/pic-interactive",
+            path: ["/", "/pic-interactive"],
             icon: <Pic />,
           },
           {
