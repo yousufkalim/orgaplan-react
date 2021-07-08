@@ -180,6 +180,7 @@ export default function AdminHeader(props) {
             path: "/Plannig",
             icon: <Means />,
           },
+
           {
             name: "Incidents",
             path: "/incidents",
@@ -194,7 +195,7 @@ export default function AdminHeader(props) {
           },
           {
             name: "Planning",
-            path: "/Plannig",
+            path: "/Planing",
             icon: <Means />,
           },
         ];

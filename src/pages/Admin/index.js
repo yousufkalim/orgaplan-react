@@ -29,7 +29,7 @@ import tPic from "../TRAFFIC";
 import tIncidents from "../TRAFFIC/Incidents";
 // BUFFER ROUTES
 import bPic from "../Buffer/Pic";
-
+import bPlanning from "../Buffer/Planning";
 export default function AdminIndex() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -95,6 +95,7 @@ export default function AdminIndex() {
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={bPic} />
+            <Route exact path="/Planing" component={bPlanning} />
             <Route path="/pic-interactive" component={bPic} />
             <Redirect from="*" to="/" />
           </Switch>

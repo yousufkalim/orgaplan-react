@@ -3,6 +3,9 @@ import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import _ from "lodash";
 import moment from "moment";
 import Mean from "./Mean";
@@ -101,11 +104,17 @@ const PicCanvas = (props) => {
   const SITE_ID = adminStore.site.siteId._id;
 
   const [sitePic, setSitePic] = useState("");
+  const [storageArea, setStorageArea] = useState("");
+  const [requestFound, setRequestFound] = useState(false);
+  const [storageAreaData, setstorageAreaData] = useState("");
+  const [company, setCompany] = useState("");
   const [levelPic, setlevelPic] = useState("");
   const [loading, setLoading] = useState(true);
   const [deliveryCount, setDeliveryCount] = useState("");
+  const [alertCount, setAlertCount] = useState("");
   const [rendering, setRendering] = useState("");
   const [shape, setShape] = useState("");
+  const [openStorageModal, setOpenStorageModal] = useState(false);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -134,7 +143,6 @@ const PicCanvas = (props) => {
       setLevelName(name.label);
     }
   };
-
   const expiredShapes = (shapes) => {
     let array = [];
 
@@ -281,7 +289,14 @@ const PicCanvas = (props) => {
   };
   // for delviry count
   const filterBookingCalendar = async () => {
+    const companyResponse = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.GET_COMPANY_USER}/${adminStore.site.siteId._id}/${userId}`,
+      token: store.token,
+    });
+    setCompany(companyResponse?.data?.company);
+
     let count = 0;
+    let alerts = 0;
     let tempEvent;
     try {
       const response = await GLOBALS.API({
@@ -292,7 +307,7 @@ const PicCanvas = (props) => {
           siteId: adminStore.site.siteId._id,
           // companyId: enterprise,
           typeOfPlaning: "Deliveries",
-          // status: status,
+          status: "ALERT",
           // typeOfPlace: typeOfPlacevalue,
           // placeId: placeId,
         }),
@@ -300,11 +315,15 @@ const PicCanvas = (props) => {
 
       if (response.success) {
         tempEvent = response.data.Deliveries.map((key, index) => {
-          if (key.userId._id === userId) {
-            count++;
-          }
+          // if (key.userId._id === userId) {
+          count++;
+          // }
+        });
+        response.data?.Deliveries.map((item) => {
+          item.alert && alerts++;
         });
         setDeliveryCount(count);
+        setAlertCount(alerts);
       }
       setLoading(false);
     } catch (err) {
@@ -316,6 +335,65 @@ const PicCanvas = (props) => {
     }
   };
   // end
+  const checkStorageArea = async (item) => {
+    setstorageAreaData(item);
+    let found = item.storageArea.companies.find(
+      (item2) => String(item2) === String(company._id),
+    );
+    console.log("found is ", found);
+    if (found) {
+      setOpenStorageModal(true);
+      setStorageArea(found);
+    } else {
+      setRequestFound(false);
+      const checkAccess = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_SITE_STORAGE_AREA}/${adminStore.site.siteId._id}`,
+        token: store.token,
+        method: "GET",
+      });
+      checkAccess.data.map((item2) => {
+        if (
+          item2?.companyId?._id === company?._id &&
+          item2?.storageAreaId?._id === storageAreaData.storageArea._id
+        ) {
+          setRequestFound(true);
+        }
+      });
+      setStorageArea("");
+      setOpenStorageModal(true);
+    }
+  };
+
+  const onStorageClick = async () => {
+    try {
+      await GLOBALS.API({
+        uri: GLOBALS.Constants.GET_SITE_STORAGE_AREA,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify({
+          siteId: adminStore.site.siteId._id,
+          userId,
+          companyId: company._id,
+          storageAreaId: storageAreaData.storageArea._id,
+        }),
+      });
+      setOpenStorageModal(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar({
+          visible: true,
+          messageType: "success",
+          message: "Request sent successfully",
+        }),
+      );
+    } catch (err) {
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+      console.log("err", err);
+    }
+  };
 
   const onAddLevelPlan = async (file) => {
     try {
@@ -455,6 +533,9 @@ const PicCanvas = (props) => {
   };
 
   const handleClick = (id, shape) => {
+    if (shape.type == "STORAGEAREA") {
+      checkStorageArea(shape);
+    }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       setselectedBuilding(shape);
@@ -713,7 +794,7 @@ const PicCanvas = (props) => {
                 />
               </div>
               <h3 className="font-weight-bold" style={{ color: "white" }}>
-                3
+                {alertCount}
               </h3>
               <h6 style={{ color: "white" }}>Alerts</h6>
             </div>
@@ -787,7 +868,7 @@ const PicCanvas = (props) => {
                         </IconButton>
                       </NavLink>
                     </>
-                  ) : (
+                  ) : selectedShape.type === "DELIVERYAREA" ? (
                     <>
                       <NavLink
                         disabled={loading}
@@ -800,6 +881,18 @@ const PicCanvas = (props) => {
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
                       </NavLink>
+                    </>
+                  ) : (
+                    <>
+                      {console.log("for storage", selectedShape)}
+
+                      <NavLink
+                        disabled={loading}
+                        to={{
+                          pathname: "/pic-interactive/calendar",
+                          selectedShape: selectedShape,
+                        }}
+                      ></NavLink>
                     </>
                   )}
 
@@ -925,6 +1018,54 @@ const PicCanvas = (props) => {
             ""
           ))}
       </>
+      <Dialog
+        open={openStorageModal}
+        onClose={() => setOpenStorageModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <h5 style={{ color: "#DBB20A" }}>{selectedShape?.name}</h5>
+          {storageArea ? (
+            <>
+              <p
+                style={{
+                  fontSize: 15,
+                }}
+              >
+                Vous avez accès à cette zone de stockage.
+              </p>
+            </>
+          ) : requestFound ? (
+            <p
+              style={{
+                fontSize: 15,
+              }}
+            >
+              Your Previous Request is Still Pending
+            </p>
+          ) : (
+            <>
+              <p
+                style={{
+                  fontSize: 15,
+                }}
+              >
+                Vous n'avez pas accès à cette zone de stockage.
+              </p>
+              <Button
+                // text="Demander Accès"
+                className="mt-2 "
+                disabled={requestFound}
+                style={{ width: "42%", marginLeft: "24%", fontSize: "12px" }}
+                onClick={onStorageClick}
+              >
+                Demander Accès
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
