@@ -58,6 +58,8 @@ export default function AddAdmin(props) {
   const [phoneError, setPhoneError] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [companyIdError, setCompanyIdError] = useState("");
 
   // States to get user data and disable fields
   const [users, setUsers] = useState([]);
@@ -144,6 +146,7 @@ export default function AddAdmin(props) {
         : setCompany("");
     }
     setUpdate((st) => !st);
+    validation(name, value);
   }
 
   function validation(name, value) {
@@ -163,6 +166,16 @@ export default function AddAdmin(props) {
       if (GLOBALS.Functions.empty(value))
         setLastNameError("Last name is required");
       else setLastNameError("");
+    } else if (name === "image") {
+      if (GLOBALS.Functions.empty(value.length)) {
+        setImageError("Please add a profile image");
+      } else {
+        setImageError("");
+      }
+    } else if (name === "companyId") {
+      if (GLOBALS.Functions.empty(value))
+        setCompanyIdError("Please select a company");
+      else setCompanyIdError("");
     }
   }
 
@@ -225,6 +238,7 @@ export default function AddAdmin(props) {
                           setImage([]);
                           setDisableUser(true);
                         }
+                        validation("email", e.target.value);
                       });
                     }}
                   />
@@ -241,9 +255,11 @@ export default function AddAdmin(props) {
                 onBlur={({ target: { name, value } }) =>
                   value.length < 26 ? validation(name, value) : ""
                 }
-                onChange={({ target: { name, value } }) =>
-                  value.length < 26 ? handleChange(name, value) : ""
-                }
+                onChange={({ target: { name, value } }) => {
+                  if (value.length < 26) {
+                    handleChange(name, value);
+                  }
+                }}
               />
             </Form.Row>
           </Form.Row>
@@ -261,9 +277,9 @@ export default function AddAdmin(props) {
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                onChange={({ target: { name, value } }) => {
+                  handleChange(name, value);
+                }}
               />
               <FormInput
                 name="lastName"
@@ -275,9 +291,9 @@ export default function AddAdmin(props) {
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                onChange={({ target: { name, value } }) => {
+                  handleChange(name, value);
+                }}
               />
             </Form.Row>
           </Form.Row>
@@ -288,6 +304,7 @@ export default function AddAdmin(props) {
               values={image}
               style={GLOBALS.Styles.inputWidth}
               disabled={disableUser}
+              error={imageError}
               onChange={(values) => handleChange("image", values)}
             />
           </Form.Row>
@@ -298,6 +315,7 @@ export default function AddAdmin(props) {
               value={companyId}
               values={companies}
               placeholder="Select Company"
+              error={companyIdError}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)

@@ -111,13 +111,11 @@ export default function AddIncidents(props) {
   };
   const nameChange = (e) => {
     if (e.target.name === "name") setName(e.target.value);
-    if (e.target.name === "comapnyId") {
+    if (e.target.name === "companyId") {
       setCompanyId(e.target.value);
-      validation("companyId", e.target.value);
     }
     if (e.target.name === "date") {
       setDate(e.target.value);
-      validation("date", e.target.value);
     }
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "location") {
@@ -141,8 +139,8 @@ export default function AddIncidents(props) {
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") {
       setType(e.target.value);
-      validation("type", e.target.value);
     }
+    validation(e.target.name, e.target.value);
   };
   const handleChange = (name, value) => {
     if (name === "image") setImage(value);
@@ -276,7 +274,7 @@ export default function AddIncidents(props) {
               justifyContent="space-between"
             >
               <FormSelect
-                name="comapnyId"
+                name="companyId"
                 value={companyId}
                 onChange={nameChange}
                 values={dropdownCompanies}
