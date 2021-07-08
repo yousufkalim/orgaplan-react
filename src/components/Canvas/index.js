@@ -47,6 +47,7 @@ class App extends Component {
     shapeColor: "",
     meanColor: "",
   };
+
   // LifeCycle Hooks
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.tempImage !== this.state.tempImage) {
@@ -81,6 +82,7 @@ class App extends Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.escFunction, false);
   }
+
   async componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
     this.props.pdf && this.showPdf(this.props.pdf);
@@ -1109,15 +1111,17 @@ class App extends Component {
       handleConvaCircleClick,
       handleConvaCircleImageClick,
     } = this;
-
     return (
       <div>
-        <Header
-          meanCheck={meanCheck}
-          handleElementChange={handleElementChange}
-          image={image}
-          level={this.props.level}
-        />
+        {this.props.role == "ADMIN" && (
+          <Header
+            meanCheck={meanCheck}
+            handleElementChange={handleElementChange}
+            image={image}
+            level={this.props.level}
+          />
+        )}
+
         <div className="py-2 px-4" id="stage-parent">
           <ConvaExample
             onClick={handleConvaClick}
@@ -1139,16 +1143,18 @@ class App extends Component {
             width={width}
             height={height}
           />
-          <div className="mt-3">
-            <Button
-              fullWidth={false}
-              disabled={isLoading}
-              text={isLoading === true ? "LOADING..." : "Upload PDF"}
-              onClick={() =>
-                document.getElementById("upload-canvas-pdf-button").click()
-              }
-            />
-          </div>
+          {this.props.role == "ADMIN" && (
+            <div className="mt-3">
+              <Button
+                fullWidth={false}
+                disabled={isLoading}
+                text={isLoading === true ? "LOADING..." : "Upload PDF"}
+                onClick={() =>
+                  document.getElementById("upload-canvas-pdf-button").click()
+                }
+              />
+            </div>
+          )}
         </div>
         <div className="pl-4">
           <input

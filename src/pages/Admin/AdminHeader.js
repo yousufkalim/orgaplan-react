@@ -110,50 +110,81 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const userItems = [
-  {
-    name: "Calendar",
-    path: ["/", "/calendar"],
-    icon: <Calender />,
-  },
-  {
-    name: "Means",
-    path: "/means",
-    icon: <Means />,
-  },
-  {
-    name: "P.I.C intéractif",
-    path: "/pic-interactive",
-    icon: <Pic />,
-  },
-  {
-    name: "Incidents",
-    path: "/incidents",
-    icon: <Incidents />,
-  },
-  // {
-  //   name: "Invoices",
-  //   path: "/invoices",
-  //   icon: <Invoices />,
-  // },
-  {
-    name: "Companies",
-    path: "/companies",
-    icon: <Companies />,
-  },
-  {
-    name: "Organigramme",
-    path: "/organigramme",
-    icon: <Organigramme />,
-  },
-];
-
 export default function AdminHeader(props) {
   const classes = useStyles();
   const location = useLocation();
   const dispatch = useDispatch();
   const storeAuth = useSelector((state) => state.auth);
   const storeAdmin = useSelector((state) => state.admin);
+  const userItems =
+    storeAdmin?.site?.role == "ENTERPRISE"
+      ? [
+          {
+            name: "P.I.C intéractif",
+            path: ["/", "/pic-interactive"],
+            icon: <Pic />,
+          },
+          {
+            name: "List of Means",
+            path: "/means",
+            icon: <Means />,
+          },
+          {
+            name: "Organigramme",
+            path: "/organigramme",
+            icon: <Organigramme />,
+          },
+        ]
+      : storeAdmin?.site?.role == "ADMIN"
+      ? [
+          {
+            name: "Calendar",
+            path: ["/", "/calendar"],
+            icon: <Calender />,
+          },
+          {
+            name: "Means",
+            path: "/means",
+            icon: <Means />,
+          },
+          {
+            name: "P.I.C intéractif",
+            path: "/pic-interactive",
+            icon: <Pic />,
+          },
+          {
+            name: "Incidents",
+            path: "/incidents",
+            icon: <Incidents />,
+          },
+          {
+            name: "Companies",
+            path: "/companies",
+            icon: <Companies />,
+          },
+          {
+            name: "Organigramme",
+            path: "/organigramme",
+            icon: <Organigramme />,
+          },
+        ]
+      : [
+          {
+            name: "P.I.C intéractif",
+            path: "/pic-interactive",
+            icon: <Pic />,
+          },
+          {
+            name: "Planning",
+            path: "/Plannig",
+            icon: <Means />,
+          },
+          {
+            name: "Incidents",
+            path: "/incidents",
+            icon: <Incidents />,
+          },
+        ];
 
   const [open, setOpen] = useState(true);
 

@@ -43,7 +43,7 @@ export default function AddMean(props) {
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);
-  const [rate, setRate] = useState("0");
+  const [rate, setRate] = useState("");
   const [addInfo, setAddInfo] = useState("");
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -154,7 +154,7 @@ export default function AddMean(props) {
         setErrors({ ...errors, startDate: "Please enter starting date" });
       } else if (name === "endDate") setEndDate(value);
       else if (name === "techSheet") setTechSheet(value);
-      else if (name === "rate") setRate(value);
+      else if (name === "rate") setRate(rate + value);
       else if (name === "addInfo") setAddInfo(value);
   };
   function validation(name, value) {
@@ -200,7 +200,6 @@ export default function AddMean(props) {
         techSheet[0].file &&
         formdata.append("sheet", techSheet[0].file);
       formdata.append("unavailability", JSON.stringify(unavailabilities));
-      formdata.append("pricePerHour", rate);
       formdata.append("additionalInfo", addInfo);
       const response = await GLOBALS.API({
         method: props.selectedShape ? "PUT" : "POST",
@@ -405,9 +404,7 @@ export default function AddMean(props) {
               style={{ width: "49%" }}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
+              onChange={({ target: { name, value } }) => setEndDate(value)}
             />
           </Form.Row>
         </Form.Row>
@@ -441,11 +438,10 @@ export default function AddMean(props) {
               <FormInput
                 type="number"
                 name="rate"
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                onChange={({ target: { name, value } }) => setRate(value)}
                 value={rate}
               />
+
               <span style={{ position: "absolute", top: "25%", right: "5%" }}>
                 €
               </span>
