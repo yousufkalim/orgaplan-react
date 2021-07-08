@@ -28,6 +28,7 @@ import eMeans from "../Enterprise/Means";
 import tPic from "../TRAFFIC/Pic";
 import tIncidents from "../TRAFFIC/Incidents";
 import tPlanning from "../TRAFFIC/Planning";
+import varificationSheet from "../TRAFFIC/Planning/components/VerificationSheet";
 
 export default function AdminIndex() {
   const dispatch = useDispatch();
@@ -85,6 +86,11 @@ export default function AdminIndex() {
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={tPic} />
+            <Route
+              exact
+              path="/Plannig/varificationSheet"
+              component={varificationSheet}
+            />
             <Route path="/incidents" component={tIncidents} />
             <Route path="/Plannig" component={tPlanning} />
             <Route path="/pic-interactive" component={tPic} />

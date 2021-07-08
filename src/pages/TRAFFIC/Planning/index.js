@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import "./Calender.css";
-
+import { useHistory } from "react-router-dom";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -33,6 +33,8 @@ import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
 import { EventToolTips } from "./components/TooltipCustom";
+import VerificationSheet from "./components/VerificationSheet";
+
 let view = {
   month: true,
   day: true,
@@ -59,7 +61,7 @@ const Calender = (props) => {
       dow: 1, //Monday is the first day of the week.
     },
   });
-
+  const history = useHistory();
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -117,6 +119,7 @@ const Calender = (props) => {
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = useState("Enable");
   const [addDelivery, setAddDelivery] = useState(false);
+  const [addVarification, setAddVarification] = useState(false);
   const [disableHours, setDisableHours] = useState([]);
   const [disableDay, setDisableDay] = useState([]);
   const [deliverDate, setDeliverDate] = useState("");
@@ -480,80 +483,6 @@ const Calender = (props) => {
       setAddDelivery(true);
     }
   };
-  // const AddEvent = ({ start, end, slots }) => {
-  //   setAlertBoxTime(false);
-  //   let preDateTime = new Date();
-  //   let milliseconds = Date.parse(preDateTime);
-  //   milliseconds = milliseconds - 1 * 60 * 1000;
-  //   preDateTime = new Date(milliseconds);
-
-  //   if (
-  //     start.getDay() === days[0] ||
-  //     start.getDay() === days[1] ||
-  //     start.getDay() === days[2] ||
-  //     start.getDay() === days[3] ||
-  //     start.getDay() === days[4] ||
-  //     start.getDay() === days[5] ||
-  //     start.getDay() === days[6]
-  //   ) {
-  //     console.log("not active day");
-  //   } else {
-  //     // active days
-  //     let beforeTime = moment(start).format("HH:mm");
-  //     let afterTime = moment(end).format("HH:mm");
-  //     let dateCheck = events.filter((item) => {
-  //       return (
-  //         moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
-  //         moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
-  //       );
-  //     });
-  //     if (dateCheck.length === 0 && overlap) {
-  //       if (start > preDateTime && start < end) {
-  //         if (slots.length >= 2) {
-  //           var format = "HH:mm";
-  //           let time = moment(start, format);
-  //           let beforeTime = moment(start).format("HH:mm");
-  //           let afterTime = moment(end).format("HH:mm");
-  //           let checkDiff = time.isBetween(beforeTime, afterTime);
-  //           if (
-  //             beforeTime !== "17:00" &&
-  //             beforeTime !== "17:30" &&
-  //             checkDiff === false
-  //           ) {
-  //             setShow(!show);
-  //             setStartTime(start);
-  //             setEndTime(end);
-  //             let getstart = String(start);
-  //             let getend = String(end);
-  //             getstart = getstart.slice(16, 21);
-  //             getend = getend.slice(16, 21);
-  //             setstarttimeslice(getstart);
-  //             setEndtimeslice(getend);
-  //           } else {
-  //             return false;
-  //           }
-  //         } else {
-  //           setShow(!show);
-  //           setStartTime(start);
-  //           setEndTime(end);
-  //           let getstart = String(start);
-  //           let getend = String(end);
-  //           getstart = getstart.slice(16, 21);
-  //           getend = getend.slice(16, 21);
-  //           setstarttimeslice(getstart);
-  //           setEndtimeslice(getend);
-  //         }
-  //       } else {
-  //         setAlertBoxTime(true);
-  //         setTimeout(function () {
-  //           setAlertBoxTime(false);
-  //         }, 2000);
-  //       }
-  //     } else {
-  //       console.log("disable time clicked");
-  //     }
-  //   }
-  // };
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -630,31 +559,17 @@ const Calender = (props) => {
 
   const handlePopoverShow = (event) => {
     // console.log("handlepopup show", event.id);
-    setAlertBoxTime(false);
-    seteventID(event.id);
-    const fill = events.filter((e) => e.id === event.id);
-    setEvent(fill[0]);
-    setpopoverShow(!popoverShow);
+    // setAlertBoxTime(false);
+    // seteventID(event.id);
+    // const fill = events.filter((e) => e.id === event.id);
+    // setEvent(fill[0]);
+    // setpopoverShow(!popoverShow);
     // admin code end
+
+    // setAddVarification(true);
+    history.push("Plannig/varificationSheet");
   };
-  // const bookingSlot = (event) => {
-  //   // booking Event
-  //   setbookingslot(true);
-  //   const fill = events.filter((e) => e.id === event.id);
-  //   setbookingEvent(fill[0]);
-  //   setBookingstartTime(fill[0].start);
-  //   setBookingEndTime(fill[0].end);
 
-  //   /* show time start */
-  //   let getstart = String(fill[0].start);
-  //   let getend = String(fill[0].end);
-  //   getstart = getstart.slice(16, 21);
-  //   getend = getend.slice(16, 21);
-
-  //   setBookingstartTimeslice(getstart);
-  //   setBookingendTimeslice(getend);
-  //   /* show time End  */
-  // };
   const saveBooking = () => {
     /* start time*/
     bookingstartTime = String(bookingstartTime);
@@ -1178,6 +1093,14 @@ const Calender = (props) => {
   return (
     <>
       <FullScreenModal
+        open={addVarification}
+        title={"VERIFICATION SHEET FOR DELIVERY"}
+        onClose={() => {
+          setAddVarification(false);
+        }}
+        body={<VerificationSheet />}
+      />
+      <FullScreenModal
         open={addDelivery}
         title={editDelivery ? "Edit Delivery Request" : "Delivery Request"}
         onClose={() => {
@@ -1683,9 +1606,7 @@ const Calender = (props) => {
               onSelectEvent={handlePopoverShow}
               // onSelectEvent={bookingSlot}
               onSelecting={true}
-              // onSelectSlot={AddEvent}
               onSelectSlot={AddDeliveryRequest}
-              // onSelectSlot={AddAvailability}
               startAccessor="start"
               endAccessor="end"
               style={{
