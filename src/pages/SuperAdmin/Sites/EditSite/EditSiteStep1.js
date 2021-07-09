@@ -196,7 +196,7 @@ export default function EditSiteStep1(props) {
             values={logo}
             // error={logo}
             style={GLOBALS.Styles.inputWidth}
-            onChange={(values) => handleChange("profile", values)}
+            onChange={(values) => handleChange("logo", values)}
           />
         </Form.Row>
         <Form.Row>
@@ -275,7 +275,12 @@ export default function EditSiteStep1(props) {
             placeholder="Entert trades"
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
-            onBlur={({ target: { name, value } }) => validation(name, value)}
+            onBlur={
+              trades.length < 1 &&
+              (({ target: { name, value } }) => validation(name, value))
+            }
+            setTradeError={setTradeError}
+            trades={trades}
             error={tradesError}
           />
         </Form.Row>
