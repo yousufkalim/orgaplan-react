@@ -193,6 +193,7 @@ export default function AddMean(props) {
       image[0] && image[0].file
         ? formdata.append("image", image[0].file)
         : formdata.append("image", "uploads/mean/grey.png");
+      formdata.append("pricePerHour", parseInt(rate));
 
       formdata.append("location", JSON.stringify(locationsAr));
       formdata.append("availability", JSON.stringify(availabilities));
@@ -460,7 +461,7 @@ export default function AddMean(props) {
               name="addInfo"
               className="means-addinfo"
               onChange={({ target: { name, value } }) => {
-                handleChange(name, value);
+                setAddInfo(value);
               }}
               value={addInfo}
             />
