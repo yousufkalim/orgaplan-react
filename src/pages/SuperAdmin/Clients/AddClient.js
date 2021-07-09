@@ -54,7 +54,11 @@ export default function AddClient(props) {
   const [contractType, setContractType] = useState("CLIENTPERSITE");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
 
-  const [errors, setErrors] = useState({});
+  // State for errors
+  const [nameError, setNameError] = useState("");
+  const [logoError, setLogoError] = useState("");
+  const [contractEndDateError, setContractEndDateError] = useState("");
+  const [contractStartDateError, setContractStartDateError] = useState("");
 
   function handleChange(name, value) {
     if (name === "logo") setLogo(value);
@@ -78,42 +82,38 @@ export default function AddClient(props) {
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") setNotificationTo(value);
     setUpdate((st) => !st);
+
+    validation(name, value);
   }
 
   function validation(name, value) {
     if (name === "name") {
-      if (GLOBALS.Functions.empty(value))
-        setErrors({ ...errors, name: "Company name is required" });
-      else setErrors({ ...errors, name: "" });
-    } else if (name === "email") {
-      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.email(value))
-        setErrors({ ...errors, email: "Please enter valid email" });
-      else setErrors({ ...errors, email: "" });
-    } else if (name === "phone") {
-      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.phone(value))
-        setErrors({ ...errors, phone: "Phone must be 10-25 digits" });
-      else setErrors({ ...errors, phone: "" });
-    } else if (name === "additionalInfo") {
-      if (GLOBALS.Functions.length(value, 300))
-        setErrors({
-          ...errors,
-          additionalInfo: "Additional Info must be less than 300 characters",
-        });
-      else setErrors({ ...errors, additionalInfo: "" });
-    } else if (name === "firstName") {
-      if (GLOBALS.Functions.length(value, 30))
-        setErrors({
-          ...errors,
-          firstName: "First Name must be less than 30 characters",
-        });
-      else setErrors({ ...errors, firstName: "" });
-    } else if (name === "lastName") {
-      if (GLOBALS.Functions.length(value, 30))
-        setErrors({
-          ...errors,
-          lastName: "Last Name must be less than 30 characters",
-        });
-      else setErrors({ ...errors, lastName: "" });
+      if (GLOBALS.Functions.empty(value)) {
+        setNameError("Please enter company name");
+      } else {
+        setNameError("");
+      }
+    }
+    if (name === "logo") {
+      if (GLOBALS.Functions.empty(value.length)) {
+        setLogoError("Please add a logo");
+      } else {
+        setLogoError("");
+      }
+    }
+    if (name === "contractStartDate") {
+      if (GLOBALS.Functions.empty(value)) {
+        setContractStartDateError("Please select a start date");
+      } else {
+        setContractStartDateError("");
+      }
+    }
+    if (name === "contractEndDate") {
+      if (GLOBALS.Functions.empty(value)) {
+        setContractEndDateError("Please select a end date");
+      } else {
+        setContractEndDateError("");
+      }
     }
   }
 
@@ -172,7 +172,7 @@ export default function AddClient(props) {
               name="name"
               value={name}
               maxLength="30"
-              error={errors.name}
+              error={nameError}
               placeholder="Company name"
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -188,6 +188,7 @@ export default function AddClient(props) {
               <FormMultipleUpload
                 name="logo"
                 values={logo}
+                error={logoError}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("logo", values)}
               />
@@ -207,7 +208,6 @@ export default function AddClient(props) {
                 name="firstName"
                 value={firstName}
                 placeholder="First Name"
-                error={errors.firstName}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -221,7 +221,6 @@ export default function AddClient(props) {
                 name="lastName"
                 value={lastName}
                 placeholder="Last Name"
-                error={errors.lastName}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -238,12 +237,8 @@ export default function AddClient(props) {
               <FormInput
                 name="email"
                 value={email}
-                error={errors.email}
                 placeholder="E-mail Address"
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
-                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -252,12 +247,8 @@ export default function AddClient(props) {
                 name="phone"
                 value={phone}
                 type="number"
-                error={errors.phone}
                 placeholder="Phone Number"
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) =>
-                  value.length < 26 ? validation(name, value) : ""
-                }
                 onChange={({ target: { name, value } }) =>
                   value.length < 26 ? handleChange(name, value) : ""
                 }
@@ -288,6 +279,9 @@ export default function AddClient(props) {
                 name="contractStartDate"
                 value={contractStartDate}
                 min={moment().format("YYYY-MM-DD")}
+                error={
+                  contractType === "MASTERCLIENT" && contractStartDateError
+                }
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
@@ -302,6 +296,7 @@ export default function AddClient(props) {
                 min={moment(contractStartDate)
                   .add(1, "days")
                   .format("YYYY-MM-DD")}
+                error={contractType === "MASTERCLIENT" && contractEndDateError}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
@@ -330,7 +325,6 @@ export default function AddClient(props) {
               maxLength="300"
               name="additionalInfo"
               value={additionalInfo}
-              error={errors.additionalInfo}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Additional information"
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -390,12 +384,9 @@ export default function AddClient(props) {
               disabled={
                 loading ||
                 !name ||
-                errors.name ||
+                nameError ||
                 logo.length === 0 ||
-                errors.firstName ||
-                errors.lastName ||
-                errors.phone ||
-                errors.additionalInfo ||
+                logoError ||
                 Number(notificationPriorToDays) < 0 ||
                 (contractType === "MASTERCLIENT" &&
                   (!contractStartDate ||

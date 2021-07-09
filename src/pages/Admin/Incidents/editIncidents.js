@@ -154,7 +154,6 @@ export default function AddIncidents(props) {
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "date") {
       setDate(e.target.value);
-      validation("date", e.target.value);
     }
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "description") setDescription(e.target.value);
@@ -164,9 +163,8 @@ export default function AddIncidents(props) {
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") setType(e.target.value);
     if (e.target.name === "status") setStatus(e.target.value);
-    if (e.target.name === "comapnyId") {
+    if (e.target.name === "companyId") {
       setCompanyId(e.target.value);
-      validation("companyId", e.target.value);
     }
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
@@ -175,6 +173,8 @@ export default function AddIncidents(props) {
       };
       setLocation(locationObject);
     }
+
+    validation(e.target.name, e.target.value);
   };
   const fetchLocationDataOnTypeChange = async () => {
     try {
@@ -345,7 +345,7 @@ export default function AddIncidents(props) {
             >
               <FormSelect
                 placeholder="Nom de I'enterprise"
-                name="comapnyId"
+                name="companyId"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
                 value={companyId}
@@ -435,7 +435,7 @@ export default function AddIncidents(props) {
             <Form.Row width="48%">
               <FormSelect
                 key="1abc"
-                name="comapnyId"
+                name="companyId"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
                   setPriceDisable(e.target.value);
