@@ -129,7 +129,16 @@ export default function MultiAdderInput(props) {
           className={classes.input}
           disabled={props.disabled}
           placeholder={props.placeholder}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            if (props.name === "trades") {
+              if (!e.target.value && props.trades.length < 1) {
+                props.setTradeError("Please enter atleast one trade");
+              } else {
+                props.setTradeError("");
+              }
+            }
+          }}
         />
         <div className={classes.endAdornment}>
           <IconButton onClick={onAdd} disabled={props.disabled || !text}>
