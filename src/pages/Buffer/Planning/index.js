@@ -1467,13 +1467,13 @@ const Calender = (props) => {
             <Form.Row alignItems="center">
               <Form.Row noMargin>
                 <Heading primary="PLANNING" noWrap />
-                <SubHeading
+                {/* <SubHeading
                   noMargin
                   topPadding
                   style={{ color: "#F80303", paddingRight: "3rem" }}
                   primary={siteMeans}
                   bold
-                />
+                /> */}
               </Form.Row>
             </Form.Row>
             <Form.Row alignItems="center" noMargin>
@@ -1494,7 +1494,7 @@ const Calender = (props) => {
                 {props.location.companyId != null ? (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder="SELECT COMPANY"
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1504,7 +1504,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder="SELECT COMPANY"
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1513,7 +1513,7 @@ const Calender = (props) => {
                   </>
                 )}
 
-                <FormSelect
+                {/* <FormSelect
                   value={typeOfPlaning}
                   values={[
                     { value: "Deliveries", label: "Deliveries" },
@@ -1536,22 +1536,18 @@ const Calender = (props) => {
                     }
                   }}
                   style={{ marginRight: "20px", maxWidth: 250 }}
-                />
-                <FormSelect
+                /> */}
+                {/* <FormSelect
                   placeholder="Status"
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
                   style={{ marginRight: "5px", maxWidth: 250 }}
-                />
-              </Form.Row>
-            </Form.Row>
-            <Form.Row>
-              <Form.Row justifyContent="flex-start" noMargin>
+                /> */}
                 {props.location.selectedShape != null ? (
                   <>
                     <FormSelect
-                      placeholder="Type of place"
+                      placeholder="Type of Location"
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1563,7 +1559,7 @@ const Calender = (props) => {
                     />
 
                     <FormSelect
-                      placeholder="place"
+                      placeholder="Location"
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1573,7 +1569,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Type of place"
+                      placeholder="Type of Location"
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1585,7 +1581,7 @@ const Calender = (props) => {
                     />
 
                     <FormSelect
-                      placeholder="place"
+                      placeholder="Location"
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1594,6 +1590,9 @@ const Calender = (props) => {
                   </>
                 )}
               </Form.Row>
+            </Form.Row>
+            <Form.Row>
+              <Form.Row justifyContent="flex-start" noMargin></Form.Row>
             </Form.Row>
           </div>
           {events ? (

@@ -19,15 +19,25 @@ const VarificationSheet = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const [image, setImage] = useState([]);
+  const [bufferArea, setBufferArea] = useState(
+    location?.state?.event?.bufferArea
+      ? location?.state?.event?.bufferArea
+      : "",
+  );
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
 
   const [delayTime, setDelayTime] = useState("00:00");
+  const [arrivalTime, setArrivalTime] = useState("00:00");
+  const [departureTime, setDepartureTime] = useState("00:00");
+  const [flatRegistration, setFlatRegistration] = useState("");
   const [delayCheckBox, setDelayCheckBox] = useState(false);
   const [status, setStatus] = useState(eventdata.status);
   const [checkStatus, setCheckStatus] = useState();
-  const [comments, setComments] = useState("");
+  const [comments, setComments] = useState(
+    eventdata?.comment ? eventdata.comment : "",
+  );
   const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
   console.log(eventdata);
@@ -56,6 +66,14 @@ const VarificationSheet = (props) => {
     materialData();
   }, []);
 
+  let arrivelIs = new Date(
+    new Date(eventdata.start).setHours(arrivalTime.split(":")[0]),
+  );
+  let departureIs = new Date(
+    new Date(eventdata.start).setHours(departureTime.split(":")[0]),
+  );
+  console.log("event data is ", eventdata);
+
   const onSubmit = async () => {
     console.log(checkStatus);
     let materialsArray = [];
@@ -69,26 +87,14 @@ const VarificationSheet = (props) => {
       setLoading(true);
 
       var formdata = new FormData();
-      formdata.append("delay", delayCheckBox);
-      formdata.append("status", checkStatus);
-      formdata.append("comments", comments);
-      // if (images) {
-      //   formdata.append('images', {
-      //     uri: images.uri,
-      //     name: images.fileName,
-      //     type: images.type,
-      //   });
-      // }
-      formdata.append("time", delayTime);
-      formdata.append("materialsDelivered", JSON.stringify(materialsArray));
-      formdata.append(
-        "username",
-        store.user.firstName + " " + store.user.lastName,
-      );
+      formdata.append("bufferArea", bufferArea);
+      formdata.append("arrivalTime", arrivelIs);
+      formdata.append("flatRegistration", flatRegistration);
+      formdata.append("departureTime", departureIs);
 
       await GLOBALS.API({
         method: "PUT",
-        uri: `${GLOBALS.Constants.COMPLETE_DELIVERY}/${eventdata.id}`,
+        uri: `${GLOBALS.Constants.BUFFER_UPDATE_DELIVERY}/${eventdata.id}`,
         body: formdata,
         headers: {
           Authorization: store.token,
@@ -123,7 +129,7 @@ const VarificationSheet = (props) => {
       // }
       setLoading(false);
 
-      history.push("/Plannig");
+      history.push("/Planing");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -154,8 +160,6 @@ const VarificationSheet = (props) => {
           <div className="label">DATE AND TIME :</div>
           <div className="label">DELIVERY AREA / MEAN : </div>
           <div className="label">STORAGE AREA / MEAN : </div>
-
-          <div className="label">MATERIAL LIVRE: </div>
         </div>
         <div className="col-sm-6">
           <div className="value">{eventdata.company.name}</div>
@@ -173,13 +177,26 @@ const VarificationSheet = (props) => {
           <div className="value">
             {eventdata.storageArea.name + " / " + routingMeans()}
           </div>
-          <div className="value">Mnj</div>
         </div>
         {status === "PENDING" ? (
-          <></>
-        ) : (
           <>
             <div className="col-sm-6">
+              <div className="label" style={{ padding: "25px 0px" }}>
+                MATERIEL LIVRÉ :<br />
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <ButtonGroup
+                array={materials}
+                selected={materialsData}
+                setSelected={setMaterialsData}
+                disabled={true}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* <div className="col-sm-6">
               <div className="label">REAL TIME OF DELIVERY : </div>
             </div>
             <div className="col-sm-6">
@@ -204,36 +221,35 @@ const VarificationSheet = (props) => {
                   }}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="col-sm-6">
               <div className="label" style={{ padding: "25px 0px" }}>
-                DELIVERED MATERIAL :<br />
-                (click if not received)
+                MATERIEL LIVRÉ :<br />
               </div>
             </div>
             <div className="col-sm-6">
               <ButtonGroup
                 array={materials}
+                disabled={true}
                 selected={materialsData}
                 setSelected={setMaterialsData}
-                disabled={status != "VALIDATED"}
               />
             </div>
           </>
         )}
 
         <div className="col-sm-6">
-          <div className="label">COMMENTS TRAFFIC AGENT :</div>
+          <div className="label">ADDITIONAL INFORMATION:</div>
         </div>
         <div className="col-sm-6">
           <Form.Group controlId="exampleForm.ControlTextarea1">
             <Form.Control
               as="textarea"
-              rows={3}
+              rows={1}
               value={comments}
               placeholder="Ajouter un commentaire"
-              disabled={status != "VALIDATED"}
+              disabled={true}
               onChange={(e) => {
                 setComments(e.target.value);
               }}
@@ -256,70 +272,117 @@ const VarificationSheet = (props) => {
             onChange={(e) => {
               setImage(e);
             }}
-            disabled={status != "VALIDATED"}
+            disabled={true}
           />
         </div>
-        <div className="col-sm-6">
-          <br />
-          <div className="label">STATUS OF DELIVERY : </div>
-        </div>
-        <div className="col-sm-6">
-          <br />
-          <div className="radioBtn">
-            {status === "PENDING" ? (
-              <>
-                <Form.Check
-                  type="radio"
-                  label="PENDING"
-                  name="status"
-                  checked
-                  className="pending"
-                />
-              </>
-            ) : (
-              <>
-                <Form.Check
-                  type="radio"
-                  label="Completed"
-                  name="status"
-                  className="green"
-                  value="COMPLETED"
-                  onChange={(e) => {
-                    setCheckStatus(e.target.value);
-                  }}
-                />
-                <Form.Check
-                  type="radio"
-                  label="Completed with issues"
-                  name="status"
-                  value="COMPLETEDWITHISSUE"
-                  onChange={(e) => {
-                    setCheckStatus(e.target.value);
-                  }}
-                />
-
-                <Form.Check
-                  type="radio"
-                  label="Not completed"
-                  name="status"
-                  value="VALIDATED"
-                  onChange={(e) => {
-                    setCheckStatus(e.target.value);
-                  }}
-                  defaultChecked
-                />
-              </>
-            )}
-          </div>
-        </div>
+        {status != "PENDING" && (
+          <>
+            <div className="col-sm-6">
+              <br />
+              <div className="label">RETURN BUFFER AREA: </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div style={{ display: "flex" }}>
+                <>
+                  <Form.Check
+                    type="radio"
+                    label="YES"
+                    name="bufferArea"
+                    className="green"
+                    style={{ marginRight: "5px" }}
+                    value={true}
+                    onChange={(e) => {
+                      setBufferArea(e.target.value);
+                    }}
+                  />
+                  <Form.Check
+                    type="radio"
+                    label="NO"
+                    name="bufferArea"
+                    value={false}
+                    onChange={(e) => {
+                      setBufferArea(e.target.value);
+                    }}
+                  />
+                </>
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div className="label">TIME OF ARRIVAL: </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div style={{ display: "flex" }}>
+                <>
+                  <TimePicker
+                    value={arrivalTime}
+                    onChange={(e) => {
+                      setArrivalTime(e);
+                    }}
+                    // disableClock
+                    locale="sv-sv"
+                  />
+                </>
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div className="label">IMMATRICULATION PLATE : </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div style={{ display: "flex" }}>
+                <>
+                  <Form.Control
+                    as="input"
+                    value={flatRegistration}
+                    placeholder="Ajouter un commentaire"
+                    onChange={(e) => {
+                      setFlatRegistration(e.target.value);
+                    }}
+                  />
+                </>
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div className="label">TIME OF DEPARTURE: </div>
+            </div>
+            <div className="col-sm-6">
+              <br />
+              <div style={{ display: "flex" }}>
+                <>
+                  <TimePicker
+                    value={departureTime}
+                    onChange={(e) => {
+                      setDepartureTime(e);
+                    }}
+                    // disableClock
+                    locale="sv-sv"
+                  />
+                </>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <Button
         variant="warning"
         className="validate_Btn"
-        disabled={status != "VALIDATED"}
+        disabled={
+          status != "PENDING" &&
+          (bufferArea == "" ||
+            arrivalTime == "00:00" ||
+            arrivalTime == null ||
+            departureTime == "00:00" ||
+            departureTime == null ||
+            flatRegistration == "")
+        }
         onClick={onSubmit}
       >
-        VALIDER
+        VALIDATE
       </Button>
       {/* </Form.Form> */}
     </>

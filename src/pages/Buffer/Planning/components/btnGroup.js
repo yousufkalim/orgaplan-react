@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 
-const Options = ({ array }) => {
+const Options = ({ array, disabled }) => {
   const [selected, setSelected] = useState({});
 
   const toggleOption = (e) => {
@@ -16,7 +16,14 @@ const Options = ({ array }) => {
           <Button
             onClick={toggleOption}
             value={btn}
-            variant={selected[btn] === true ? "danger" : "secondary"}
+            variant={
+              disabled
+                ? "danger"
+                : selected[btn] === true
+                ? "danger"
+                : "secondary"
+            }
+            disabled={disabled && disabled}
           >
             {btn}
           </Button>
