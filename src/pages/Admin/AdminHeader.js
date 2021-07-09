@@ -169,7 +169,8 @@ export default function AdminHeader(props) {
             icon: <Organigramme />,
           },
         ]
-      : [
+      : storeAdmin?.site?.role == "TRAFFIC"
+      ? [
           {
             name: "P.I.C intéractif",
             path: "/pic-interactive",
@@ -180,10 +181,23 @@ export default function AdminHeader(props) {
             path: "/Plannig",
             icon: <Means />,
           },
+
           {
             name: "Incidents",
             path: "/incidents",
             icon: <Incidents />,
+          },
+        ]
+      : [
+          {
+            name: "P.I.C intéractif",
+            path: ["/", "/pic-interactive"],
+            icon: <Pic />,
+          },
+          {
+            name: "Planning",
+            path: "/Planing",
+            icon: <Means />,
           },
         ];
 
