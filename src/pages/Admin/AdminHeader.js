@@ -111,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AdminHeader(props) {
+
   const classes = useStyles();
   const location = useLocation();
   const dispatch = useDispatch();

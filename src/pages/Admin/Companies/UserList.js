@@ -8,6 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Paper from "@material-ui/core/Paper";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -42,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UserList(props) {
+  const {Add_USER,NAME_OF_USER,COMPANY,VALIDATE,Are_you_sure_to_Delete,
+  
+  CANCEL
+  }=TEXTS
+  
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -389,7 +395,7 @@ export default function UserList(props) {
               <Button
                 fullWidth={false}
                 component={NavLink}
-                text="ADD A USER"
+                text={Add_USER}
                 style={{ marginLeft: "20px" }}
                 to={"/companies/add-user"}
               />
@@ -400,7 +406,7 @@ export default function UserList(props) {
         <Form.Row noMargin>
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <SearchInput
-              placeholder="Name OF USER"
+              placeholder={NAME_OF_USER}
               value={filterUserName}
               onClick={filteredUser}
               onChange={(e) => {
@@ -408,7 +414,7 @@ export default function UserList(props) {
               }}
             />
             <FormSelect
-              placeholder="Company"
+              placeholder={COMPANY}
               name="color"
               value={filterCompanyId}
               style={{ marginLeft: "20px", maxWidth: 250 }}
@@ -509,7 +515,7 @@ export default function UserList(props) {
                 value={siteName}
                 disabled
                 // error={lastName}
-                placeholder="Company"
+                placeholder={COMPANY}
                 style={GLOBALS.Styles.inputWidth}
               />
             </Form.Row>
@@ -539,13 +545,13 @@ export default function UserList(props) {
               <Button
                 type="submit"
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
               />
             </Form.ButtonContainer>
             <Form.ButtonContainer>
               <Button
-                text="DELETE"
+                text="Effacer"
                 minWidth="30%"
                 fullWidth={false}
                 style={{ background: "#e85353" }}
@@ -563,11 +569,11 @@ export default function UserList(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-          Delete User
+          Effacer User
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are You Sure You Want To Delete this User!
+          {Are_you_sure_to_Delete}
           </DialogContentText>
         </DialogContent>
         <DialogActions style={{ width: "50%", marginLeft: "auto" }}>
@@ -577,7 +583,7 @@ export default function UserList(props) {
             onClick={handleDeleteClose}
             color="primary"
           >
-            Cancel
+            {CANCEL}
           </Button>
           <Button
             autoFocus
@@ -586,7 +592,7 @@ export default function UserList(props) {
               delUser();
             }}
           >
-            Delete
+            Effacer
           </Button>
         </DialogActions>
       </Dialog>

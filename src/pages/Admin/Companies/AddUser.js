@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -28,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddUser(props) {
+  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
+  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
+,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
+Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
+TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,Add_USER,CONTACT_INFO,COMPANY,SITE
+ }=TEXTS
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -139,11 +146,11 @@ export default function AddUser(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD USER" />
+      <Heading primary={Add_USER} />
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO* :" />
+            <FormLabel bold primary={`${CONTACT_INFO}* :`} />
             <Form.Row width="48%">
               <Autocomplete
                 id="free-solo-demo"
@@ -208,13 +215,13 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY* :" />
+            <FormLabel bold primary={`${IDENTITY}* :`} />
             <Form.Row width="48%">
               <FormInput
                 name="firstName"
                 value={firstName}
                 disabled={disableUser}
-                placeholder="FIRST NAME"
+                placeholder={FIRST_NAME}
                 style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
                 onChange={(e) => setFirstName(e.target.value)}
               />
@@ -222,7 +229,7 @@ export default function AddUser(props) {
                 name="lastName"
                 value={lastName}
                 disabled={disableUser}
-                placeholder="LAST NAME"
+                placeholder={LAST_NAME}
                 style={(GLOBALS.Styles.inputWidth, { marginRight: "10px" })}
                 onChange={(e) => setLastName(e.target.value)}
               />
@@ -250,7 +257,7 @@ export default function AddUser(props) {
             <FormLabel bold primary="COMPANY : " />
             <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="Company"
+                placeholder={COMPANY}
                 values={dropdownCompanies}
                 value={selectedCompany}
                 onChange={(event) => {
@@ -290,13 +297,13 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONSTRUCTION SITE : " />
+            <FormLabel bold primary="CONSTRUCTION Chantier : " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="site"
                 disabled={true}
                 value={siteName}
-                placeholder="Site"
+                placeholder={SITE}
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
               />
             </Form.Row>

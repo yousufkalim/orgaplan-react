@@ -16,6 +16,7 @@ import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
+import { TEXTS } from "../../../assets/languages/french";
 
 import { Images } from "../../../assets/Assets";
 
@@ -33,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Means = () => {
+    const {DELIVERIES,DELIVERY_REQUESTS,MEANS,TOTAL,LEVEL,
+  LIST_OF_MEANS,HISTORIC,COMPANY,MEAN,MEANS_REQUEST,Please_select_Delivery_Area
+ ,LOCATION,SELECT_STORAGEAREA,START_DATE,END_DATE
+ 
+  }=TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -320,15 +327,15 @@ const Means = () => {
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center" justifyContent="space-between">
-        <Heading primary="LIST OF MEANS" noWrap noMargin />
+        <Heading primary={LIST_OF_MEANS} noWrap noMargin />
         <Form.Row alignItems="center" justifyContent="flex-end" width="50%">
-          <SubHeading bold noMargin primary={`TOTAL : ${totalMeans} means`} />
+          <SubHeading bold noMargin primary={`${TOTAL} : ${totalMeans} ${MEANS}`} />
           <Button
             fullWidth={false}
             loading={loading}
             disabled={loading}
             component={NavLink}
-            text="MEANS REQUEST"
+            text={MEANS_REQUEST}
             to={"/sites/means-request"}
             style={{ marginLeft: "20px", width: "200px" }}
           />
@@ -339,7 +346,7 @@ const Means = () => {
           <FormSelect
             value={deliveryArea}
             values={deliveryAreas}
-            placeholder="Select Delivery area"
+            placeholder={Please_select_Delivery_Area}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setDeliveryArea(value);
@@ -351,7 +358,7 @@ const Means = () => {
               ...[{ label: "Exterior", value: "Exterior" }],
               ...buildings,
             ]}
-            placeholder="Location"
+            placeholder={LOCATION}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setBuilding(value);
@@ -360,7 +367,7 @@ const Means = () => {
           <FormSelect
             value={level}
             values={levels}
-            placeholder="Level"
+            placeholder={LEVEL}
             style={{ marginRight: "20px", maxWidth: 250 }}
             disabled={!building || building === "Exterior"}
             onChange={({ target: { value } }) => {
@@ -369,7 +376,7 @@ const Means = () => {
           />
           <FormSelect
             value={storageArea}
-            placeholder="Select Storage area"
+            placeholder={SELECT_STORAGEAREA}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setStorageArea(value);
@@ -397,7 +404,7 @@ const Means = () => {
           <FormSelect
             value={company}
             values={companies}
-            placeholder="Company"
+            placeholder={COMPANY}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setCompany(value);
@@ -416,7 +423,7 @@ const Means = () => {
             type="date"
             name="startDate"
             value={startDate}
-            placeholder="Start date"
+            placeholder={START_DATE}
             style={{ marginRight: "20px", maxWidth: 250 }}
             min={moment(adminStore.site.siteId.start).format("YYYY-MM-DD")}
             max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
@@ -426,14 +433,14 @@ const Means = () => {
             type="date"
             name="endDate"
             value={endDate}
-            placeholder="End date"
+            placeholder={END_DATE}
             style={{ marginRight: "20px", maxWidth: 250 }}
             min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
             max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            placeholder="Mean name"
+            placeholder="moyen name"
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={(e) => filterMeanByName(e.target.value)}
           />

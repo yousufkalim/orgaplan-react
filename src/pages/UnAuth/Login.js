@@ -10,53 +10,16 @@ import Actions from "../../redux/actions";
 
 import Modal from "../../components/Modal";
 import { Images } from "../../assets/Assets";
+
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
+import { TEXTS } from "../../assets/languages/french";
 
-const loginYup = Yup.object().shape({
-  email: Yup.string()
-    .email(GLOBALS.I18n.t("emailInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-  password: Yup.string()
-    .min(1, GLOBALS.I18n.t("passwordInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-});
 
-const forgetYup = Yup.object().shape({
-  email: Yup.string()
-    .email(GLOBALS.I18n.t("emailInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-});
-
-const passwordYup = Yup.object().shape({
-  email: Yup.string()
-    .email(GLOBALS.I18n.t("emailInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-  password: Yup.string()
-    .min(1, GLOBALS.I18n.t("passwordInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-  confirmPassword: Yup.string()
-    .min(1, GLOBALS.I18n.t("passwordInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-});
-
-const completeProfileYup = Yup.object().shape({
-  company: Yup.string().required(GLOBALS.I18n.t("required")),
-  email: Yup.string()
-    .email(GLOBALS.I18n.t("emailInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-  phone: Yup.string().required(GLOBALS.I18n.t("required")),
-  firstName: Yup.string().required(GLOBALS.I18n.t("required")),
-  lastName: Yup.string().required(GLOBALS.I18n.t("required")),
-  password: Yup.string()
-    .min(1, GLOBALS.I18n.t("passwordInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-  confirmPassword: Yup.string()
-    .min(1, GLOBALS.I18n.t("passwordInvalid"))
-    .required(GLOBALS.I18n.t("required")),
-});
 
 export default function Login(props) {
+  const {LOGIN}=TEXTS;
+
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
@@ -331,7 +294,7 @@ export default function Login(props) {
                   fullWidth={false}
                   loading={store.loading}
                   disabled={store.loading}
-                  text={GLOBALS.I18n.t("login")}
+                  text={GLOBALS.I18n.t(LOGIN)}
                 />
               </div>
               <span
@@ -619,3 +582,46 @@ export default function Login(props) {
     </>
   );
 }
+
+const loginYup = Yup.object().shape({
+  email: Yup.string()
+    .email(GLOBALS.I18n.t("emailInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+  password: Yup.string()
+    .min(1, GLOBALS.I18n.t("passwordInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+});
+
+const forgetYup = Yup.object().shape({
+  email: Yup.string()
+    .email(GLOBALS.I18n.t("emailInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+});
+
+const passwordYup = Yup.object().shape({
+  email: Yup.string()
+    .email(GLOBALS.I18n.t("emailInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+  password: Yup.string()
+    .min(1, GLOBALS.I18n.t("passwordInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+  confirmPassword: Yup.string()
+    .min(1, GLOBALS.I18n.t("passwordInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+});
+
+const completeProfileYup = Yup.object().shape({
+  company: Yup.string().required(GLOBALS.I18n.t("required")),
+  email: Yup.string()
+    .email(GLOBALS.I18n.t("emailInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+  phone: Yup.string().required(GLOBALS.I18n.t("required")),
+  firstName: Yup.string().required(GLOBALS.I18n.t("required")),
+  lastName: Yup.string().required(GLOBALS.I18n.t("required")),
+  password: Yup.string()
+    .min(1, GLOBALS.I18n.t("passwordInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+  confirmPassword: Yup.string()
+    .min(1, GLOBALS.I18n.t("passwordInvalid"))
+    .required(GLOBALS.I18n.t("required")),
+});
