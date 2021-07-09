@@ -55,6 +55,8 @@ export default function Admins(props) {
     DELETE,
     VALIDATE,
     CREATE_AN_ADMIN,
+    Are_you_sure_to_Delete,
+    EDIT_ADMIN,
   } = TEXTS;
 
   const store = useSelector((state) => state.auth);
@@ -168,7 +170,7 @@ export default function Admins(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm({ Are_you_sure_to_Delete })) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -315,7 +317,7 @@ export default function Admins(props) {
       </div>
       {update && ""}
       <Modal
-        title="EDIT ADMIN"
+        title={EDIT_ADMIN}
         open={selectedItem ? modal : false}
         onClose={() => {
           setModal((st) => !st);

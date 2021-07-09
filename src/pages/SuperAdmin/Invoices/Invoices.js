@@ -17,6 +17,7 @@ import Pagination from "../../../components/Pagination";
 import FormSelect from "../../../components/FormSelect";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
+import { TEXTS } from "../../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Invoices(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { CREATE_AN_INVOICE, Are_you_sure_to_Delete, INVOICE } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [page, setPage] = useState(1);
@@ -79,7 +81,7 @@ export default function Invoices(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm({ Are_you_sure_to_Delete })) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -133,11 +135,11 @@ export default function Invoices(props) {
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
-        <Heading primary="INVOICES" noWrap />
+        <Heading primary={INVOICE} noWrap />
         <Button
           fullWidth={false}
           component={NavLink}
-          text="CREATE AN INVOICE"
+          text={CREATE_AN_INVOICE}
           to={{
             pathname: "/invoices/add-invoice",
             clientId: client,

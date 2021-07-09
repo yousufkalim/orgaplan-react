@@ -46,6 +46,8 @@ export default function AddAdmin(props) {
     LAST_NAME,
     SELECT_COMPANY,
     VALIDATE,
+    IDENTITY,
+    PROFILE,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -275,7 +277,7 @@ export default function AddAdmin(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary="IDENTITY*: " />
+            <FormLabel bold primary={IDENTITY} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
@@ -308,7 +310,7 @@ export default function AddAdmin(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="PROFILE*: " />
+            <FormLabel bold primary={`${PROFILE} *:`} />
             <FormMultipleUpload
               name="image"
               values={image}
