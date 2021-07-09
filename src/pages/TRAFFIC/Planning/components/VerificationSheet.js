@@ -18,6 +18,8 @@ const VarificationSheet = (props) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
+  const admin = useSelector((state) => state.admin);
+  console.log(store, admin);
   const [image, setImage] = useState([]);
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
@@ -95,32 +97,34 @@ const VarificationSheet = (props) => {
         },
       });
 
-      // if (delay === true) {
-      //   let locationObj = { deliveryArea: deliveryAreaId };
-      //   var formdata = new FormData();
-      //   console.log("JSON.stringify(locationObj)", JSON.stringify(locationObj));
-      //   formdata.append("name", "Created by NameOfTrafficAgent");
-      //   formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
-      //   formdata.append("time", moment(startTime).format("HH:mm"));
-      //   formdata.append(
-      //     "price",
-      //     parseInt(storeUser.site.siteId.penaltyforLateDelivery),
-      //   );
-      //   formdata.append("isBillable", "true");
-      //   formdata.append("isPaid", "false");
-      //   formdata.append("location", JSON.stringify(locationObj));
-      //   formdata.append("siteId", storeUser.site.siteId._id);
-      //   formdata.append("companyId", companyId);
-      //   formdata.append("type", "DELAY");
-      //   await GLOBALS.API({
-      //     method: "POST",
-      //     uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-      //     headers: {
-      //       Authorization: store.token,
-      //     },
-      //     body: formdata,
-      //   });
-      // }
+      if (delayCheckBox === true) {
+        let locationObj = { deliveryArea: eventdata.deliveryArea._id };
+        var formdata = new FormData();
+        formdata.append(
+          "name",
+          store.user.firstName + " " + store.user.lastName,
+        );
+        formdata.append("date", moment(eventdata.start).format("YYYY-MM-DD"));
+        formdata.append("time", moment(eventdata.start).format("HH:mm"));
+        formdata.append(
+          "price",
+          parseInt(admin.site.siteId.penaltyforLateDelivery),
+        );
+        formdata.append("isBillable", "true");
+        formdata.append("isPaid", "false");
+        formdata.append("location", JSON.stringify(locationObj));
+        formdata.append("siteId", admin.site.siteId._id);
+        formdata.append("companyId", eventdata.company._id);
+        formdata.append("type", "DELAY");
+        await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+          headers: {
+            Authorization: store.token,
+          },
+          body: formdata,
+        });
+      }
       setLoading(false);
 
       history.push("/Plannig");
