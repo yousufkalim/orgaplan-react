@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
@@ -44,6 +45,18 @@ export default function Admins(props) {
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    ADD_AN_ADMIN,
+    CONTACT_INFO,
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    SELECT_COMPANY,
+    DELETE,
+    VALIDATE,
+    CREATE_AN_ADMIN,
+  } = TEXTS;
+
   const store = useSelector((state) => state.auth);
 
   const [page, setPage] = useState(1);
@@ -268,7 +281,7 @@ export default function Admins(props) {
               <Button
                 fullWidth={false}
                 component={NavLink}
-                text="CREATE AN ADMIN"
+                text={CREATE_AN_ADMIN}
                 style={{ marginLeft: "20px" }}
                 to={"/admins/add-admin"}
               />
@@ -326,7 +339,7 @@ export default function Admins(props) {
                   name="firstName"
                   value={firstName}
                   error={firstNameError}
-                  placeholder="First Name"
+                  placeholder={FIRST_NAME}
                   onBlur={({ target: { name, value } }) =>
                     validation(name, value)
                   }
@@ -342,7 +355,7 @@ export default function Admins(props) {
                   name="lastName"
                   value={lastName}
                   error={lastNameError}
-                  placeholder="Last Name"
+                  placeholder={LAST_NAME}
                   onBlur={({ target: { name, value } }) =>
                     validation(name, value)
                   }
@@ -376,7 +389,7 @@ export default function Admins(props) {
                   type="number"
                   value={phone}
                   error={phoneError}
-                  placeholder="Phone Number"
+                  placeholder={TELEPHONE}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -395,7 +408,7 @@ export default function Admins(props) {
                   name="companyId"
                   value={companyId}
                   values={companies}
-                  placeholder={"Select Company"}
+                  placeholder={SELECT_COMPANY}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -440,7 +453,7 @@ export default function Admins(props) {
               </Form.Row>
               <Form.Row justifyContent="center">
                 <Button
-                  text="DELETE"
+                  text={DELETE}
                   minWidth="30%"
                   fullWidth={false}
                   loading={loading}

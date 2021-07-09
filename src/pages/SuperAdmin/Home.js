@@ -5,7 +5,7 @@ import Tabs from "@material-ui/core/Tabs";
 import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { TEXTS } from "../../assets/languages/french";
 import GLOBALS from "../../globals";
 import Actions from "../../redux/actions";
 
@@ -128,7 +128,7 @@ const CardComponent = ({ card }) => {
 export default function Home(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const { DASHBOARD } = TEXTS;
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -283,9 +283,10 @@ export default function Home(props) {
       (item, index) => item?.siteId?.name !== undefined,
     );
 
-    siteIncidentsTemp && siteIncidentsTemp.map((item, index) => {
-      return siteTemp.push({ [item?.siteId?.name]: item.count });
-    });
+    siteIncidentsTemp &&
+      siteIncidentsTemp.map((item, index) => {
+        return siteTemp.push({ [item?.siteId?.name]: item.count });
+      });
 
     data?.clientIncidents?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
@@ -296,12 +297,13 @@ export default function Home(props) {
   async function fetchMeanArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    let siteMeanTemp =  data?.siteMean?.filter(
+    let siteMeanTemp = data?.siteMean?.filter(
       (item, index) => item?.siteId?.name !== undefined,
     );
-    siteMeanTemp && siteMeanTemp.map((item, index) => {
-      return siteTemp.push({ [item?.siteId?.name]: item.count });
-    });
+    siteMeanTemp &&
+      siteMeanTemp.map((item, index) => {
+        return siteTemp.push({ [item?.siteId?.name]: item.count });
+      });
 
     data?.clientMean?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
@@ -313,12 +315,13 @@ export default function Home(props) {
   async function fetchDeliveriesArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    let siteDeliveriesTemp =  data?.siteDeliveries?.filter(
+    let siteDeliveriesTemp = data?.siteDeliveries?.filter(
       (item, index) => item?.siteId?.name !== undefined,
     );
-    siteDeliveriesTemp &&  siteDeliveriesTemp.map((item, index) => {
-      return siteTemp.push({ [item?.siteId?.name]: item.count });
-    });
+    siteDeliveriesTemp &&
+      siteDeliveriesTemp.map((item, index) => {
+        return siteTemp.push({ [item?.siteId?.name]: item.count });
+      });
 
     data?.clientDeliveries?.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.count });
@@ -331,12 +334,13 @@ export default function Home(props) {
   async function fetchEndOfSubscriptionArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    let siteTempfill =  data?.site?.filter(
+    let siteTempfill = data?.site?.filter(
       (item, index) => item?.name !== undefined,
     );
-    siteTempfill && siteTempfill.map((item, index) => {
-      return siteTemp.push({ [item.name]: item.daysLeft });
-    });
+    siteTempfill &&
+      siteTempfill.map((item, index) => {
+        return siteTemp.push({ [item.name]: item.daysLeft });
+      });
 
     data?.client.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.daysLeft });
@@ -346,27 +350,29 @@ export default function Home(props) {
   }
   async function fetchInvoicesArray(data) {
     const temp = [];
-    let siteTempfill =  data?.filter(
+    let siteTempfill = data?.filter(
       (item, index) => item?.siteId?.name !== undefined,
     );
-    
-    siteTempfill && siteTempfill.map((item, index) => {
-      const invoiceObject = {
-        [item?.siteId?.name]: item.totalAmount,
-      };
-      return temp.push(invoiceObject);
-    });
+
+    siteTempfill &&
+      siteTempfill.map((item, index) => {
+        const invoiceObject = {
+          [item?.siteId?.name]: item.totalAmount,
+        };
+        return temp.push(invoiceObject);
+      });
     setInvoiceArray(temp);
   }
   async function fetchCustomerRateArray(data) {
     const siteTemp = [];
     const clientTemp = [];
-    let clientTempfill =  data?.clientPerSite?.filter(
+    let clientTempfill = data?.clientPerSite?.filter(
       (item, index) => item?.comapanyName !== undefined,
     );
-    clientTempfill && clientTempfill.map((item, index) => {
-      return siteTemp.push({ [item.comapanyName]: item.amount });
-    });
+    clientTempfill &&
+      clientTempfill.map((item, index) => {
+        return siteTemp.push({ [item.comapanyName]: item.amount });
+      });
 
     data?.masterClient.map((item, index) => {
       return clientTemp.push({ [item.comapanyName]: item.amount });
@@ -485,7 +491,7 @@ export default function Home(props) {
   return (
     <div className={classes.root}>
       {loading && ""}
-      <Heading primary="DASHBOARD" />
+      <Heading primary={DASHBOARD} />
       <div className={classes.content}>
         <Grid container spacing={2}>
           {renderArray.map((card, index) =>

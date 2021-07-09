@@ -6,6 +6,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -33,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
 export default function AddClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    ADD_AN_ADMIN,
+    CONTACT_INFO,
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    SELECT_COMPANY,
+    DELETE,
+    VALIDATE,
+    CREATE_AN_ADMIN,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
 
