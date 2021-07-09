@@ -43,7 +43,7 @@ export default function AddMean(props) {
   const [endDate, setEndDate] = useState("");
   const [techSheet, setTechSheet] = useState([]);
   const [unavailabilities, setUnavailabilities] = useState([]);
-  const [rate, setRate] = useState("");
+  const [rate, setRate] = useState(0);
   const [addInfo, setAddInfo] = useState("");
   const [update, setUpdate] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -154,7 +154,7 @@ export default function AddMean(props) {
         setErrors({ ...errors, startDate: "Please enter starting date" });
       } else if (name === "endDate") setEndDate(value);
       else if (name === "techSheet") setTechSheet(value);
-      else if (name === "rate") setRate(rate + value);
+      else if (name === "rate") setRate(rate);
       else if (name === "addInfo") setAddInfo(value);
   };
   function validation(name, value) {
