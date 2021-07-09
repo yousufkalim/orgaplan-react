@@ -16,6 +16,7 @@ import FormSelect from "../../../components/FormSelect";
 import RadioButton from "../../../components/RadioButton";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
+import { TEXTS } from "../../../assets/languages/french";
 
 // Field to auto add email and text field to hold it
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -37,6 +38,17 @@ const useStyles = makeStyles((theme) => ({
 export default function AddAdmin(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    ADD_AN_ADMIN,
+    CONTACT_INFO,
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    SELECT_COMPANY,
+    VALIDATE,
+    IDENTITY,
+    PROFILE,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [company, setCompany] = useState("");
@@ -184,11 +196,11 @@ export default function AddAdmin(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD AN ADMIN" />
+      <Heading primary={ADD_AN_ADMIN} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO*: " />
+            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
             <Form.Row noMargin width="48%">
               <Autocomplete
                 id="free-solo-demo"
@@ -249,7 +261,7 @@ export default function AddAdmin(props) {
                 type="number"
                 value={phone}
                 error={phoneError}
-                placeholder="Phone Number"
+                placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
@@ -265,13 +277,13 @@ export default function AddAdmin(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary="IDENTITY*: " />
+            <FormLabel bold primary={IDENTITY} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
                 value={firstName}
                 error={firstNameError}
-                placeholder="First Name"
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
@@ -285,7 +297,7 @@ export default function AddAdmin(props) {
                 name="lastName"
                 value={lastName}
                 error={lastNameError}
-                placeholder="Last Name"
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
@@ -298,7 +310,7 @@ export default function AddAdmin(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="PROFILE*: " />
+            <FormLabel bold primary={`${PROFILE} *:`} />
             <FormMultipleUpload
               name="image"
               values={image}
@@ -309,12 +321,12 @@ export default function AddAdmin(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY*: " />
+            <FormLabel bold primary="ENTREPRISES*: " />
             <FormSelect
               name="companyId"
               value={companyId}
               values={companies}
-              placeholder="Select Company"
+              placeholder={SELECT_COMPANY}
               error={companyIdError}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -343,7 +355,7 @@ export default function AddAdmin(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={
