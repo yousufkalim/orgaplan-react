@@ -567,7 +567,14 @@ const Calender = (props) => {
     // admin code end
 
     // setAddVarification(true);
-    history.push("Plannig/varificationSheet");
+    console.log("event is", event);
+    if (event.status == "COMPLETED" || event.status == "COMPLETEDWITHISSUE") {
+      return;
+    }
+    history.push({
+      pathname: "/Plannig/varificationSheet",
+      state: { event },
+    });
   };
 
   const saveBooking = () => {
