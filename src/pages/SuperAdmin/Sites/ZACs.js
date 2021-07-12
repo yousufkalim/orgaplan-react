@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -29,6 +30,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ZACS(props) {
+  const {SITE_LIST,ZACS_LIST,Create_a_SITE}=TEXTS
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -98,7 +101,7 @@ export default function ZACS(props) {
   return (
     <div className={classes.root}>
       <Form.Row>
-        <Heading primary="ZACS LIST" noMargin />
+        <Heading primary={ZACS_LIST} noMargin />
         <Button
           fullWidth={false}
           component={NavLink}
