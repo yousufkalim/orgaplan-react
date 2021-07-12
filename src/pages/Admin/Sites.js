@@ -25,6 +25,7 @@ import Logo from "../../assets/icons/Logo.svg";
 import SiteImage from "../../assets/images/Site.png";
 import { ReactComponent as Pencil } from "../../assets/icons/Pencil.svg";
 import { ReactComponent as PlusCircle } from "../../assets/icons/PlusCircle.svg";
+import { TEXTS } from "../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -207,6 +208,8 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
 }
 
 export default function Sites(props) {
+  const {GO_TO_HOME_PAGE}=TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -372,7 +375,7 @@ export default function Sites(props) {
             justifyContent="space-between"
           >
             <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
-            <SmallText primary="Go To Home Page" to="/" underline noMargin />
+            <SmallText primary={GO_TO_HOME_PAGE} to="/" underline noMargin />
           </Form.Row>
           <Heading primary="BIENVENUE SUR ORGAPLAN ! " noWrap noMargin />
           <SmallText
@@ -392,7 +395,8 @@ export default function Sites(props) {
                     onClick={() =>
                       (site.role === "ADMIN" ||
                         site.role === "ENTERPRISE" ||
-                        site.role == "TRAFFIC") &&
+                        site.role == "TRAFFIC" ||
+                        site.role == "BUFFER") &&
                       dispatch(Actions.admin.set_site(site))
                     }
                   />

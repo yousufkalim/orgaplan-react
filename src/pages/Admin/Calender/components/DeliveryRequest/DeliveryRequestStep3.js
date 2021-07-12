@@ -10,8 +10,13 @@ import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
 import FormInput from "../../../../../components/FormInput";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { TEXTS } from "../../../../../assets/languages/french";
 
 export default function DeliveryRequestStep3(props) {
+  const {IDENTITY,DATE_AND_TIME,DELIVERY_AREA,
+  MEAN,STORAGE_AREA,MATERIALS_DELIVERED,
+  COMMENTS,VALIDATE,MEANS,Receive_Summary_by_e_mail
+  }=TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -228,7 +233,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="IDENTITY :"
+          primary={`${IDENTITY} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel primary={company || "-"} style={GLOBALS.Styles.inputWidth} />
@@ -236,7 +241,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="DATE AND TIME :"
+          primary={`${DATE_AND_TIME} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -269,7 +274,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="DELIVERY AREA / MEAN :"
+          primary={`${DELIVERY_AREA} / ${MEAN} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -280,7 +285,8 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="STORAGE AREA / MEAN :"
+          primary={`${STORAGE_AREA} / ${MEAN} :`}
+
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -291,7 +297,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="MATERIALS DELIVERED :"
+          primary={`${MATERIALS_DELIVERED} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -304,13 +310,13 @@ export default function DeliveryRequestStep3(props) {
         />
       </Form.Row>
       <Form.Row alignItems="flex-start">
-        <FormLabel bold primary="COMMENTS:" />
+        <FormLabel bold primary={`${COMMENTS}:`} />
         <FormInput
           textArea
           rows={3}
           name="comments"
           value={comments}
-          placeholder="Comments"
+          placeholder={COMMENTS}
           disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setComments(value)}
@@ -323,7 +329,7 @@ export default function DeliveryRequestStep3(props) {
             name="receiveSummary"
             checked={receiveSummary}
             disabled={props.eventId}
-            label="Receive Summary by e-mail"
+            label={Receive_Summary_by_e_mail}
             onChange={({ target: { checked } }) => setReceiveSummary(checked)}
           />
         </Form.Row>
@@ -332,7 +338,7 @@ export default function DeliveryRequestStep3(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           loading={loading}
           disabled={loading || !company || !storageArea || !deliveryArea}

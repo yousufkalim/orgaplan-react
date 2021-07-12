@@ -21,6 +21,7 @@ import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
+import { TEXTS } from "../../../assets/languages/french";
 
 import imggg from "./testpdf.pdf";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -89,6 +90,8 @@ const useStyles = makeStyles((theme) => ({
 
 let selectedShapeReserver;
 const PicCanvas = (props) => {
+  const {SHOW_EXTERIOR,SELECT_LEVEL,ADD,EDIT,DELIVERYAREA,STORAGEAREA,BUILDING,MEANS}=TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -576,7 +579,7 @@ const PicCanvas = (props) => {
           <div className={classes.infoDrawerContainer}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
-                text="Show Exterior"
+                text={SHOW_EXTERIOR}
                 className="mt-2"
                 onClick={() => {
                   setPdf(
@@ -597,7 +600,7 @@ const PicCanvas = (props) => {
             {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
               <>
                 <Button
-                  text="Show Exterior"
+                  text={SHOW_EXTERIOR}
                   className="mt-2"
                   onClick={() => {
                     setPdf(
@@ -633,7 +636,7 @@ const PicCanvas = (props) => {
                     name="level"
                     value={level}
                     values={levelsDropdown}
-                    placeholder="Select Level"
+                    placeholder={SELECT_LEVEL}
                     onChange={({ target: { value } }) => {
                       setLevel(value);
                       findlevelName(value);
@@ -728,7 +731,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
+              title={`${shape ? ADD : EDIT} ${DELIVERYAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -753,7 +756,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
+              title={`${shape ? ADD : EDIT} ${STORAGEAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -778,7 +781,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
+              title={`${shape ? ADD : EDIT} ${BUILDING}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -801,7 +804,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} MEANs`}
+              title={`${shape ? ADD : EDIT} ${MEANS}`}
               open={modal}
               onClose={() => {
                 checkShape();

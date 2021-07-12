@@ -6,6 +6,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -33,6 +34,24 @@ const useStyles = makeStyles((theme) => ({
 export default function AddClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    CONTRACT,
+    START_DATE,
+    END_DATE,
+    FUNCTIONALITY_SUBSCRIBED,
+    VALIDATE,
+    NOTIFICATION,
+    ADDITIONNAL_INFORMATION,
+    COMPANY_NAME,
+    COMPANY,
+    RESPONSIBLE,
+    ADD_A_CLIENT,
+    Days_before_end_of_the_site,
+    NOTIFY_THE_ADDRESSES,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
 
@@ -54,7 +73,11 @@ export default function AddClient(props) {
   const [contractType, setContractType] = useState("CLIENTPERSITE");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("");
 
-  const [errors, setErrors] = useState({});
+  // State for errors
+  const [nameError, setNameError] = useState("");
+  const [logoError, setLogoError] = useState("");
+  const [contractEndDateError, setContractEndDateError] = useState("");
+  const [contractStartDateError, setContractStartDateError] = useState("");
 
   function handleChange(name, value) {
     if (name === "logo") setLogo(value);
@@ -78,42 +101,38 @@ export default function AddClient(props) {
       setNotificationPriorToDays(value);
     else if (name === "notificationTo") setNotificationTo(value);
     setUpdate((st) => !st);
+
+    validation(name, value);
   }
 
   function validation(name, value) {
     if (name === "name") {
-      if (GLOBALS.Functions.empty(value))
-        setErrors({ ...errors, name: "Company name is required" });
-      else setErrors({ ...errors, name: "" });
-    } else if (name === "email") {
-      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.email(value))
-        setErrors({ ...errors, email: "Please enter valid email" });
-      else setErrors({ ...errors, email: "" });
-    } else if (name === "phone") {
-      if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.phone(value))
-        setErrors({ ...errors, phone: "Phone must be 10-25 digits" });
-      else setErrors({ ...errors, phone: "" });
-    } else if (name === "additionalInfo") {
-      if (GLOBALS.Functions.length(value, 300))
-        setErrors({
-          ...errors,
-          additionalInfo: "Additional Info must be less than 300 characters",
-        });
-      else setErrors({ ...errors, additionalInfo: "" });
-    } else if (name === "firstName") {
-      if (GLOBALS.Functions.length(value, 30))
-        setErrors({
-          ...errors,
-          firstName: "First Name must be less than 30 characters",
-        });
-      else setErrors({ ...errors, firstName: "" });
-    } else if (name === "lastName") {
-      if (GLOBALS.Functions.length(value, 30))
-        setErrors({
-          ...errors,
-          lastName: "Last Name must be less than 30 characters",
-        });
-      else setErrors({ ...errors, lastName: "" });
+      if (GLOBALS.Functions.empty(value)) {
+        setNameError("Please enter company name");
+      } else {
+        setNameError("");
+      }
+    }
+    if (name === "logo") {
+      if (GLOBALS.Functions.empty(value.length)) {
+        setLogoError("Please add a logo");
+      } else {
+        setLogoError("");
+      }
+    }
+    if (name === "contractStartDate") {
+      if (GLOBALS.Functions.empty(value)) {
+        setContractStartDateError("Please select a start date");
+      } else {
+        setContractStartDateError("");
+      }
+    }
+    if (name === "contractEndDate") {
+      if (GLOBALS.Functions.empty(value)) {
+        setContractEndDateError("Please select a end date");
+      } else {
+        setContractEndDateError("");
+      }
     }
   }
 
@@ -163,17 +182,17 @@ export default function AddClient(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CLIENT" />
+      <Heading primary={ADD_A_CLIENT} />
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="COMPANY NAME* :" />
+            <FormLabel bold primary={`${COMPANY_NAME}* :`} />
             <FormInput
               name="name"
               value={name}
               maxLength="30"
-              error={errors.name}
-              placeholder="Company name"
+              error={nameError}
+              placeholder={COMPANY_NAME}
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
@@ -183,11 +202,12 @@ export default function AddClient(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary="COMPANY LOGO* :" />
+            <FormLabel bold primary={`${COMPANY} LOGO* :`} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
                 values={logo}
+                error={logoError}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(values) => handleChange("logo", values)}
               />
@@ -200,14 +220,13 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE COMPANY : " />
+            <FormLabel bold primary={`${RESPONSIBLE} ${COMPANY}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 maxLength="30"
                 name="firstName"
                 value={firstName}
-                placeholder="First Name"
-                error={errors.firstName}
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -220,8 +239,7 @@ export default function AddClient(props) {
                 maxLength="30"
                 name="lastName"
                 value={lastName}
-                placeholder="Last Name"
-                error={errors.lastName}
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -233,17 +251,13 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE CONTACT : " />
+            <FormLabel bold primary={`${RESPONSIBLE} CONTACT`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
                 value={email}
-                error={errors.email}
                 placeholder="E-mail Address"
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
-                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -252,12 +266,8 @@ export default function AddClient(props) {
                 name="phone"
                 value={phone}
                 type="number"
-                error={errors.phone}
-                placeholder="Phone Number"
+                placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
-                onBlur={({ target: { name, value } }) =>
-                  value.length < 26 ? validation(name, value) : ""
-                }
                 onChange={({ target: { name, value } }) =>
                   value.length < 26 ? handleChange(name, value) : ""
                 }
@@ -265,7 +275,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF CONTRACT* : " />
+            <FormLabel bold primary={`TYPE OF ${CONTRACT}`} />
             <RadioButton
               name="contractType"
               value={contractType}
@@ -280,14 +290,17 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTRACT DATE* : " />
+            <FormLabel bold primary={`${CONTRACT} DATE* :`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
-                placeholder="Start date"
+                placeholder={START_DATE}
                 name="contractStartDate"
                 value={contractStartDate}
                 min={moment().format("YYYY-MM-DD")}
+                error={
+                  contractType === "MASTERCLIENT" && contractStartDateError
+                }
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
@@ -296,12 +309,13 @@ export default function AddClient(props) {
               />
               <FormInput
                 type="date"
-                placeholder="End date"
+                placeholder={END_DATE}
                 name="contractEndDate"
                 value={contractEndDate}
                 min={moment(contractStartDate)
                   .add(1, "days")
                   .format("YYYY-MM-DD")}
+                error={contractType === "MASTERCLIENT" && contractEndDateError}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={contractType !== "MASTERCLIENT"}
                 onChange={({ target: { name, value } }) =>
@@ -311,7 +325,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
+            <FormLabel bold primary={FUNCTIONALITY_SUBSCRIBED} />
             <RadioButton
               name="functionality"
               value={functionality}
@@ -323,14 +337,13 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormLabel bold primary={ADDITIONNAL_INFORMATION} />
             <FormInput
               textArea
               rows={3}
               maxLength="300"
               name="additionalInfo"
               value={additionalInfo}
-              error={errors.additionalInfo}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Additional information"
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -340,7 +353,7 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFICATION : " />
+            <FormLabel bold primary={`${NOTIFICATION}:`} />
             <Form.Row
               noMargin
               width="48%"
@@ -359,13 +372,13 @@ export default function AddClient(props) {
                 }
               />
               <SmallText
-                primary="Days before end of the contract"
+                primary={Days_before_end_of_the_site}
                 style={{ marginLeft: "10px", marginBottom: 0 }}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+            <FormLabel bold primary={NOTIFY_THE_ADDRESSES} />
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
@@ -384,18 +397,15 @@ export default function AddClient(props) {
             <Button
               onClick={onSubmit}
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={
                 loading ||
                 !name ||
-                errors.name ||
+                nameError ||
                 logo.length === 0 ||
-                errors.firstName ||
-                errors.lastName ||
-                errors.phone ||
-                errors.additionalInfo ||
+                logoError ||
                 Number(notificationPriorToDays) < 0 ||
                 (contractType === "MASTERCLIENT" &&
                   (!contractStartDate ||

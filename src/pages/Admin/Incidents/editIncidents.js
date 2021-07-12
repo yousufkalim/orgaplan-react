@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -34,6 +35,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function AddIncidents(props) {
+  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
+  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
+,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
+Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
+TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,YES,NO,
+Please_select_a_incident,Please_select_a_company,EDIT_AN_INCIDENT,
+DESIGNATION,NAME_OF_INCIDENT,NAME_OF_COMPANY,DATE_AND_TIME,GENERAL,
+TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
+ }=TEXTS
   const classes = useStyles();
   const history = useHistory();
   const store = useSelector((state) => state.auth);
@@ -154,7 +164,6 @@ export default function AddIncidents(props) {
     if (e.target.name === "name") setName(e.target.value);
     if (e.target.name === "date") {
       setDate(e.target.value);
-      validation("date", e.target.value);
     }
     if (e.target.name === "time") setTime(e.target.value);
     if (e.target.name === "description") setDescription(e.target.value);
@@ -164,9 +173,8 @@ export default function AddIncidents(props) {
     if (e.target.name === "profile") setImage(e.target.value);
     if (e.target.name === "type") setType(e.target.value);
     if (e.target.name === "status") setStatus(e.target.value);
-    if (e.target.name === "comapnyId") {
+    if (e.target.name === "companyId") {
       setCompanyId(e.target.value);
-      validation("companyId", e.target.value);
     }
     if (e.target.name === "location") {
       setselectedLocation(e.target.value);
@@ -175,6 +183,8 @@ export default function AddIncidents(props) {
       };
       setLocation(locationObject);
     }
+
+    validation(e.target.name, e.target.value);
   };
   const fetchLocationDataOnTypeChange = async () => {
     try {
@@ -301,11 +311,12 @@ export default function AddIncidents(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT AN INCIDENTS" />
+      <Heading primary={EDIT_AN_INCIDENT} />
+      
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
-            <FormLabel bold primary="GENERAL :" />
+            <FormLabel bold primary={`${GENERAL} :`} />
             <Form.Row noMargin width="48%">
               <FormSelect
                 name="type"
@@ -324,7 +335,8 @@ export default function AddIncidents(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="DESIGNATION* :" />
+                        <FormLabel bold primary={`${DESIGNATION}* :`} />
+
             <FormInput
               name="name"
               style={GLOBALS.Styles.inputWidth}
@@ -336,7 +348,8 @@ export default function AddIncidents(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="NAME OF COMPANY* :" />
+                       <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
+
             <Form.Row
               noMargin
               width="48%"
@@ -345,7 +358,7 @@ export default function AddIncidents(props) {
             >
               <FormSelect
                 placeholder="Nom de I'enterprise"
-                name="comapnyId"
+                name="companyId"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
                 value={companyId}
@@ -359,7 +372,8 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="DATE AND TIME* : " />
+                       <FormLabel bold primary={`${DATE_AND_TIME}* : `} />
+
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
@@ -380,10 +394,11 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="LOCATION : " />
+            <FormLabel bold primary={`${LOCATION} : `} />
+            
             <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="Type of location"
+                placeholder={TYPE_OF_PLACE}
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth}
                 disabled={history.location.data?.meanLocation ? true : false}
@@ -395,7 +410,7 @@ export default function AddIncidents(props) {
                 ]}
               />
               <FormSelect
-                placeholder="LOCATION"
+                placeholder={LOCATION}
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={locationChange}
@@ -418,7 +433,8 @@ export default function AddIncidents(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="ADD PICTURES : " />
+            <FormLabel bold primary="Ajouter DES PHOTOS : " />
+           
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="profile"
@@ -431,11 +447,12 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="BILLABLE* : " />
+            <FormLabel bold primary={`${BILLABLE}* : `} />
+           
             <Form.Row width="48%">
               <FormSelect
                 key="1abc"
-                name="comapnyId"
+                name="companyId"
                 style={{ width: "40%", height: "45px", color: "#8B8989" }}
                 onChange={(e) => {
                   setPriceDisable(e.target.value);
@@ -448,15 +465,16 @@ export default function AddIncidents(props) {
                 }}
                 value={isBillable}
                 values={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: {YES} },
+                  { value: false, label: {NO} },
                 ]}
               />
             </Form.Row>
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="Paid : " />
+            <FormLabel bold primary={`${PAID}: `} />
+            
             <Form.Row width="48%">
               <FormSelect
                 disabled={priceDisable === "false" || priceDisable === false}
@@ -471,8 +489,8 @@ export default function AddIncidents(props) {
                 }}
                 value={isPaid}
                 values={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: {YES} },
+                  { value: false, label: {NO} },
                 ]}
               />
             </Form.Row>
@@ -503,7 +521,8 @@ export default function AddIncidents(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="AMOUNT :" />
+            <FormLabel bold primary={`${AMOUNT} :`} />
+            
             <Form.Row width="48%" noMargin alignItems="center">
               <Form.Row width="24%" noMargin alignItems="center">
                 <FormInput
@@ -518,7 +537,8 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="COMMENT ON INVOICE : " />
+            <FormLabel bold primary={`${COMMENT_INVOICE} : `} />
+           
             <FormInput
               textArea
               rows={3}

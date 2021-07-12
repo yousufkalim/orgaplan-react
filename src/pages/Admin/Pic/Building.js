@@ -15,6 +15,7 @@ import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SmallButton from "../../../components/SmallButton";
+import {TEXTS} from "../../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -53,6 +54,8 @@ const levelNumberList = [
 let propsShapesCon = [];
 let propsShapeCon = "";
 export default function AddSiteStep3(props) {
+  const {LEVEL_NAME,VALIDATE,BUILDING}=TEXTS
+
   const { setSelectedShape } = props;
 
   const theme = useTheme();
@@ -582,13 +585,13 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Level Name" />
+                <FormLabel noMargin bold primary={LEVEL_NAME} />
               </Form.Row>
               {activeBuilding && (
                 <FormInput
                   name="levelNumber"
                   value={levelNumber}
-                  placeholder="Level Name"
+                  placeholder={LEVEL_NAME}
                   style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -614,7 +617,7 @@ export default function AddSiteStep3(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onCreateLevel}
                 disabled={loading || !levelNumber}
@@ -625,7 +628,7 @@ export default function AddSiteStep3(props) {
           <FormLabel
             bold
             noMargin
-            primary={`Building: ${activeBuilding.name}`}
+            primary={`${VALIDATE}: ${activeBuilding.name}`}
           />
           <Divider />
           <div className={classes.content}>

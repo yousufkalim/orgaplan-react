@@ -14,6 +14,7 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
+import { TEXTS } from "../../assets/languages/french";
 // import { ReactComponent as Logs } from "../../assets/icons/Logs.svg";
 import { ReactComponent as Sites } from "../../assets/icons/Sites.svg";
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
@@ -119,6 +120,7 @@ export default function Header(props) {
   const classes = useStyles();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { LOGOUT } = TEXTS;
 
   const [open, setOpen] = useState(true);
 
@@ -174,7 +176,7 @@ export default function Header(props) {
               <ListItemIcon className={classes.listItemIcon}>
                 {<ExitToAppIcon />}
               </ListItemIcon>
-              <ListItemText primary={"Logout"} />
+              <ListItemText primary={LOGOUT} />
             </ListItem>
           </List>
         </div>

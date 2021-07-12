@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
@@ -44,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Clients(props) {
   const theme = useTheme();
   const classes = useStyles();
+  const {
+    DELETE,
+    VALIDATE,
+    CREATE_A_CLIENT,
+    Are_you_sure_to_Delete,
+    Please_select_a_company,
+  } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
@@ -190,7 +198,7 @@ export default function Clients(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm({ Are_you_sure_to_Delete })) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -216,7 +224,7 @@ export default function Clients(props) {
   function validation(name, value) {
     if (name === "name") {
       if (GLOBALS.Functions.empty(value))
-        setErrors({ ...errors, name: "Company name is required" });
+        setErrors({ ...errors, name: { Please_select_a_company } });
       else setErrors({ ...errors, name: "" });
     } else if (name === "email") {
       if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.email(value))
@@ -354,7 +362,7 @@ export default function Clients(props) {
               <Button
                 fullWidth={false}
                 component={NavLink}
-                text="CREATE A CLIENT"
+                text={CREATE_A_CLIENT}
                 style={{ marginLeft: "20px" }}
                 to={"/clients/add-client"}
               />
@@ -564,7 +572,7 @@ export default function Clients(props) {
                 <Button
                   type="submit"
                   minWidth={200}
-                  text="VALIDATE"
+                  text={VALIDATE}
                   fullWidth={false}
                   loading={loading}
                   disabled={
@@ -587,7 +595,7 @@ export default function Clients(props) {
               </Form.Row>
               <Form.Row justifyContent="center">
                 <Button
-                  text="DELETE"
+                  text={DELETE}
                   minWidth="30%"
                   fullWidth={false}
                   loading={loading}

@@ -1,6 +1,7 @@
 import React from "react";
 import { Elements, LevelElements } from "./data";
 import FormSelect from "../../FormSelect";
+import {TEXTS} from "../../../assets/languages/french";
 
 export default function Header({
   handleElementChange,
@@ -8,6 +9,7 @@ export default function Header({
   image,
   level,
 }) {
+  const {Select_an_element_first}=TEXTS
   return (
     <div className=" mr-auto text-center ">
       <div className="row pr-4 pt-2">
@@ -19,7 +21,8 @@ export default function Header({
             value={meanCheck}
             name={"levelId"}
             values={level ? LevelElements : Elements}
-            placeholder="Add an Element"
+
+            placeholder={Select_an_element_first}
             onChange={handleElementChange}
             disabled={image == null ? true : false}
           />

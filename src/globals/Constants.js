@@ -167,6 +167,7 @@ const endpoints = {
 
   delete_Delivery: BASE_URL_V1 + "delivery",
   COMPLETE_DELIVERY: BASE_URL_V1 + "delivery/complete",
+  BUFFER_UPDATE_DELIVERY: BASE_URL_V1 + "delivery/buffer",
   getDeliveryallStorageArea: BASE_URL_V1 + "delivery/getDeliveryAllStroageArea",
 };
 export default endpoints;
