@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Sites(props) {
+  const {SITE_LIST,ZACS_LIST,Create_a_SITE}=TEXTS
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -163,25 +165,25 @@ export default function Sites(props) {
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
-        <Heading primary="SITES LIST" noWrap />
+        <Heading primary={SITE_LIST} noWrap />
         <div>
           <Form.Row alignItems="center" noMargin>
             <SubHeading
               noMargin
-              primary={data && `Total : ${data.totalItems} Sites`}
+              primary={data && `Total : ${data.totalItems} Chantiers`}
               bold
             />
             <Button
               fullWidth={false}
               component={NavLink}
-              text="ZACS LIST"
+              text={ZACS_LIST}
               to={"/sites/zacs"}
               style={{ marginLeft: "20px" }}
             />
             <Button
               fullWidth={false}
               component={NavLink}
-              text="CREATE A SITE"
+              text='Créer un Chantier'
               to={"/sites/add-site"}
               style={{ marginLeft: "20px" }}
             />
@@ -193,7 +195,7 @@ export default function Sites(props) {
           <SearchInput
             value={query}
             onClick={fetchData}
-            placeholder="Site name"
+            placeholder="Chantier Nom"
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => setQuery(value)}
           />
