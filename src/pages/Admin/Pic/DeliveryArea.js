@@ -416,7 +416,7 @@ export default function DeliveryArea(props) {
               text={VALIDATE}
               fullWidth={false}
               disabled={
-                loading || !name || !color || !startDate || !ismodalFilled
+                loading || !name || !color || !startDate || addresses.length < 1
               }
             />
           </Form.ButtonContainer>
