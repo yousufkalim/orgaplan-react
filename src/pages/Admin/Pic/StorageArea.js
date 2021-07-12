@@ -6,6 +6,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 import moment from "moment";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -32,6 +33,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+  } = TEXTS;
+
   const { setSelectedShape } = props;
 
   const classes = useStyles();
@@ -287,16 +311,16 @@ export default function DeliveryArea(props) {
                 }
               />
             }
-            label="isFull"
+            label={is_Full}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Name* : " />
+          <FormLabel bold primary={`${NAME}* : `} />
           <Form.Row noMargin width="65%">
             <FormInput
               name="name"
               value={name}
-              placeholder="Name"
+              placeholder={NAME}
               error={errors.name}
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -313,7 +337,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITY* :" />
+          <FormLabel bold primary={`${AVAILABILITY}* :`} />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
@@ -341,7 +365,9 @@ export default function DeliveryArea(props) {
               disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end)
+                .add(1, "days")
+                .format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onFocus={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
@@ -352,7 +378,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Unavailabilities: " />
+          <FormLabel bold primary={`${UNAVAILABILITIES}* :`} />
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
@@ -367,13 +393,13 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Delivery Areas* : " />
+          <FormLabel bold primary={`${DELIVERYAREAS}* :`} />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="deliveryAreas"
               error={errors.deliveryAreas}
               values={deliveryAreas}
-              placeholder="Delivery Areas"
+              placeholder={DELIVERYAREAS}
               value={selectedDeliveryAreas}
               style={GLOBALS.Styles.inputWidth}
               // onFocus={({ target: { name, value } }) => validation(name, value)}
@@ -384,13 +410,13 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Companies* : " />
+          <FormLabel bold primary={`${COMPANIES}* :`} />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="companies"
               values={companies}
               error={errors.selectedCompanies}
-              placeholder="Companies"
+              placeholder={COMPANIES}
               value={selectedCompanies}
               style={GLOBALS.Styles.inputWidth}
               onFocus={({ target: { name, value } }) => validation(name, value)}
@@ -401,7 +427,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Means : " />
+          <FormLabel bold primary={`${MEANS} : `} />
           <Form.Row noMargin width="65%" justifyContent="flex-start">
             {means.map((mean, index) => (
               <Chip key={index} label={mean} className={classes.chip} />
@@ -409,7 +435,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFICATION : " />
+          <FormLabel bold primary={`${NOTIFICATION} : `} />
           <Form.Row
             noMargin
             width="65%"
@@ -428,20 +454,20 @@ export default function DeliveryArea(props) {
               }
             />
             <SmallText
-              primary="Days before end of the contract"
+              primary={Days_before_end_of_the_contract}
               style={{ marginLeft: "10px", marginBottom: 0 }}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+          <FormLabel bold primary={`${NOTIFY_THE_ADDRESSES} : `} />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
               validateError="Invalid Email"
-              placeholder="Enter email address"
+              placeholder={Please_enter_email}
               onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
@@ -455,7 +481,7 @@ export default function DeliveryArea(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               disabled={
                 loading ||

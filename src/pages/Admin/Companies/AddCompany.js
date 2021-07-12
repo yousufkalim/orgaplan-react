@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -52,6 +53,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddCompanies(props) {
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    Add_COMPANY,
+    TYPE_OF_COMPANY,
+    General_Contractor,
+    SUBCONTRACTOR,
+    GENERAL_CONTRACTOR,
+    TRADES,
+    IDENTITY_OF_RESPONSIBLE,
+    LAST_NAME,
+    FIRST_NAME,
+  } = TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -284,11 +317,11 @@ export default function AddCompanies(props) {
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
       {update && ""}
-      <Heading primary="ADD A COMPANY" />
+      <Heading primary={Add_COMPANY} />
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY* :" />
+            <FormLabel bold primary={`${IDENTITY}* :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <Autocomplete
@@ -372,7 +405,7 @@ export default function AddCompanies(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF COMPANY* :" />
+            <FormLabel bold primary={`${TYPE_OF_COMPANY}* :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin>
                 <RadioButton
@@ -384,16 +417,16 @@ export default function AddCompanies(props) {
                   items={[
                     {
                       value: "generalcontractor",
-                      label: "General Contractor",
+                      label: General_Contractor,
                     },
-                    { value: "subcontractor", label: "Subcontractor" },
+                    { value: "subcontractor", label: SUBCONTRACTOR },
                   ]}
                 />
               </Form.Column>
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="GENERAL CONTRACTOR* :" />
+            <FormLabel bold primary={`${GENERAL_CONTRACTOR}* :`} />
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
@@ -415,13 +448,13 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TRADES :" />
+            <FormLabel bold primary={`${TRADES} :`} />
             <Form.Row noMargin width="48%">
               <FormMultiSelect
                 name="trades"
                 value={trades}
                 values={allTrades}
-                placeholder="Trades"
+                placeholder={TRADES}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   inputChange(name, value)
@@ -430,7 +463,7 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY OF RESPONSIBLE :" />
+            <FormLabel bold primary={`${IDENTITY_OF_RESPONSIBLE} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
@@ -438,7 +471,7 @@ export default function AddCompanies(props) {
                   value={email}
                   type="email"
                   disabled={companyId}
-                  placeholder="Adresse e-mail"
+                  placeholder={Please_enter_email}
                   onChange={({ target: { name, value } }) =>
                     inputChange(name, value)
                   }
@@ -471,7 +504,7 @@ export default function AddCompanies(props) {
                 name="firstName"
                 value={firstName}
                 disabled={companyId}
-                placeholder="First Name"
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   inputChange(name, value)
@@ -481,7 +514,7 @@ export default function AddCompanies(props) {
                 name="lastName"
                 value={lastName}
                 disabled={companyId}
-                placeholder="Last Name"
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   inputChange(name, value)

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
+import {TEXTS} from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Companies(props) {
+  const {LIST_OF_COMPANIES,Add_COMPANY,NAME_OF_COMPANY,ACCESS_REQUEST_TO_ZONES,ACCESS_REQUEST_TO_STROGAEAREA}=TEXTS
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -263,19 +265,19 @@ export default function Companies(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
-          <Heading primary="LIST OF COMPANIES" noWrap noMargin />
+          <Heading primary={LIST_OF_COMPANIES} noWrap noMargin />
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 bold
                 noMargin
                 disableMargin
-                primary={`Total : ${companies.length} COMPANIES`}
+                primary={`Total : ${companies.length} ENTREPRISES`}
               />
               <Button
                 fullWidth={false}
                 component={NavLink}
-                text="ADD A COMPANY"
+                text={Add_COMPANY}
                 to={"/companies/add"}
                 style={{ marginLeft: "20px" }}
               />
@@ -294,7 +296,7 @@ export default function Companies(props) {
             />
             <SearchInput
               style={{ marginLeft: "20px" }}
-              placeholder="Name of company"
+              placeholder={NAME_OF_COMPANY}
               value={nameOfCompany}
               onClick={filterCompany}
               onChange={(event) => {
@@ -307,7 +309,7 @@ export default function Companies(props) {
             fullWidth={true}
             onClick={handleClickOpen}
             style={{ width: "330px" }}
-            text="ACCESS REQUEST TO ZONES"
+            text={ACCESS_REQUEST_TO_ZONES}
           />
         </Form.Row>
         <div className={classes.content}>
@@ -320,7 +322,7 @@ export default function Companies(props) {
       </div>
 
       <Modal
-        title="Access to storage area"
+        title={ACCESS_REQUEST_TO_STROGAEAREA}
         open={open}
         onClose={() => setOpen(false)}
         body={

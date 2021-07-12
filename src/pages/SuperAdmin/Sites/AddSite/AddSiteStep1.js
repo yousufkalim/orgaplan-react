@@ -214,7 +214,7 @@ export default function AddSiteStep1(props) {
             values={logo}
             // error={logo}
             style={GLOBALS.Styles.inputWidth}
-            onChange={(values) => handleChange("profile", values)}
+            onChange={(values) => handleChange("logo", values)}
           />
         </Form.Row>
         <Form.Row>
@@ -283,7 +283,12 @@ export default function AddSiteStep1(props) {
             placeholder="Enter trades"
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
-            onBlur={({ target: { name, value } }) => validation(name, value)}
+            onBlur={
+              trades.length < 1 &&
+              (({ target: { name, value } }) => validation(name, value))
+            }
+            setTradeError={setTradeError}
+            trades={trades}
             error={tradesError}
           />
         </Form.Row>
@@ -332,8 +337,7 @@ export default function AddSiteStep1(props) {
               adminError ||
               addresses.length === 0 ||
               addressError ||
-              !trades ||
-              tradesError
+              trades.length < 1
             }
           />
         </Form.ButtonContainer>

@@ -6,6 +6,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -32,6 +33,30 @@ const useStyles = makeStyles((theme) => ({
 export default function VerifyClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    CONTRACT,
+    CONTRACT_DATE,
+    START_DATE,
+    END_DATE,
+    FUNCTIONALITY_SUBSCRIBED,
+    VALIDATE,
+    NOTIFICATION,
+    ADDITIONNAL_INFORMATION,
+    VERIFY_A_QUOTE,
+    COMPANY_NAME,
+    COMPANY,
+    RESPONSIBLE,
+    ADD_A_CLIENT,
+    Days_before_end_of_the_site,
+    NOTIFY_THE_ADDRESSES,
+    DELETE,
+    CREATE_A_CLIENT,
+    Are_you_sure_to_Delete,
+    Please_select_a_company,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -119,7 +144,7 @@ export default function VerifyClient(props) {
       if (GLOBALS.Functions.length(value, 300))
         setErrors({
           ...errors,
-          additionalInfo: "Additional Info must be less than 300 characters",
+          additionalInfo: `${ADDITIONNAL_INFORMATION} must be less than 300 characters`,
         });
       else setErrors({ ...errors, additionalInfo: "" });
     }
@@ -142,18 +167,18 @@ export default function VerifyClient(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="VERIFY A QUOTE" />
+      <Heading primary={VERIFY_A_QUOTE} />
       {update && ""}
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="COMPANY NAME* :" />
+            <FormLabel bold primary={`${COMPANY_NAME}* :`} />
             <FormInput
               disabled
               name="name"
               value={name}
               // error={name}
-              placeholder="Company name"
+              placeholder={COMPANY_NAME}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -161,7 +186,7 @@ export default function VerifyClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY LOGO* :" />
+            <FormLabel bold primary={`${COMPANY} LOGO* :`} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
@@ -178,13 +203,13 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE COMPANY : " />
+            <FormLabel bold primary={`${RESPONSIBLE} ${COMPANY}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 disabled
                 name="firstName"
                 value={firstName}
-                placeholder="First Name"
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -194,7 +219,7 @@ export default function VerifyClient(props) {
                 disabled
                 name="lastName"
                 value={lastName}
-                placeholder="Last Name"
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -203,7 +228,7 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE CONTACT : " />
+            <FormLabel bold primary={`${RESPONSIBLE} CONTACT`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 disabled
@@ -245,11 +270,11 @@ export default function VerifyClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTRACT DATE* : " />
+            <FormLabel bold primary={`${CONTRACT_DATE}* :`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
-                placeholder="Start date"
+                placeholder={START_DATE}
                 name="contractStartDate"
                 value={contractStartDate}
                 style={GLOBALS.Styles.inputWidth}
@@ -261,7 +286,7 @@ export default function VerifyClient(props) {
               />
               <FormInput
                 type="date"
-                placeholder="End date"
+                placeholder={END_DATE}
                 name="contractEndDate"
                 value={contractEndDate}
                 style={GLOBALS.Styles.inputWidth}
@@ -276,7 +301,7 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
+            <FormLabel bold primary={`${FUNCTIONALITY_SUBSCRIBED}:`} />
             <RadioButton
               name="functionality"
               value={functionality}
@@ -288,7 +313,7 @@ export default function VerifyClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormLabel bold primary={`${ADDITIONNAL_INFORMATION}:`} />
             <FormInput
               textArea
               rows={3}
@@ -296,7 +321,7 @@ export default function VerifyClient(props) {
               value={additionalInfo}
               error={errors.additionalInfo}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Additional information"
+              placeholder={ADDITIONNAL_INFORMATION}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -304,7 +329,7 @@ export default function VerifyClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFICATION : " />
+            <FormLabel bold primary={NOTIFICATION} />
             <Form.Row
               noMargin
               width="48%"
@@ -322,13 +347,13 @@ export default function VerifyClient(props) {
                 }
               />
               <SmallText
-                primary="Days before end of the contract"
+                primary={Days_before_end_of_the_site}
                 style={{ marginLeft: "10px", marginBottom: 0 }}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+            <FormLabel bold primary={NOTIFY_THE_ADDRESSES} />
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
@@ -347,7 +372,7 @@ export default function VerifyClient(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

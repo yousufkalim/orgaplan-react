@@ -6,6 +6,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -32,6 +33,34 @@ const useStyles = makeStyles((theme) => ({
 export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    FIRST_NAME,
+    LAST_NAME,
+    CONTRACT,
+    CONTRACT_DATE,
+    START_DATE,
+    END_DATE,
+    DESCRIPTION,
+    FUNCTIONALITY_SUBSCRIBED,
+    VALIDATE,
+    NOTIFICATION,
+    ADDITIONNAL_INFORMATION,
+    VERIFY_A_QUOTE,
+    CREATE_AN_INVOICE,
+    Are_you_sure_to_Delete,
+    INVOICE,
+    Please_enter_name,
+    ADD_AN_INVOICE,
+    CLIENT_NAME,
+    SELECT_CLIENT,
+    CONSTRUCTION_SITE,
+    AMOUNT,
+    SELECT_SITE,
+    PDF_FILE,
+    EDIT_INVOICE,
+    UPLOAD_PDF,
+    DOWNLOAD,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [sites, setSites] = useState([]);
@@ -232,17 +261,17 @@ export default function AddInvoice(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT AN INVOICE" />
+      <Heading primary={EDIT_INVOICE} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="CLIENT NAME* :" />
+            <FormLabel bold primary={`${CLIENT_NAME}* :`} />
             <FormSelect
               name="clientId"
               values={clients}
               value={clientId}
               error={errors.clientId}
-              placeholder="Select Client"
+              placeholder={SELECT_CLIENT}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -250,14 +279,14 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="INVOICE DATES* : " />
+            <FormLabel bold primary={`${INVOICE} DATES* :`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
                 name="startDate"
                 value={startDate}
                 error={errors.startDate}
-                placeholder="Start date"
+                placeholder={START_DATE}
                 style={GLOBALS.Styles.inputWidth}
                 min={moment().format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
@@ -269,7 +298,7 @@ export default function AddInvoice(props) {
                 name="endDate"
                 value={endDate}
                 // error={endDate}
-                placeholder="End date"
+                placeholder={END_DATE}
                 min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
@@ -279,13 +308,13 @@ export default function AddInvoice(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="CONSTRUCTION SITE*:" />
+            <FormLabel bold primary={`${CONSTRUCTION_SITE}* :`} />
             <FormSelect
               name="siteId"
               value={siteId}
               values={sites}
               error={errors.siteId}
-              placeholder="Select Site"
+              placeholder={SELECT_SITE}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -293,7 +322,7 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="AMOUNT*:" />
+            <FormLabel bold primary={`${AMOUNT}* :`} />
             <FormInput
               type="number"
               name="amount"
@@ -307,7 +336,7 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="PDF File:" />
+            <FormLabel bold primary={`${PDF_FILE}`} />
 
             {pdf && pdf != "null" ? (
               <div
@@ -329,7 +358,7 @@ export default function AddInvoice(props) {
                     href={GLOBALS.Constants.BASE_URL + invoice.file}
                     target="_blank"
                   >
-                    Download
+                    {DOWNLOAD}
                   </a>
                 </div>
                 <IconButton onClick={() => setPdf(null)}>
@@ -341,7 +370,7 @@ export default function AddInvoice(props) {
                 <Button
                   fullWidth={false}
                   // disabled={isLoading}
-                  text={"Upload PDF"}
+                  text={UPLOAD_PDF}
                   onClick={() =>
                     document.getElementById("upload-canvas-pdf-button").click()
                   }
@@ -378,7 +407,7 @@ export default function AddInvoice(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

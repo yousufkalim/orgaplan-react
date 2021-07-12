@@ -6,6 +6,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -33,6 +34,24 @@ const useStyles = makeStyles((theme) => ({
 export default function AddClient(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const {
+    TELEPHONE,
+    FIRST_NAME,
+    LAST_NAME,
+    CONTRACT,
+    START_DATE,
+    END_DATE,
+    FUNCTIONALITY_SUBSCRIBED,
+    VALIDATE,
+    NOTIFICATION,
+    ADDITIONNAL_INFORMATION,
+    COMPANY_NAME,
+    COMPANY,
+    RESPONSIBLE,
+    ADD_A_CLIENT,
+    Days_before_end_of_the_site,
+    NOTIFY_THE_ADDRESSES,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
 
@@ -163,17 +182,17 @@ export default function AddClient(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CLIENT" />
+      <Heading primary={ADD_A_CLIENT} />
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary="COMPANY NAME* :" />
+            <FormLabel bold primary={`${COMPANY_NAME}* :`} />
             <FormInput
               name="name"
               value={name}
               maxLength="30"
               error={nameError}
-              placeholder="Company name"
+              placeholder={COMPANY_NAME}
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
@@ -183,7 +202,7 @@ export default function AddClient(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary="COMPANY LOGO* :" />
+            <FormLabel bold primary={`${COMPANY} LOGO* :`} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
@@ -201,13 +220,13 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE COMPANY : " />
+            <FormLabel bold primary={`${RESPONSIBLE} ${COMPANY}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 maxLength="30"
                 name="firstName"
                 value={firstName}
-                placeholder="First Name"
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -220,7 +239,7 @@ export default function AddClient(props) {
                 maxLength="30"
                 name="lastName"
                 value={lastName}
-                placeholder="Last Name"
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -232,7 +251,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RESPONSIBLE CONTACT : " />
+            <FormLabel bold primary={`${RESPONSIBLE} CONTACT`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
@@ -247,7 +266,7 @@ export default function AddClient(props) {
                 name="phone"
                 value={phone}
                 type="number"
-                placeholder="Phone Number"
+                placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   value.length < 26 ? handleChange(name, value) : ""
@@ -256,7 +275,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF CONTRACT* : " />
+            <FormLabel bold primary={`TYPE OF ${CONTRACT}`} />
             <RadioButton
               name="contractType"
               value={contractType}
@@ -271,11 +290,11 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTRACT DATE* : " />
+            <FormLabel bold primary={`${CONTRACT} DATE* :`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
-                placeholder="Start date"
+                placeholder={START_DATE}
                 name="contractStartDate"
                 value={contractStartDate}
                 min={moment().format("YYYY-MM-DD")}
@@ -290,7 +309,7 @@ export default function AddClient(props) {
               />
               <FormInput
                 type="date"
-                placeholder="End date"
+                placeholder={END_DATE}
                 name="contractEndDate"
                 value={contractEndDate}
                 min={moment(contractStartDate)
@@ -306,7 +325,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="FUNCTIONALITY SUBSCRIBED : " />
+            <FormLabel bold primary={FUNCTIONALITY_SUBSCRIBED} />
             <RadioButton
               name="functionality"
               value={functionality}
@@ -318,7 +337,7 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormLabel bold primary={ADDITIONNAL_INFORMATION} />
             <FormInput
               textArea
               rows={3}
@@ -334,7 +353,7 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFICATION : " />
+            <FormLabel bold primary={`${NOTIFICATION}:`} />
             <Form.Row
               noMargin
               width="48%"
@@ -353,13 +372,13 @@ export default function AddClient(props) {
                 }
               />
               <SmallText
-                primary="Days before end of the contract"
+                primary={Days_before_end_of_the_site}
                 style={{ marginLeft: "10px", marginBottom: 0 }}
               />
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+            <FormLabel bold primary={NOTIFY_THE_ADDRESSES} />
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
@@ -378,7 +397,7 @@ export default function AddClient(props) {
             <Button
               onClick={onSubmit}
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

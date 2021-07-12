@@ -9,6 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import { TEXTS } from "../../../assets/languages/french";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
@@ -54,6 +55,16 @@ let formats = {
 };
 
 const Calender = (props) => {
+  const {
+    DELIVERIES,
+    DELIVERY_REQUESTS,
+    PLANNING,
+    MEANS,
+    STATUS,
+    TYPE_OF_PLACE,
+    PLACE,
+  } = TEXTS;
+
   moment.locale("es-es", {
     week: {
       dow: 1, //Monday is the first day of the week.
@@ -391,7 +402,7 @@ const Calender = (props) => {
     }
 
     disableHours.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+      if (moment(start).isSame(key)) {
         flagHours = true;
       }
       return {};
@@ -1072,7 +1083,7 @@ const Calender = (props) => {
               user: key.userId,
             };
           });
-          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
+          setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             let background = "";
@@ -1529,7 +1540,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="PLANNING" noWrap />
+                <Heading primary={PLANNING} noWrap />
                 <SubHeading
                   noMargin
                   topPadding
@@ -1579,8 +1590,8 @@ const Calender = (props) => {
                 <FormSelect
                   value={typeOfPlaning}
                   values={[
-                    { value: "Deliveries", label: "Deliveries" },
-                    { value: "Means", label: "Means" },
+                    { value: "Deliveries", label: DELIVERIES },
+                    { value: "Means", label: MEANS },
                   ]}
                   onChange={(e) => {
                     setTypeOfPlaning(e.target.value);
@@ -1601,7 +1612,7 @@ const Calender = (props) => {
                   style={{ marginRight: "20px", maxWidth: 250 }}
                 />
                 <FormSelect
-                  placeholder="Status"
+                  placeholder={STATUS}
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
@@ -1614,7 +1625,7 @@ const Calender = (props) => {
                 {props.location.selectedShape != null ? (
                   <>
                     <FormSelect
-                      placeholder="Type of place"
+                      placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1626,7 +1637,7 @@ const Calender = (props) => {
                     />
 
                     <FormSelect
-                      placeholder="place"
+                      placeholder={PLACE}
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1636,7 +1647,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Type of place"
+                      placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1648,7 +1659,7 @@ const Calender = (props) => {
                     />
 
                     <FormSelect
-                      placeholder="place"
+                      placeholder={PLACE}
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}

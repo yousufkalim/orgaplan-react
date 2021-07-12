@@ -27,7 +27,10 @@ import eMeans from "../Enterprise/Means";
 // TRAFFIC ROUTES
 import tPic from "../TRAFFIC";
 import tIncidents from "../TRAFFIC/Incidents";
-
+// BUFFER ROUTES
+import bPic from "../Buffer/Pic";
+import bPlanning from "../Buffer/Planning";
+import varificationSheet from "../Buffer/Planning/components/VerificationSheet";
 export default function AdminIndex() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -80,12 +83,26 @@ export default function AdminIndex() {
             <Redirect from="*" to="/" />
           </Switch>
         </AdminHeader>
-      ) : (
+      ) : store.site.role == "TRAFFIC" ? (
         <AdminHeader>
           <Switch>
             <Route exact path="/" component={tPic} />
             {/* <Route path="/incidents" component={tIncidents} /> */}
             <Route path="/pic-interactive" component={tPic} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </AdminHeader>
+      ) : (
+        <AdminHeader>
+          <Switch>
+            <Route
+              exact
+              path="/Plannig/varificationSheet"
+              component={varificationSheet}
+            />
+            <Route exact path="/" component={bPic} />
+            <Route exact path="/Planing" component={bPlanning} />
+            <Route path="/pic-interactive" component={bPic} />
             <Redirect from="*" to="/" />
           </Switch>
         </AdminHeader>

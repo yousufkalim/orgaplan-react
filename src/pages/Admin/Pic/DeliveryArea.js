@@ -7,6 +7,7 @@ import _ from "lodash";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -30,6 +31,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+  } = TEXTS;
+
   const { setSelectedShape } = props;
 
   const classes = useStyles();
@@ -244,13 +256,13 @@ export default function DeliveryArea(props) {
     <div className={classes.content}>
       <Form.Form onSubmit={onSubmit}>
         <Form.Row>
-          <FormLabel bold primary="Name* : " />
+          <FormLabel bold primary={`${NAME}* : `} />
           <Form.Row noMargin width="65%">
             <FormInput
               name="name"
               error={errors.name}
               value={name}
-              placeholder="Name"
+              placeholder={NAME}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -266,7 +278,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITY* :" />
+          <FormLabel bold primary={`${AVAILABILITY}* :`} />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
@@ -291,7 +303,9 @@ export default function DeliveryArea(props) {
               disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end)
+                .add(1, "days")
+                .format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -327,13 +341,13 @@ export default function DeliveryArea(props) {
               values={addresses}
               disabled={!startDate || !endDate || !addresses}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Enter site addresses"
+              placeholder={Enter_site_addresses}
               onChange={(values) => handleChange("addresses", values)}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Vehicles: " />
+          <FormLabel bold primary={`${Vehicles}: `} />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="vehicles"
@@ -345,7 +359,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Means Allowed: " />
+          <FormLabel bold primary="Moyens Allowed: " />
           <Form.Row noMargin width="65%" justifyContent="flex-start">
             {means.map((mean, index) => (
               <Chip key={index} label={mean} className={classes.chip} />
@@ -372,20 +386,20 @@ export default function DeliveryArea(props) {
               }
             />
             <SmallText
-              primary="Days before end of the contract"
+              primary={Days_before_end_of_the_contract}
               style={{ marginLeft: "10px", marginBottom: 0 }}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+          <FormLabel bold primary={`${NOTIFY_THE_ADDRESSES} : `} />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
               style={{ width: "100%" }}
               validateError="Invalid Email"
-              placeholder="Enter email address"
+              placeholder={Please_enter_email}
               onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
@@ -399,10 +413,10 @@ export default function DeliveryArea(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               disabled={
-                loading || !name || !color || !startDate || !ismodalFilled
+                loading || !name || !color || !startDate || addresses.length < 1
               }
             />
           </Form.ButtonContainer>

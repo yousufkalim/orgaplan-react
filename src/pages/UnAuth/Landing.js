@@ -10,8 +10,10 @@ import Modal from "../../components/Modal";
 import { Images } from "../../assets/Assets";
 import FormInput from "../../components/FormInput";
 import CustomButton from "../../components/Button";
+import { TEXTS } from "../../assets/languages/french";
 
 export default function LandingPage() {
+  const {LOGIN,MESSAGE,SUBMIT}=TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [quoteMessage, setQuoteMessage] = useState("");
@@ -81,7 +83,7 @@ export default function LandingPage() {
                 </p>
               ) : (
                 <Button component={Link} to="/login" style={{ color: "#fff" }}>
-                  Login
+                  {LOGIN}
                 </Button>
               )}
             </div>
@@ -204,7 +206,7 @@ export default function LandingPage() {
                   <CustomButton
                     // type="submit"
                     fullWidth={false}
-                    text={GLOBALS.I18n.t("submit")}
+                    text={GLOBALS.I18n.t(SUBMIT)}
                   />
                 </form>
               </div>
@@ -334,7 +336,7 @@ export default function LandingPage() {
                     width={"100"}
                     name="message"
                     value={values.message}
-                    placeholder="Message"
+                    placeholder={MESSAGE}
                     onChange={handleChange}
                     className="login-input"
                   />
