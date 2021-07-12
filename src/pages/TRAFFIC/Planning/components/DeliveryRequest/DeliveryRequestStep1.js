@@ -37,14 +37,20 @@ export default function AddSiteStep1(props) {
   var minutes = [];
 
   const getDisabledHoursEndTime = () => {
-    for (var i = 0; i <= moment(startTime).format("h"); i++) {
+    let startTimeIs = moment(startTime).toDate().getHours();
+    for (var i = 0; i <= startTimeIs; i++) {
       endTimeDisabledHours.push(i);
     }
-    return;
+    return endTimeDisabledHours;
   };
 
+  // Function to disable previous time on current date
+  var d = new Date();
   const getDisabledHoursStartTime = () => {
-    return endTimeDisabledHours;
+    for (var i = 0; i <= d.getHours(); i++) {
+      startTimeDisabledHours.push(i);
+    }
+    return startTimeDisabledHours;
   };
 
   const checkavailability = (value) => {
@@ -349,7 +355,11 @@ export default function AddSiteStep1(props) {
             minuteStep={15}
             name="startTime"
             value={startTime}
-            disabledHours={getDisabledHoursEndTime()}
+            // disabling previous time on current date
+            disabledHours={
+              moment(d).format("yyyy-DD-MM") ==
+                moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
+            }
             // disabledMinutes={(a) => getDisabledMinutes(a)}
             placeholder="Start Time"
             style={{ width: "31%" }}
@@ -360,7 +370,7 @@ export default function AddSiteStep1(props) {
             format="HH:mm"
             minuteStep={15}
             value={endTime}
-            disabledHours={getDisabledHoursStartTime()}
+            disabledHours={getDisabledHoursEndTime()}
             // disabledMinutes={(a) => getDisabledEndMinutes(a)}
             placeholder="End Time"
             style={{ width: "31%" }}
