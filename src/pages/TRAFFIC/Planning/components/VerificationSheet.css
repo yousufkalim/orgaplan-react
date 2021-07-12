@@ -1,0 +1,97 @@
+.heading {
+    font-size: 24px;
+    font-weight: bold;
+    color: #7E7878;    
+    padding: 0px 0px 0px 70px;
+
+}
+.incedentBtn{
+    background-color: #F80303  !important;
+    color: white !important;
+    font-weight: bold !important;
+    float: right;
+    font-size: 15px !important;
+    margin-right: 25px;
+}
+.box{
+    padding: 0px 84px;
+}
+.box .label{
+    font-size: 15px;
+    font-weight: bold;
+    color: #7E7878; 
+    padding: 5px 0px 5px;
+
+}
+.box .value{
+    font-size: 14px; 
+    color: #7E7878; 
+    padding: 5px 0px 5px;
+}
+.checkBoxTime .MuiTypography-body1{
+    color: red;
+    font-size: 12px;
+}
+.checkBoxTime .react-time-picker button {
+    display: none; 
+}
+.checkBoxTime .react-time-picker{
+    width: 100px; 
+}
+.checkBoxTime .PrivateSwitchBase-root-696 {
+    margin: 0px 1px 0px 0px;
+}
+.checkBoxTime .MuiFormControlLabel-root{
+    height: 10px;
+    margin-top: 5px;
+    margin-left: 15px;
+
+}
+.btnselect { 
+    display: block !important; 
+    padding: 15px 0px;
+}
+.btnselect .btn{ 
+    margin: 3px 5px 3px 0px; 
+    border-radius: 5px !important;
+    padding: 2px 9px;
+
+}
+.radioBtn{
+    display: flex;
+    justify-content: space-between; 
+}
+.radioBtn .pending label{
+    color :yellow;
+    padding: 4px 10px;
+}
+.radioBtn .green label{ 
+    color : #248E11;
+    padding: 4px 10px;
+}
+.radioBtn .form-check:nth-child(2) label{ 
+    color : #8D7A29;
+    padding: 4px 10px;
+}
+.radioBtn .form-check:nth-child(3) label{ 
+    color : #E5074B;
+    padding: 4px 10px;
+}
+.validate_Btn{
+    color : white !important;
+    background-color: #DBB20A !important;
+    border-radius: 5px !important;
+    font-size: 14px !important; 
+    display: block !important; 
+    margin: 15px auto;
+    padding:5px 30px !important; 
+    font-weight: bold  !important;
+    width: auto;
+    
+}
+ 
+.radioBtn .form-check-input{
+    width: 20px;
+    height: 20px;
+}
+ 

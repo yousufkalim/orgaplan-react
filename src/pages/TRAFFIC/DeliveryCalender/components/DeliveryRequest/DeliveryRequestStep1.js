@@ -37,10 +37,11 @@ export default function AddSiteStep1(props) {
   var minutes = [];
 
   const getDisabledHoursEndTime = () => {
-    for (var i = 0; i <= moment(startTime).format("h"); i++) {
+    let startTimeIs = moment(startTime).toDate().getHours();
+    for (var i = 0; i <= startTimeIs; i++) {
       endTimeDisabledHours.push(i);
     }
-    return;
+    return endTimeDisabledHours;
   };
 
   const getDisabledHoursStartTime = () => {
