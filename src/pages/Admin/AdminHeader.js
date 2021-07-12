@@ -23,6 +23,7 @@ import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
 import { ReactComponent as Incidents } from "../../assets/icons/incidents.svg";
 import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
+import { TEXTS } from "../../assets/languages/french";
 
 const drawerWidth = 240;
 
@@ -111,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AdminHeader(props) {
-
+const {CALENDAR,MEANS,PIC_INTERACTIF,LOGOUT,INCIDENTS,COMPANIES,ORGANIGRAMME,PLANNING,LIST_OF_MEANS}=TEXTS;
   const classes = useStyles();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -121,17 +122,17 @@ export default function AdminHeader(props) {
     storeAdmin?.site?.role == "ENTERPRISE"
       ? [
           {
-            name: "P.I.C intéractif",
+            name: PIC_INTERACTIF,
             path: ["/", "/pic-interactive"],
             icon: <Pic />,
           },
           {
-            name: "List of Means",
+            name: LIST_OF_MEANS,
             path: "/means",
             icon: <Means />,
           },
           {
-            name: "Organigramme",
+            name: ORGANIGRAMME,
             path: "/organigramme",
             icon: <Organigramme />,
           },
@@ -139,49 +140,49 @@ export default function AdminHeader(props) {
       : storeAdmin?.site?.role == "ADMIN"
       ? [
           {
-            name: "Calendar",
+            name: CALENDAR,
             path: ["/", "/calendar"],
             icon: <Calender />,
           },
           {
-            name: "Means",
+            name: MEANS,
             path: "/means",
             icon: <Means />,
           },
           {
-            name: "P.I.C intéractif",
+            name: PIC_INTERACTIF,
             path: "/pic-interactive",
             icon: <Pic />,
           },
           {
-            name: "Incidents",
+            name: INCIDENTS,
             path: "/incidents",
             icon: <Incidents />,
           },
           {
-            name: "Companies",
+            name: COMPANIES,
             path: "/companies",
             icon: <Companies />,
           },
           {
-            name: "Organigramme",
+            name: ORGANIGRAMME,
             path: "/organigramme",
             icon: <Organigramme />,
           },
         ]
       : [
           {
-            name: "P.I.C intéractif",
+            name: PIC_INTERACTIF,
             path: "/pic-interactive",
             icon: <Pic />,
           },
           {
-            name: "Planning",
+            name: PLANNING,
             path: "/Plannig",
             icon: <Means />,
           },
           {
-            name: "Incidents",
+            name: INCIDENTS,
             path: "/incidents",
             icon: <Incidents />,
           },
@@ -230,10 +231,10 @@ export default function AdminHeader(props) {
             />
           </div>
           <List>
-            {userItems.map((item) => (
+            {userItems.map((item,i) => (
               <ListItem
                 button
-                key={item.name}
+                key={i}
                 component={NavLink}
                 to={Array.isArray(item.path) ? item.path[0] : item.path}
                 className={clsx({
@@ -262,7 +263,7 @@ export default function AdminHeader(props) {
               <ListItemIcon className={classes.listItemIcon}>
                 {<ExitToAppIcon />}
               </ListItemIcon>
-              <ListItemText primary={"Logout"} />
+              <ListItemText primary={LOGOUT} />
             </ListItem>
           </List>
         </div>

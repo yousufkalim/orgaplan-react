@@ -393,9 +393,9 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
                   items={[
                     {
                       value: "generalcontractor",
-                      label: {General_Contractor},
+                      label: General_Contractor,
                     },
-                    { value: "subcontractor", label: {SUBCONTRACTOR} },
+                    { value: "subcontractor", label: SUBCONTRACTOR },
                   ]}
                 />
               </Form.Column>
