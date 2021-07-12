@@ -6,7 +6,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 import moment from "moment";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -33,10 +33,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
- 
-     const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+  } = TEXTS;
 
   const { setSelectedShape } = props;
 
@@ -347,7 +365,9 @@ export default function DeliveryArea(props) {
               disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end)
+                .add(1, "days")
+                .format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onFocus={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>

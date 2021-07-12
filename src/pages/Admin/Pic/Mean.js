@@ -6,7 +6,7 @@ import _ from "lodash";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -29,9 +29,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddMean(props) {
-    const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+  } = TEXTS;
 
   const classes = useStyles();
   const { setSelectedShape } = props;
@@ -366,7 +380,7 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${ACCESSIBILITY} * :`}    />
+          <FormLabel bold primary={`${ACCESSIBILITY} * :`} />
           <Form.Row noMargin width="65%">
             <MeanLocationModal
               name="location"
@@ -382,7 +396,7 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${AVAILABILITIES} * :`}  />
+          <FormLabel bold primary={`${AVAILABILITIES} * :`} />
           <Form.Row noMargin width="65%" justifyContent="space-between">
             <FormInput
               type="date"
@@ -409,7 +423,9 @@ export default function AddMean(props) {
               placeholder={END_DATE}
               style={{ width: "49%" }}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end)
+                .add(1, "days")
+                .format("YYYY-MM-DD")}
               onChange={({ target: { name, value } }) => setEndDate(value)}
             />
           </Form.Row>

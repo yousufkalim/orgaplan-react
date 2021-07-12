@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -31,9 +31,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryArea(props) {
-  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email
-  }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+  } = TEXTS;
 
   const { setSelectedShape } = props;
 
@@ -296,7 +303,9 @@ export default function DeliveryArea(props) {
               disabled={!startDate}
               placeholder="Date de fin"
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
-              max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
+              max={moment(adminStore.site.siteId.end)
+                .add(1, "days")
+                .format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -407,7 +416,7 @@ export default function DeliveryArea(props) {
               text={VALIDATE}
               fullWidth={false}
               disabled={
-                loading || !name || !color || !startDate || !ismodalFilled
+                loading || !name || !color || !startDate || addresses.length < 1
               }
             />
           </Form.ButtonContainer>
