@@ -91,15 +91,15 @@ const PopoverModal = ({
           <Alertbox message="Are you sure to Delete" />
           <div className="showPopover">
             <div style={{ textAlign: "right" }}>
-              <button
+              {/* <button
                 className="btn btn-light"
                 onClick={() => {
                   setEditDelivery(true);
                   onEditDelivery(event);
                 }}
               >
-                <i class="fas fa-trash"></i> <span>Edit</span>
-              </button>
+                <i class="fas fa-trash"></i> <span>Ediqt</span>
+              </button> */}
             </div>
             {event.objectName === "Deliveries" ? (
               <>
@@ -418,12 +418,12 @@ const PopoverModal = ({
                 {event.status !== "VALIDATED" ? (
                   <>
                     <div style={{ textAlign: "right" }}>
-                      <button
+                      {/* <button
                         className="btn btn-light"
                         onClick={() => onEditDelivery(event)}
                       >
                         <i class="fas fa-trash"></i> <span>Edit</span>
-                      </button>
+                      </button> */}
                     </div>
                     {/* <hr />
                     <div className="popoverfooter">

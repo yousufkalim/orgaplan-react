@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./VerificationSheet.css";
 import { useHistory, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import TimePicker from "react-time-picker";
@@ -146,7 +147,13 @@ const VarificationSheet = (props) => {
             <BackArrow style={{ width: 30, height: 30 }} />
           </IconButton>
           <h1 className="heading">VERIFICATION SHEET FOR DELIVERY</h1>
-          <Button variant="danger" className="incedentBtn">
+          <Button
+            variant="danger"
+            className="incedentBtn"
+            onClick={() => {
+              history.push("/incidents");
+            }}
+          >
             CREATE AN INCIDENT
           </Button>
         </div>
