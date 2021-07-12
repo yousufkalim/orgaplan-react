@@ -55,7 +55,15 @@ let formats = {
 };
 
 const Calender = (props) => {
-  const {DELIVERIES,DELIVERY_REQUESTS,PLANNING,MEANS,STATUS,TYPE_OF_PLACE,PLACE}=TEXTS;
+  const {
+    DELIVERIES,
+    DELIVERY_REQUESTS,
+    PLANNING,
+    MEANS,
+    STATUS,
+    TYPE_OF_PLACE,
+    PLACE,
+  } = TEXTS;
 
   moment.locale("es-es", {
     week: {
@@ -394,7 +402,7 @@ const Calender = (props) => {
     }
 
     disableHours.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
+      if (moment(start).isSame(key)) {
         flagHours = true;
       }
       return {};
