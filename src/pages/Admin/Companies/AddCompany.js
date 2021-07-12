@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -53,13 +53,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddCompanies(props) {
-     const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
-Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
-TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
-
- }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    Add_COMPANY,
+    TYPE_OF_COMPANY,
+    General_Contractor,
+    SUBCONTRACTOR,
+    GENERAL_CONTRACTOR,
+    TRADES,
+    IDENTITY_OF_RESPONSIBLE,
+    LAST_NAME,
+    FIRST_NAME,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -393,9 +417,9 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
                   items={[
                     {
                       value: "generalcontractor",
-                      label: {General_Contractor},
+                      label: General_Contractor,
                     },
-                    { value: "subcontractor", label: {SUBCONTRACTOR} },
+                    { value: "subcontractor", label: SUBCONTRACTOR },
                   ]}
                 />
               </Form.Column>
@@ -424,7 +448,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${TRADES} :`}  />
+            <FormLabel bold primary={`${TRADES} :`} />
             <Form.Row noMargin width="48%">
               <FormMultiSelect
                 name="trades"
@@ -439,7 +463,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY_OF_RESPONSIBLE } :`} />
+            <FormLabel bold primary={`${IDENTITY_OF_RESPONSIBLE} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
