@@ -349,7 +349,6 @@ const PicCanvas = (props) => {
     let found = item.storageArea.companies.find(
       (item2) => String(item2) === String(company._id),
     );
-    console.log("found is ", found);
     if (found) {
       setOpenStorageModal(true);
       setStorageArea(found);
@@ -884,6 +883,7 @@ const PicCanvas = (props) => {
                         to={{
                           pathname: "/pic-interactive/calendar",
                           selectedShape: selectedShape,
+                          company: company,
                         }}
                       >
                         <IconButton>
@@ -893,8 +893,6 @@ const PicCanvas = (props) => {
                     </>
                   ) : (
                     <>
-                      {console.log("for storage", selectedShape)}
-
                       <NavLink
                         disabled={loading}
                         to={{

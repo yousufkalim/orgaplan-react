@@ -1011,7 +1011,7 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>Book1ing</Modal.Title>
         </Modal.Header>
 
         <Alertbox message={alertMsg} />
