@@ -12,18 +12,18 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import GLOBALS from "../../globals";
-import Actions from "../../redux/actions";
-import Logo from "../../assets/icons/Logo.svg";
-import SiteImage from "../../assets/images/Site.png";
-import { ReactComponent as Pic } from "../../assets/icons/pic.svg";
-import { ReactComponent as Means } from "../../assets/icons/means.svg";
-import { ReactComponent as Calender } from "../../assets/icons/calender.svg";
+import GLOBALS from "../globals";
+import Actions from "../redux/actions";
+import Logo from "../assets/icons/Logo.svg";
+import SiteImage from "../assets/images/Site.png";
+import { ReactComponent as Pic } from "../assets/icons/pic.svg";
+import { ReactComponent as Means } from "../assets/icons/means.svg";
+import { ReactComponent as Calender } from "../assets/icons/calender.svg";
 // import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
-import { ReactComponent as Incidents } from "../../assets/icons/incidents.svg";
-import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
-import { ReactComponent as Organigramme } from "../../assets/icons/organigramme.svg";
-import { TEXTS } from "../../assets/languages/french";
+import { ReactComponent as Incidents } from "../assets/icons/incidents.svg";
+import { ReactComponent as Companies } from "../assets/icons/companies.svg";
+import { ReactComponent as Organigramme } from "../assets/icons/organigramme.svg";
+import { TEXTS } from "../assets/languages/french";
 
 const drawerWidth = 240;
 
@@ -111,8 +111,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AdminHeader(props) {
-const {CALENDAR,MEANS,PIC_INTERACTIF,LOGOUT,INCIDENTS,COMPANIES,ORGANIGRAMME,PLANNING,LIST_OF_MEANS}=TEXTS;
+export default function SiteHeader(props) {
+  const {
+    CALENDAR,
+    MEANS,
+    PIC_INTERACTIF,
+    LOGOUT,
+    INCIDENTS,
+    COMPANIES,
+    ORGANIGRAMME,
+    PLANNING,
+    LIST_OF_MEANS,
+  } = TEXTS;
   const classes = useStyles();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -245,7 +255,7 @@ const {CALENDAR,MEANS,PIC_INTERACTIF,LOGOUT,INCIDENTS,COMPANIES,ORGANIGRAMME,PLA
             />
           </div>
           <List>
-            {userItems.map((item,i) => (
+            {userItems.map((item, i) => (
               <ListItem
                 button
                 key={i}
