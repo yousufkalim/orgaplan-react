@@ -349,7 +349,6 @@ const PicCanvas = (props) => {
     let found = item.storageArea.companies.find(
       (item2) => String(item2) === String(company._id),
     );
-    console.log("found is ", found);
     if (found) {
       setOpenStorageModal(true);
       setStorageArea(found);
