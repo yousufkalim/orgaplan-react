@@ -750,7 +750,9 @@ const Calender = (props) => {
       });
 
       if (response.success) {
+        console.log("key1is ", response);
         const tempmeanData = response.data.history.map((key, index) => {
+          console.log("key 2is ", key);
           return {
             title: key.bookingReason,
             companyId: key.companyId,
@@ -798,6 +800,7 @@ const Calender = (props) => {
       );
     }
   };
+  // CONSOLE.LOG("EVENTES", events);
 
   const onChangeMeans = async () => {
     let booking = [];
@@ -1011,7 +1014,7 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>Book1ing</Modal.Title>
         </Modal.Header>
 
         <Alertbox message={alertMsg} />
@@ -1269,6 +1272,7 @@ const Calender = (props) => {
         </div>
         <div className="d-flex px-2">
           <div style={{ flexBasis: "100%" }}>
+            {console.log("evenets", events)}
             {events ? (
               <Calendar
                 popup
@@ -1294,6 +1298,7 @@ const Calender = (props) => {
                 }}
                 eventPropGetter={(events, start, end, isSelected) => {
                   let { color } = events;
+                  console.log("color is ", color);
 
                   let newStyle = {
                     clear: "both",

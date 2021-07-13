@@ -884,6 +884,7 @@ const PicCanvas = (props) => {
                         to={{
                           pathname: "/pic-interactive/calendar",
                           selectedShape: selectedShape,
+                          company: company,
                         }}
                       >
                         <IconButton>
@@ -893,8 +894,6 @@ const PicCanvas = (props) => {
                     </>
                   ) : (
                     <>
-                      {console.log("for storage", selectedShape)}
-
                       <NavLink
                         disabled={loading}
                         to={{
