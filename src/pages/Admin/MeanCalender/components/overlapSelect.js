@@ -28,7 +28,9 @@ export default function ControlledOpenSelect({
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label">Overlap</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">
+          Chevaucher
+        </InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"
@@ -38,8 +40,8 @@ export default function ControlledOpenSelect({
           value={overlap}
           onChange={handleChange}
         >
-          <MenuItem value="Enable">Enable</MenuItem>
-          <MenuItem value="Disable">Disable</MenuItem>
+          <MenuItem value="Enable">Activer</MenuItem>
+          <MenuItem value="Disable">Désactiver</MenuItem>
         </Select>
       </FormControl>
     </div>

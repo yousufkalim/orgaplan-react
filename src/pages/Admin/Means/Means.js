@@ -34,11 +34,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Means = () => {
-    const {DELIVERIES,DELIVERY_REQUESTS,MEANS,TOTAL,LEVEL,
-  LIST_OF_MEANS,HISTORIC,COMPANY,MEAN,MEANS_REQUEST,Please_select_Delivery_Area
- ,LOCATION,SELECT_STORAGEAREA,START_DATE,END_DATE
- 
-  }=TEXTS;
+  const {
+    DELIVERIES,
+    DELIVERY_REQUESTS,
+    MEANS,
+    TOTAL,
+    LEVEL,
+    LIST_OF_MEANS,
+    HISTORIC,
+    COMPANY,
+    MEAN,
+    MEANS_REQUEST,
+    Please_select_Delivery_Area,
+    LOCATION,
+    SELECT_STORAGEAREA,
+    START_DATE,
+    END_DATE,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -329,7 +341,11 @@ const Means = () => {
       <Form.Row alignItems="center" justifyContent="space-between">
         <Heading primary={LIST_OF_MEANS} noWrap noMargin />
         <Form.Row alignItems="center" justifyContent="flex-end" width="50%">
-          <SubHeading bold noMargin primary={`${TOTAL} : ${totalMeans} ${MEANS}`} />
+          <SubHeading
+            bold
+            noMargin
+            primary={`${TOTAL} : ${totalMeans} ${MEANS}`}
+          />
           <Button
             fullWidth={false}
             loading={loading}
@@ -440,7 +456,7 @@ const Means = () => {
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            placeholder="moyen name"
+            placeholder="Moyen Nom"
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={(e) => filterMeanByName(e.target.value)}
           />

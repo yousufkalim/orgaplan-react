@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { makeStyles } from "@material-ui/core/styles";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { TEXTS } from "../../../assets/languages/french";
 
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
@@ -33,6 +34,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditContact(props) {
+  const {
+    EDIT_A_CONTACT,
+    TYPE_OF_ORGANIGRAMME,
+    CONTACT_INFO,
+    Please_enter_email,
+    IDENTITY,
+    FIRST_NAME,
+    LAST_NAME,
+    VALIDATE,
+  } = TEXTS;
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -226,11 +237,13 @@ export default function EditContact(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT A CONTACT" />
+      <Heading primary={EDIT_A_CONTACT} />
+
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
+            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}*: `} />
+
             <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
@@ -260,7 +273,8 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO : " />
+            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
+
             <Form.Row
               noMargin
               width="55%"
@@ -271,7 +285,7 @@ export default function EditContact(props) {
                   name="email"
                   value={email}
                   // error={firstName}
-                  placeholder="Adresse e-mail"
+                  placeholder={Please_enter_email}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -302,7 +316,8 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY :  " />
+            <FormLabel bold primary={`${IDENTITY}: `} />
+
             <Form.Row
               noMargin
               width="55%"
@@ -313,7 +328,7 @@ export default function EditContact(props) {
                   name="firstName"
                   value={firstName}
                   // error={firstName}
-                  placeholder="First Name"
+                  placeholder={FIRST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -329,7 +344,7 @@ export default function EditContact(props) {
                   name="lastName"
                   value={lastName}
                   // error={lastName}
-                  placeholder="Last Name"
+                  placeholder={LAST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -352,7 +367,7 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY: " />
+            <FormLabel bold primary="Entreprise: " />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
@@ -393,7 +408,7 @@ export default function EditContact(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

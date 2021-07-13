@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Paper from "@material-ui/core/Paper";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -43,11 +43,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UserList(props) {
-  const {Add_USER,NAME_OF_USER,COMPANY,VALIDATE,Are_you_sure_to_Delete,
-  
-  CANCEL
-  }=TEXTS
-  
+  const {
+    Add_USER,
+    NAME_OF_USER,
+    COMPANY,
+    VALIDATE,
+    Are_you_sure_to_Delete,
+    CANCEL,
+    File_Uploaded_successfully,
+    EDIT,
+    RE_SEND,
+    LIST_OF_USERS,
+    UPLOAD_PICTURE,
+  } = TEXTS;
+
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -148,7 +157,7 @@ export default function UserList(props) {
       setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("File Uploaded successfully ", "success"),
+          Actions.notistack.snackbar(File_Uploaded_successfully, "success"),
         ),
       );
     } catch (err) {
@@ -347,7 +356,7 @@ export default function UserList(props) {
         item.userId.isVerified ? "Inscrit" : "En attente",
         item.userId.email,
         <SmallButton
-          text={item.userId.isVerified ? "Edit" : "Re-Send"}
+          text={item.userId.isVerified ? EDIT : RE_SEND}
           onClick={(e) => {
             updateEditModel(item);
           }}
@@ -384,12 +393,12 @@ export default function UserList(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
-          <Heading primary="LIST OF USERS" noWrap />
+          <Heading primary={LIST_OF_USERS} noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 disableMargin
-                primary={`Total : ${userList.length} Users`}
+                primary={`Total : ${userList.length} utilisateurs`}
                 bold
               />
               <Button
@@ -441,7 +450,7 @@ export default function UserList(props) {
             <label htmlFor="uploadPicture">
               <IconButton
                 color="primary"
-                aria-label="upload picture"
+                aria-label={UPLOAD_PICTURE}
                 component="span"
               >
                 <img
@@ -572,9 +581,7 @@ export default function UserList(props) {
           Effacer User
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-          {Are_you_sure_to_Delete}
-          </DialogContentText>
+          <DialogContentText>{Are_you_sure_to_Delete}</DialogContentText>
         </DialogContent>
         <DialogActions style={{ width: "50%", marginLeft: "auto" }}>
           <Button

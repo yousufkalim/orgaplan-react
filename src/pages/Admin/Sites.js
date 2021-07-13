@@ -208,7 +208,8 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
 }
 
 export default function Sites(props) {
-  const {GO_TO_HOME_PAGE}=TEXTS;
+  const { GO_TO_HOME_PAGE, OLD_PASSWORD, NEW_PASSWORD, CONFIRM_PASSWORD } =
+    TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -420,7 +421,7 @@ export default function Sites(props) {
         </div>
       </Form.Row>
       <Modal
-        title="EDIT PASSWORD"
+        title="Modifier Mot De Passe"
         open={passwordModal}
         onClose={() => {
           setPasswordModal(false);
@@ -428,13 +429,13 @@ export default function Sites(props) {
         body={
           <Form.Form onSubmit={onPasswordChange}>
             <Form.Row>
-              <FormLabel bold primary="OLD PASSWORD *: " />
+              <FormLabel bold primary={`${OLD_PASSWORD} *: `} />
               <Form.Row noMargin width="48%">
                 <FormInput
                   type="password"
                   name="oldPassword"
                   value={oldPassword}
-                  placeholder="Old Password"
+                  placeholder={OLD_PASSWORD}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -442,13 +443,13 @@ export default function Sites(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="NEW PASSWORD *: " />
+              <FormLabel bold primary={`${NEW_PASSWORD} *: `} />
               <Form.Row noMargin width="48%">
                 <FormInput
                   type="password"
                   name="newPassword"
                   value={newPassword}
-                  placeholder="New Password"
+                  placeholder={NEW_PASSWORD}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -456,13 +457,13 @@ export default function Sites(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="CONFIRM PASSWORD *: " />
+              <FormLabel bold primary={`${CONFIRM_PASSWORD} *: `} />
               <Form.Row noMargin width="48%">
                 <FormInput
                   type="password"
                   name="confirmPassword"
                   value={confirmPassword}
-                  placeholder="Confirm Password"
+                  placeholder={CONFIRM_PASSWORD}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -472,7 +473,7 @@ export default function Sites(props) {
             <Form.Row justifyContent="center">
               <Button
                 type="submit"
-                text="VALIDATE"
+                text="Valider"
                 minWidth="30%"
                 fullWidth={false}
                 loading={actionLoading}
@@ -489,7 +490,7 @@ export default function Sites(props) {
       />
       {update && ""}
       <Modal
-        title="EDIT PROFILE"
+        title="Éditer Profil"
         open={profileModal}
         onClose={() => {
           setProfileModal(false);
@@ -507,12 +508,12 @@ export default function Sites(props) {
             </Form.Row>
             <Form.Row />
             <Form.Row>
-              <FormLabel bold primary="FIRST NAME *: " />
+              <FormLabel bold primary="Prénom*: " />
               <Form.Row noMargin width="48%">
                 <FormInput
                   name="firstName"
                   value={firstName}
-                  placeholder="First Name"
+                  placeholder="Prénom"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -521,12 +522,12 @@ export default function Sites(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="LAST NAME *: " />
+              <FormLabel bold primary="Nom *: " />
               <Form.Row noMargin width="48%">
                 <FormInput
                   name="lastName"
                   value={lastName}
-                  placeholder="Last Name"
+                  placeholder="Nom"
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
                   }
@@ -534,13 +535,13 @@ export default function Sites(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="PHONE *: " />
+              <FormLabel bold primary="Téléphone *: " />
               <Form.Row noMargin width="48%">
                 <PhoneBox
                   type="number"
                   name="phone"
                   value={phone}
-                  placeholder="Phone"
+                  placeholder="Téléphone"
                   onChange={({ target: { name, value } }) =>
                     value.length < 26 ? handleChange(name, value) : ""
                   }

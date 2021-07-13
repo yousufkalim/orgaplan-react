@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
@@ -34,15 +34,27 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function AddIncidents(props) {
-  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
-Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
-TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,YES,NO,
-Please_select_a_incident,Please_select_a_company,CREATE_AN_INCIDENT,
-DESIGNATION,NAME_OF_INCIDENT,NAME_OF_COMPANY,DATE_AND_TIME,GENERAL,
-TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
- }=TEXTS
+  const {
+    YES,
+    NO,
+    Please_select_a_incident,
+    Please_select_a_company,
+    CREATE_AN_INCIDENT,
+    DESIGNATION,
+    NAME_OF_INCIDENT,
+    NAME_OF_COMPANY,
+    DATE_AND_TIME,
+    GENERAL,
+    SELECT_TIME,
+    TYPE_OF_incident,
+    LOCATION,
+    TYPE_OF_PLACE,
+    BILLABLE,
+    PAID,
+    AMOUNT,
+    COMMENT_INVOICE,
+    ADD_PHOTO,
+  } = TEXTS;
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -383,7 +395,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Ajouter DES PHOTOS : " />
+            <FormLabel bold primary={`${ADD_PHOTO} : `} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="profile"
@@ -415,9 +427,9 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
                 }}
               >
                 <option selected value={true}>
-                  Yes
+                  {YES}
                 </option>
-                <option value={false}>No</option>
+                <option value={false}>{NO}</option>
               </select>
             </Form.Row>
           </Form.Row>

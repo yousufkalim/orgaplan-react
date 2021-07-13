@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -34,7 +34,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Companies(props) {
-  const {LIST_OF_COMPANIES,Add_COMPANY,NAME_OF_COMPANY,ACCESS_REQUEST_TO_ZONES,ACCESS_REQUEST_TO_STROGAEAREA}=TEXTS
+  const {
+    LIST_OF_COMPANIES,
+    Add_COMPANY,
+    NAME_OF_COMPANY,
+    ACCESS_REQUEST_TO_ZONES,
+    ACCESS_REQUEST_TO_STROGAEAREA,
+    ACCEPT,
+    REJECT,
+  } = TEXTS;
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -172,13 +180,13 @@ export default function Companies(props) {
         <Button
           onClick={() => onAccept(item._id)}
           type="submit"
-          text="ACCEPT"
+          text={ACCEPT}
           fullWidth={false}
         />{" "}
         <Button
           type="submit"
           color={theme.palette.error.main}
-          text="REJECT"
+          text={REJECT}
           fullWidth={false}
           onClick={() => onReject(item._id)}
         />
@@ -272,7 +280,7 @@ export default function Companies(props) {
                 bold
                 noMargin
                 disableMargin
-                primary={`Total : ${companies.length} ENTREPRISES`}
+                primary={`Total : ${companies.length} Entreprises`}
               />
               <Button
                 fullWidth={false}
@@ -287,7 +295,7 @@ export default function Companies(props) {
         <Form.Row noMargin className="pr-3">
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <SearchInput
-              placeholder="Name of responsible"
+              placeholder="Nom Of Responsible"
               value={nameOfResponsible}
               onClick={filterCompany}
               onChange={(event) => {

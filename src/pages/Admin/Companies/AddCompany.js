@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import IconButton from "@material-ui/core/IconButton";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -53,13 +53,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddCompanies(props) {
-     const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
-Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
-TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
-
- }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    Add_COMPANY,
+    TYPE_OF_COMPANY,
+    General_Contractor,
+    SUBCONTRACTOR,
+    TRADES,
+    FIRST_NAME,
+    IDENTITY_OF_RESPONSIBLE,
+    LAST_NAME,
+    Please_select_a_company,
+    something_went_wrong,
+    Company_already_Exists_With_this_name,
+    Please_enter_name,
+    Please_provide_image,
+    Please_enter_valid_email,
+    Please_enter_valid_URL,
+    WEBSITE,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -156,7 +187,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
         websiteError ||
         !companyType
       ) {
-        alert("something went wrong");
+        alert(something_went_wrong);
       } else {
         let checkCompanyExists = companies.filter(
           (company) => company.companyId.name === name,
@@ -165,7 +196,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
           return dispatch(
             Actions.notistack.enqueueSnackbar(
               Actions.notistack.snackbar(
-                "Company already Exists With this name,Please use another name",
+                Company_already_Exists_With_this_name,
                 "error",
               ),
             ),
@@ -253,26 +284,26 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
   const validation = (name, value) => {
     if (name == "name") {
       if (!value) {
-        setNameError("Please enter name");
+        setNameError(Please_enter_name);
       } else {
         setNameError("");
       }
     } else if (name == "image") {
       if (!value.length > 0) {
-        setImageError("Please provide image");
+        setImageError(Please_provide_image);
       } else {
         setImageError("");
       }
     } else if (name == "parentCompanyId") {
       if (!value) {
-        setParentCompanyError("Please select a company");
+        setParentCompanyError(Please_select_a_company);
       } else {
         setParentCompanyError("");
       }
     } else if (name == "email") {
       const emailValidation = /\S+@\S+\.\S+/;
       if (!value.match(emailValidation) && value !== "") {
-        setEmailError("Please enter valid email");
+        setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
@@ -280,7 +311,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
       const websiteValidation =
         /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
       if (!value.match(websiteValidation) && value !== "") {
-        setWebsiteError("Please enter valid URL");
+        setWebsiteError(Please_enter_valid_URL);
       } else {
         setWebsiteError("");
       }
@@ -402,14 +433,14 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${GENERAL_CONTRACTOR}* :`} />
+            <FormLabel bold primary={`${General_Contractor}* :`} />
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
                   name="parentCompanyId"
                   value={parentCompanyId}
                   values={allSiteCompanies}
-                  placeholder="Select Company"
+                  placeholder={Please_select_a_company}
                   disabled={companyType === "generalcontractor"}
                   onChange={({ target: { name, value } }) => {
                     inputChange(name, value);
@@ -424,7 +455,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${TRADES} :`}  />
+            <FormLabel bold primary={`${TRADES} :`} />
             <Form.Row noMargin width="48%">
               <FormMultiSelect
                 name="trades"
@@ -439,7 +470,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY_OF_RESPONSIBLE } :`} />
+            <FormLabel bold primary={`${IDENTITY_OF_RESPONSIBLE} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
@@ -499,7 +530,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="WEBSITE :" />
+            <FormLabel bold primary={`${WEBSITE} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
@@ -518,7 +549,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormLabel bold primary={`${ADDITIONNAL_INFORMATION} :`} />
             <Form.Row width="48%" noMargin>
               <FormInput
                 textArea
@@ -536,7 +567,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME
           <Form.ButtonContainer>
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               onClick={onSubmit}
