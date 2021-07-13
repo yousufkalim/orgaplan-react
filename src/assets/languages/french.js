@@ -207,6 +207,8 @@ export const TEXTS = {
   Your_StorageArea_is_going_to_expire_after_3_days:
     "Votre aire de stockage va expirer dans 3 jours",
   Max_size_can_be_10MB_of_type: "La taille maximum du fichier est 10MB",
+  Max_size_can_be_10MB_of_types: "La taille maximum du fichiers est 10MB",
+
   Days_before_end_of_the_site: "Jours avant la fin du chantier",
   Days_before_end_of_the_contract: "Jours avant la fin du contract",
   CANCEL: "Annuler",
@@ -252,6 +254,8 @@ export const TEXTS = {
   you_can_not_Select_Disable_Hours_of_a_Day: "Heure non disponible",
   Time_is_Invalid: "Heure incorrecte",
   is_Full: "est rempli",
+  DISAGREE: "être en désaccord",
+  AGREE: "Je suis d'accord",
   Please_Select_Company_name_or_Booking_Reason: "Indiquez un motif",
   Edit_Event: "Modifier un événement",
   EDIT: "Modifier",
