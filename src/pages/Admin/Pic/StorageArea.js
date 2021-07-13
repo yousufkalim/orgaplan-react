@@ -102,12 +102,20 @@ export default function DeliveryArea(props) {
         })),
       );
 
-      setDeliveryAreas(
-        deliveryAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-        })),
-      );
+      const temp = [];
+      deliveryAreas.data.map((item) => {
+        if (
+          moment(new Date()).format("yyyy-DD-MM") <
+          moment(item.availability.end).format("yyyy-DD-MM")
+        ) {
+          temp.push({
+            label: item.name,
+            value: item._id,
+          });
+        }
+      });
+      setDeliveryAreas(temp);
+
       if (props.selectedShape) {
         const means = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,
