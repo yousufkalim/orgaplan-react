@@ -101,6 +101,7 @@ const Calender = (props) => {
   const [filterDate, setFilterDate] = useState(new Date());
 
   const [typeOfPlace, setTypeOfPlace] = useState([]);
+
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
   const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
@@ -629,10 +630,9 @@ const Calender = (props) => {
   };
 
   const handlePopoverShow = (event) => {
-    // console.log("handlepopup show", event.id);
     setAlertBoxTime(false);
     seteventID(event.id);
-    const fill = events.filter((e) => e.id === event.id);
+    const fill = events.filter((e) => e?.id === event.id);
     setEvent(fill[0]);
     setpopoverShow(!popoverShow);
     // admin code end

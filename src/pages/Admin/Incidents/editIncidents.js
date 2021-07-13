@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -35,15 +35,54 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function AddIncidents(props) {
-  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
-Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
-TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,YES,NO,
-Please_select_a_incident,Please_select_a_company,EDIT_AN_INCIDENT,
-DESIGNATION,NAME_OF_INCIDENT,NAME_OF_COMPANY,DATE_AND_TIME,GENERAL,
-TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
- }=TEXTS
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    Add_COMPANY,
+    TYPE_OF_COMPANY,
+    General_Contractor,
+    SUBCONTRACTOR,
+    GENERAL_CONTRACTOR,
+    TRADES,
+    IDENTITY_OF_RESPONSIBLE,
+    LAST_NAME,
+    FIRST_NAME,
+    YES,
+    NO,
+    Please_select_a_incident,
+    Please_select_a_company,
+    EDIT_AN_INCIDENT,
+    DESIGNATION,
+    NAME_OF_INCIDENT,
+    NAME_OF_COMPANY,
+    DATE_AND_TIME,
+    GENERAL,
+    TYPE_OF_incident,
+    LOCATION,
+    TYPE_OF_PLACE,
+    BILLABLE,
+    PAID,
+    AMOUNT,
+    COMMENT_INVOICE,
+  } = TEXTS;
   const classes = useStyles();
   const history = useHistory();
   const store = useSelector((state) => state.auth);
@@ -312,7 +351,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
       <Heading primary={EDIT_AN_INCIDENT} />
-      
+
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
@@ -335,7 +374,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
           </Form.Row>
 
           <Form.Row>
-                        <FormLabel bold primary={`${DESIGNATION}* :`} />
+            <FormLabel bold primary={`${DESIGNATION}* :`} />
 
             <FormInput
               name="name"
@@ -348,7 +387,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
             />
           </Form.Row>
           <Form.Row>
-                       <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
+            <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
 
             <Form.Row
               noMargin
@@ -372,7 +411,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
             </Form.Row>
           </Form.Row>
           <Form.Row>
-                       <FormLabel bold primary={`${DATE_AND_TIME}* : `} />
+            <FormLabel bold primary={`${DATE_AND_TIME}* : `} />
 
             <Form.Row noMargin width="48%">
               <FormInput
@@ -395,7 +434,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary={`${LOCATION} : `} />
-            
+
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder={TYPE_OF_PLACE}
@@ -434,7 +473,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary="Ajouter DES PHOTOS : " />
-           
+
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="profile"
@@ -448,7 +487,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
           </Form.Row>
           <Form.Row>
             <FormLabel bold primary={`${BILLABLE}* : `} />
-           
+
             <Form.Row width="48%">
               <FormSelect
                 key="1abc"
@@ -465,8 +504,8 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
                 }}
                 value={isBillable}
                 values={[
-                  { value: true, label: {YES} },
-                  { value: false, label: {NO} },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
@@ -474,7 +513,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
 
           <Form.Row>
             <FormLabel bold primary={`${PAID}: `} />
-            
+
             <Form.Row width="48%">
               <FormSelect
                 disabled={priceDisable === "false" || priceDisable === false}
@@ -489,8 +528,8 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
                 }}
                 value={isPaid}
                 values={[
-                  { value: true, label: {YES} },
-                  { value: false, label: {NO} },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
@@ -522,7 +561,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
 
           <Form.Row>
             <FormLabel bold primary={`${AMOUNT} :`} />
-            
+
             <Form.Row width="48%" noMargin alignItems="center">
               <Form.Row width="24%" noMargin alignItems="center">
                 <FormInput
@@ -538,7 +577,7 @@ TYPE_OF_incident,LOCATION,TYPE_OF_PLACE,BILLABLE,PAID,AMOUNT,COMMENT_INVOICE
           </Form.Row>
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary={`${COMMENT_INVOICE} : `} />
-           
+
             <FormInput
               textArea
               rows={3}
