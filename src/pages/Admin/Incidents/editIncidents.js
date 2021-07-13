@@ -477,8 +477,8 @@ export default function AddIncidents(props) {
                 }}
                 value={isBillable}
                 values={[
-                  { value: true, label: { YES } },
-                  { value: false, label: { NO } },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
@@ -501,8 +501,8 @@ export default function AddIncidents(props) {
                 }}
                 value={isPaid}
                 values={[
-                  { value: true, label: { YES } },
-                  { value: false, label: { NO } },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
