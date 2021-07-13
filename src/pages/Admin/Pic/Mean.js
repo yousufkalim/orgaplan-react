@@ -17,6 +17,7 @@ import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
+import { date } from "yup/lib/locale";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,9 +69,9 @@ export default function AddMean(props) {
   const [loading, setLoading] = useState(true);
   const [deliveryAreas, setDeliveryAreas] = useState([]);
   const [storageAreas, setStorageAreas] = useState([]);
+
   useEffect(() => {
     getData();
-    // eslint-disable-next-line
   }, []);
 
   const getData = async () => {
@@ -81,19 +82,34 @@ export default function AddMean(props) {
       });
       if (response.data.site_delivery_areas !== null) {
         const temp = [];
-        response.data.site_delivery_areas.map((item) =>
-          temp.push({
-            label: item.name,
-            value: item._id,
-          }),
-        );
+
+        response.data.site_delivery_areas.map((item) => {
+          if (
+            moment(new Date()).format("yyyy-DD-MM") <
+            moment(item.availability.end).format("yyyy-DD-MM")
+          ) {
+            temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          }
+        });
+
         setDeliveryAreas(temp);
       }
       if (response.data.site_storage_areas !== null) {
         const temp = [];
-        response.data.site_storage_areas.map((item) =>
-          temp.push({ label: item.name, value: item._id }),
-        );
+        response.data.site_storage_areas.map((item) => {
+          if (
+            moment(new Date()).format("yyyy-DD-MM") <
+            moment(item.availability.end).format("yyyy-DD-MM")
+          ) {
+            temp.push({
+              label: item.name,
+              value: item._id,
+            });
+          }
+        });
         setStorageAreas(temp);
       }
       if (props.selectedShape) {
