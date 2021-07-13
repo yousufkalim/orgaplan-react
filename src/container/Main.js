@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Actions from "../redux/actions";
 import Loader from "../components/Loader";
 
-import User from "../pages/Admin";
+import User from "./index";
 import UnAuth from "../pages/UnAuth";
 import SuperAdmin from "../pages/SuperAdmin";
 
@@ -25,7 +25,6 @@ export default function Main() {
   return (
     <>
       {store.loading && <Loader.AbsoluteLinear />}
-      
       {loading ? (
         <Loader.CenterProgress />
       ) : store.auth ? (

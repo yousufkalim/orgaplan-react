@@ -7,33 +7,33 @@ import {
   useLocation,
   useHistory,
 } from "react-router-dom";
-import Actions from "../../redux/actions";
-import Loader from "../../components/Loader";
+import Actions from "../redux/actions";
+import Loader from "../components/Loader";
 
-import Pic from "./Pic";
-import Means from "./Means";
+import Pic from "../pages/Admin/Pic";
+import Means from "../pages/Admin/Means";
 import Sites from "./Sites.js";
-import AddSite from "./AddSite";
-import Calender from "./Calender";
-import Companies from "./Companies";
-import Incidents from "./Incidents";
-import AdminHeader from "./AdminHeader";
-import Organigramme from "./Organigramme";
+import AddSite from "../pages/Admin/AddSite";
+import Calender from "../pages/Admin/Calender";
+import Companies from "../pages/Admin/Companies";
+import Incidents from "../pages/Admin/Incidents";
+import AdminHeader from "../pages/Admin/AdminHeader";
+import Organigramme from "../pages/Admin/Organigramme";
 // Enterprise Routes
-import Main from "../Enterprise";
-import eOrganigramme from "../Enterprise/Organigramme";
-import ePic from "../Enterprise/Pic";
-import eMeans from "../Enterprise/Means";
+import Main from "../pages/Enterprise";
+import eOrganigramme from "../pages/Enterprise/Organigramme";
+import ePic from "../pages/Enterprise/Pic";
+import eMeans from "../pages/Enterprise/Means";
 // TRAFFIC ROUTES
-import tPic from "../TRAFFIC/Pic";
-import tIncidents from "../TRAFFIC/Incidents";
-import tPlanning from "../TRAFFIC/Planning";
-import varificationSheet from "../TRAFFIC/Planning/components/VerificationSheet";
+import tPic from "../pages/TRAFFIC/Pic";
+import tIncidents from "../pages/TRAFFIC/Incidents";
+import tPlanning from "../pages/TRAFFIC/Planning";
+import varificationSheet from "../pages/TRAFFIC/Planning/components/VerificationSheet";
 
 // BUFFER ROUTES
-import bPic from "../Buffer/Pic";
-import bPlanning from "../Buffer/Planning";
-import bvarificationSheet from "../Buffer/Planning/components/VerificationSheet";
+import bPic from "../pages/Buffer/Pic";
+import bPlanning from "../pages/Buffer/Planning";
+import bvarificationSheet from "../pages/Buffer/Planning/components/VerificationSheet";
 export default function AdminIndex() {
   const dispatch = useDispatch();
   const location = useLocation();

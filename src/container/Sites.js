@@ -4,28 +4,28 @@ import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import _ from "lodash";
 
-import GLOBALS from "../../globals";
-import Actions from "../../redux/actions";
+import GLOBALS from "../globals";
+import Actions from "../redux/actions";
 
-import Form from "../../components/Form";
-import Card from "../../components/Card";
-import Modal from "../../components/Modal";
-import Loader from "../../components/Loader";
-import Button from "../../components/Button";
-import Heading from "../../components/Heading";
-import FormInput from "../../components/FormInput";
-import SmallText from "../../components/SmallText";
-import FormLabel from "../../components/FormLabel";
-import PhoneBox from "../../components/PhoneBox";
-import SubHeading from "../../components/SubHeading";
-import AvatarUpload from "../../components/AvatarUpload";
-import OutlinedCapsuledButton from "../../components/OutlinedCapsuledButton";
+import Form from "../components/Form";
+import Card from "../components/Card";
+import Modal from "../components/Modal";
+import Loader from "../components/Loader";
+import Button from "../components/Button";
+import Heading from "../components/Heading";
+import FormInput from "../components/FormInput";
+import SmallText from "../components/SmallText";
+import FormLabel from "../components/FormLabel";
+import PhoneBox from "../components/PhoneBox";
+import SubHeading from "../components/SubHeading";
+import AvatarUpload from "../components/AvatarUpload";
+import OutlinedCapsuledButton from "../components/OutlinedCapsuledButton";
 
-import Logo from "../../assets/icons/Logo.svg";
-import SiteImage from "../../assets/images/Site.png";
-import { ReactComponent as Pencil } from "../../assets/icons/Pencil.svg";
-import { ReactComponent as PlusCircle } from "../../assets/icons/PlusCircle.svg";
-import { TEXTS } from "../../assets/languages/french";
+import Logo from "../assets/icons/Logo.svg";
+import SiteImage from "../assets/images/Site.png";
+import { ReactComponent as Pencil } from "../assets/icons/Pencil.svg";
+import { ReactComponent as PlusCircle } from "../assets/icons/PlusCircle.svg";
+import { TEXTS } from "../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -208,7 +208,7 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
 }
 
 export default function Sites(props) {
-  const {GO_TO_HOME_PAGE}=TEXTS;
+  const { GO_TO_HOME_PAGE } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
