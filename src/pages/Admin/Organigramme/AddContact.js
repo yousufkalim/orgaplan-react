@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-
+import { TEXTS } from "../../../assets/languages/french";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
@@ -30,6 +30,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddContact(props) {
+  const {
+    ADD_A_CONTACT,
+    TYPE_OF_ORGANIGRAMME,
+    CONTACT_INFO,
+    Please_enter_email,
+    IDENTITY,
+    FIRST_NAME,
+    LAST_NAME,
+    VALIDATE,
+  } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -195,11 +205,11 @@ export default function AddContact(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CONTACT" />
+      <Heading primary={ADD_A_CONTACT} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF ORGANIGRAMME*: " />
+            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}*: `} />
             <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
@@ -223,7 +233,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO*: " />
+            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
             <Form.Row
               noMargin
               width="55%"
@@ -234,7 +244,7 @@ export default function AddContact(props) {
                   name="email"
                   value={email}
                   // error={firstName}
-                  placeholder="Adresse e-mail"
+                  placeholder={Please_enter_email}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -264,7 +274,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY*:  " />
+            <FormLabel bold primary={`${IDENTITY}*: `} />
             <Form.Row
               noMargin
               width="55%"
@@ -274,7 +284,7 @@ export default function AddContact(props) {
                 <FormInput
                   name="firstName"
                   value={firstName}
-                  placeholder="First Name"
+                  placeholder={FIRST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -289,7 +299,7 @@ export default function AddContact(props) {
                 <FormInput
                   name="lastName"
                   value={lastName}
-                  placeholder="Last Name"
+                  placeholder={LAST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -312,7 +322,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY*: " />
+            <FormLabel bold primary="Entreprise*: " />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
@@ -352,7 +362,7 @@ export default function AddContact(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

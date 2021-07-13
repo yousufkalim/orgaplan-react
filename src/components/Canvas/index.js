@@ -4,7 +4,7 @@ import Header from "./Components/Header";
 import Button from "../Button";
 import GLOBALS from "../../globals";
 import _ from "lodash";
-
+import { TEXTS } from "../../assets/languages/french";
 export const width = 960;
 export const height = 680;
 
@@ -211,6 +211,7 @@ class App extends Component {
   };
 
   handleUpdateMean = () => {
+    const { Please_first_select_shape } = TEXTS;
     const { meanValue, meanShapeId } = this.state;
     if (meanShapeId) {
       let catImage = new Image();
@@ -230,7 +231,7 @@ class App extends Component {
         });
       };
     } else {
-      alert("please first select a shape");
+      alert(Please_first_select_shape);
     }
   };
   handleDisableShape = (id) => {
@@ -270,15 +271,17 @@ class App extends Component {
     return;
   };
   handleDeleteShape = () => {
+    const { Please_first_select_shape } = TEXTS;
     const { shapes, shapeId } = this.state;
     if (shapeId) {
       let tempArr = shapes.filter((sp) => sp._id !== shapeId);
       this.setState({ shapes: tempArr, checkDisable: true, shapeId: "" });
     } else {
-      alert("Please first select shape");
+      alert(Please_first_select_shape);
     }
   };
   handleDeleteMean = () => {
+    const { Please_first_select_shape } = TEXTS;
     const { shapes, meanShapeId } = this.state;
     if (meanShapeId) {
       let tempArr = shapes.filter((sp) => sp._id !== meanShapeId);
@@ -289,7 +292,7 @@ class App extends Component {
         meanDisable: true,
       });
     } else {
-      alert("Please first select shape");
+      alert(Please_first_select_shape);
     }
   };
   // handleUpdateShape = () => {
@@ -352,6 +355,14 @@ class App extends Component {
   };
 
   handleConvaClick = (event) => {
+    const {
+      Please_first_select_shape,
+      You_only_can_make_upto_Decagon_shape,
+      Upload_a_pdf_first,
+      Select_an_element_first,
+      You_can_upload_only_pdf_file,
+      FILE_TOO_LARGE,
+    } = TEXTS;
     const {
       state: {
         points,
@@ -500,7 +511,7 @@ class App extends Component {
               points: [],
             });
           } else if (points.length >= 10) {
-            alert("You only can make upto Decagon shape");
+            alert(You_only_can_make_upto_Decagon_shape);
             return;
           } else {
             this.setState({
@@ -518,10 +529,10 @@ class App extends Component {
       }
     } else if (image === null) {
       if (checkMean === true || finishDisable === true) return;
-      else alert("Upload a pdf first");
+      else alert(Upload_a_pdf_first);
     } else {
       if (checkMean === true || finishDisable === true) return;
-      else alert("Select an element first");
+      else alert(Select_an_element_first);
     }
   };
 
@@ -557,6 +568,7 @@ class App extends Component {
     });
   };
   handlePdfChange = (e) => {
+    const { You_can_upload_only_pdf_file, FILE_TOO_LARGE } = TEXTS;
     if (e.target.files.length) {
       let file = e.target.files[0];
       if (file.size <= 15 * 1024 * 1024) {
@@ -568,10 +580,10 @@ class App extends Component {
           this.setState({ isLoading: true });
           this.setState({ tempImage: uri });
         } else {
-          alert("You can upload only pdf file");
+          alert(You_can_upload_only_pdf_file);
         }
       } else {
-        alert("File too large");
+        alert(FILE_TOO_LARGE);
       }
     }
   };
