@@ -12,10 +12,17 @@ import FormCheckbox from "../../../../../components/FormCheckbox";
 import { TEXTS } from "../../../../../assets/languages/french";
 
 export default function AddSiteStep1(props) {
-const {LOCATION,SELECT_LOCATION,LEVEL,
-  SELECT_LEVEL,STORAGE_AREA,SELECT_STORAGEAREA,
-  TRANSPORTING_MEANS,VALIDATE,MEANS
-  }=TEXTS;
+  const {
+    LOCATION,
+    SELECT_LOCATION,
+    LEVEL,
+    SELECT_LEVEL,
+    STORAGEAREA,
+    SELECT_STORAGEAREA,
+    TRANSPORTING_MEANS,
+    VALIDATE,
+    MEANS,
+  } = TEXTS;
 
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
@@ -322,7 +329,7 @@ const {LOCATION,SELECT_LOCATION,LEVEL,
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary={`${STORAGE_AREA}*:`} />
+        <FormLabel bold primary={`${STORAGEAREA}*:`} />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"

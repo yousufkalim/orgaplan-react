@@ -5,12 +5,12 @@ import Avatar from "@material-ui/core/Avatar";
 
 import GLOBALS from "../globals";
 import Actions from "../redux/actions";
-
+import { TEXTS } from "../assets/languages/french";
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function FormMultipleUpload(props) {
   const theme = useTheme();
-
+  const { Max_size_can_be_10MB_of_types } = TEXTS;
   const white = theme.palette.common.white;
 
   const useStyles = makeStyles((theme) => ({
@@ -83,7 +83,7 @@ export default function FormMultipleUpload(props) {
             dispatch(
               Actions.notistack.enqueueSnackbar(
                 Actions.notistack.snackbar(
-                  "Max size can be 10MB of types: PNG, JPEG, JPG",
+                  `${Max_size_can_be_10MB_of_types}: PNG, JPEG, JPG`,
                   "error",
                 ),
               ),

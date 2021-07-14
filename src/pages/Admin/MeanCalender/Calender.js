@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Calender = () => {
   const classes = useStyles();
-  return <div className={classes.root}>calender</div>;
+  return <div className={classes.root}>Calendrier</div>;
 };
 
 export default Calender;

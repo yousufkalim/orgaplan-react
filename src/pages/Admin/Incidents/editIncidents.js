@@ -36,37 +36,10 @@ const useStyles = makeStyles(() => ({
 
 export default function AddIncidents(props) {
   const {
-    NAME,
-    VALIDATE,
-    AVAILABILITY,
-    Enter_site_addresses,
-    END_DATE,
-    DELIVERYAREAS,
-    COMPANIES,
-    is_Full,
-    Vehicles,
-    Days_before_end_of_the_contract,
-    NOTIFY_THE_ADDRESSES,
-    Please_enter_email,
-    MEANS,
-    NOTIFICATION,
-    IDENTITY,
-    ACCESSIBILITY,
-    AVAILABILITIES,
-    UNAVAILABILITIES,
-    HOURLY_RATE,
-    ADDITIONNAL_INFORMATION,
-    Add_COMPANY,
-    TYPE_OF_COMPANY,
-    General_Contractor,
-    SUBCONTRACTOR,
-    GENERAL_CONTRACTOR,
-    TRADES,
-    IDENTITY_OF_RESPONSIBLE,
-    LAST_NAME,
-    FIRST_NAME,
     YES,
     NO,
+    OPEN,
+    CLOSE,
     Please_select_a_incident,
     Please_select_a_company,
     EDIT_AN_INCIDENT,
@@ -183,7 +156,7 @@ export default function AddIncidents(props) {
       setselectedLocationType("storageArea");
       setselectedLocation(incident.location?.storageArea);
       const locationObject = {
-        ["storageArea"]: incident.location?.storageArea,
+        storageArea: incident.location?.storageArea,
       };
       setLocation(locationObject);
     } else if (incident.location?.deliveryArea) {
@@ -191,7 +164,7 @@ export default function AddIncidents(props) {
 
       setselectedLocation(incident.location?.deliveryArea);
       const locationObject = {
-        ["deliveryArea"]: incident.location?.deliveryArea,
+        deliveryArea: incident.location?.deliveryArea,
       };
       setLocation(locationObject);
     }
@@ -550,9 +523,9 @@ export default function AddIncidents(props) {
                   items={[
                     {
                       value: "OPEN",
-                      label: "Open",
+                      label: OPEN,
                     },
-                    { value: "CLOSED", label: "Closed" },
+                    { value: "CLOSED", label: CLOSE },
                   ]}
                 />
               </Form.Column>

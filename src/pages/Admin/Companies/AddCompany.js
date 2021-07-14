@@ -78,11 +78,18 @@ export default function AddCompanies(props) {
     TYPE_OF_COMPANY,
     General_Contractor,
     SUBCONTRACTOR,
-    GENERAL_CONTRACTOR,
     TRADES,
+    FIRST_NAME,
     IDENTITY_OF_RESPONSIBLE,
     LAST_NAME,
-    FIRST_NAME,
+    Please_select_a_company,
+    something_went_wrong,
+    Company_already_Exists_With_this_name,
+    Please_enter_name,
+    Please_provide_image,
+    Please_enter_valid_email,
+    Please_enter_valid_URL,
+    WEBSITE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -180,7 +187,7 @@ export default function AddCompanies(props) {
         websiteError ||
         !companyType
       ) {
-        alert("something went wrong");
+        alert(something_went_wrong);
       } else {
         let checkCompanyExists = companies.filter(
           (company) => company.companyId.name === name,
@@ -189,7 +196,7 @@ export default function AddCompanies(props) {
           return dispatch(
             Actions.notistack.enqueueSnackbar(
               Actions.notistack.snackbar(
-                "Company already Exists With this name,Please use another name",
+                Company_already_Exists_With_this_name,
                 "error",
               ),
             ),
@@ -277,26 +284,26 @@ export default function AddCompanies(props) {
   const validation = (name, value) => {
     if (name == "name") {
       if (!value) {
-        setNameError("Please enter name");
+        setNameError(Please_enter_name);
       } else {
         setNameError("");
       }
     } else if (name == "image") {
       if (!value.length > 0) {
-        setImageError("Please provide image");
+        setImageError(Please_provide_image);
       } else {
         setImageError("");
       }
     } else if (name == "parentCompanyId") {
       if (!value) {
-        setParentCompanyError("Please select a company");
+        setParentCompanyError(Please_select_a_company);
       } else {
         setParentCompanyError("");
       }
     } else if (name == "email") {
       const emailValidation = /\S+@\S+\.\S+/;
       if (!value.match(emailValidation) && value !== "") {
-        setEmailError("Please enter valid email");
+        setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
@@ -304,7 +311,7 @@ export default function AddCompanies(props) {
       const websiteValidation =
         /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
       if (!value.match(websiteValidation) && value !== "") {
-        setWebsiteError("Please enter valid URL");
+        setWebsiteError(Please_enter_valid_URL);
       } else {
         setWebsiteError("");
       }
@@ -426,14 +433,14 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${GENERAL_CONTRACTOR}* :`} />
+            <FormLabel bold primary={`${General_Contractor}* :`} />
             <Form.Row noMargin width="48%">
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormSelect
                   name="parentCompanyId"
                   value={parentCompanyId}
                   values={allSiteCompanies}
-                  placeholder="Select Company"
+                  placeholder={Please_select_a_company}
                   disabled={companyType === "generalcontractor"}
                   onChange={({ target: { name, value } }) => {
                     inputChange(name, value);
@@ -523,7 +530,7 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="WEBSITE :" />
+            <FormLabel bold primary={`${WEBSITE} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <FormInput
@@ -542,7 +549,7 @@ export default function AddCompanies(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+            <FormLabel bold primary={`${ADDITIONNAL_INFORMATION} :`} />
             <Form.Row width="48%" noMargin>
               <FormInput
                 textArea
@@ -560,7 +567,7 @@ export default function AddCompanies(props) {
           <Form.ButtonContainer>
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               onClick={onSubmit}
