@@ -336,7 +336,7 @@ export default function EditSiteStep1(props) {
             disabled={
               !name ||
               nameError ||
-              !adminId ||
+              adminId.length === 0 ||
               adminError ||
               addresses.length === 0 ||
               addressError ||

@@ -208,7 +208,7 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
 }
 
 export default function Sites(props) {
-  const {GO_TO_HOME_PAGE}=TEXTS;
+  const { GO_TO_HOME_PAGE } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
