@@ -1018,15 +1018,12 @@ const Calender = (props) => {
             }
             if (key.status === "PENDING") {
               background = "yellow";
-            } else if (
-              key.status === "VALIDATED" ||
-              key.status === "MODIFIED"
-            ) {
-              background = "red";
             } else if (key.status === "COMPLETEDWITHISSUE") {
               background = "orange";
             } else if (key.status === "COMPLETED") {
               background = "Green";
+            } else {
+              background = "red";
             }
 
             /* start time converstion */

@@ -1020,14 +1020,10 @@ const Calender = (props) => {
             // Delivery req status color updated
             if (key.status === "PENDING") {
               background = "yellow";
-            } else if (
-              key.status === "VALIDATED" ||
-              key.status === "COMPLETED" ||
-              key.status === "COMPLETEDWITHISSUE"
-            ) {
-              background = "green";
             } else if (key.status === "MODIFIED") {
               background = "orange";
+            } else {
+              background = "green";
             }
 
             /* start time converstion */
