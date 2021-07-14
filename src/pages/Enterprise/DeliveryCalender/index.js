@@ -1017,27 +1017,17 @@ const Calender = (props) => {
             if (!(key.startTime && key.endTime)) {
               return {};
             }
+            // Delivery req status color updated
             if (key.status === "PENDING") {
-              if (key.alert === true && status === "ALERT") {
-                fontColor = "red";
-                background = "yellow";
-              } else {
-                background = "yellow";
-              }
-            } else if (key.status === "VALIDATED") {
-              if (key.alert === true && status === "ALERT") {
-                fontColor = "red";
-                background = "green";
-              } else {
-                background = "green";
-              }
+              background = "yellow";
+            } else if (
+              key.status === "VALIDATED" ||
+              key.status === "COMPLETED" ||
+              key.status === "COMPLETEDWITHISSUE"
+            ) {
+              background = "green";
             } else if (key.status === "MODIFIED") {
-              if (key.alert === true && status === "ALERT") {
-                fontColor = "red";
-                background = "orange";
-              } else {
-                background = "orange";
-              }
+              background = "orange";
             }
 
             /* start time converstion */

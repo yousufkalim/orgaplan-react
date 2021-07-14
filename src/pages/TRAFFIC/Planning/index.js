@@ -922,99 +922,86 @@ const Calender = (props) => {
           let fontColor = "";
 
           tempEvent = response.data.Deliveries.map((key, index) => {
-            if (key.userId._id === userId) {
-              if (!(key.startTime && key.endTime)) {
-                return {};
-              }
-              if (key.status === "PENDING") {
-                if (key.alert === true && status === "ALERT") {
-                  fontColor = "red";
-                  background = "yellow";
-                } else {
-                  background = "yellow";
-                }
-              } else if (key.status === "VALIDATED") {
-                if (key.alert === true && status === "ALERT") {
-                  fontColor = "red";
-                  background = "green";
-                } else {
-                  background = "green";
-                }
-              } else if (key.status === "MODIFIED") {
-                if (key.alert === true && status === "ALERT") {
-                  fontColor = "red";
-                  background = "orange";
-                } else {
-                  background = "orange";
-                }
-              }
-
-              /* start time converstion */
-              let start = new Date(key.date);
-              let startHours = key.startTime.slice(0, 2);
-              let startmint = key.startTime.slice(3, 5);
-              start.setHours(startHours);
-              start.setMinutes(startmint);
-              /* start time converstion */
-
-              /* End time converstion */
-              let end = new Date(key.date);
-              let endHours = key.endTime.slice(0, 2);
-              let endmint = key.endTime.slice(3, 5);
-              end.setHours(endHours);
-              end.setMinutes(endmint);
-              /* End time converstion */
-
-              count++;
-              return {
-                objectName: "Deliveries",
-                id: key._id,
-                title: key.comment,
-                start: start,
-                end: end,
-                background: background,
-                fontColor: fontColor,
-                liftingMeans: key.liftingMeans,
-                routingMeans: key.routingMeans,
-                company: key.companyId,
-                materials: key.materials,
-                deliveryArea: key.deliveryArea,
-                storageArea: key.storageArea,
-                building: key.building,
-                status: key.status,
-                user: key.userId,
-              };
+            if (!(key.startTime && key.endTime)) {
+              return {};
             }
+            // Delivery req status color updated
+            if (key.status === "PENDING") {
+              background = "yellow";
+            } else if (
+              key.status === "VALIDATED" ||
+              key.status === "MODIFIED"
+            ) {
+              background = "red";
+            } else if (key.status === "COMPLETEDWITHISSUE") {
+              background = "orange";
+            } else if (key.status === "COMPLETED") {
+              background = "Green";
+            }
+
+            /* start time converstion */
+            let start = new Date(key.date);
+            let startHours = key.startTime.slice(0, 2);
+            let startmint = key.startTime.slice(3, 5);
+            start.setHours(startHours);
+            start.setMinutes(startmint);
+            /* start time converstion */
+
+            /* End time converstion */
+            let end = new Date(key.date);
+            let endHours = key.endTime.slice(0, 2);
+            let endmint = key.endTime.slice(3, 5);
+            end.setHours(endHours);
+            end.setMinutes(endmint);
+            /* End time converstion */
+
+            count++;
+            return {
+              objectName: "Deliveries",
+              id: key._id,
+              title: key.comment,
+              start: start,
+              end: end,
+              background: background,
+              fontColor: fontColor,
+              liftingMeans: key.liftingMeans,
+              routingMeans: key.routingMeans,
+              company: key.companyId,
+              materials: key.materials,
+              deliveryArea: key.deliveryArea,
+              storageArea: key.storageArea,
+              building: key.building,
+              status: key.status,
+              user: key.userId,
+            };
           });
           setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
-            if (key.userId._id === userId) {
-              let background = "";
-              let fontColor = "white";
+            let background = "";
+            let fontColor = "white";
 
-              if (key.status === "VALIDATED") {
-                background = "green";
-              } else {
-                background = "";
-              }
-              let start = new Date(key.startDate);
-              let end = new Date(key.endDate);
-              count++;
-              return {
-                objectName: "Means",
-                id: key._id,
-                title: key.bookingReason,
-                start: start,
-                end: end,
-                companyName: key.companyId.name,
-                meanName: key.meanId.name,
-                status: key.status,
-                background: background,
-                fontColor: fontColor,
-                user: key.userId,
-              };
+            if (key.status === "VALIDATED") {
+              background = "green";
+            } else {
+              background = "";
             }
+            let start = new Date(key.startDate);
+            let end = new Date(key.endDate);
+            count++;
+            return {
+              objectName: "Means",
+              id: key._id,
+              title: key.bookingReason,
+              start: start,
+              end: end,
+              companyName: key.companyId.name,
+              meanName: key.meanId.name,
+              status: key.status,
+              background: background,
+              fontColor: fontColor,
+              user: key.userId,
+            };
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
         }

@@ -1050,6 +1050,7 @@ const Calender = (props) => {
             if (!(key.startTime && key.endTime)) {
               return {};
             }
+            // Delivery req status color updated
             if (key.status === "PENDING") {
               if (key.alert === true && status === "ALERT") {
                 fontColor = "red";
@@ -1057,7 +1058,11 @@ const Calender = (props) => {
               } else {
                 background = "yellow";
               }
-            } else if (key.status === "VALIDATED") {
+            } else if (
+              key.status === "VALIDATED" ||
+              key.status === "COMPLETED" ||
+              key.status === "COMPLETEDWITHISSUE"
+            ) {
               if (key.alert === true && status === "ALERT") {
                 fontColor = "red";
                 background = "green";
