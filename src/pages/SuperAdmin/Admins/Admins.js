@@ -54,6 +54,10 @@ export default function Admins(props) {
     SELECT_COMPANY,
     DELETE,
     VALIDATE,
+    FIRST_NAME_REQUIRED,
+    Telephone_must_have_10_to_25_digits,
+    EMAIL_REQUIRED,
+    LAST_NAME_REQUIRED,
     CREATE_AN_ADMIN,
     Are_you_sure_to_Delete,
     EDIT_ADMIN,
@@ -219,18 +223,17 @@ export default function Admins(props) {
   function validation(name, value) {
     if (name === "phone") {
       if (GLOBALS.Functions.phone(value))
-        setPhoneError("Phone must be 10-25 digits");
+        setPhoneError(Telephone_must_have_10_to_25_digits);
       else setPhoneError("");
     } else if (name === "firstName") {
       if (GLOBALS.Functions.empty(value))
-        setFirstNameError("First name is required");
+        setFirstNameError(FIRST_NAME_REQUIRED);
       else setFirstNameError("");
     } else if (name === "email") {
-      if (GLOBALS.Functions.empty(value)) setEmailError("email  is required");
+      if (GLOBALS.Functions.empty(value)) setEmailError(EMAIL_REQUIRED);
       else setEmailError("");
     } else if (name === "lastName") {
-      if (GLOBALS.Functions.empty(value))
-        setLastNameError("Last name is required");
+      if (GLOBALS.Functions.empty(value)) setLastNameError(LAST_NAME_REQUIRED);
       else setLastNameError("");
     }
   }
@@ -439,7 +442,7 @@ export default function Admins(props) {
                 <Button
                   type="submit"
                   minWidth={200}
-                  text="VALIDATE"
+                  text={VALIDATE}
                   fullWidth={false}
                   loading={loading}
                   disabled={

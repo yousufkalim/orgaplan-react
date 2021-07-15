@@ -60,6 +60,11 @@ export default function AddInvoice(props) {
     EDIT_INVOICE,
     UPLOAD_PDF,
     DOWNLOAD,
+    FILE_TOO_LARGE,
+    Max_size_can_be_15MB,
+    Please_enter_start_date,
+    Please_enter_site,
+    Please_enter_amount,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -154,7 +159,7 @@ export default function AddInvoice(props) {
         return dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              `File is large,Max size can be 15 MB`,
+              `${FILE_TOO_LARGE},${Max_size_can_be_15MB}`,
               "error",
             ),
           ),
@@ -173,7 +178,8 @@ export default function AddInvoice(props) {
         setClientId(value);
         setErrors({ ...errors, clientId: "" });
       } else if (value === "") {
-        setErrors({ ...errors, clientId: "Please enter client name" });
+        setErrors({ ...errors, clientId: Please_enter_name });
+
         setClientId(value);
       }
     } else if (name === "startDate") {
@@ -183,7 +189,7 @@ export default function AddInvoice(props) {
       } else {
         if ((value && value.length < 1) || value === null) {
           setStartDate("");
-          setErrors({ ...errors, startDate: "Please enter starting date" });
+          setErrors({ ...errors, startDate: Please_enter_start_date });
         } else setErrors({ ...errors, startDate: "" });
       }
     } else if (name === "endDate") setEndDate(value);
@@ -192,7 +198,8 @@ export default function AddInvoice(props) {
         setSiteId(value);
         setErrors({ ...errors, siteId: "" });
       } else if (value === "") {
-        setErrors({ ...errors, siteId: "Please enter site" });
+        setErrors({ ...errors, siteId: Please_enter_site });
+
         setSiteId(value);
       }
     } else if (name === "amount") setAmount(value);
@@ -201,7 +208,7 @@ export default function AddInvoice(props) {
   function validation(name, value) {
     if (name === "amount") {
       if (GLOBALS.Functions.empty(value))
-        setErrors({ ...errors, amount: "Please enter amount" });
+        setErrors({ ...errors, amount: Please_enter_amount });
       else setErrors({ ...errors, amount: "" });
     }
   }
@@ -357,6 +364,7 @@ export default function AddInvoice(props) {
                   <a
                     href={GLOBALS.Constants.BASE_URL + invoice.file}
                     target="_blank"
+                    rel="noreferrer"
                   >
                     {DOWNLOAD}
                   </a>

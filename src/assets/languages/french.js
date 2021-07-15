@@ -17,7 +17,12 @@ export const TEXTS = {
   ORGANIGRAMME: "Organigramme",
   LOGOUT: "Se Deconnecter",
   DELIVERY: "Livraison",
+  DELIVERY_DELETED: "Livraison Effacer",
+  DELIVERY_DATE: "Livraison Date",
+
   DELIVERY_REQUESTS: "Demandes De Livraison",
+  DELIVERY_REQUEST: "Demande De Livraison",
+
   DELIVERIES: "Livraisons",
   DELIVERYAREA: "Aire De Livraison",
   DELIVERYAREAS: "Aire De Livraisons",
@@ -57,6 +62,8 @@ export const TEXTS = {
   Vehicles: "Véhicules",
   Enter_vehicles: "Entrer Véhicules",
   Enter_site_addresses: "Entrer Chantier Adresses",
+  Site_address: "Chantier Adresses",
+
   START_DATE: "Date De Démarrage",
   END_DATE: "Date De Fin",
   UPLOAD_PDF: "Charger Un Pdf",
@@ -92,8 +99,15 @@ export const TEXTS = {
   LOGISTIC_ORGANIGAMME: "Organigramme Logistique",
   POSITION: "Rôle",
   FIRST_NAME: "Prénom",
+  FIRST_NAME_REQUIRED: "Prénom est obligatoire",
+  LAST_NAME_REQUIRED: "Prénom est obligatoire",
+
+  EMAIL_REQUIRED: "Nom est obligatoire",
+
   LAST_NAME: "Nom",
   TYPE_OF_PLACE: "Type D' Localisation",
+  TYPE_OF_ADMIN: "Type D' Admin",
+
   TYPE_OF_ORGANIGRAMME: "Type D'organigramme",
   CONTACT_INFO: "Information De Contact",
   IDENTITY: "Identité",
@@ -101,6 +115,8 @@ export const TEXTS = {
   ENTER_TRADES: "Entrer Lots",
 
   SELECT_TRADES: " Sélectionner Lots",
+  SELECT_ADMIN: " Sélectionner Admin",
+
   SELECT_MEANS: " Sélectionner Moyens",
 
   SELECT_TIME: " Sélectionner Heure",
@@ -126,7 +142,14 @@ export const TEXTS = {
   IDENTITY_OF_RESPONSIBLE: "Identité Du Responsable",
   WEBSITE: "Site Internet",
   ADDITIONNAL_INFORMATION: "Informations Complémentaires",
+  ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS:
+    "Informations Complémentaires doit être moins que 30 personnages",
+  LAST_NAME_MUST_BE_LESS_THAN_30_CHARACTERS:
+    "Nom doit être moins que 30 personnages",
+
   VALIDATE: "Valider",
+  VALIDATED: "Validé",
+
   COMPLETE: "Achevée",
   General_Contractor: "Entreprise Générale",
   DASHBOARD: "Panel",
@@ -139,8 +162,12 @@ export const TEXTS = {
   SITE_NAME: "Chantier Nom",
 
   SITE_LIST: "Chantier Liste ",
+  CLIENTS_LIST: "Clients Liste ",
+  NAME_OF_CLIENT: "Nom Of Client",
+
   Per_client: "Par clients",
   INVOICE: "Facture",
+  INVOICES: "Factures",
 
   END_OF_SUBSCRIPTION: "Fin D'abonnement",
   TARIFICATION_CLIENTS: "Tarification Client",
@@ -160,14 +187,20 @@ export const TEXTS = {
   CONTRACT_DATE: "Date De Contrat",
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité Souscrite",
   AVAILABLE_FUNCTIONALITY: "Disponible Fonctionnalité",
+  AVAILABLE: "Disponible",
+
   OLD_PASSWORD: "Vieux Mot De Passe ",
   NEW_PASSWORD: "Nouveau Mot De Passe ",
   CONFIRM_PASSWORD: "Confirmer Nouveau Mot De Passe",
   ADD_PHOTO: "Ajouter DES PHOTOS",
+  ADD_ZAC: "Ajouter Des Zac",
+
   NOTIFICATION: "Notification",
   NOTIFY_THE_ADDRESSES: "Notifier Les Adresses",
   ZACS_LIST: "List Des Zacs",
   See_archived_sites: "Voir les chantiers archivés",
+  archived_sites: "archivés chantiers",
+
   Archive: "Archiver",
   ZAC_NAME: "Nom De Zac",
   ZAC_OF_SITE: "Zac De Chantier",
@@ -176,7 +209,11 @@ export const TEXTS = {
   Delivery_module: "Module Livraison",
   DELAY: "Retard",
   UNEXPECTED_DELIVERY: "Inattendue Livraison",
+  UNEXPECTED: "Inattendue",
+
   SEE_OPENING_TIMES: "Voir Heures D'ouverture",
+  OPENING_TIME: "Heures D'ouverture",
+
   SEE_UNAVAILABILITIES: "Voir Indisponibilités",
   AVAILABILITIES: "Disponibilités",
   ACCESSIBILITY: "Accessibilité",
@@ -184,9 +221,12 @@ export const TEXTS = {
   Add_Plan: "Ajouter un plan",
   Create_a_Building: "Créer un Bâtiment",
   Create_a_SITE: "Créer un Chantier",
+  Create_a_Zac: "Créer un Zac",
 
   Exterior: "Extérieur",
   Modify: "Modifier",
+  MODIIED: "Modifié",
+  ALERT: "Alerte",
   ADD_AN_INVOICE: "Ajouter UNE FACTURE",
   CREATE_AN_INVOICE: "Créer Une Facture",
   ALL: "Tous",
@@ -202,6 +242,9 @@ export const TEXTS = {
   You_can_upload_only_pdf_file:
     "Vous pouvez charger uniquement des fichiers PDF",
   Please_first_select_shape: "Sélectionner d'abord une entité",
+  Are_you_sure_You_want_to_do_this: "Êtes-vous sûr, You vouloir faire ce",
+  Are_you_sure_You_want_to_delete_this: "Êtes-vous sûr, You vouloir effacer ce",
+
   You_only_can_make_upto_Decagon_shape:
     "Vous ne pouvez créer que 10 points maximum",
   Upload_a_pdf_first: "Chargez d'abord un fichier PDF",
@@ -210,6 +253,7 @@ export const TEXTS = {
     "Votre aire de stockage va expirer dans 3 jours",
   Max_size_can_be_10MB_of_type: "La taille maximum du fichier est 10MB",
   Max_size_can_be_10MB_of_types: "La taille maximum du fichiers est 10MB",
+  Max_size_can_be_15MB: "La taille maximum  est 10MB",
 
   Days_before_end_of_the_site: "Jours avant la fin du chantier",
   Days_before_end_of_the_contract: "Jours avant la fin du contract",
@@ -223,6 +267,9 @@ export const TEXTS = {
   Edit_Delivery_Request: "Modifier la requête de livraison",
   Invalid_Time: "Heure incorrect",
   Please_Add_valid_Time_and_Event: "Merci Ajouter correcte Heure événement",
+  Please_Add_logo: "Merci Ajouter Logo",
+  ACTIVITY_LOGS: " Activité Journaux",
+  LOGS: "Journauxs",
 
   MATERIALS_DELIVERED: "Materiel Livrée",
   TRANSPORTING_MEANS: "Moyen D'acheminement",
@@ -241,13 +288,28 @@ export const TEXTS = {
     "Une entreprise du même nom existe déjà",
   Please_use_another_name: "Merci d'utiliser un autre nom",
   Please_enter_name: "Entrer un nom",
+  Please_enter_atleast_one_trade: "Entrer un au moins lot",
+
+  Please_enter_company_name: "Entrer un entreprise nom",
+
   Please_provide_image: "Transmettez une image",
   Please_select_a_company: "Sélectionner une entreprise",
+  Please_select_start_date: "Sélectionner une Date De Démarrage",
+  Please_enter_start_date: "Entrer une Date De Démarrage",
+  Please_enter_site: "Entrer une chantier",
+  Please_enter_site_name: "Entrer une chantier nom",
+  Please_enter_site_responsible: "Entrer une chantier responsable",
+  Please_enter_address: "Entrer une address",
+
+  Please_select_end_date: "Sélectionner une Date De Fin",
+
   Please_select_a_incident: "Sélectionner une re-facturation",
 
   Please_select_Delivery_Area: "Sélectionner une AIRE DE LIVRAISON",
 
   Please_enter_valid_email: "Entrez une adresse correcte",
+  Please_enter_amount: "Entrez Une Montant",
+
   Please_enter_email: "Entrez une adresse ",
   RE_SEND: "Renvoyer",
 
@@ -265,6 +327,8 @@ export const TEXTS = {
   Add_Event: "Ajouter un événement",
   Add_COMPANY: "Ajouter un Entreprise",
   EDIT_COMPANY: "Modifier un Entreprise",
+  EDIT_CLIENT: "Modifier un Client",
+
   ACCEPT: "J'accepte",
   REJECT: "REJETER",
   Add_USER: "Ajouter un User",

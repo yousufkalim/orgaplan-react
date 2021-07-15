@@ -14,8 +14,32 @@ import RadioButton from "../../../../components/RadioButton";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
 import MultiAdderInputModal from "../../../../components/MultiAdderInputModal";
+import { TEXTS } from "../../../../assets/languages/french";
 
 export default function EditSiteStep1(props) {
+  const {
+    Please_enter_site_name,
+    Please_enter_site_responsible,
+    Please_enter_address,
+    Please_enter_atleast_one_trade,
+    SITE_NAME,
+    SITE_PICTURE,
+    ZAC_OF_SITE,
+    SELECT_ZAC,
+    SITE_RESPONSIBLE,
+    SELECT_ADMIN,
+    AVAILABLE_FUNCTIONALITY,
+    Delivery_module,
+    Site_address,
+    Enter_site_addresses,
+    TRADES,
+    ENTER_TRADES,
+    COST_OF_DELIVERY_PENALITIES,
+    UNEXPECTED_DELIVERY,
+    VALIDATE,
+    DELAY,
+  } = TEXTS;
+
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -127,25 +151,25 @@ export default function EditSiteStep1(props) {
   const validation = (name, value) => {
     if (name == "name") {
       if (!value) {
-        setNameError("Please enter site name");
+        setNameError(Please_enter_site_name);
       } else {
         setNameError("");
       }
     } else if (name == "adminId") {
       if (!value) {
-        setAdminError("Please enter site responsible");
+        setAdminError(Please_enter_site_responsible);
       } else {
         setAdminError("");
       }
     } else if (name == "addresses") {
       if (!value.length > 0) {
-        setAddressError("Please enter address");
+        setAddressError(Please_enter_address);
       } else {
         setAddressError("");
       }
     } else if (name == "trades") {
       if (!value || value.length < 1) {
-        setTradeError("Please enter atleast one trade");
+        setTradeError(Please_enter_atleast_one_trade);
       } else {
         setTradeError("");
       }
@@ -173,13 +197,13 @@ export default function EditSiteStep1(props) {
     <>
       <Form.Form onSubmit={onSubmit}>
         <Form.Row>
-          <FormLabel bold primary="SITE NAME* :" />
+          {" "}
+          <FormLabel bold primary={`${SITE_NAME}* :`} />
           <FormInput
             name="name"
             value={name}
             // maxLength="50"
-            // error={name}
-            placeholder="Site name"
+            placeholder={SITE_NAME}
             style={GLOBALS.Styles.inputWidth}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
@@ -190,7 +214,8 @@ export default function EditSiteStep1(props) {
         </Form.Row>
         {update && ""}
         <Form.Row>
-          <FormLabel bold primary="SITE PICTURE : " />
+          {" "}
+          <FormLabel bold primary={`${SITE_PICTURE} : `} />
           <FormMultipleUpload
             name="logo"
             values={logo}
@@ -200,14 +225,15 @@ export default function EditSiteStep1(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ZAC OF THE SITE : " />
+          {" "}
+          <FormLabel bold primary={`${ZAC_OF_SITE} : `} />
           <Form.Row width="48%" noMargin>
             <FormSelect
               name="zacId"
               values={zacs}
               value={zacId}
               // error={zacId}
-              placeholder="Select ZAC"
+              placeholder={SELECT_ZAC}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -216,7 +242,8 @@ export default function EditSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="SITE RESPONSIBLE* :" />
+          {" "}
+          <FormLabel bold primary={`${SITE_RESPONSIBLE}* :`} />
           <Form.Row
             noMargin
             width="48%"
@@ -228,7 +255,7 @@ export default function EditSiteStep1(props) {
               value={adminId}
               values={admins}
               // error={adminId}
-              placeholder="Select Admin"
+              placeholder={SELECT_ADMIN}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -243,36 +270,39 @@ export default function EditSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABLE FUNCTIONALITY : " />
+          {" "}
+          <FormLabel bold primary={`${AVAILABLE_FUNCTIONALITY}  : `} />
           <RadioButton
             name="functionality"
             value={functionality}
             // error={functionality}
             style={GLOBALS.Styles.inputWidth}
-            items={[{ value: "DELIVERY", label: "Delivery module" }]}
+            items={[{ value: "DELIVERY", label: Delivery_module }]}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="SITE ADDRESS(ES)* : " />
+          {" "}
+          <FormLabel bold primary={`${Site_address}* : `} />
           <MultiAdderInputModal
             name="addresses"
             values={addresses}
             // error={addresses}
             style={GLOBALS.Styles.inputWidth}
-            placeholder="Enter site addresses"
+            placeholder={Enter_site_addresses}
             onChange={(values) => handleChange("addresses", values)}
             error={addressError}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="TRADES* : " />
+          {" "}
+          <FormLabel bold primary={`${TRADES}* : `} />
           <MultiAdderInput
             name="trades"
             values={trades}
-            placeholder="Entert trades"
+            placeholder={ENTER_TRADES}
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
             onBlur={
@@ -285,12 +315,13 @@ export default function EditSiteStep1(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="COST OF DELIVERY PENALITIES: " />
+          {" "}
+          <FormLabel bold primary={`${COST_OF_DELIVERY_PENALITIES}: `} />
           <Form.Row width="48%" noMargin>
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
-                placeholder="Delay"
+                placeholder={DELAY}
                 name="penaltyforLateDelivery"
                 value={penaltyforLateDelivery}
                 // error={penaltyforLateDelivery}
@@ -303,7 +334,7 @@ export default function EditSiteStep1(props) {
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
-                placeholder="Unexp delivery"
+                placeholder={UNEXPECTED_DELIVERY}
                 name="penaltyforUnexpDelivery"
                 value={penaltyforUnexpDelivery}
                 // error={penaltyforUnexpDelivery}
@@ -319,7 +350,7 @@ export default function EditSiteStep1(props) {
           <Button
             type="submit"
             minWidth={200}
-            text="VALIDATE"
+            text={VALIDATE}
             fullWidth={false}
             loading={loading}
             disabled={

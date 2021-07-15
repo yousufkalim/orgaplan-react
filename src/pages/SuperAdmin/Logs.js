@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
+import { TEXTS } from "../../assets/languages/french";
 
 import Heading from "../../components/Heading";
 import Loader from "../../components/Loader";
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Logs(props) {
+  const { ACTIVITY_LOGS } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ export default function Logs(props) {
   return (
     <>
       <div className={classes.root}>
-        <Heading primary="Activity Logs" />
+        <Heading primary={ACTIVITY_LOGS} />
       </div>
       <div className={classes.content}>
         {loading ? (

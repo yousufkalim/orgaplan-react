@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
 const userItems = [
   {
-    name: "Home",
+    name: "Accueil",
     path: ["/", "/home"],
     icon: <HomeIcon />,
   },
@@ -100,17 +100,17 @@ const userItems = [
     icon: <Admins />,
   },
   {
-    name: "Sites",
+    name: "Chantiers",
     path: "/sites",
     icon: <Sites />,
   },
   {
-    name: "Invoices",
+    name: "Factures",
     path: "/invoices",
     icon: <Invoices />,
   },
   {
-    name: "Logs",
+    name: "Journauxs",
     path: "/logs",
     icon: <Companies />,
   },

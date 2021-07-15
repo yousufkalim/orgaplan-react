@@ -5,6 +5,7 @@ import Divider from "@material-ui/core/Divider";
 
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
+import { TEXTS } from "../../../../assets/languages/french";
 
 import Form from "../../../../components/Form";
 import Modal from "../../../../components/Modal";
@@ -50,6 +51,22 @@ const levelNumberList = [
 ];
 
 export default function AddSiteStep3(props) {
+  const {
+    VALIDATE,
+    Are_you_sure,
+    The_current_file_will_be_deleted,
+    Max_size_can_be_10MB_of_type,
+    Create_a_Building,
+    Exterior,
+    Add_Plan,
+    COMPLETE,
+    BUILDING_Nom,
+    Site_Plan,
+    CREATE_A_LEVEL,
+    LEVEL_NAME,
+    Modify,
+  } = TEXTS;
+
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -238,7 +255,7 @@ export default function AddSiteStep3(props) {
     building.levels.length,
     <Form.Row style={{ justifyContent: "center" }}>
       <SmallButton
-        text="Modify"
+        text={Modify}
         onClick={() => {
           setActiveBuilding(building);
           setLevelModal((st) => !st);
@@ -258,13 +275,15 @@ export default function AddSiteStep3(props) {
       level.plan,
       <Form.Row style={{ justifyContent: "center" }}>
         <SmallButton
-          text="Add Plan"
+          text={Add_Plan}
           disabled={loading}
           color={theme.palette.primary.contrastText}
           onClick={() => {
             if (level.plan) {
               if (
-                window.confirm("Are you sure? The current file will be deleted")
+                window.confirm(
+                  `${Are_you_sure} ${The_current_file_will_be_deleted}`,
+                )
               ) {
                 document.getElementById(`fileinput${index}`).click();
               }
@@ -294,7 +313,7 @@ export default function AddSiteStep3(props) {
               dispatch(
                 Actions.notistack.enqueueSnackbar(
                   Actions.notistack.snackbar(
-                    "Max size can be 10MB of type: PDF",
+                    `${Max_size_can_be_10MB_of_type}: PDF`,
                     "error",
                   ),
                 ),
@@ -312,7 +331,7 @@ export default function AddSiteStep3(props) {
         <Form.Row justifyContent="flex-start">
           <Button
             maxWidth="30%"
-            text="Create a Building"
+            text={Create_a_Building}
             style={{ marginRight: 20 }}
             color={theme.palette.common.black}
             onClick={() => setBuildingModal((st) => !st)}
@@ -325,20 +344,20 @@ export default function AddSiteStep3(props) {
               alignItems="center"
               justifyContent="flex-start"
             >
-              <FormLabel bold primary="Exterior: " />
+              <FormLabel bold primary={`${Exterior}: `} />
               &nbsp;
               <FormLabel primary={site?.plan} />
             </Form.Row>
             <Form.Row width="20%" alignItems="center" justifyContent="flex-end">
               <SmallButton
-                text="Add Plan"
+                text={Add_Plan}
                 disabled={loading}
                 color={theme.palette.primary.contrastText}
                 onClick={() => {
                   if (site.plan) {
                     if (
                       window.confirm(
-                        "Are you sure? The current file will be deleted",
+                        `${Are_you_sure} ${The_current_file_will_be_deleted}`,
                       )
                     ) {
                       document.getElementById(`fileinput-exterior`).click();
@@ -369,7 +388,8 @@ export default function AddSiteStep3(props) {
                     dispatch(
                       Actions.notistack.enqueueSnackbar(
                         Actions.notistack.snackbar(
-                          "Max size can be 10MB of type: PDF",
+                          `${Max_size_can_be_10MB_of_type}: PDF`,
+
                           "error",
                         ),
                       ),
@@ -387,7 +407,7 @@ export default function AddSiteStep3(props) {
         <Form.ButtonContainer>
           <Button
             minWidth={200}
-            text="COMPLETE"
+            text={COMPLETE}
             fullWidth={false}
             onClick={() => props.history.replace("/sites")}
           />
@@ -397,19 +417,19 @@ export default function AddSiteStep3(props) {
       {/* Create a building */}
       <Modal
         open={buildingModal}
-        title="Create a building"
+        title={Create_a_Building}
         onClose={() => setBuildingModal((st) => !st)}
         body={
           <Form.Form>
             <Form.Row>
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Building Name" />
+                <FormLabel noMargin bold primary={BUILDING_Nom} />
               </Form.Row>
               <FormInput
                 name="buildingName"
                 value={buildingName}
                 maxLength="30"
-                placeholder="Building Name"
+                placeholder={BUILDING_Nom}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -419,7 +439,7 @@ export default function AddSiteStep3(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onCreateBuilding}
                 disabled={loading || !buildingName}
@@ -431,9 +451,7 @@ export default function AddSiteStep3(props) {
       {/* Create a level */}
       <Modal
         open={levelModal}
-        title={
-          activeBuilding.name === "Exterior" ? "Site Plan" : "Create a level"
-        }
+        title={activeBuilding.name === "Exterior" ? Site_Plan : CREATE_A_LEVEL}
         onClose={() => setLevelModal((st) => !st)}
         body={
           activeBuilding.name === "Exterior" ? (
@@ -447,13 +465,13 @@ export default function AddSiteStep3(props) {
               <Form.Form>
                 <Form.Row alignItems="center">
                   <Form.Row noMargin>
-                    <FormLabel noMargin bold primary="Level Name" />
+                    <FormLabel noMargin bold primary={LEVEL_NAME} />
                   </Form.Row>
                   {activeBuilding && (
                     <FormInput
                       name="levelNumber"
                       value={levelNumber}
-                      placeholder="Level Name"
+                      placeholder={LEVEL_NAME}
                       style={GLOBALS.Styles.inputWidth}
                       onChange={({ target: { name, value } }) =>
                         handleChange(name, value)
@@ -479,7 +497,7 @@ export default function AddSiteStep3(props) {
                 <Form.Row justifyContent="center">
                   <Button
                     minWidth={200}
-                    text="VALIDATE"
+                    text={VALIDATE}
                     fullWidth={false}
                     onClick={onCreateLevel}
                     disabled={loading || !levelNumber}

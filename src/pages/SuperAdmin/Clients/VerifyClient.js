@@ -56,6 +56,10 @@ export default function VerifyClient(props) {
     CREATE_A_CLIENT,
     Are_you_sure_to_Delete,
     Please_select_a_company,
+    ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS,
+    TYPE_OF_CONTRACT,
+    Delivery_module,
+    Please_enter_valid_email,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -144,7 +148,8 @@ export default function VerifyClient(props) {
       if (GLOBALS.Functions.length(value, 300))
         setErrors({
           ...errors,
-          additionalInfo: `${ADDITIONNAL_INFORMATION} must be less than 300 characters`,
+          additionalInfo:
+            ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS,
         });
       else setErrors({ ...errors, additionalInfo: "" });
     }
@@ -245,7 +250,7 @@ export default function VerifyClient(props) {
                 name="phone"
                 type="number"
                 value={phone}
-                placeholder="Phone Number"
+                placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -254,7 +259,7 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF CONTRACT* : " />
+            <FormLabel bold primary={`${TYPE_OF_CONTRACT}* : `} />
             <RadioButton
               disabled
               name="contractType"
@@ -306,7 +311,7 @@ export default function VerifyClient(props) {
               name="functionality"
               value={functionality}
               style={GLOBALS.Styles.inputWidth}
-              items={[{ value: "DELIVERY", label: "Delivery module" }]}
+              items={[{ value: "DELIVERY", label: Delivery_module }]}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -357,7 +362,7 @@ export default function VerifyClient(props) {
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
-              validateError="Invalid Email"
+              validateError={Please_enter_valid_email}
               style={GLOBALS.Styles.inputWidth}
               placeholder="Enter email address"
               disabled={contractType !== "MASTERCLIENT"}

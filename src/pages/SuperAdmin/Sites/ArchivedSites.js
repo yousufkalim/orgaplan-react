@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-
+import { TEXTS } from "../../../assets/languages/french";
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
 import Loader from "../../../components/Loader";
@@ -36,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ArchivedSites(props) {
+  const {
+    Are_you_sure_You_want_to_do_this,
+    Are_you_sure_You_want_to_delete_this,
+    archived_sites,
+    SITE_NAME,
+  } = TEXTS;
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -71,7 +77,7 @@ export default function ArchivedSites(props) {
 
   async function onUnArchive(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to do this?")) {
+      if (window.confirm(Are_you_sure_You_want_to_do_this)) {
         setLoading(true);
         await GLOBALS.API({
           method: "PUT",
@@ -94,7 +100,7 @@ export default function ArchivedSites(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm(Are_you_sure_You_want_to_delete_this)) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -149,11 +155,11 @@ export default function ArchivedSites(props) {
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
       <Form.Column>
-        <Heading primary="ARCHIVED SITES" />
+        <Heading primary={archived_sites} />
         <SearchInput
           value={query}
           onClick={fetchData}
-          placeholder="Site name"
+          placeholder={SITE_NAME}
           style={{ marginRight: "20px", maxWidth: 250 }}
           onChange={({ target: { value } }) => setQuery(value)}
         />
