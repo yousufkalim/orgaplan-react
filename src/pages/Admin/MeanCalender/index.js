@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GLOBALS from "../../../globals";
 import "./Calender.css";
+import { TEXTS } from "../../../assets/languages/french";
 import { Modal, Button, Alert } from "react-bootstrap";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -46,7 +47,26 @@ let formats = {
 };
 
 const Calender = (props) => {
-  console.log("props", props);
+  const {
+    BOOKING,
+    Invalid_Time,
+    Start_time,
+    End_time,
+    BOOKING_REASON,
+    START_HOUR,
+    END_HOUR,
+    Edit_Event,
+    Status_Color,
+    Not_availble,
+    VALIDATE,
+    Update_Event,
+    CLOSE,
+    SELECT_MEANS,
+    PENDING,
+    Loading,
+    Time_is_Invalid,
+    Please_Select_Company_name_or_Booking_Reason,
+  } = TEXTS;
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [alertMsg, setAlertMsg] = useState("");
@@ -438,14 +458,14 @@ const Calender = (props) => {
           setSelectedCompany("");
         }
       } else {
-        setAlertMsg("Time is Invalid");
+        setAlertMsg(Time_is_Invalid);
         setAlertBoxTime(true);
         setTimeout(function () {
           setAlertBoxTime(false);
         }, 1000);
       }
     } else {
-      setAlertMsg("Please Select Company name or Booking Reason");
+      setAlertMsg(Please_Select_Company_name_or_Booking_Reason);
       setAlertBoxTime(true);
       setTimeout(function () {
         setAlertBoxTime(false);
@@ -810,6 +830,12 @@ const Calender = (props) => {
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
+          let colour = "";
+          if (key.status === "VALIDATED") {
+            colour = "green";
+          } else {
+            colour = "#FFFF00";
+          }
           return {
             title: key.bookingReason,
             companyId: key.companyId,
@@ -823,7 +849,7 @@ const Calender = (props) => {
             updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: "",
+            color: colour,
           };
         });
 
@@ -994,16 +1020,16 @@ const Calender = (props) => {
     <>
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
-          <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
+          <Modal.Title className="text-center w-100">{BOOKING}</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Invalid Time" />
+        <Alertbox message={Invalid_Time} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
               <input
                 type="text"
                 style={{ border: "1px solid #707070" }}
-                placeholder="Company : ConstructBTP"
+                placeholder="Entreprise : ConstructBTP"
                 className="w-100 p-2 mb-2"
               />
             </div>
@@ -1011,7 +1037,7 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-12">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
                 <TimePicker
                   value={bookingstartTimeslice}
                   onChange={(e) => setBookingstartTimeslice(e)}
@@ -1021,7 +1047,7 @@ const Calender = (props) => {
             </div>
             <div className="col-md-12">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{End_time}</label>
                 <TimePicker
                   value={bookingendTimeslice}
                   onChange={(e) => setBookingendTimeslice(e)}
@@ -1037,7 +1063,7 @@ const Calender = (props) => {
                   <textarea
                     className="form-control"
                     id="exampleFormControlTextarea1"
-                    placeholder="Reason of booking"
+                    placeholder={BOOKING_REASON}
                     rows="3"
                     value={bookingTitle}
                     onChange={(e) => setBookingTitle(e.target.value)}
@@ -1058,7 +1084,7 @@ const Calender = (props) => {
               borderRadius: "5px",
             }}
           >
-            Book
+            LIVRE
           </button>
           {/* <Button variant="primary" onClick={saveBooking}>
             Add Booking
@@ -1070,7 +1096,7 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>{BOOKING}</Modal.Title>
         </Modal.Header>
 
         <Alertbox message={alertMsg} />
@@ -1092,7 +1118,7 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="Company"
+                placeholder="Entreprise"
                 values={dropdownCompanies}
                 value={selectedCompany}
                 onChange={(event) => {
@@ -1112,7 +1138,7 @@ const Calender = (props) => {
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start hour ----</label>
+                <label>{START_HOUR} ----</label>
                 <TimePicker
                   value={starttimeslice}
                   onChange={(e) => setstarttimeslice(e)}
@@ -1122,7 +1148,7 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End hour</label>
+                <label>{END_HOUR}</label>
                 <TimePicker
                   value={Endtimeslice}
                   onChange={(e) => setEndtimeslice(e)}
@@ -1136,7 +1162,7 @@ const Calender = (props) => {
               <div className="description">
                 <div class="form-group">
                   <textarea
-                    placeholder="Reason of booking"
+                    placeholder={BOOKING_REASON}
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -1157,7 +1183,7 @@ const Calender = (props) => {
             }}
             onClick={saveEvent}
           >
-            Book
+            LIVRE
           </Button>
           <Button
             variant="secondary"
@@ -1167,14 +1193,14 @@ const Calender = (props) => {
             }}
             onClick={handleClose}
           >
-            Close
+            LIVRE
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Event </Modal.Title>
+          <Modal.Title>{Edit_Event} </Modal.Title>
         </Modal.Header>
         <Alertbox message="Please Add valid Time and Event" />
         <Modal.Body>
@@ -1182,7 +1208,7 @@ const Calender = (props) => {
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Edit Event</label>
+                  <label for="exampleFormControlTextarea1">{Edit_Event}</label>
                   <textarea
                     class="form-control"
                     id="exampleFormControlTextarea1"
@@ -1197,7 +1223,7 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
                 <TimePicker
                   value={starttimesliceEdit}
                   onChange={(e) => setstarttimesliceEdit(e)}
@@ -1206,7 +1232,7 @@ const Calender = (props) => {
               </div>
               <div class="form-group statusColor">
                 {value && ""}
-                <label>Status Color </label>
+                <label>{Status_Color} </label>
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="statusColor"
@@ -1233,7 +1259,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Not availble"
+                      label={Not_availble}
                       className="notAvailble"
                     />
                     <FormControlLabel
@@ -1244,7 +1270,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Validate"
+                      label={VALIDATE}
                       className="validate"
                     />
                   </RadioGroup>
@@ -1253,7 +1279,7 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{End_time}</label>
                 <TimePicker
                   value={endtimesliceEdit}
                   onChange={(e) => setEndtimesliceEdit(e)}
@@ -1265,10 +1291,10 @@ const Calender = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={updateEvent}>
-            Update Event
+            {Update_Event}
           </Button>
           <Button variant="secondary" onClick={() => setShowEdit(false)}>
-            Close
+            {CLOSE}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1284,7 +1310,7 @@ const Calender = (props) => {
         />
         <div style={{}} className="pl-2 pt-3 pb-5 d-flex">
           <FormSelect
-            placeholder="Select a Means"
+            placeholder={SELECT_MEANS}
             values={dorpdownMeans}
             value={selectedMeanId}
             onChange={(event) => {
@@ -1316,13 +1342,13 @@ const Calender = (props) => {
             <FiberManualRecordIcon style={{ color: "#FFFF00" }} />
             <span style={{ display: "inline-block", paddingRight: "14px" }}>
               {" "}
-              PENDING
+              {PENDING}
             </span>
 
             <FiberManualRecordIcon style={{ color: "green" }} />
             <span style={{ display: "inline-block", paddingRight: "14px" }}>
               {" "}
-              VALIDATED
+              {VALIDATE}
             </span>
           </div>
         </div>
@@ -1387,7 +1413,7 @@ const Calender = (props) => {
                 }}
               />
             ) : (
-              <h1>Loading.....</h1>
+              <h1>{Loading}.....</h1>
             )}
           </div>
         </div>

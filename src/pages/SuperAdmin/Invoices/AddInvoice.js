@@ -54,6 +54,12 @@ export default function AddInvoice(props) {
     AMOUNT,
     SELECT_SITE,
     PDF_FILE,
+    FILE_TOO_LARGE,
+    Max_size_can_be_15MB,
+    Please_enter_start_date,
+    Please_enter_site,
+    Please_enter_amount,
+    UPLOAD_PDF,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -135,7 +141,7 @@ export default function AddInvoice(props) {
         return dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              `File is large,Max size can be 15 MB`,
+              `${FILE_TOO_LARGE},${Max_size_can_be_15MB}`,
               "error",
             ),
           ),
@@ -164,7 +170,7 @@ export default function AddInvoice(props) {
       } else {
         if ((value && value.length < 1) || value === null) {
           setStartDate("");
-          setErrors({ ...errors, startDate: "Please enter starting date" });
+          setErrors({ ...errors, startDate: Please_enter_start_date });
         } else setErrors({ ...errors, startDate: "" });
       }
     } else if (name === "endDate") setEndDate(value);
@@ -173,7 +179,7 @@ export default function AddInvoice(props) {
         setSiteId(value);
         setErrors({ ...errors, siteId: "" });
       } else if (value === "") {
-        setErrors({ ...errors, siteId: "Please enter site" });
+        setErrors({ ...errors, siteId: Please_enter_site });
         setSiteId(value);
       }
     } else if (name === "amount") {
@@ -182,7 +188,7 @@ export default function AddInvoice(props) {
         setErrors({ ...errors, amount: "" });
       }
       if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, amount: "Please enter amount" });
+        setErrors({ ...errors, amount: Please_enter_amount });
         setAmount("");
       } else setErrors({ ...errors, amount: "" });
     } else if (name === "description") setDescription(value);
@@ -338,7 +344,7 @@ export default function AddInvoice(props) {
               <Button
                 fullWidth={false}
                 // disabled={isLoading}
-                text={"Upload PDF"}
+                text={UPLOAD_PDF}
                 onClick={() =>
                   document.getElementById("upload-canvas-pdf-button").click()
                 }

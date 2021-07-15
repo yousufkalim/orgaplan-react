@@ -5,8 +5,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { TEXTS } from "../assets/languages/french";
 
 export default function ChoiceDialog(props) {
+  const { DISAGREE, AGREE } = TEXTS;
+
   return (
     <Dialog
       open={props.open}
@@ -24,10 +27,10 @@ export default function ChoiceDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose} color="primary">
-          Disagree
+          {DISAGREE}
         </Button>
         <Button onClick={props.onClick} color="primary" autoFocus>
-          Agree
+          {AGREE}
         </Button>
       </DialogActions>
     </Dialog>

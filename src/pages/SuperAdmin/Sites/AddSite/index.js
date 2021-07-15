@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../../../../assets/languages/french";
 
 import GLOBALS from "../../../../globals";
 import AddSiteStep1 from "./AddSiteStep1";
@@ -22,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddSite(props) {
+  const { Create_a_SITE, VALIDATE, General_Information } = TEXTS;
+
   const classes = useStyles();
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState("");
@@ -54,12 +57,16 @@ export default function AddSite(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="CREATE A SITE" />
+      <Heading primary={Create_a_SITE} />
       <Stepper
         disabled
         step={step}
         setStep={setStep}
-        steps={["Step 1: General Information", "Step 2: Dates", "Text 1: PIC"]}
+        steps={[
+          `Step 1: ${General_Information}`,
+          "Step 2: Dates",
+          "Text 1: PIC",
+        ]}
       />
       <div className={classes.content}>
         {step === 1 ? (

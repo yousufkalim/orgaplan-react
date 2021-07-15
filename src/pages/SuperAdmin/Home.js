@@ -128,7 +128,16 @@ const CardComponent = ({ card }) => {
 export default function Home(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { DASHBOARD } = TEXTS;
+  const {
+    DASHBOARD,
+    INVOICE,
+    DELIVERIES,
+    INCIDENTS,
+    MEANS,
+    END_OF_SUBSCRIPTION,
+    TARIFICATION_CLIENTS,
+    Site,
+  } = TEXTS;
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -396,7 +405,7 @@ export default function Home(props) {
           ],
         },
         {
-          title: "INVOICE",
+          title: INVOICE,
           total: invoices && invoices.total,
           tabs: false,
           path: "/invoices",
@@ -407,12 +416,12 @@ export default function Home(props) {
       cols: 4,
     },
     {
-      title: "DELIVERIES",
+      title: DELIVERIES,
       total: deliveries && deliveries.total,
       tabs: true,
       items: [
         {
-          title: "site",
+          title: Site,
           items: siteDeliveryArray,
         },
         {
@@ -423,7 +432,7 @@ export default function Home(props) {
       cols: 4,
     },
     {
-      title: "INCIDENTS",
+      title: INCIDENTS,
       total: incidents && incidents.total,
       tabs: true,
       items: [
@@ -439,7 +448,7 @@ export default function Home(props) {
       cols: 4,
     },
     {
-      title: "MEANS",
+      title: MEANS,
       total: means && means.total,
       tabs: true,
       items: [
@@ -455,7 +464,7 @@ export default function Home(props) {
       cols: 4,
     },
     {
-      title: "END OF SUBSCRIPTION",
+      title: END_OF_SUBSCRIPTION,
       total: null,
       tabs: true,
       items: [
@@ -471,7 +480,7 @@ export default function Home(props) {
       cols: 4,
     },
     {
-      title: "TARIFICATION CLIENTS",
+      title: TARIFICATION_CLIENTS,
       total: null,
       tabs: true,
       items: [

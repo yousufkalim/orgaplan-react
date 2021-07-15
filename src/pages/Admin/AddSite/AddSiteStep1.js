@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
-
+import { TEXTS } from "../../../assets/languages/french";
 import Form from "../../../components/Form";
 import Button from "../../../components/Button";
 import SmallText from "../../../components/SmallText";
@@ -17,6 +17,22 @@ import MultiAdderInputModal from "../../../components/MultiAdderInputModal";
 
 export default function AddSiteStep1(props) {
   const dispatch = useDispatch();
+  const {
+    SITE_NAME,
+    SITE_PICTURE,
+    ZAC_OF_SITE,
+    SELECT_ZAC,
+    SITE_RESPONSIBLE,
+    AVAILABLE_FUNCTIONALITY,
+    Enter_site_addresses,
+    TRADES,
+    ENTER_TRADES,
+    COST_OF_DELIVERY_PENALITIES,
+    DELAY,
+    UNEXPECTED_DELIVERY,
+    VALIDATE,
+    Delivery_Module,
+  } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -123,12 +139,12 @@ export default function AddSiteStep1(props) {
     <>
       <Form.Form onSubmit={onSubmit}>
         <Form.Row>
-          <FormLabel bold primary="SITE NAME* :" />
+          <FormLabel bold primary={`${SITE_NAME}* :`} />
           <FormInput
             name="name"
             value={name}
             maxLength="50"
-            placeholder="Site name"
+            placeholder={SITE_NAME}
             style={GLOBALS.Styles.inputWidth}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
@@ -137,7 +153,7 @@ export default function AddSiteStep1(props) {
         </Form.Row>
         {update && ""}
         <Form.Row>
-          <FormLabel bold primary="SITE PICTURE : " />
+          <FormLabel bold primary={`${SITE_PICTURE} : `} />
           <FormMultipleUpload
             name="logo"
             values={logo}
@@ -146,13 +162,13 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ZAC OF THE SITE : " />
+          <FormLabel bold primary={`${ZAC_OF_SITE} : `} />
           <Form.Row width="48%" noMargin>
             <FormSelect
               name="zacId"
               values={zacs}
               value={zacId}
-              placeholder="Select a ZAC"
+              placeholder={SELECT_ZAC}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -161,7 +177,7 @@ export default function AddSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="SITE RESPONSIBLE* :" />
+          <FormLabel bold primary={`${SITE_RESPONSIBLE}* :`} />
           <Form.Row
             noMargin
             width="48%"
@@ -187,44 +203,44 @@ export default function AddSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABLE FUNCTIONALITY : " />
+          <FormLabel bold primary={`${AVAILABLE_FUNCTIONALITY} : `} />
           <RadioButton
             name="functionality"
             value={functionality}
             style={GLOBALS.Styles.inputWidth}
-            items={[{ value: "DELIVERY", label: "Delivery module" }]}
+            items={[{ value: "DELIVERY", label: Delivery_Module }]}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="SITE ADDRESS(ES)* : " />
+          <FormLabel bold primary={`${Enter_site_addresses}* : `} />
           <MultiAdderInputModal
             name="addresses"
             values={addresses}
             style={GLOBALS.Styles.inputWidth}
-            placeholder="Enter site addresses"
+            placeholder={Enter_site_addresses}
             onChange={(values) => handleChange("addresses", values)}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="TRADES : " />
+          <FormLabel bold primary={`${TRADES} : `} />
           <MultiAdderInput
             name="trades"
             values={trades}
-            placeholder="Enter trades"
+            placeholder={ENTER_TRADES}
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => handleChange("trades", values)}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="COST OF DELIVERY PENALITIES: " />
+          <FormLabel bold primary={`${COST_OF_DELIVERY_PENALITIES}: `} />
           <Form.Row width="48%" noMargin>
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
-                placeholder="Delay"
+                placeholder={DELAY}
                 name="penaltyforLateDelivery"
                 value={penaltyforLateDelivery}
                 onChange={({ target: { name, value } }) =>
@@ -236,7 +252,7 @@ export default function AddSiteStep1(props) {
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
-                placeholder="Unexp delivery"
+                placeholder={UNEXPECTED_DELIVERY}
                 name="penaltyforUnexpDelivery"
                 value={penaltyforUnexpDelivery}
                 onChange={({ target: { name, value } }) =>
@@ -251,7 +267,7 @@ export default function AddSiteStep1(props) {
           <Button
             type="submit"
             minWidth={200}
-            text="VALIDATE"
+            text={VALIDATE}
             fullWidth={false}
             loading={loading}
             disabled={loading || !name || !adminId || addresses.length === 0}

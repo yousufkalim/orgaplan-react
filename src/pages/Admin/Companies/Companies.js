@@ -41,6 +41,8 @@ export default function Companies(props) {
     NAME_OF_COMPANY,
     ACCESS_REQUEST_TO_ZONES,
     ACCESS_REQUEST_TO_STROGAEAREA,
+    ACCEPT,
+    REJECT,
   } = TEXTS;
   const theme = useTheme();
   const classes = useStyles();
@@ -179,13 +181,13 @@ export default function Companies(props) {
         <Button
           onClick={() => onAccept(item._id)}
           type="submit"
-          text="ACCEPT"
+          text={ACCEPT}
           fullWidth={false}
         />{" "}
         <Button
           type="submit"
           color={theme.palette.error.main}
-          text="REJECT"
+          text={REJECT}
           fullWidth={false}
           onClick={() => onReject(item._id)}
         />
@@ -290,7 +292,7 @@ export default function Companies(props) {
                 bold
                 noMargin
                 disableMargin
-                primary={`Total : ${companies.length} ENTREPRISES`}
+                primary={`Total : ${companies.length} Entreprises`}
               />
               <Button
                 fullWidth={false}
@@ -305,7 +307,7 @@ export default function Companies(props) {
         <Form.Row noMargin className="pr-3">
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <SearchInput
-              placeholder="Name of responsible"
+              placeholder="Nom Of Responsible"
               value={nameOfResponsible}
               onClick={filterCompany}
               onChange={(event) => {

@@ -51,6 +51,12 @@ export default function AddClient(props) {
     ADD_A_CLIENT,
     Days_before_end_of_the_site,
     NOTIFY_THE_ADDRESSES,
+    Please_enter_company_name,
+    Please_Add_logo,
+    Please_select_start_date,
+    Please_select_end_date,
+    Please_enter_valid_email,
+    Please_enter_email,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
@@ -108,28 +114,28 @@ export default function AddClient(props) {
   function validation(name, value) {
     if (name === "name") {
       if (GLOBALS.Functions.empty(value)) {
-        setNameError("Please enter company name");
+        setNameError(Please_enter_company_name);
       } else {
         setNameError("");
       }
     }
     if (name === "logo") {
       if (GLOBALS.Functions.empty(value.length)) {
-        setLogoError("Please add a logo");
+        setLogoError(Please_Add_logo);
       } else {
         setLogoError("");
       }
     }
     if (name === "contractStartDate") {
       if (GLOBALS.Functions.empty(value)) {
-        setContractStartDateError("Please select a start date");
+        setContractStartDateError(Please_select_start_date);
       } else {
         setContractStartDateError("");
       }
     }
     if (name === "contractEndDate") {
       if (GLOBALS.Functions.empty(value)) {
-        setContractEndDateError("Please select a end date");
+        setContractEndDateError(Please_select_end_date);
       } else {
         setContractEndDateError("");
       }
@@ -382,8 +388,8 @@ export default function AddClient(props) {
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo}
-              validateError="Invalid Email"
-              placeholder="Enter email address"
+              validateError={Please_enter_valid_email}
+              placeholder={Please_enter_email}
               style={GLOBALS.Styles.inputWidth}
               disabled={contractType !== "MASTERCLIENT"}
               onChange={(values) => handleChange("notificationTo", values)}

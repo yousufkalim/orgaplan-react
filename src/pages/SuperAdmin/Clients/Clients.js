@@ -51,6 +51,19 @@ export default function Clients(props) {
     CREATE_A_CLIENT,
     Are_you_sure_to_Delete,
     Please_select_a_company,
+    Please_enter_valid_email,
+    Telephone_must_have_10_to_25_digits,
+    ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS,
+    LAST_NAME_MUST_BE_LESS_THAN_30_CHARACTERS,
+    CLIENTS_LIST,
+    NAME_OF_CLIENT,
+    EDIT_CLIENT,
+    FIRST_NAME,
+    LAST_NAME,
+    TELEPHONE,
+    START_DATE,
+    END_DATE,
+    ADDITIONNAL_INFORMATION,
   } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -228,11 +241,11 @@ export default function Clients(props) {
       else setErrors({ ...errors, name: "" });
     } else if (name === "email") {
       if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.email(value))
-        setErrors({ ...errors, email: "Please enter valid email" });
+        setErrors({ ...errors, email: Please_enter_valid_email });
       else setErrors({ ...errors, email: "" });
     } else if (name === "phone") {
       if (!GLOBALS.Functions.empty(value) && GLOBALS.Functions.phone(value))
-        setErrors({ ...errors, phone: "Phone must be 10-25 digits" });
+        setErrors({ ...errors, phone: Telephone_must_have_10_to_25_digits });
       else setErrors({ ...errors, phone: "" });
     } else if (name === "additionalInfo") {
       if (GLOBALS.Functions.length(value, 300))
@@ -245,14 +258,14 @@ export default function Clients(props) {
       if (GLOBALS.Functions.length(value, 30))
         setErrors({
           ...errors,
-          firstName: "First Name must be less than 30 characters",
+          firstName: ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS,
         });
       else setErrors({ ...errors, firstName: "" });
     } else if (name === "lastName") {
       if (GLOBALS.Functions.length(value, 30))
         setErrors({
           ...errors,
-          lastName: "Last Name must be less than 30 characters",
+          lastName: LAST_NAME_MUST_BE_LESS_THAN_30_CHARACTERS,
         });
       else setErrors({ ...errors, lastName: "" });
     }
@@ -351,7 +364,7 @@ export default function Clients(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center">
-          <Heading primary="CLIENTS LIST" noWrap />
+          <Heading primary={CLIENTS_LIST} noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
@@ -373,7 +386,7 @@ export default function Clients(props) {
           <SearchInput
             value={query}
             onClick={fetchData}
-            placeholder="Name of Client"
+            placeholder={NAME_OF_CLIENT}
             onChange={({ target: { value } }) => setQuery(value)}
           />
         </Form.Row>
@@ -402,7 +415,7 @@ export default function Clients(props) {
       </div>
       {update && ""}
       <Modal
-        title="EDIT A CLIENT"
+        title={EDIT_CLIENT}
         open={selectedItem ? modal : false}
         onClose={() => {
           setModal((st) => !st);
@@ -432,7 +445,7 @@ export default function Clients(props) {
                 name="firstName"
                 value={firstName}
                 error={errors.firstName}
-                placeholder="First Name"
+                placeholder={FIRST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -445,7 +458,7 @@ export default function Clients(props) {
                 name="lastName"
                 value={lastName}
                 error={errors.lastName}
-                placeholder="Last Name"
+                placeholder={LAST_NAME}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -474,7 +487,7 @@ export default function Clients(props) {
                 value={phone}
                 type="number"
                 error={errors.phone}
-                placeholder="Phone Number"
+                placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -487,7 +500,7 @@ export default function Clients(props) {
             <Form.Row>
               <FormInput
                 type="date"
-                placeholder="Start date"
+                placeholder={START_DATE}
                 name="contractStartDate"
                 value={contractStartDate}
                 style={GLOBALS.Styles.inputWidth}
@@ -499,7 +512,7 @@ export default function Clients(props) {
               />
               <FormInput
                 type="date"
-                placeholder="End date"
+                placeholder={END_DATE}
                 name="contractEndDate"
                 value={contractEndDate}
                 min={moment(contractStartDate)
@@ -558,7 +571,7 @@ export default function Clients(props) {
                 name="additionalInfo"
                 value={additionalInfo}
                 error={errors.additionalInfo}
-                placeholder="Additional information"
+                placeholder={ADDITIONNAL_INFORMATION}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }

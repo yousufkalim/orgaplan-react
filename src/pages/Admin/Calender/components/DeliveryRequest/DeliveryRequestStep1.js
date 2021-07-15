@@ -17,14 +17,23 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 import { getTime } from "date-fns";
 export default function AddSiteStep1(props) {
-  const {COMPANY,DELIVERYAREA,STORAGEAREA,
-  Please_select_a_company,Please_select_Delivery_Area,DATE_AND_TIME,
-  Start_time,End_time,SELECT_TRADES,TRADES,UNLOADING_MEANS,MEANS,
-  MATERIALS_DELIVERED,ENTER_MATERIALS
-  
-  
-  }=TEXTS;
-  
+  const {
+    COMPANY,
+    DELIVERYAREA,
+    STORAGEAREA,
+    Please_select_a_company,
+    Please_select_Delivery_Area,
+    DATE_AND_TIME,
+    Start_time,
+    End_time,
+    SELECT_TRADES,
+    TRADES,
+    UNLOADING_MEANS,
+    MEANS,
+    MATERIALS_DELIVERED,
+    ENTER_MATERIALS,
+  } = TEXTS;
+
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
@@ -427,7 +436,7 @@ export default function AddSiteStep1(props) {
       </Form.Row>
 
       <Form.Row>
-        <FormLabel bold primary={`${UNLOADING_MEANS}* :`}/>
+        <FormLabel bold primary={`${UNLOADING_MEANS}* :`} />
         <FormMultiSelect
           name="means"
           values={means}
@@ -456,7 +465,7 @@ export default function AddSiteStep1(props) {
         </div>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary= {`${MATERIALS_DELIVERED}* :`} />
+        <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
         <MultiAdderInput
           name="materials"
           values={materials}

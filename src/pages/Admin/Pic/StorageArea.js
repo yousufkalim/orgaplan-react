@@ -101,13 +101,18 @@ export default function DeliveryArea(props) {
           label: item.companyId.name,
         })),
       );
+      
+      const temp = [];
+      deliveryAreas.data.map((item) => {
+        if (moment(item.availability.end).isSameOrAfter(new Date())) {
+          temp.push({
+            label: item.name,
+            value: item._id,
+          });
+        }
+      });
+      setDeliveryAreas(temp);
 
-      setDeliveryAreas(
-        deliveryAreas.data.map((item) => ({
-          value: item._id,
-          label: item.name,
-        })),
-      );
       if (props.selectedShape) {
         const means = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_STORAGE_AREA_MEANS}/${props.selectedShape.storageArea._id}`,

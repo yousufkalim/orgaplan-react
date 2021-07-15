@@ -230,6 +230,8 @@ export default function AddSiteStep1(props) {
 
       setUpdate((st) => !st);
     } else {
+      setCompany(props?.selectedcompany?._id);
+      setDeliveryArea(props?.selectedDA?._id);
       setDate(props.date);
       setStartTime(moment(props.date).set("hour", props.start));
       setEndTime(moment(props.date).set("hour", props.end));
@@ -315,7 +317,7 @@ export default function AddSiteStep1(props) {
         <FormSelect
           name="company"
           value={company}
-          disabled={props.eventId}
+          disabled={props?.selectedcompany?._id}
           values={props.companies}
           placeholder="Select a Company"
           style={GLOBALS.Styles.inputWidth}

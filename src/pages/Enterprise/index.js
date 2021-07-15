@@ -1,11 +1,21 @@
+// init
 import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 
-const index = () => {
+// Pages
+import eOrganigramme from "./Organigramme";
+import ePic from "./Pic";
+import eMeans from "./Means";
+
+// Component
+export default function EnterpriseIndex() {
   return (
-    <div>
-      <h1>Enterpris</h1>
-    </div>
+    <Switch>
+      <Route exact path="/" component={ePic} />
+      <Route path="/means" component={eMeans} />
+      <Route path="/organigramme" component={eOrganigramme} />
+      <Route path="/pic-interactive" component={ePic} />
+      <Redirect from="*" to="/" />
+    </Switch>
   );
-};
-
-export default index;
+}

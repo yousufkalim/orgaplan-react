@@ -7,7 +7,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 
 import store from "./redux/store";
-import Main from "./container/Main";
+import Routes from "./routes";
 import Notifier from "./redux/Notifier";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -69,7 +69,7 @@ const App = () => {
             <CssBaseline />
             <Notifier />
             <BrowserRouter>
-              <Main />
+              <Routes />
             </BrowserRouter>
           </SnackbarProvider>
         </Provider>

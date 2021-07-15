@@ -265,6 +265,8 @@ export default function DeliveryRequest(props) {
             editDelivery={props.editDelivery}
             trades={trades}
             means={means}
+            selectedcompany={props?.history?.location?.company}
+            selectedDA={props?.history?.location?.selectedShape}
             eventId={props.eventId}
             deliveryArea={deliveryArea}
             setDeliveryArea={setDeliveryArea}

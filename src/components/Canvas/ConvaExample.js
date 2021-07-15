@@ -87,7 +87,7 @@ export default function Canvas({
       maxCount: 1,
     });
     message.warning(
-      `Your ${area.name} is going to expire after ${area.expireDay} days`,
+      `Votre ${area.name} va expirer dans ${area.expireDay} jours`,
     );
   };
   return (

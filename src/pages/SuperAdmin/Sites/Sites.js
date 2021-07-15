@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -45,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Sites(props) {
-  const {SITE_LIST,ZACS_LIST,Create_a_SITE}=TEXTS
+  const {
+    SITE_LIST,
+    ZACS_LIST,
+    Create_a_SITE,
+    See_archived_sites,
+
+    SITE_NAME,
+  } = TEXTS;
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -93,8 +100,9 @@ export default function Sites(props) {
   }
 
   async function onArchive(itemId) {
+    const { Are_you_sure_You_want_to_do_this } = TEXTS;
     try {
-      if (window.confirm("Are you sure, you want to do this?")) {
+      if (window.confirm(Are_you_sure_You_want_to_do_this)) {
         setLoading(true);
         await GLOBALS.API({
           method: "PUT",
@@ -189,7 +197,7 @@ export default function Sites(props) {
             <Button
               fullWidth={false}
               component={NavLink}
-              text='Créer un Chantier'
+              text={Create_a_SITE}
               to={"/sites/add-site"}
               style={{ marginLeft: "20px" }}
             />
@@ -201,7 +209,7 @@ export default function Sites(props) {
           <SearchInput
             value={query}
             onClick={fetchData}
-            placeholder="Chantier Nom"
+            placeholder={SITE_NAME}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => setQuery(value)}
           />
@@ -224,7 +232,7 @@ export default function Sites(props) {
           />
         </Form.Row>
         <NavLink className={classes.link} to="/sites/archives">
-          See archived sites
+          {See_archived_sites}
         </NavLink>
       </Form.Row>
       <div className={classes.content}>

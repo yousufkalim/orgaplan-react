@@ -751,6 +751,12 @@ const Calender = (props) => {
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
+          let colour = "";
+          if (key.status === "VALIDATED") {
+            colour = "green";
+          } else {
+            colour = "#FFFF00";
+          }
           return {
             title: key.bookingReason,
             companyId: key.companyId,
@@ -764,7 +770,7 @@ const Calender = (props) => {
             updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: "",
+            color: colour,
           };
         });
 
@@ -1011,7 +1017,7 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>Book1ing</Modal.Title>
         </Modal.Header>
 
         <Alertbox message={alertMsg} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Form from "../../../components/Form";
@@ -29,12 +29,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddUser(props) {
-  const {NAME,VALIDATE,AVAILABILITY,Enter_site_addresses,END_DATE,DELIVERYAREAS,COMPANIES,is_Full,
-  Vehicles,Days_before_end_of_the_contract,NOTIFY_THE_ADDRESSES,Please_enter_email,MEANS,NOTIFICATION
-,IDENTITY,ACCESSIBILITY,AVAILABILITIES, UNAVAILABILITIES,HOURLY_RATE,ADDITIONNAL_INFORMATION,
-Add_COMPANY,TYPE_OF_COMPANY,General_Contractor,SUBCONTRACTOR,GENERAL_CONTRACTOR,
-TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,Add_USER,CONTACT_INFO,COMPANY,SITE
- }=TEXTS
+  const {
+    IDENTITY,
+
+    LAST_NAME,
+    FIRST_NAME,
+    Add_USER,
+    CONTACT_INFO,
+    COMPANY,
+    SITE,
+  } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -254,7 +258,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,Add_USER,CONTACT_INFO,COMPAN
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY : " />
+            <FormLabel bold primary={`${COMPANY} : `} />
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder={COMPANY}
@@ -297,7 +301,7 @@ TRADES,IDENTITY_OF_RESPONSIBLE,LAST_NAME,FIRST_NAME,Add_USER,CONTACT_INFO,COMPAN
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONSTRUCTION Chantier : " />
+            <FormLabel bold primary="Construction Chantier : " />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="site"
