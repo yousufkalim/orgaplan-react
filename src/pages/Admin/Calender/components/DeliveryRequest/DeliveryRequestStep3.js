@@ -13,10 +13,18 @@ import FormCheckbox from "../../../../../components/FormCheckbox";
 import { TEXTS } from "../../../../../assets/languages/french";
 
 export default function DeliveryRequestStep3(props) {
-  const {IDENTITY,DATE_AND_TIME,DELIVERY_AREA,
-  MEAN,STORAGE_AREA,MATERIALS_DELIVERED,
-  COMMENTS,VALIDATE,MEANS,Receive_Summary_by_e_mail
-  }=TEXTS;
+  const {
+    IDENTITY,
+    DATE_AND_TIME,
+    DELIVERYAREA,
+    MEAN,
+    STORAGEAREA,
+    MATERIALS_DELIVERED,
+    COMMENTS,
+    VALIDATE,
+    MEANS,
+    Receive_Summary_by_email,
+  } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
@@ -274,7 +282,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary={`${DELIVERY_AREA} / ${MEAN} :`}
+          primary={`${DELIVERYAREA} / ${MEAN} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -285,8 +293,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary={`${STORAGE_AREA} / ${MEAN} :`}
-
+          primary={`${STORAGEAREA} / ${MEAN} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -329,7 +336,7 @@ export default function DeliveryRequestStep3(props) {
             name="receiveSummary"
             checked={receiveSummary}
             disabled={props.eventId}
-            label={Receive_Summary_by_e_mail}
+            label={Receive_Summary_by_email}
             onChange={({ target: { checked } }) => setReceiveSummary(checked)}
           />
         </Form.Row>
