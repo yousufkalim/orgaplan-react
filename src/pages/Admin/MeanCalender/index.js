@@ -991,7 +991,13 @@ const Calender = (props) => {
 
   const slotPropGetter = (date) => {
     let flagDateAndTime = false;
+    let flagOpeningHours = false;
     let disableHoursSiteUnavailabilityDatesFlag = false;
+    let currentDay = moment(date).day();
+    if (currentDay === 0) {
+      // disorder of days of Opening Hours component
+      currentDay = 7;
+    }
     let newStyle = {
       backgroundColor: "#EBEBE4",
     };
@@ -1009,13 +1015,30 @@ const Calender = (props) => {
       return {};
     });
 
-    if (flagDateAndTime || disableHoursSiteUnavailabilityDatesFlag) {
+    openingHours.map((key, index) => {
+      if (key.dayOff === true && currentDay === key.day) {
+        flagOpeningHours = true;
+      } else if (key.dayOff === false && currentDay === key.day) {
+        if (inRange(date.getHours(), key.startHour, key.endHour)) {
+        } else {
+          flagOpeningHours = true;
+        }
+      }
+      return true;
+    });
+
+    if (
+      flagDateAndTime ||
+      disableHoursSiteUnavailabilityDatesFlag ||
+      flagOpeningHours
+    ) {
       return {
         className: "rbc-day-slot rbc-time-slot ",
         style: newStyle,
       };
     }
   };
+
   return (
     <>
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
