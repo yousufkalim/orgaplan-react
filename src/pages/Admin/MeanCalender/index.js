@@ -399,7 +399,7 @@ const Calender = (props) => {
             console.log("mean is ", props.location.mean);
             let startHour = moment(startTime).format("H");
             let endHour = moment(endTime).format("H");
-            // create invoive
+            // create invoive 
             // 1Booking
             var formdata = new FormData();
 
@@ -681,6 +681,12 @@ const Calender = (props) => {
     formdata1.append("time", event.start);
     formdata1.append("type", "MEAN");
     // props.location.mean?.meanType
+    event?.meanId?.isInside
+      ? formdata1.append(
+          "meanLocation",
+          event?.meanId?.levelName + "/" + event?.meanId?.buildingName,
+        )
+      : formdata1.append("meanLocation", "Exterior");
     formdata1.append("isBillable", true);
     formdata1.append(
       "price",
