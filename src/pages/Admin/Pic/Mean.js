@@ -84,10 +84,7 @@ export default function AddMean(props) {
         const temp = [];
 
         response.data.site_delivery_areas.map((item) => {
-          if (
-            moment(new Date()).format("yyyy-DD-MM") <
-            moment(item.availability.end).format("yyyy-DD-MM")
-          ) {
+          if (moment(item.availability.end).isSameOrAfter(new Date())) {
             temp.push({
               label: item.name,
               value: item._id,
@@ -100,10 +97,7 @@ export default function AddMean(props) {
       if (response.data.site_storage_areas !== null) {
         const temp = [];
         response.data.site_storage_areas.map((item) => {
-          if (
-            moment(new Date()).format("yyyy-DD-MM") <
-            moment(item.availability.end).format("yyyy-DD-MM")
-          ) {
+          if (moment(item.availability.end).isSameOrAfter(new Date())) {
             temp.push({
               label: item.name,
               value: item._id,

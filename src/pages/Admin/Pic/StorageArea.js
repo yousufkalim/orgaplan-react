@@ -101,13 +101,10 @@ export default function DeliveryArea(props) {
           label: item.companyId.name,
         })),
       );
-
+      
       const temp = [];
       deliveryAreas.data.map((item) => {
-        if (
-          moment(new Date()).format("yyyy-DD-MM") <
-          moment(item.availability.end).format("yyyy-DD-MM")
-        ) {
+        if (moment(item.availability.end).isSameOrAfter(new Date())) {
           temp.push({
             label: item.name,
             value: item._id,

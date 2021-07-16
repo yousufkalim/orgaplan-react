@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ZACS(props) {
-  const {SITE_LIST,ZACS_LIST,Create_a_SITE}=TEXTS
+  const { SITE_LIST, ZACS_LIST, Are_you_sure_to_Delete, Create_a_Zac } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -65,7 +65,7 @@ export default function ZACS(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm(Are_you_sure_to_Delete)) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -105,7 +105,7 @@ export default function ZACS(props) {
         <Button
           fullWidth={false}
           component={NavLink}
-          text="CREATE A ZAC"
+          text={Create_a_Zac}
           to="/sites/add-zac"
         />
       </Form.Row>

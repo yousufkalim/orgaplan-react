@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddZac(props) {
+  const { ADD_ZAC, VALIDATE, ZAC_NAME } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -68,16 +70,16 @@ export default function AddZac(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A ZAC" />
+      <Heading primary={ADD_ZAC} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="NAME OF ZAC: " />
+            <FormLabel bold primary={`${ZAC_NAME}: `} />
             <FormInput
               name="name"
               value={name}
               // error={name}
-              placeholder="Name of ZAC"
+              placeholder={ZAC_NAME}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -88,7 +90,7 @@ export default function AddZac(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={loading || !name}

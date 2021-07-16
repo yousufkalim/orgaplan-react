@@ -48,6 +48,8 @@ export default function AddAdmin(props) {
     VALIDATE,
     IDENTITY,
     PROFILE,
+    COMPANIES,
+    TYPE_OF_ADMIN,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -321,7 +323,7 @@ export default function AddAdmin(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="ENTREPRISES*: " />
+            <FormLabel bold primary={`${COMPANIES}*: `} />
             <FormSelect
               name="companyId"
               value={companyId}
@@ -336,7 +338,7 @@ export default function AddAdmin(props) {
           </Form.Row>
           {company.type === "MASTERCLIENT" && (
             <Form.Row>
-              <FormLabel bold primary="TYPE OF ADMIN* : " />
+              <FormLabel bold primary={`${TYPE_OF_ADMIN}* : `} />
               <RadioButton
                 name="adminType"
                 value={adminType}

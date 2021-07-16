@@ -1123,6 +1123,7 @@ class App extends Component {
       handleConvaCircleClick,
       handleConvaCircleImageClick,
     } = this;
+    const { UPLOAD_PDF, Loading } = TEXTS;
     return (
       <div>
         {this.props.role == "ADMIN" && (
@@ -1160,7 +1161,7 @@ class App extends Component {
               <Button
                 fullWidth={false}
                 disabled={isLoading}
-                text={isLoading === true ? "LOADING..." : "Upload PDF"}
+                text={isLoading === true ? `${Loading}...` : UPLOAD_PDF}
                 onClick={() =>
                   document.getElementById("upload-canvas-pdf-button").click()
                 }

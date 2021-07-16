@@ -671,6 +671,7 @@ const Calender = (props) => {
   const handleValidateEvent = async () => {
     setpopoverShow(!popoverShow);
     dispatch(validateMean(eventID));
+    // console.log("event is ", event);
     // creaet 1book invoice on validate mean
     let startHour = moment(event.start).format("H");
     let endHour = moment(event.end).format("H");
@@ -830,6 +831,12 @@ const Calender = (props) => {
 
       if (response.success) {
         const tempmeanData = response.data.history.map((key, index) => {
+          let colour = "";
+          if (key.status === "VALIDATED") {
+            colour = "green";
+          } else {
+            colour = "#FFFF00";
+          }
           return {
             title: key.bookingReason,
             companyId: key.companyId,
@@ -843,7 +850,7 @@ const Calender = (props) => {
             updatedAt: key.updatedAt,
             userId: key.userId,
             _id: key._id,
-            color: "",
+            color: colour,
           };
         });
 

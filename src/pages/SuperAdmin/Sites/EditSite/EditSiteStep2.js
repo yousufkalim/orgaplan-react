@@ -13,8 +13,24 @@ import FormLabel from "../../../../components/FormLabel";
 import OpeningTimes from "../../../../components/OpeningTimes";
 import UnavailabilityTimes from "../../../../components/UnavailabilityTimes";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
+import { TEXTS } from "../../../../assets/languages/french";
 
 export default function AddSiteStep2(props) {
+  const {
+    VALIDATE,
+    SITE_DATES,
+    START_DATE,
+    END_DATE,
+    OPENING_TIME,
+    UNAVAILABILITY_TIME,
+    ADDITIONNAL_INFORMATION,
+    NOTIFICATION,
+    Days_before_end_of_the_site,
+    Please_enter_email,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_valid_email,
+  } = TEXTS;
+
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
@@ -207,14 +223,15 @@ export default function AddSiteStep2(props) {
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
       <Form.Row>
-        <FormLabel bold primary="SITE DATES* : " />
+        {" "}
+        <FormLabel bold primary={`${SITE_DATES}* : `} />
         <Form.Row width="48%" noMargin>
           <FormInput
             type="date"
             name="start"
             value={start}
             // error={start}
-            placeholder="Start date"
+            placeholder={START_DATE}
             style={GLOBALS.Styles.inputWidth}
             min={moment().format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
@@ -227,7 +244,7 @@ export default function AddSiteStep2(props) {
             value={end}
             // error={end}
             disabled={!start}
-            placeholder="End date"
+            placeholder={END_DATE}
             style={GLOBALS.Styles.inputWidth}
             min={moment(start).add(1, "days").format("YYYY-MM-DD")}
             onChange={({ target: { name, value } }) =>
@@ -237,7 +254,8 @@ export default function AddSiteStep2(props) {
         </Form.Row>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="OPENING TIME : " />
+        <FormLabel bold primary={`${OPENING_TIME}: `} />
+
         <Form.Row
           noMargin
           width="48%"
@@ -253,7 +271,8 @@ export default function AddSiteStep2(props) {
         </Form.Row>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="UNAVAILABILITY TIME :" />
+        {" "}
+        <FormLabel bold primary={`${UNAVAILABILITY_TIME} :`} />
         <Form.Row
           noMargin
           width="48%"
@@ -273,7 +292,8 @@ export default function AddSiteStep2(props) {
         </Form.Row>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="ADDITIONNAL INFORMATION :" />
+        {" "}
+        <FormLabel bold primary={`${ADDITIONNAL_INFORMATION} :`} />
         <FormInput
           textArea
           rows={3}
@@ -281,13 +301,14 @@ export default function AddSiteStep2(props) {
           name="additionalInfo"
           value={additionalInfo}
           style={GLOBALS.Styles.inputWidth}
-          placeholder="Additional information"
+          placeholder={ADDITIONNAL_INFORMATION}
           // error={additionalInfo}
           onChange={({ target: { name, value } }) => handleChange(name, value)}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="NOTIFICATION : " />
+        <FormLabel bold primary={`${NOTIFICATION} : `} />
+
         <Form.Row
           noMargin
           width="48%"
@@ -306,18 +327,19 @@ export default function AddSiteStep2(props) {
           />
           <SmallText
             style={{ marginLeft: 10 }}
-            primary="Days before end of the site"
+            primary={Days_before_end_of_the_site}
           />
         </Form.Row>
       </Form.Row>
       <Form.Row style={{ alignItems: "flex-start" }}>
-        <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+        <FormLabel bold primary={`${NOTIFY_THE_ADDRESSES} : `} />
+
         <MultiAdderInput
           name="notificationTo"
           values={notificationTo}
-          validateError="Invalid Email"
+          validateError={Please_enter_valid_email}
           style={GLOBALS.Styles.inputWidth}
-          placeholder="Enter email address"
+          placeholder={Please_enter_email}
           onChange={(values) => handleChange("notificationTo", values)}
           validate={(text) => {
             const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
@@ -329,7 +351,7 @@ export default function AddSiteStep2(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           loading={loading}
           disabled={loading || !start || !end}
