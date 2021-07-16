@@ -101,7 +101,7 @@ export default function DeliveryArea(props) {
           label: item.companyId.name,
         })),
       );
-      
+
       const temp = [];
       deliveryAreas.data.map((item) => {
         if (moment(item.availability.end).isSameOrAfter(new Date())) {
@@ -342,7 +342,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${AVAILABILITY}* :`} />
+          <FormLabel bold primary={`${AVAILABILITIES}* :`} />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
