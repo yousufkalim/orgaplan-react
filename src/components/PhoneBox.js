@@ -12,8 +12,8 @@ export default function PhoneBox(props) {
   const white = theme.palette.common.white;
   const color = props.disabled
     ? theme.palette.custom.disabled
-    : props.error
-    ? error
+    : "#7E7878"
+    ? "#7E7878"
     : theme.palette.primary.contrastText;
   const borderColor = props.disabled
     ? theme.palette.custom.disabled
