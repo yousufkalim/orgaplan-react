@@ -9,7 +9,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
@@ -41,9 +40,7 @@ let view = {
   work_week: MyWorkWeek,
   agenda: true,
 };
-
 const localizer = momentLocalizer(moment);
-
 let formats = {
   dateFormat: "DD",
   monthHeaderFormat: "DD/MM/YYYY",
@@ -54,7 +51,6 @@ let formats = {
   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
-
 const Calender = (props) => {
   moment.locale("es-es", {
     week: {
@@ -66,7 +62,6 @@ const Calender = (props) => {
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [userId, setUserId] = useState(store.user._id);
-
   // *****
   const [isLoading, setLoading] = useState(true);
   const [siteMeans, setSiteMeans] = useState("");
@@ -75,7 +70,6 @@ const Calender = (props) => {
   const [popoverShow, setpopoverShow] = useState(false);
   const [event, setEvent] = useState("");
   const [events, setEvents] = useState("");
-
   const [show, setShow] = useState(false);
   let [startTime] = useState("");
   let [endTime] = useState("");
@@ -101,7 +95,6 @@ const Calender = (props) => {
   const [startDate, setStartDate] = useState("");
   const [eventID, seteventID] = useState("");
   const [filterDate, setFilterDate] = useState(new Date());
-
   const [typeOfPlace, setTypeOfPlace] = useState([]);
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
@@ -165,7 +158,6 @@ const Calender = (props) => {
     addDelivery,
     popoverShow,
   ]);
-
   // !!!!!!
   const handleClose = () => setShow(false);
   let work_week_obj = {
@@ -194,7 +186,6 @@ const Calender = (props) => {
       work_week_obj.Saturday = false;
     }
   }
-
   const updateEvent = () => {
     if (titleEdit !== "") {
       /* start time*/
@@ -275,7 +266,6 @@ const Calender = (props) => {
       startTime = String(startTime);
       startTime = startTime.replace(/,/g, "");
       startTime = new Date(startTime);
-
       /* start time*/
       /* End time*/
       endTime = String(endTime);
@@ -344,7 +334,6 @@ const Calender = (props) => {
           }, 1000);
         } else {
           setShow(false);
-
           setEvents([...events, stateElement]);
           dispatch(add_mean(DbElement));
           setTitle("");
@@ -362,7 +351,6 @@ const Calender = (props) => {
       }, 1000);
     }
   };
-
   const AddDeliveryRequest = ({ start, end }) => {
     setAddDelivery(false);
     setDeliverStartHours(start.getHours());
@@ -497,7 +485,6 @@ const Calender = (props) => {
     setShowEdit(true);
     setAlertBoxTime(false);
     const fill = events.filter((e) => e._id === eventID);
-
     setTitleEdit(fill[0].title);
     let getstart = String(fill[0].start);
     let getend = String(fill[0].end);
@@ -556,7 +543,6 @@ const Calender = (props) => {
     setEvents(fill);
     update_delivery_status(eventID);
   };
-
   const handlePopoverShow = (event) => {
     // console.log("handlepopup show", event.id);
     // setAlertBoxTime(false);
@@ -565,9 +551,7 @@ const Calender = (props) => {
     // setEvent(fill[0]);
     // setpopoverShow(!popoverShow);
     // admin code end
-
     // setAddVarification(true);
-    console.log("event is", event);
     if (event.status == "COMPLETED" || event.status == "COMPLETEDWITHISSUE") {
       return;
     }
@@ -576,7 +560,6 @@ const Calender = (props) => {
       state: { event },
     });
   };
-
   const saveBooking = () => {
     /* start time*/
     bookingstartTime = String(bookingstartTime);
@@ -605,7 +588,6 @@ const Calender = (props) => {
     bookingEndTime = String(bookingEndTime);
     bookingEndTime = bookingEndTime.replace(/,/g, "");
     bookingEndTime = new Date(bookingEndTime);
-
     if (
       bookingEvent.start <= bookingstartTime &&
       bookingEvent.end >= bookingEndTime
@@ -639,7 +621,6 @@ const Calender = (props) => {
   const update_delivery_status = async (id) => {
     try {
       // 1invoice on validate DR
-      console.log("validate delivery", event);
       if (event.liftingMeans.length >= 1) {
         let startHour = moment(event.start).format("H");
         let endHour = moment(event.end).format("H");
@@ -655,7 +636,6 @@ const Calender = (props) => {
           formdata1.append("isPaid", false);
           formdata1.append("companyId", event.company?._id);
           formdata1.append("siteId", adminStore.site.siteId._id);
-
           // for (let [key, value] of formdata1) {
           //   console.log(
           //     `formdata1 in meanbook delivery invoice ${key}: ${value}`,
@@ -722,7 +702,6 @@ const Calender = (props) => {
         }
       } else {
       }
-
       //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
@@ -765,7 +744,6 @@ const Calender = (props) => {
         }
       } else {
       }
-
       //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
@@ -785,7 +763,6 @@ const Calender = (props) => {
       if (response.success) {
         if (response.data !== null) {
           const temp = [];
-
           response.data.map((item, index) => {
             return temp.push({
               label: item.name,
@@ -796,7 +773,6 @@ const Calender = (props) => {
         }
       } else {
       }
-
       //   setItems(response.data.items);
       setLoading(false);
     } catch (err) {
@@ -816,14 +792,12 @@ const Calender = (props) => {
       if (response.success) {
         if (response.data !== null) {
           const temp = [];
-
           response.data.map((item, index) => {
             return temp.push({
               label: item.name,
               value: item._id,
             });
           });
-
           setTypeOfPlace(temp);
         }
       } else {
@@ -933,7 +907,6 @@ const Calender = (props) => {
         if (typeOfPlaning === "Deliveries") {
           let background = "";
           let fontColor = "";
-
           tempEvent = response.data.Deliveries.map((key, index) => {
             // if (key.userId._id === userId) {
             if (!(key.startTime && key.endTime)) {
@@ -949,7 +922,6 @@ const Calender = (props) => {
             } else {
               background = "red";
             }
-
             /* start time converstion */
             let start = new Date(key.date);
             let startHours = key.startTime.slice(0, 2);
@@ -984,6 +956,15 @@ const Calender = (props) => {
               building: key.building,
               status: key.status,
               user: key.userId,
+              flatRegistration: key?.flatRegistration
+                ? key.flatRegistration
+                : "",
+              bufferArea:
+                key?.bufferArea == true || key?.bufferArea == false
+                  ? key.bufferArea
+                  : "",
+              arrivalTime: key?.arrivalTime ? key.arrivalTime : "",
+              departureTime: key?.departureTIme ? key.departureTIme : "",
             };
             // }
           });
@@ -993,7 +974,6 @@ const Calender = (props) => {
             // if (key.userId._id === userId) {
             let background = "";
             let fontColor = "white";
-
             if (key.status === "VALIDATED") {
               background = "green";
             } else {
@@ -1061,7 +1041,6 @@ const Calender = (props) => {
       }
       return {};
     });
-
     if (flagDateAndTime || flagOpeningHours) {
       return {
         className: "rbc-day-slot rbc-time-slot",
@@ -1084,7 +1063,6 @@ const Calender = (props) => {
     });
     setDisableHours(tempDisabledTime);
   };
-
   return (
     <>
       <FullScreenModal
@@ -1428,7 +1406,6 @@ const Calender = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
       <div className="pt-5">
         <PopoverModal
           popoverShow={popoverShow}
@@ -1500,7 +1477,6 @@ const Calender = (props) => {
                     />
                   </>
                 )}
-
                 {/* <FormSelect
                   value={typeOfPlaning}
                   values={[
@@ -1545,7 +1521,6 @@ const Calender = (props) => {
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
                     />
-
                     <FormSelect
                       placeholder="Location"
                       value={placeId}
@@ -1567,7 +1542,6 @@ const Calender = (props) => {
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
                     />
-
                     <FormSelect
                       placeholder="Location"
                       value={placeId}
@@ -1623,12 +1597,10 @@ const Calender = (props) => {
                   fontWeight: "bold",
                   fontSize: "16px",
                 };
-
                 if (events.isMine) {
                   newStyle.backgroundColor = "color";
                   newStyle.border = "2px solid #fff";
                 }
-
                 return {
                   className: "",
                   style: newStyle,
@@ -1649,5 +1621,4 @@ const Calender = (props) => {
     </>
   );
 };
-
 export default Calender;

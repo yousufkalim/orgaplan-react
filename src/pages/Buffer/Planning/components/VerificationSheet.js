@@ -19,19 +19,27 @@ const VarificationSheet = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const [image, setImage] = useState([]);
+
   const [bufferArea, setBufferArea] = useState(
-    location?.state?.event?.bufferArea
-      ? location?.state?.event?.bufferArea
-      : "",
+    location?.state?.event?.bufferArea,
   );
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
-
   const [delayTime, setDelayTime] = useState("00:00");
-  const [arrivalTime, setArrivalTime] = useState("00:00");
-  const [departureTime, setDepartureTime] = useState("00:00");
-  const [flatRegistration, setFlatRegistration] = useState("");
+  const [arrivalTime, setArrivalTime] = useState(
+    moment(eventdata.arrivalTime).format("HH:mm")
+      ? moment(eventdata.arrivalTime).format("HH:mm")
+      : "00:00",
+  );
+  const [departureTime, setDepartureTime] = useState(
+    moment(eventdata.departureTime).format("HH:mm")
+      ? moment(eventdata.departureTime).format("HH:mm")
+      : "00:00",
+  );
+  const [flatRegistration, setFlatRegistration] = useState(
+    eventdata.flatRegistration,
+  );
   const [delayCheckBox, setDelayCheckBox] = useState(false);
   const [status, setStatus] = useState(eventdata.status);
   const [checkStatus, setCheckStatus] = useState();
@@ -39,8 +47,8 @@ const VarificationSheet = (props) => {
     eventdata?.comment ? eventdata.comment : "",
   );
   const [loading, setLoading] = useState(true);
+  // console.log("data", eventdata);
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -61,37 +69,33 @@ const VarificationSheet = (props) => {
     });
     setMaterials(array);
   };
-
   useEffect(() => {
     materialData();
   }, []);
-
   let arrivelIs = new Date(
     new Date(eventdata.start).setHours(arrivalTime.split(":")[0]),
   );
   let departureIs = new Date(
     new Date(eventdata.start).setHours(departureTime.split(":")[0]),
   );
-  console.log("event data is ", eventdata);
-
   const onSubmit = async () => {
-    console.log(checkStatus);
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {
         materialsArray.push(key);
       }
     }
-
     try {
       setLoading(true);
-
       var formdata = new FormData();
       formdata.append("bufferArea", bufferArea);
       formdata.append("arrivalTime", arrivelIs);
       formdata.append("flatRegistration", flatRegistration);
-      formdata.append("departureTime", departureIs);
-
+      formdata.append("departureTIme", departureIs);
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdata verification sheet buffer${key}: ${value}`);
+      // }
+      // console.log("eventid", eventdata?.id);
       await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.BUFFER_UPDATE_DELIVERY}/${eventdata.id}`,
@@ -100,7 +104,6 @@ const VarificationSheet = (props) => {
           Authorization: store.token,
         },
       });
-
       // if (delay === true) {
       //   let locationObj = { deliveryArea: deliveryAreaId };
       //   var formdata = new FormData();
@@ -128,7 +131,6 @@ const VarificationSheet = (props) => {
       //   });
       // }
       setLoading(false);
-
       history.push("/Planing");
     } catch (err) {
       setLoading(false);
@@ -142,6 +144,7 @@ const VarificationSheet = (props) => {
   return (
     <>
       <div className="row">
+        {console.log(bufferArea)}
         <div className="col-sm-12">
           <br />
           <IconButton onClick={() => history.goBack()}>
@@ -222,7 +225,6 @@ const VarificationSheet = (props) => {
                 />
               </div>
             </div> */}
-
             <div className="col-sm-6">
               <div className="label" style={{ padding: "25px 0px" }}>
                 MATERIEL LIVRÉ :<br />
@@ -238,7 +240,6 @@ const VarificationSheet = (props) => {
             </div>
           </>
         )}
-
         <div className="col-sm-6">
           <div className="label">ADDITIONAL INFORMATION:</div>
         </div>
@@ -292,6 +293,7 @@ const VarificationSheet = (props) => {
                     className="green"
                     style={{ marginRight: "5px" }}
                     value={true}
+                    defaultChecked={location?.state?.event?.bufferArea == true}
                     onChange={(e) => {
                       setBufferArea(e.target.value);
                     }}
@@ -300,6 +302,7 @@ const VarificationSheet = (props) => {
                     type="radio"
                     label="NO"
                     name="bufferArea"
+                    defaultChecked={location?.state?.event?.bufferArea == false}
                     value={false}
                     onChange={(e) => {
                       setBufferArea(e.target.value);
@@ -317,6 +320,7 @@ const VarificationSheet = (props) => {
               <div style={{ display: "flex" }}>
                 <>
                   <TimePicker
+                    disableClock
                     value={arrivalTime}
                     onChange={(e) => {
                       setArrivalTime(e);
