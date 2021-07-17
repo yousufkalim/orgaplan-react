@@ -29,7 +29,7 @@ const VarificationSheet = (props) => {
   const [delayTime, setDelayTime] = useState("00:00");
   const [delayCheckBox, setDelayCheckBox] = useState(false);
   const [status, setStatus] = useState(eventdata.status);
-  const [checkStatus, setCheckStatus] = useState();
+  const [checkStatus, setCheckStatus] = useState(status);
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
@@ -140,6 +140,7 @@ const VarificationSheet = (props) => {
   };
   return (
     <>
+      {console.log(materialsData)}
       <div className="row">
         <div className="col-sm-12">
           <br />
@@ -190,7 +191,7 @@ const VarificationSheet = (props) => {
           <div className="value checkBoxTime">
             <TimePicker
               value={delayTime}
-              disabled={!delayCheckBox}
+              disabled={!delayCheckBox || checkStatus != "VALIDATED"}
               disableClock
               onChange={(e) => {
                 setDelayTime(e);
@@ -202,7 +203,7 @@ const VarificationSheet = (props) => {
               name={delayCheckBox}
               label="DELAY ?"
               checked={delayCheckBox}
-              disabled={status != "VALIDATED"}
+              disabled={checkStatus != "VALIDATED"}
               onChange={(e) => {
                 setDelayCheckBox(e.target.checked);
               }}
@@ -221,7 +222,7 @@ const VarificationSheet = (props) => {
             array={materials}
             selected={materialsData}
             setSelected={setMaterialsData}
-            disabled={status != "VALIDATED"}
+            disabled={checkStatus != "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -234,7 +235,7 @@ const VarificationSheet = (props) => {
               rows={3}
               value={comments}
               placeholder="Ajouter un commentaire"
-              disabled={status != "VALIDATED"}
+              disabled={checkStatus != "VALIDATED"}
               onChange={(e) => {
                 setComments(e.target.value);
               }}
@@ -257,7 +258,7 @@ const VarificationSheet = (props) => {
             onChange={(e) => {
               setImage(e);
             }}
-            disabled={status != "VALIDATED"}
+            disabled={checkStatus != "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -288,6 +289,8 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
+                  disabled={status != "VALIDATED"}
+                  defaultChecked={checkStatus === "COMPLETED"}
                 />
                 <Form.Check
                   type="radio"
@@ -297,6 +300,8 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
+                  disabled={status != "VALIDATED"}
+                  defaultChecked={checkStatus === "COMPLETEDWITHISSUE"}
                 />
 
                 <Form.Check
@@ -307,7 +312,8 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  defaultChecked
+                  disabled={status != "VALIDATED"}
+                  defaultChecked={checkStatus === "VALIDATED"}
                 />
               </>
             )}
@@ -317,7 +323,11 @@ const VarificationSheet = (props) => {
       <Button
         variant="warning"
         className="validate_Btn"
-        disabled={status != "VALIDATED"}
+        disabled={
+          status != "VALIDATED" ||
+          checkStatus === "VALIDATED" ||
+          (delayCheckBox == true && delayTime == "00:00")
+        }
         onClick={onSubmit}
       >
         VALIDER
