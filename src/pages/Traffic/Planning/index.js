@@ -19,6 +19,7 @@ import DatePicker from "react-datepicker";
 import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
+import deliverIcon from "../../../assets/icons/delivery.png";
 import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
@@ -34,7 +35,8 @@ import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
 import { EventToolTips } from "./components/TooltipCustom";
 import VerificationSheet from "./components/VerificationSheet";
-
+import alertIcon from "../../../assets/icons/alerticon.png";
+import alertIcon1 from "../../../assets/icons/alerticon1.png";
 let view = {
   month: true,
   day: true,
@@ -129,6 +131,9 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
+  const [deliveryCount, setDeliveryCount] = useState(0);
+  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -1412,7 +1417,7 @@ const Calender = (props) => {
         </Modal.Footer>
       </Modal>
 
-      <div className="pt-5">
+      <div className="pt-5" style={{ display: "flex" }}>
         <PopoverModal
           popoverShow={popoverShow}
           handlePopoverClose={handlePopoverClose}
@@ -1433,7 +1438,8 @@ const Calender = (props) => {
             setAddDelivery(true);
           }}
         />
-        <div style={{ flexBasis: "100%" }}>
+
+        <div style={{ width: "80%" }}>
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
@@ -1449,7 +1455,7 @@ const Calender = (props) => {
             </Form.Row>
             <Form.Row alignItems="center" noMargin>
               <Form.Row justifyContent="flex-start" noMargin>
-                <div style={{ marginRight: "20px", width: 250 }}>
+                <div style={{ marginRight: "20px", width: "100%" }}>
                   <DatePicker
                     showPopperArrow={true}
                     dateFormat="dd-MM-yyyy"
@@ -1484,7 +1490,7 @@ const Calender = (props) => {
                   </>
                 )}
 
-                <FormSelect
+                {/* <FormSelect
                   value={typeOfPlaning}
                   values={[
                     { value: "Deliveries", label: "Deliveries" },
@@ -1507,18 +1513,15 @@ const Calender = (props) => {
                     }
                   }}
                   style={{ marginRight: "20px", maxWidth: 250 }}
-                />
-                <FormSelect
+                /> */}
+                {/* <FormSelect
                   placeholder="Status"
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
                   style={{ marginRight: "5px", maxWidth: 250 }}
-                />
-              </Form.Row>
-            </Form.Row>
-            <Form.Row>
-              <Form.Row justifyContent="flex-start" noMargin>
+                /> */}
+
                 {props.location.selectedShape != null ? (
                   <>
                     <FormSelect
@@ -1567,6 +1570,7 @@ const Calender = (props) => {
               </Form.Row>
             </Form.Row>
           </div>
+          <br />
           {events ? (
             <Calendar
               tooltipAccessor={null}
@@ -1588,6 +1592,7 @@ const Calender = (props) => {
               startAccessor="start"
               endAccessor="end"
               style={{
+                "padding-left": "15px",
                 width: "98%",
                 height: "540px",
               }}
@@ -1628,6 +1633,75 @@ const Calender = (props) => {
           ) : (
             <Loader.Progress />
           )}
+        </div>
+        <div style={{ width: "18%" }}>
+          <div
+            style={{
+              backgroundColor: "#47A7EE",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}>
+              <img
+                src={deliverIcon}
+                style={{ width: 25, height: 25 }}
+                alt="Icon"
+              />
+            </div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {deliveryCount}
+            </h3>
+            <h6 style={{ color: "white" }}>Deliveries</h6>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#0EB227",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}></div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {totalCompDeliveries}
+            </h3>
+            <h6 style={{ color: "white" }}>COMPLETED</h6>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#E15141",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}>
+              <img
+                src={alertIcon1}
+                style={{ width: 25, height: 25 }}
+                alt="Icon"
+              />
+              <img
+                src={alertIcon}
+                style={{
+                  width: "5px",
+                  height: "18px",
+                  position: "relative",
+                  right: "15px",
+                }}
+                alt="Icon"
+              />
+            </div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {alertCount}
+            </h3>
+            <h6 style={{ color: "white" }}>Alerts</h6>
+          </div>
         </div>
       </div>
     </>

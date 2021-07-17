@@ -762,7 +762,6 @@ const PicCanvas = (props) => {
               }}
             >
               <div style={{ textAlign: "left", padding: "5px" }}>
-                {" "}
                 <img
                   src={deliverIcon}
                   style={{ width: 25, height: 25 }}
