@@ -63,7 +63,7 @@ export default function EditSite(props) {
         name: response.name,
         logo: response.logo,
         zacId: response.zacId?._id,
-        adminId: response.adminId._id,
+        adminId: response.clientAdmin,
         functionality: response.functionality,
         addresses: addresses,
         trades: trades,

@@ -15,7 +15,7 @@ import RadioButton from "../../../../components/RadioButton";
 import MultiAdderInput from "../../../../components/MultiAdderInput";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
 import MultiAdderInputModal from "../../../../components/MultiAdderInputModal";
-
+import FormMultiSelect from "../../../../components/FormMultiSelect";
 export default function AddSiteStep1(props) {
   const dispatch = useDispatch();
   const {
@@ -51,7 +51,7 @@ export default function AddSiteStep1(props) {
   const [name, setName] = useState("");
   const [logo, setLogo] = useState([]);
   const [zacId, setZacId] = useState("");
-  const [adminId, setAdminId] = useState("");
+  const [adminId, setAdminId] = useState([]);
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -106,7 +106,9 @@ export default function AddSiteStep1(props) {
         client.adminIds.map((admin) =>
           adminsArray.push({
             value: admin._id,
-            label: `${admin.firstName} ${admin.lastName}`,
+            label: `${admin.firstName} ${admin.lastName} (${client.companyId.name})`,
+            clientId: client._id,
+            companyId: client.companyId._id,
           }),
         );
 
@@ -131,8 +133,10 @@ export default function AddSiteStep1(props) {
     if (name === "name") setName(value);
     else if (name === "logo") setLogo(value);
     else if (name === "zacId") setZacId(value);
-    else if (name === "adminId") setAdminId(value);
-    else if (name === "functionality") setFunctionality(value);
+    else if (name === "adminId") {
+      setUpdate((st) => !st);
+      setAdminId(value);
+    } else if (name === "functionality") setFunctionality(value);
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
@@ -179,11 +183,23 @@ export default function AddSiteStep1(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
+    let clientAdmin = [];
+    admins.map((array, index) => {
+      adminId.map((select) => {
+        if (array.value.toString() === select.toString()) {
+          clientAdmin.push({
+            adminId: array.value,
+            clientId: array.clientId,
+            companyId: array.companyId,
+          });
+        }
+      });
+    });
     const values = {
       name,
       logo,
       zacId,
-      adminId,
+      clientAdmin,
       functionality,
       addresses,
       trades,
@@ -242,29 +258,15 @@ export default function AddSiteStep1(props) {
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary={`${SITE_RESPONSIBLE}* :`} />
-          <Form.Row
-            noMargin
-            width="48%"
-            alignItems="center"
-            justifyContent="flex-start"
-          >
-            <FormSelect
-              name="adminId"
-              value={adminId}
-              values={admins}
-              placeholder={SELECT_ADMIN}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={({ target: { name, value } }) =>
-                handleChange(name, value)
-              }
-              error={adminError}
-            />
-            <SmallText
-              noMargin
-              primary={clientName}
-              style={{ marginLeft: 20 }}
-            />
-          </Form.Row>
+          <FormMultiSelect
+            name="adminId"
+            value={adminId}
+            placeholder={SELECT_ADMIN}
+            values={admins}
+            condition={true}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={({ target: { value } }) => handleChange("adminId", value)}
+          />
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary={`${AVAILABLE_FUNCTIONALITY}  : `} />
@@ -349,7 +351,7 @@ export default function AddSiteStep1(props) {
             disabled={
               !name ||
               nameError ||
-              !adminId ||
+              adminId.length === 0 ||
               adminError ||
               addresses.length === 0 ||
               addressError ||

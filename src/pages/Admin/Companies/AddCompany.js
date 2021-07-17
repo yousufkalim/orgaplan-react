@@ -96,7 +96,6 @@ export default function AddCompanies(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
   const [name, setName] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [color, setColor] = useState("#d71313");
@@ -215,6 +214,7 @@ export default function AddCompanies(props) {
         formdata.append("color", color);
         formdata.append("website", website);
         formdata.append("description", addInfo);
+        formdata.append("adminIds", store.user._id);
         formdata.append("trades", JSON.stringify(trades));
         formdata.append("siteId", adminStore.site.siteId._id);
         formdata.append("incharge", JSON.stringify(incharge));
