@@ -1161,7 +1161,6 @@ const Calender = (props) => {
 
       // checking response and setting count values
       if (response.success) {
-        console.log("events: ", tempEvent);
         tempEvent.map((event) => {
           if (event.status == "COMPLETED") {
             completeDeliveryCount++;

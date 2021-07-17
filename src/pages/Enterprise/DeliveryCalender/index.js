@@ -33,6 +33,11 @@ import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
 import { EventToolTips } from "./components/TooltipCustom";
+
+import deliverIcon from "../../../assets/icons/delivery.png";
+import alertIcon from "../../../assets/icons/alerticon.png";
+import alertIcon1 from "../../../assets/icons/alerticon1.png";
+
 let view = {
   month: true,
   day: true,
@@ -126,12 +131,19 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
+
+  // states to count
+
+  const [deliveryCount, setDeliveryCount] = useState(0);
+  // const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
+
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
     }
     if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.type);
+      setTypeOfPlacevalue(props.location.selectedShape.name);
       if (props.location.selectedShape.type === "DELIVERYAREA") {
         getDeliveryAreaSiteBySiteId();
       } else if (props.location.selectedShape.type === "STORAGEAREA") {
@@ -992,6 +1004,8 @@ const Calender = (props) => {
   // console.log(userId);
   const filterBookingCalendar = async () => {
     let count = 0;
+    let alerts = 0;
+    let completeDeliveryCount = 0;
     let tempEvent;
     try {
       const response = await GLOBALS.API({
@@ -1095,7 +1109,28 @@ const Calender = (props) => {
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
         }
+        // Filtering events to with delivery area
+
+        tempEvent = tempEvent.filter((event) => {
+          return event.deliveryArea._id == props.location.selectedShape._id;
+        });
+        count = tempEvent.length;
         setEvents(tempEvent);
+      }
+      // checking response and setting count values
+      if (response.success) {
+        tempEvent.map((event) => {
+          // if (event.status == "COMPLETED") {
+          //   completeDeliveryCount++;
+          // }
+          if (event.alert) {
+            alert++;
+          }
+        });
+
+        setDeliveryCount(count);
+        // setTotalCompDeliveries(completeDeliveryCount);
+        setAlertCount(alerts);
       }
       setLoading(false);
     } catch (err) {
@@ -1518,36 +1553,43 @@ const Calender = (props) => {
             setAddDelivery(true);
           }}
         />
-        <div style={{ flexBasis: "100%" }}>
-          <div className="px-2">
-            <Form.Row alignItems="center">
-              <Form.Row noMargin>
-                <Heading primary="PLANNING" noWrap />
-                <SubHeading
-                  noMargin
-                  topPadding
-                  style={{ color: "#F80303", paddingRight: "3rem" }}
-                  primary={siteMeans}
-                  bold
-                />
+        <div style={{ display: "flex" }}>
+          <div style={{ width: "80%" }}>
+            <div className="px-2">
+              <Form.Row alignItems="center">
+                <Form.Row noMargin>
+                  <Heading primary={typeOfPlacevalue} noWrap />
+                  {/* <SubHeading
+                    noMargin
+                    topPadding
+                    style={{ color: "#F80303", paddingRight: "3rem" }}
+                    primary={siteMeans}
+                    bold
+                  /> */}
+                </Form.Row>
               </Form.Row>
-            </Form.Row>
-            <Form.Row alignItems="center" noMargin>
-              <Form.Row justifyContent="flex-start" noMargin>
-                <div style={{ marginRight: "20px", width: 250 }}>
-                  <DatePicker
-                    showPopperArrow={true}
-                    dateFormat="dd-MM-yyyy"
-                    selected={filterDate}
-                    popperPlacement="top-start"
-                    showYearDropdown
-                    placeholderText="Delivery date"
-                    onChange={(filterDate) => {
-                      setFilterDate(filterDate);
+              <Form.Row alignItems="center" noMargin>
+                <Form.Row justifyContent="flex-start" noMargin>
+                  <div
+                    style={{
+                      marginRight: "20px",
+                      width: 250,
+                      marginBottom: 20,
                     }}
-                  />
-                </div>
-                {props.location.companyId != null ? (
+                  >
+                    <DatePicker
+                      showPopperArrow={true}
+                      dateFormat="dd-MM-yyyy"
+                      selected={filterDate}
+                      popperPlacement="top-start"
+                      showYearDropdown
+                      placeholderText="Delivery date"
+                      onChange={(filterDate) => {
+                        setFilterDate(filterDate);
+                      }}
+                    />
+                  </div>
+                  {/* {props.location.companyId != null ? (
                   <>
                     <FormSelect
                       placeholder="Enterprise"
@@ -1599,10 +1641,10 @@ const Calender = (props) => {
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
                   style={{ marginRight: "5px", maxWidth: 250 }}
-                />
+                /> */}
+                </Form.Row>
               </Form.Row>
-            </Form.Row>
-            <Form.Row>
+              {/* <Form.Row>
               <Form.Row justifyContent="flex-start" noMargin>
                 {props.location.selectedShape != null ? (
                   <>
@@ -1649,72 +1691,143 @@ const Calender = (props) => {
                     />
                   </>
                 )}
-              </Form.Row>
-            </Form.Row>
+              </Form.Row> */}
+              {/* </Form.Row> */}
+            </div>
+            {events ? (
+              <Calendar
+                tooltipAccessor={null}
+                components={{ event: EventToolTips }}
+                slotPropGetter={slotPropGetter}
+                popup
+                selectable
+                formats={formats}
+                localizer={localizer}
+                events={events}
+                views={view}
+                defaultView="work_week"
+                step={60}
+                timeslots={1}
+                onSelectEvent={handlePopoverShow}
+                // onSelectEvent={bookingSlot}
+                onSelecting={true}
+                // onSelectSlot={AddEvent}
+                onSelectSlot={AddDeliveryRequest}
+                // onSelectSlot={AddAvailability}
+                startAccessor="start"
+                endAccessor="end"
+                style={{
+                  width: "98%",
+                  height: "540px",
+                  marginLeft: 15,
+                }}
+                eventPropGetter={(events, start, end, isSelected) => {
+                  let { background, fontColor } = events;
+                  let newStyle = {
+                    clear: "both",
+                    display: "block",
+                    borderRadius: "4px",
+                    padding: "5px",
+                    marginTop: "5px !important",
+                    marginLeft: "5px !important",
+                    lineHeight: "14px",
+                    background: `${background}`,
+                    border: "2px solid #fff",
+                    color: fontColor ? `${fontColor}` : "black",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  };
+
+                  if (events.isMine) {
+                    newStyle.backgroundColor = "color";
+                    newStyle.border = "2px solid #fff";
+                  }
+
+                  return {
+                    className: "",
+                    style: newStyle,
+                  };
+                }}
+                custom_week_days={days}
+                dayPropGetter={customDayPropGetter}
+                date={filterDate}
+                onNavigate={(date) => {
+                  setFilterDate(date);
+                }}
+              />
+            ) : (
+              <Loader.Progress />
+            )}
           </div>
-          {events ? (
-            <Calendar
-              tooltipAccessor={null}
-              components={{ event: EventToolTips }}
-              slotPropGetter={slotPropGetter}
-              popup
-              selectable
-              formats={formats}
-              localizer={localizer}
-              events={events}
-              views={view}
-              defaultView="work_week"
-              step={60}
-              timeslots={1}
-              onSelectEvent={handlePopoverShow}
-              // onSelectEvent={bookingSlot}
-              onSelecting={true}
-              // onSelectSlot={AddEvent}
-              onSelectSlot={AddDeliveryRequest}
-              // onSelectSlot={AddAvailability}
-              startAccessor="start"
-              endAccessor="end"
+          <div style={{ width: "18%" }}>
+            <div
               style={{
-                width: "98%",
-                height: "540px",
+                backgroundColor: "#47A7EE",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-              eventPropGetter={(events, start, end, isSelected) => {
-                let { background, fontColor } = events;
-                let newStyle = {
-                  clear: "both",
-                  display: "block",
-                  borderRadius: "4px",
-                  padding: "5px",
-                  marginTop: "5px !important",
-                  marginLeft: "5px !important",
-                  lineHeight: "14px",
-                  background: `${background}`,
-                  border: "2px solid #fff",
-                  color: fontColor ? `${fontColor}` : "black",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                };
-
-                if (events.isMine) {
-                  newStyle.backgroundColor = "color";
-                  newStyle.border = "2px solid #fff";
-                }
-
-                return {
-                  className: "",
-                  style: newStyle,
-                };
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                <img
+                  src={deliverIcon}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {deliveryCount}
+              </h3>
+              <h6 style={{ color: "white" }}>Deliveries</h6>
+            </div>
+            {/* <div
+              style={{
+                backgroundColor: "#0EB227",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-              custom_week_days={days}
-              dayPropGetter={customDayPropGetter}
-              date={filterDate}
-              onNavigate={(date) => {
-                setFilterDate(date);
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}></div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {totalCompDeliveries}
+              </h3>
+              <h6 style={{ color: "white" }}>COMPLETED</h6>
+            </div> */}
+            <div
+              style={{
+                backgroundColor: "#E15141",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-            />
-          ) : (
-            <Loader.Progress />
-          )}
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                <img
+                  src={alertIcon1}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+                <img
+                  src={alertIcon}
+                  style={{
+                    width: "5px",
+                    height: "18px",
+                    position: "relative",
+                    right: "15px",
+                  }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {alertCount}
+              </h3>
+              <h6 style={{ color: "white" }}>Alerts</h6>
+            </div>
+          </div>
         </div>
       </div>
     </>
