@@ -90,7 +90,16 @@ const useStyles = makeStyles((theme) => ({
 
 let selectedShapeReserver;
 const PicCanvas = (props) => {
-  const {SHOW_EXTERIOR,SELECT_LEVEL,ADD,EDIT,DELIVERYAREA,STORAGEAREA,BUILDING,MEANS}=TEXTS;
+  const {
+    SHOW_EXTERIOR,
+    SELECT_LEVEL,
+    ADD,
+    EDIT,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    MEANS,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
