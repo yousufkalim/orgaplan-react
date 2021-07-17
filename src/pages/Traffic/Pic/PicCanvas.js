@@ -126,6 +126,10 @@ const PicCanvas = (props) => {
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
+
+  // state to open delivery area model
+  const [openDeliveryModal, setOpenDeliveryModal] = useState(false);
+
   useEffect(() => {
     if (level) {
       fetchLevelPic(level);
@@ -544,6 +548,9 @@ const PicCanvas = (props) => {
     if (shape.type == "STORAGEAREA") {
       checkStorageArea(shape);
     }
+    if (shape.type == "DELIVERYAREA") {
+      setOpenDeliveryModal(true);
+    }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       setselectedBuilding(shape);
@@ -828,8 +835,8 @@ const PicCanvas = (props) => {
                     : classes.infoDrawer
                 }
               >
-                <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+                {/* <SubHeading primary={selectedShape.name} bold fontSize={22} />
+                <SubHeading primary={`Type1 : ${selectedShape.type}`} /> */}
                 {selectedShape.type === "BUILDING" && (
                   <FormSelect
                     name="level"
@@ -892,7 +899,7 @@ const PicCanvas = (props) => {
                     </>
                   ) : selectedShape.type === "DELIVERYAREA" ? (
                     <>
-                      <NavLink
+                      {/* <NavLink
                         disabled={loading}
                         to={{
                           pathname: "/pic-interactive/calendar",
@@ -902,7 +909,7 @@ const PicCanvas = (props) => {
                         <IconButton>
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
-                      </NavLink>
+                      </NavLink> */}
                     </>
                   ) : (
                     <>
@@ -1086,6 +1093,33 @@ const PicCanvas = (props) => {
               </Button> */}
             </>
           )}
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openDeliveryModal}
+        onClose={() => setOpenDeliveryModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+          <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+          <div style={{ textAlign: "center" }}>
+            <NavLink
+              disabled={loading}
+              to={{
+                pathname: "/pic-interactive/calendar",
+                selectedShape: selectedShape,
+                company: company,
+              }}
+            >
+              <IconButton>
+                <Calendar className={classes.infoIcon} />
+              </IconButton>
+            </NavLink>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
