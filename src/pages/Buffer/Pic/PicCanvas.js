@@ -115,6 +115,7 @@ const PicCanvas = (props) => {
   const [rendering, setRendering] = useState("");
   const [shape, setShape] = useState("");
   const [openStorageModal, setOpenStorageModal] = useState(false);
+  const [openshapeModal, setOpenShapeModal] = useState(false);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -533,6 +534,10 @@ const PicCanvas = (props) => {
   };
 
   const handleClick = (id, shape) => {
+    console.log("aaaa", shape);
+    if (shape.type == "DELIVERYAREA") {
+      setOpenShapeModal(true);
+    }
     if (shape.type == "STORAGEAREA") {
       checkStorageArea(shape);
     }
@@ -1059,11 +1064,41 @@ const PicCanvas = (props) => {
                 disabled={requestFound}
                 style={{ width: "42%", marginLeft: "24%", fontSize: "12px" }}
                 onClick={onStorageClick}
-              >
+              > 
                 Demander Accès
               </Button> */}
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openshapeModal}
+        onClose={() => setOpenShapeModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+
+          <>
+            <SubHeading primary={`Type : ${selectedShape.type}`} />
+            <div style={{ textAlign: "center" }}>
+              <NavLink
+                disabled={loading}
+                to={{
+                  pathname: "/pic-interactive/calendar",
+                  selectedShape: selectedShape,
+                }}
+              >
+                <IconButton>
+                  <Calendar className={classes.infoIcon} />
+                </IconButton>
+              </NavLink>
+            </div>
+          </>
         </DialogContent>
       </Dialog>
     </div>

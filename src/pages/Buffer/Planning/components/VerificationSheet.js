@@ -320,12 +320,11 @@ const VarificationSheet = (props) => {
               <div style={{ display: "flex" }}>
                 <>
                   <TimePicker
-                    disableClock
                     value={arrivalTime}
                     onChange={(e) => {
                       setArrivalTime(e);
                     }}
-                    // disableClock
+                    disableClock
                     locale="sv-sv"
                   />
                 </>
@@ -342,7 +341,7 @@ const VarificationSheet = (props) => {
                   <Form.Control
                     as="input"
                     value={flatRegistration}
-                    placeholder="Ajouter un commentaire"
+                    placeholder="Plaque d’immatriculation"
                     onChange={(e) => {
                       setFlatRegistration(e.target.value);
                     }}
@@ -363,7 +362,7 @@ const VarificationSheet = (props) => {
                     onChange={(e) => {
                       setDepartureTime(e);
                     }}
-                    // disableClock
+                    disableClock
                     locale="sv-sv"
                   />
                 </>
@@ -376,13 +375,14 @@ const VarificationSheet = (props) => {
         variant="warning"
         className="validate_Btn"
         disabled={
-          status != "PENDING" &&
-          (bufferArea == "" ||
-            arrivalTime == "00:00" ||
-            arrivalTime == null ||
-            departureTime == "00:00" ||
-            departureTime == null ||
-            flatRegistration == "")
+          // status != "PENDING" &&
+          bufferArea === "" ||
+          arrivalTime == "00:00" ||
+          arrivalTime == null ||
+          departureTime == "00:00" ||
+          departureTime == null ||
+          flatRegistration == "" ||
+          status == "PENDING"
         }
         onClick={onSubmit}
       >

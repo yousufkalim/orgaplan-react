@@ -22,6 +22,9 @@ import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import FullScreenModal from "../../../components/FullScreenModal";
+import alertIcon1 from "../../../assets/icons/alerticon1.png";
+import deliverIcon from "../../../assets/icons/delivery.png";
+import alertIcon from "../../../assets/icons/alerticon.png";
 import {
   get_means,
   add_mean,
@@ -64,6 +67,7 @@ const Calender = (props) => {
   const [userId, setUserId] = useState(store.user._id);
   // *****
   const [isLoading, setLoading] = useState(true);
+
   const [siteMeans, setSiteMeans] = useState("");
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([]);
@@ -122,6 +126,10 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
+  const [deliveryCount, setDeliveryCount] = useState(0);
+  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
+
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -1001,6 +1009,27 @@ const Calender = (props) => {
         }
         setEvents(tempEvent);
       }
+
+      let alerts = 0;
+      let completeDeliveryCount = 0;
+      if (response.success) {
+        // tempEvent = response.data.Deliveries.map((key, index) => {
+        //   // if (key.userId._id === userId) {
+        //   count++;
+        //   // }
+        // });
+        response.data?.Deliveries.map((item) => {
+          item.alert && alerts++;
+        });
+        response.data?.Deliveries.map((item) => {
+          if (item?.status === "COMPLETED") {
+            completeDeliveryCount++;
+          }
+        });
+        setDeliveryCount(count);
+        setTotalCompDeliveries(completeDeliveryCount);
+        setAlertCount(alerts);
+      }
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -1406,7 +1435,7 @@ const Calender = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="pt-5">
+      <div className="pt-5" style={{ display: "flex" }}>
         <PopoverModal
           popoverShow={popoverShow}
           handlePopoverClose={handlePopoverClose}
@@ -1427,7 +1456,7 @@ const Calender = (props) => {
             setAddDelivery(true);
           }}
         />
-        <div style={{ flexBasis: "100%" }}>
+        <div style={{ width: "80%" }}>
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
@@ -1616,6 +1645,76 @@ const Calender = (props) => {
           ) : (
             <Loader.Progress />
           )}
+        </div>
+
+        <div style={{ width: "18%" }}>
+          <div
+            style={{
+              backgroundColor: "#47A7EE",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}>
+              <img
+                src={deliverIcon}
+                style={{ width: 25, height: 25 }}
+                alt="Icon"
+              />
+            </div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {deliveryCount}
+            </h3>
+            <h6 style={{ color: "white" }}>Deliveries</h6>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#0EB227",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}></div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {totalCompDeliveries}
+            </h3>
+            <h6 style={{ color: "white" }}>COMPLETED</h6>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#E15141",
+              textAlign: "center",
+              color: "white",
+              padding: "5px",
+              margin: "5px",
+            }}
+          >
+            <div style={{ textAlign: "left", padding: "5px" }}>
+              <img
+                src={alertIcon1}
+                style={{ width: 25, height: 25 }}
+                alt="Icon"
+              />
+              <img
+                src={alertIcon}
+                style={{
+                  width: "5px",
+                  height: "18px",
+                  position: "relative",
+                  right: "15px",
+                }}
+                alt="Icon"
+              />
+            </div>
+            <h3 className="font-weight-bold" style={{ color: "white" }}>
+              {alertCount}
+            </h3>
+            <h6 style={{ color: "white" }}>Alerts</h6>
+          </div>
         </div>
       </div>
     </>
