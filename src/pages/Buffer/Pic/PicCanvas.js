@@ -811,8 +811,8 @@ const PicCanvas = (props) => {
                     : classes.infoDrawer
                 }
               >
-                <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+                {/* <SubHeading primary={selectedShape.name} bold fontSize={22} />
+                <SubHeading primary={`Type1 : ${selectedShape.type}`} /> */}
                 {selectedShape.type === "BUILDING" && (
                   <FormSelect
                     name="level"
@@ -875,7 +875,7 @@ const PicCanvas = (props) => {
                     </>
                   ) : selectedShape.type === "DELIVERYAREA" ? (
                     <>
-                      <NavLink
+                      {/* <NavLink
                         disabled={loading}
                         to={{
                           pathname: "/pic-interactive/calendar",
@@ -885,7 +885,7 @@ const PicCanvas = (props) => {
                         <IconButton>
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
-                      </NavLink>
+                      </NavLink> */}
                     </>
                   ) : (
                     <>
