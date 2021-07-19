@@ -28,12 +28,12 @@ const VarificationSheet = (props) => {
   const [materialsData, setMaterialsData] = useState([]);
   const [delayTime, setDelayTime] = useState("00:00");
   const [arrivalTime, setArrivalTime] = useState(
-    moment(eventdata.arrivalTime).format("HH:mm")
+    eventdata.arrivalTime
       ? moment(eventdata.arrivalTime).format("HH:mm")
       : "00:00",
   );
   const [departureTime, setDepartureTime] = useState(
-    moment(eventdata.departureTime).format("HH:mm")
+    eventdata.departureTime
       ? moment(eventdata.departureTime).format("HH:mm")
       : "00:00",
   );
