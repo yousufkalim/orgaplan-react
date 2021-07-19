@@ -396,7 +396,7 @@ const Calender = (props) => {
             //     ? locationObjectstorageArea
             //     : locationObjectdeliveryArea,
             // );
-            console.log("mean is ", props.location.mean);
+            // console.log("mean is ", props.location.mean);
             let startHour = moment(startTime).format("H");
             let endHour = moment(endTime).format("H");
             // create invoive 

@@ -170,7 +170,7 @@ export default function AddSiteStep1(props) {
     // check mean Unavailability   //
     meanArray = meanArray.filter((filter, index) => {
       let flag = 0;
-      console.log(filter);
+      // console.log(filter);
       filter.unavailability?.map((key, index) => {
         if (key.dayOff === false) {
           let DBStartTime = moment(key.date).set("hours", key.startHour);
@@ -185,11 +185,11 @@ export default function AddSiteStep1(props) {
             moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
           ) {
             // matched
-            console.log("flag on");
+            // console.log("flag on");
             flag = 1;
           } else {
             // not matched
-            console.log("flag off");
+            // console.log("flag off");
           }
         }
       });
@@ -265,7 +265,7 @@ export default function AddSiteStep1(props) {
     let selectedRoutingMeans = means.filter((o1) =>
       routingMeans?.some((o2) => o1.value === o2),
     );
-    console.log("selectedRoutingMeans", selectedRoutingMeans);
+    // console.log("selectedRoutingMeans", selectedRoutingMeans);
 
     const values = {
       building,

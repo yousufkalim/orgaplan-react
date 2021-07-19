@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import moment from "moment";
 import "./sass/custom.scss";
-import {TEXTS} from "../../../../assets/languages/french";
+import { TEXTS } from "../../../../assets/languages/french";
 
 const PopoverModal = ({
   popoverShow,
@@ -11,9 +11,8 @@ const PopoverModal = ({
   handleValidateEvent,
   event,
 }) => {
-  const {
-BOOKING,COMPANY,BOOKING_REASON,Start_time,End_time,VALIDATE
- }=TEXTS
+  const { BOOKING, COMPANY, BOOKING_REASON, Start_time, End_time, VALIDATE } =
+    TEXTS;
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!

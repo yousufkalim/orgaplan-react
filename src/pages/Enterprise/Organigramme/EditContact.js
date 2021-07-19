@@ -141,7 +141,7 @@ export default function EditContact(props) {
     try {
       if (window.confirm("Are you sure, you want to delete this?")) {
         setLoading(true);
-        console.log(store.token);
+        // console.log(store.token);
         await GLOBALS.API({
           method: "DELETE",
           uri:
@@ -235,11 +235,11 @@ export default function EditContact(props) {
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(e) => {
                   const index = e.target.selectedIndex - 1;
-                  console.log("index", index);
+                  // console.log("index", index);
                   if (index !== -1) {
                     const item = e.target.value;
 
-                    console.log(item);
+                    // console.log(item);
                     setType(item);
                   } else {
                     setType("");

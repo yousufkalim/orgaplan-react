@@ -2,6 +2,8 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import moment from "moment";
 import "./sass/custom.scss";
+import { TEXTS } from "../../../../assets/languages/french";
+
 const PopoverModal = ({
   popoverShow,
   handlePopoverClose,
@@ -9,6 +11,8 @@ const PopoverModal = ({
   handleValidateEvent,
   event,
 }) => {
+  const { BOOKING, COMPANY, BOOKING_REASON, Start_time, End_time, VALIDATE } =
+    TEXTS;
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -25,11 +29,11 @@ const PopoverModal = ({
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Booking</Modal.Title>
+          <Modal.Title className="text-center">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="showPopover">
-            <span>COMPANY</span>
+            <span>{COMPANY}</span>
             <h5
               className="text-center"
               style={{
@@ -43,7 +47,7 @@ const PopoverModal = ({
             >
               {event.companyId.name}
             </h5>
-            <span>BOOKING REASON</span>
+            <span>{BOOKING_REASON}</span>
             <h5
               className="text-center"
               style={{
@@ -65,7 +69,7 @@ const PopoverModal = ({
                   textTransform: "uppercase",
                 }}
               >
-                Start Time:
+                {Start_time}:
               </span>
               <div
                 style={{
@@ -86,7 +90,7 @@ const PopoverModal = ({
                   textTransform: "uppercase",
                 }}
               >
-                End Time:
+                {End_time}:
               </span>
               <div
                 style={{
@@ -103,7 +107,7 @@ const PopoverModal = ({
               </div>
             </p>
 
-            {/* <hr />
+            <hr />
             <div className="popoverfooter">
               <div className="col-lg-2">
                 {event.status !== "VALIDATED" ? (
@@ -112,7 +116,7 @@ const PopoverModal = ({
                       className="btn text-success btn-light px-3 text-center"
                       onClick={handleValidateEvent}
                     >
-                      <i class="fas fa-pencil"></i> <span>validate</span>
+                      <i class="fas fa-pencil"></i> <span>{VALIDATE}</span>
                     </button>
                   </>
                 ) : null}
@@ -125,7 +129,7 @@ const PopoverModal = ({
                   <i class="fas fa-trash"></i> <span>Delete</span>
                 </button>
               </div>
-            </div> */}
+            </div>
           </div>
         </Modal.Body>
       </Modal>

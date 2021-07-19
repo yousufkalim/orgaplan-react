@@ -49,6 +49,7 @@ const VarificationSheet = (props) => {
   const [loading, setLoading] = useState(true);
   // console.log("data", eventdata);
   var obj = [{ uri: "uploads/mean/grey.png" }];
+  // console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;

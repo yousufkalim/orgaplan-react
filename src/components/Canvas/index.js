@@ -575,7 +575,6 @@ class App extends Component {
         if (file.type === "application/pdf") {
           const uri = URL.createObjectURL(file);
           this.props.onPdfChange(uri, file);
-          console.log("asdasdasdasdasd", uri, file);
           this.setState({ tempPdf: file });
           this.setState({ isLoading: true });
           this.setState({ tempImage: uri });

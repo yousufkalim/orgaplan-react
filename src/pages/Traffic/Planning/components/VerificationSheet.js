@@ -14,13 +14,35 @@ import IconButton from "@material-ui/core/IconButton";
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
 import moment from "moment";
+
+import { TEXTS } from "../../../../assets/languages/french";
+
 const VarificationSheet = (props) => {
+  const {
+    VERIFICATION_SHEET,
+    COMPANY,
+    DATE_AND_TIME,
+    DELIVERYAREA,
+    MEAN,
+    STORAGEAREA,
+    DELIVERY_REALTIME,
+    MATERIALS_DELIVERED,
+    NOT_RECEIVED,
+    COMMENT_TRAFFIC,
+    ADD_PHOTO,
+    DELIVERY_STATUS,
+    COMPLETED,
+    COMPLETED_WITH_ISSUES,
+    NOT_COMPLETED,
+    CREATE_AN_INCIDENT,
+  } = TEXTS;
+
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const admin = useSelector((state) => state.admin);
-  console.log(store, admin);
+  // console.log(store, admin);
   const [image, setImage] = useState([]);
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
@@ -33,7 +55,7 @@ const VarificationSheet = (props) => {
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  console.log(eventdata);
+  // console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -60,7 +82,7 @@ const VarificationSheet = (props) => {
   }, []);
 
   const onSubmit = async () => {
-    console.log(checkStatus);
+    // console.log(checkStatus);
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {
@@ -140,14 +162,14 @@ const VarificationSheet = (props) => {
   };
   return (
     <>
-      {console.log(materialsData)}
+      {/* {console.log(materialsData)} */}
       <div className="row">
         <div className="col-sm-12">
           <br />
           <IconButton onClick={() => history.goBack()}>
             <BackArrow style={{ width: 30, height: 30 }} />
           </IconButton>
-          <h1 className="heading">VERIFICATION SHEET FOR DELIVERY</h1>
+          <h1 className="heading">{VERIFICATION_SHEET}</h1>
           <Button
             variant="danger"
             className="incedentBtn"
@@ -155,17 +177,21 @@ const VarificationSheet = (props) => {
               history.push("/incidents");
             }}
           >
-            CREATE AN INCIDENT
+            {CREATE_AN_INCIDENT}
           </Button>
         </div>
       </div>
       {/* <Form.Form> */}
       <div className="row box">
         <div className="col-sm-6">
-          <div className="label">COMPANY : </div>
-          <div className="label">DATE AND TIME :</div>
-          <div className="label">DELIVERY AREA / MEAN : </div>
-          <div className="label">STORAGE AREA / MEAN : </div>
+          <div className="label">{COMPANY} : </div>
+          <div className="label">{DATE_AND_TIME} :</div>
+          <div className="label">
+            {DELIVERYAREA} / {MEAN} :{" "}
+          </div>
+          <div className="label">
+            {STORAGEAREA} / {MEAN} :{" "}
+          </div>
         </div>
         <div className="col-sm-6">
           <div className="value">{eventdata.company.name}</div>
@@ -185,7 +211,7 @@ const VarificationSheet = (props) => {
           </div>
         </div>
         <div className="col-sm-6">
-          <div className="label">REAL TIME OF DELIVERY : </div>
+          <div className="label">{DELIVERY_REALTIME} : </div>
         </div>
         <div className="col-sm-6">
           <div className="value checkBoxTime">
@@ -213,8 +239,7 @@ const VarificationSheet = (props) => {
 
         <div className="col-sm-6">
           <div className="label" style={{ padding: "25px 0px" }}>
-            DELIVERED MATERIAL :<br />
-            (click if not received)
+            {MATERIALS_DELIVERED} :<br />({NOT_RECEIVED})
           </div>
         </div>
         <div className="col-sm-6">
@@ -226,7 +251,7 @@ const VarificationSheet = (props) => {
           />
         </div>
         <div className="col-sm-6">
-          <div className="label">COMMENTS TRAFFIC AGENT :</div>
+          <div className="label">{COMMENT_TRAFFIC} :</div>
         </div>
         <div className="col-sm-6">
           <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -243,7 +268,7 @@ const VarificationSheet = (props) => {
           </Form.Group>
         </div>
         <div className="col-sm-6">
-          <div className="label">ADD PICTURES :</div>
+          <div className="label">{ADD_PHOTO} :</div>
         </div>
         <div className="col-sm-6">
           <FormMultipleUpload
@@ -263,7 +288,7 @@ const VarificationSheet = (props) => {
         </div>
         <div className="col-sm-6">
           <br />
-          <div className="label">STATUS OF DELIVERY : </div>
+          <div className="label">{DELIVERY_STATUS} : </div>
         </div>
         <div className="col-sm-6">
           <br />
@@ -282,7 +307,7 @@ const VarificationSheet = (props) => {
               <>
                 <Form.Check
                   type="radio"
-                  label="Completed"
+                  label={COMPLETED}
                   name="status"
                   className="green"
                   value="COMPLETED"
@@ -294,7 +319,7 @@ const VarificationSheet = (props) => {
                 />
                 <Form.Check
                   type="radio"
-                  label="Completed with issues"
+                  label={COMPLETED_WITH_ISSUES}
                   name="status"
                   value="COMPLETEDWITHISSUE"
                   onChange={(e) => {
@@ -306,7 +331,7 @@ const VarificationSheet = (props) => {
 
                 <Form.Check
                   type="radio"
-                  label="Not completed"
+                  label={NOT_COMPLETED}
                   name="status"
                   value="VALIDATED"
                   onChange={(e) => {

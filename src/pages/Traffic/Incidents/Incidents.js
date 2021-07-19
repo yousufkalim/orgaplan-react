@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Images } from "../../../assets/Assets";
 import Modal from "react-bootstrap/Modal";
 import "./popover.scss";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -66,6 +67,23 @@ let statciincidentsdata = [
 let siteis = { name: "test site" };
 
 const Incidents = (props) => {
+  const {
+    RE_INVOICING,
+    CREATE_AN_INCIDENT,
+    DELIVERYAREA,
+    Exterior,
+    LOCATION,
+    LEVEL,
+    STORAGEAREA,
+    INCIDENT,
+    MEAN,
+    DELAY,
+    UNEXPECTED_DELIVERY,
+    COMPANY,
+    START_DATE,
+    END_DATE,
+    DESIGNATION,
+  } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const storeAdmin = useSelector((state) => state.admin);
@@ -346,7 +364,7 @@ const Incidents = (props) => {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center">
-          <Heading primary="RE-INVOICING" noWrap />
+          <Heading primary={RE_INVOICING} noWrap />
           <span className="pl-5" style={{ width: "40%", marginBottom: "15px" }}>
             <img
               alt="custom"
@@ -365,7 +383,7 @@ const Incidents = (props) => {
                 noMargin
                 topPadding
                 style={{ color: "#F80303" }}
-                primary={`TOTAL: ${tatalInvoices} RE-INVOICING
+                primary={`TOTAL: ${tatalInvoices} ${RE_INVOICING}
               ${tatalPrice}€`}
                 bold
               />
@@ -374,7 +392,7 @@ const Incidents = (props) => {
                   fullWidth={false}
                   disabled={loading}
                   component={NavLink}
-                  text="CREATE AN INCIDENT"
+                  text={CREATE_AN_INCIDENT}
                   to={"/incidents/add-incidents"}
                   style={{
                     marginLeft: "20px",
@@ -392,7 +410,7 @@ const Incidents = (props) => {
           <Form.Row justifyContent="flex-start" noMargin>
             <FormSelect
               values={siteDeliveryArea}
-              placeholder="Delivery area"
+              placeholder={DELIVERYAREA}
               style={{ marginRight: "20px", maxWidth: 250 }}
               value={selectedDeliveryArea}
               onChange={(event) => {
@@ -407,10 +425,10 @@ const Incidents = (props) => {
             />
             <FormSelect
               values={[
-                ...[{ label: "Exterior", value: "Exterior" }],
+                ...[{ label: Exterior, value: "Exterior" }],
                 ...siteBuilding,
               ]}
-              placeholder="Location"
+              placeholder={LOCATION}
               style={{ marginRight: "20px", maxWidth: 250 }}
               value={selectedBuilding}
               onChange={(event) => {
@@ -432,7 +450,7 @@ const Incidents = (props) => {
             />
             <FormSelect
               values={dropDownLevels}
-              placeholder="Level"
+              placeholder={LEVEL}
               disabled={disableLevelDropdown}
               value={selectedLevel}
               style={{ marginRight: "20px", maxWidth: 250 }}
@@ -452,7 +470,7 @@ const Incidents = (props) => {
                   ? !item.level
                   : item.level === selectedLevel,
               )}
-              placeholder="Storage area"
+              placeholder={STORAGEAREA}
               disabled={disableStorageDropdown}
               style={{ marginRight: "20px", maxWidth: 250 }}
               onChange={(event) => {
@@ -466,10 +484,10 @@ const Incidents = (props) => {
               placeholder="Type"
               value={selectedType}
               values={[
-                { value: "INCIDENT", label: "Incident" },
-                { value: "MEAN", label: "Mean" },
-                { value: "DELAY", label: "Delay" },
-                { value: "UNEXPRECTED", label: "Unexp" },
+                { value: "INCIDENT", label: INCIDENT },
+                { value: "MEAN", label: MEAN },
+                { value: "DELAY", label: DELAY },
+                { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
               ]}
               style={{ marginRight: "5px", maxWidth: 250 }}
               onChange={(event) => {
@@ -488,7 +506,7 @@ const Incidents = (props) => {
         <Form.Row alignItems="center" className="mt-3">
           <Form.Row justifyContent="flex-start" noMargin>
             <FormSelect
-              placeholder="Company"
+              placeholder={COMPANY}
               value={companyId}
               values={siteComapny}
               onChange={(event) => {
@@ -500,7 +518,7 @@ const Incidents = (props) => {
 
             <FormInput
               type="date"
-              placeholder="Start date"
+              placeholder={START_DATE}
               name="startDate"
               icon
               value={startDate}
@@ -511,7 +529,7 @@ const Incidents = (props) => {
             />
             <FormInput
               type="date"
-              placeholder="End date"
+              placeholder={END_DATE}
               name="endDate"
               value={endDate}
               onChange={(e) => {
@@ -527,7 +545,7 @@ const Incidents = (props) => {
               }}
             />
             <SearchInput
-              placeholder="Designation"
+              placeholder={DESIGNATION}
               style={{ marginRight: "5px", maxWidth: 250 }}
               onChange={(event) => {
                 setNameText(event.target.value);
@@ -556,7 +574,7 @@ const Incidents = (props) => {
         className=""
       >
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Re-Invoice</Modal.Title>
+          <Modal.Title className="text-center">{RE_INVOICING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div
@@ -577,7 +595,7 @@ const Incidents = (props) => {
                 {flagforStartdate ? (
                   <input
                     type="date"
-                    placeholder="Start Date"
+                    placeholder={START_DATE}
                     onBlur={() =>
                       startDate ? setFlag1(flagforStartdate) : setFlag1(false)
                     }
@@ -585,7 +603,7 @@ const Incidents = (props) => {
                     icon
                     value={startDate}
                     onChange={(e) => {
-                      console.log("e", e.target.value);
+                      // console.log("e", e.target.value);
                       setStartDate(e.target.value);
                     }}
                     style={{
@@ -600,7 +618,7 @@ const Incidents = (props) => {
                     size={"large"}
                     onFocus={() => setFlag1(true)}
                     onBlur={() => setFlag1(false)}
-                    placeholder="Start Date"
+                    placeholder={START_DATE}
                     value={startDate}
                     style={{
                       height: "6vh",
@@ -616,7 +634,7 @@ const Incidents = (props) => {
                 {flagforEnddate ? (
                   <input
                     type="date"
-                    placeholder="End Date"
+                    placeholder={END_DATE}
                     onBlur={() =>
                       endDate ? setFlag2(flagforEnddate) : setFlag2(false)
                     }
@@ -637,7 +655,7 @@ const Incidents = (props) => {
                     size={"large"}
                     onFocus={() => setFlag2(true)}
                     onBlur={() => setFlag2(false)}
-                    placeholder="End Date"
+                    placeholder={END_DATE}
                     style={{
                       height: "6vh",
                       opacity: ".7",
@@ -664,7 +682,7 @@ const Incidents = (props) => {
             <Form.Row alignItems="center" noMargin>
               <Form.Row justifyContent="flex-start" noMargin>
                 <FormSelect
-                  placeholder="Company"
+                  placeholder={COMPANY}
                   value={companyId}
                   values={siteComapny}
                   onChange={(event) => {
@@ -677,10 +695,10 @@ const Incidents = (props) => {
                   placeholder="Type"
                   value={selectedType}
                   values={[
-                    { value: "INCIDENT", label: "Incident" },
-                    { value: "MEAN", label: "Mean" },
-                    { value: "DELAY", label: "Delay" },
-                    { value: "UNEXPRECTED", label: "Unexp" },
+                    { value: "INCIDENT", label: INCIDENT },
+                    { value: "MEAN", label: MEAN },
+                    { value: "DELAY", label: DELAY },
+                    { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
                   ]}
                   style={{ marginRight: "5px", maxWidth: "50%" }}
                   onChange={(event) => {

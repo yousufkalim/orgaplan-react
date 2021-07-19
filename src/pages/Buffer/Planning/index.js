@@ -570,6 +570,7 @@ const Calender = (props) => {
     // setpopoverShow(!popoverShow);
     // admin code end
     // setAddVarification(true);
+    // console.log("event is", event);
     if (event.status == "COMPLETED" || event.status == "COMPLETEDWITHISSUE") {
       return;
     }
@@ -639,6 +640,7 @@ const Calender = (props) => {
   const update_delivery_status = async (id) => {
     try {
       // 1invoice on validate DR
+      // console.log("validate delivery", event);
       if (event.liftingMeans.length >= 1) {
         let startHour = moment(event.start).format("H");
         let endHour = moment(event.end).format("H");

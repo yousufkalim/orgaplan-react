@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -34,6 +35,43 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function AddIncidents(props) {
+  const {
+    YES,
+    NO,
+    OPEN,
+    CLOSE,
+    Please_select_a_incident,
+    Please_select_a_company,
+    EDIT_AN_INCIDENT,
+    DESIGNATION,
+    NAME_OF_INCIDENT,
+    NAME_OF_COMPANY,
+    DATE_AND_TIME,
+    GENERAL,
+    TYPE_OF_incident,
+    LOCATION,
+    TYPE_OF_PLACE,
+    BILLABLE,
+    PAID,
+    AMOUNT,
+    COMMENT_INVOICE,
+
+    PLEASE_ENTER_NAME_OF_INCIDENT,
+    PLEASE_ENTER_NAME_OF_COMPANY,
+    Please_select_Date,
+    PLEASE_SELECT_TYPE_OF_incident,
+    INCIDENT,
+    MEAN,
+    DELAY,
+    UNEXPECTED_DELIVERY,
+    STORAGEAREA,
+    DELIVERYAREA,
+    ADDITIONNAL_INFORMATION,
+    ADD_PHOTO,
+    STATUS,
+    ADD_COMMENT,
+    VALIDATE,
+  } = TEXTS;
   const classes = useStyles();
   const history = useHistory();
   const store = useSelector((state) => state.auth);
@@ -87,7 +125,7 @@ export default function AddIncidents(props) {
     }
     // eslint-disable-next-line
   }, [companyId]);
-  console.log("mean data in edit", history.location.data);
+  // console.log("mean data in edit", history.location.data);
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -134,7 +172,7 @@ export default function AddIncidents(props) {
       setselectedLocationType("storageArea");
       setselectedLocation(incident.location?.storageArea);
       const locationObject = {
-        ["storageArea"]: incident.location?.storageArea,
+        storageArea: incident.location?.storageArea,
       };
       setLocation(locationObject);
     } else if (incident.location?.deliveryArea) {
@@ -142,7 +180,7 @@ export default function AddIncidents(props) {
 
       setselectedLocation(incident.location?.deliveryArea);
       const locationObject = {
-        ["deliveryArea"]: incident.location?.deliveryArea,
+        deliveryArea: incident.location?.deliveryArea,
       };
       setLocation(locationObject);
     }
@@ -265,31 +303,31 @@ export default function AddIncidents(props) {
   const timeChange = (e) => {
     setTime(moment(e?._d).format("HH:mm:ss"));
   };
-  console.log("selectedLocation", selectedLocation);
-  console.log("location", location);
+  // console.log("selectedLocation", selectedLocation);
+  // console.log("location", location);
 
   const validation = (name, value) => {
     if (name == "name") {
       if (!value) {
-        setNameError("Please enter name of incident");
+        setNameError(PLEASE_ENTER_NAME_OF_INCIDENT);
       } else {
         setNameError("");
       }
     } else if (name == "companyId") {
       if (!value) {
-        setCompanyError("Please select name of company");
+        setCompanyError(PLEASE_ENTER_NAME_OF_COMPANY);
       } else {
         setCompanyError("");
       }
     } else if (name == "date") {
       if (!value) {
-        setDateError("Please select date");
+        setDateError(Please_select_Date);
       } else {
         setDateError("");
       }
     } else if (name == "type") {
       if (!value) {
-        setTypeError("Please select type of incident");
+        setTypeError(PLEASE_SELECT_TYPE_OF_incident);
       } else {
         setTypeError("");
       }
@@ -301,11 +339,13 @@ export default function AddIncidents(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT AN INCIDENTS" />
+      <Heading primary={EDIT_AN_INCIDENT} />
+
       <div className={classes.content}>
         <Form.Form onSubmit={submitHandler}>
           <Form.Row>
-            <FormLabel bold primary="GENERAL :" />
+            <FormLabel bold primary={`${GENERAL} :`} />
+
             <Form.Row noMargin width="48%">
               <FormSelect
                 name="type"
@@ -314,21 +354,22 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 value={type}
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
+                  { value: "INCIDENT", label: INCIDENT },
+                  { value: "MEAN", label: MEAN },
+                  { value: "DELAY", label: DELAY },
+                  { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
                 ]}
               />
             </Form.Row>
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="DESIGNATION* :" />
+            <FormLabel bold primary={`${DESIGNATION}* :`} />
+
             <FormInput
               name="name"
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Name of incident"
+              placeholder={NAME_OF_INCIDENT}
               onChange={nameChange}
               value={name}
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -336,7 +377,8 @@ export default function AddIncidents(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="NAME OF COMPANY* :" />
+            <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
+
             <Form.Row
               noMargin
               width="48%"
@@ -344,7 +386,7 @@ export default function AddIncidents(props) {
               justifyContent="space-between"
             >
               <FormSelect
-                placeholder="Nom de I'enterprise"
+                placeholder={NAME_OF_COMPANY}
                 name="comapnyId"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
@@ -359,7 +401,8 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="DATE AND TIME* : " />
+            <FormLabel bold primary={`${DATE_AND_TIME}* : `} />
+
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
@@ -380,22 +423,23 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="LOCATION : " />
+            <FormLabel bold primary={`${LOCATION} : `} />
+
             <Form.Row noMargin width="48%">
               <FormSelect
-                placeholder="Type of location"
+                placeholder={TYPE_OF_PLACE}
                 name="locationType"
                 style={GLOBALS.Styles.inputWidth}
                 disabled={history.location.data?.meanLocation ? true : false}
                 onChange={locationTypeChange}
                 value={selectedLocationType}
                 values={[
-                  { value: "storageArea", label: "Storage Area" },
-                  { value: "deliveryArea", label: "Delivery Area" },
+                  { value: "storageArea", label: STORAGEAREA },
+                  { value: "deliveryArea", label: DELIVERYAREA },
                 ]}
               />
               <FormSelect
-                placeholder="LOCATION"
+                placeholder={LOCATION}
                 name="location"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={locationChange}
@@ -413,12 +457,13 @@ export default function AddIncidents(props) {
               value={description}
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
-              placeholder="Information complementaires"
+              placeholder={ADDITIONNAL_INFORMATION}
               name="description"
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="ADD PICTURES : " />
+            <FormLabel bold primary={`${ADD_PHOTO} : `} />
+
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="profile"
@@ -431,7 +476,8 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="BILLABLE* : " />
+            <FormLabel bold primary={`${BILLABLE}* : `} />
+
             <Form.Row width="48%">
               <FormSelect
                 key="1abc"
@@ -448,15 +494,16 @@ export default function AddIncidents(props) {
                 }}
                 value={isBillable}
                 values={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="Paid : " />
+            <FormLabel bold primary={`${PAID}: `} />
+
             <Form.Row width="48%">
               <FormSelect
                 disabled={priceDisable === "false" || priceDisable === false}
@@ -471,15 +518,16 @@ export default function AddIncidents(props) {
                 }}
                 value={isPaid}
                 values={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
             </Form.Row>
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="Status:" />
+            <FormLabel bold primary={`${STATUS}: `} />
+
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin>
                 <RadioButton
@@ -493,9 +541,9 @@ export default function AddIncidents(props) {
                   items={[
                     {
                       value: "OPEN",
-                      label: "Open",
+                      label: OPEN,
                     },
-                    { value: "CLOSED", label: "Closed" },
+                    { value: "CLOSED", label: CLOSE },
                   ]}
                 />
               </Form.Column>
@@ -503,7 +551,8 @@ export default function AddIncidents(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="AMOUNT :" />
+            <FormLabel bold primary={`${AMOUNT} :`} />
+
             <Form.Row width="48%" noMargin alignItems="center">
               <Form.Row width="24%" noMargin alignItems="center">
                 <FormInput
@@ -518,14 +567,15 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="COMMENT ON INVOICE : " />
+            <FormLabel bold primary={`${COMMENT_INVOICE} : `} />
+
             <FormInput
               textArea
               rows={3}
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
               value={comment}
-              placeholder="Ajouter un commentaire"
+              placeholder={ADD_COMMENT}
               name="comment"
             />
           </Form.Row>
@@ -533,7 +583,7 @@ export default function AddIncidents(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDER"
+              text={VALIDATE}
               fullWidth={false}
               disabled={!name || !date || !dropdownCompanies}
             />

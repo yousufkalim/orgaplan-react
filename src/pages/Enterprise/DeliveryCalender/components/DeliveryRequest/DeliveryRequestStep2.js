@@ -9,7 +9,22 @@ import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { TEXTS } from "../../../../../assets/languages/french";
+import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
+
 export default function AddSiteStep1(props) {
+  const {
+    LOCATION,
+    SELECT_LOCATION,
+    LEVEL,
+    SELECT_LEVEL,
+    STORAGEAREA,
+    SELECT_STORAGEAREA,
+    TRANSPORTING_MEANS,
+    VALIDATE,
+    MEANS,
+  } = TEXTS;
+
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -18,43 +33,15 @@ export default function AddSiteStep1(props) {
   const [level, setLevel] = useState("");
   const [levels, setLevels] = useState([]);
   const [storageArea, setStorageArea] = useState("");
-  const [propsFilterStorageArea, setPropsFilterStorageArea] = useState();
+  const [propsFilterStorageArea, setPropsFilterStorageArea] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
   const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
+  const [delunavaiableMsg, setDelUnavaiableMsg] = useState([]);
 
-  const filterUnavailableStorageArea = () => {
-    let tempArray = props.storageAreas.filter((filter, index) => {
-      let flag = 0;
-      filter.unavailability?.map((key, index) => {
-        if (key.dayOff === false) {
-          let DBStartTime = moment(key.date).set("hours", key.startHour);
-          let DBEndTime = moment(key.date).set("hours", key.endHour);
-          if (
-            moment(startTime).isBetween(
-              DBStartTime,
-              DBEndTime,
-              undefined,
-              "[]",
-            ) ||
-            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
-          ) {
-            // matched
-            flag = 1;
-          } else {
-            // not matched
-          }
-        }
-      });
-      if (flag === 0) {
-        return filter;
-      }
-    });
-    setPropsFilterStorageArea(tempArray);
-  };
   useEffect(() => {
     if (props.step1Data) {
       props.step1Data.startTime &&
@@ -92,142 +79,9 @@ export default function AddSiteStep1(props) {
     );
     // eslint-disable-next-line
   }, []);
-  const getAllDeliveryMean = async (meanArray) => {
-    if (meanArray.length !== 0) {
-      // Start  checking mean Availabilty in Delivery Request
-      const getAllDelivery = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
-        token: store.token,
-      });
-      getAllDelivery.data?.map((delivery, dIndex) => {
-        /*start hours and mints Convert into Date Object*/
-        let DBstartDate = new Date(delivery.date);
-        let startHours = delivery.startTime.slice(0, 2);
-        let startmint = delivery.startTime.slice(3, 5);
-        DBstartDate.setHours(startHours);
-        DBstartDate.setMinutes(startmint);
-        /*start hours and mints Convert into Date Object*/
 
-        /*End hours and mints Convert into Date Object*/
-        let DBEndDate = new Date(delivery.date);
-        let endHours = delivery.endTime.slice(0, 2);
-        let endmint = delivery.endTime.slice(3, 5);
-        DBEndDate.setHours(endHours);
-        DBEndDate.setMinutes(endmint);
-        /*End hours and mints Convert into Date Object*/
-
-        delivery?.routingMeans.map((dmean, dmIndex) => {
-          meanArray = meanArray?.filter((mean, mIndex) => {
-            if (
-              dmean === mean.value &&
-              moment(DBstartDate).isBetween(
-                startTime,
-                endTime,
-                undefined,
-                "[]",
-              ) &&
-              moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
-            ) {
-              // remove matched array
-              // console.log("mean matched", mean.label);
-            } else {
-              //console.log("mean not matched", mean.label);
-              return mean;
-            }
-          });
-        });
-      });
-      // END checking mean Availabilty in Delivery Request
-    }
-    // Start checking mean Availabilty in Mean Booking
-    const getAllMeanBooking = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
-      token: store.token,
-    });
-
-    getAllMeanBooking.data.map((meanB, Bindex) => {
-      meanArray = meanArray.filter((dmean, dindex) => {
-        if (
-          (dmean.value === meanB._id &&
-            moment(meanB.startDate).isBetween(
-              startTime,
-              endTime,
-              undefined,
-              "[]",
-            )) ||
-          // remove &&
-          moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
-        ) {
-          //match mean remove
-        } else {
-          // return filtered mean
-          return dmean;
-        }
-      });
-    });
-    // END checking mean Availabilty in Mean Booking
-
-    // check mean Unavailability   //
-    meanArray = meanArray.filter((filter, index) => {
-      let flag = 0;
-      console.log(filter);
-      filter.unavailability?.map((key, index) => {
-        if (key.dayOff === false) {
-          let DBStartTime = moment(key.date).set("hours", key.startHour);
-          let DBEndTime = moment(key.date).set("hours", key.endHour);
-          if (
-            moment(startTime).isBetween(
-              DBStartTime,
-              DBEndTime,
-              undefined,
-              "[]",
-            ) ||
-            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
-          ) {
-            // matched
-            console.log("flag on");
-            flag = 1;
-          } else {
-            // not matched
-            console.log("flag off");
-          }
-        }
-      });
-      if (flag === 0) {
-        return filter;
-      }
-    });
-    // check mean unavailability  //
-    return meanArray;
-  };
   useEffect(() => {
-    let mean_array = props.means.reduce((accumulator, currentValue) => {
-      if (
-        currentValue.meanType === "ROUTING" &&
-        currentValue.location.find(
-          (loc) => loc.storageArea && loc.storageArea === storageArea,
-        ) &&
-        moment(props.date).isBetween(
-          currentValue.availability.start,
-          currentValue.availability.end,
-          "day",
-          "[]",
-        )
-      ) {
-        accumulator.push({
-          value: currentValue._id,
-          label: currentValue.name,
-          currentValue,
-          unavailability: currentValue.unavailability,
-        });
-      }
-      return accumulator;
-    }, []);
-
-    let delivery_means = getAllDeliveryMean(mean_array);
-    delivery_means.then((mean) => {
-      setMeans(mean);
-    });
+    getMeans();
     filterUnavailableStorageArea();
     // eslint-disable-next-line
   }, [props, storageArea, startTime, endTime]);
@@ -260,12 +114,124 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [building]);
+
+  const filterUnavailableStorageArea = () => {
+    let currentDate = moment(props.step1Data.date).format("L");
+    setPropsFilterStorageArea(
+      props.storageAreas.reduce((accumulator, currentValue) => {
+        let availability_date = moment(currentValue.availability.end).format(
+          "L",
+        );
+
+        if (moment(availability_date).isAfter(currentDate)) {
+          if (
+            currentValue.companies.find(
+              (company) => company && company === props.step1Data.company,
+            ) &&
+            currentValue.deliveryArea.find(
+              (da) => da && da === props.step1Data.deliveryArea,
+            )
+          ) {
+            let start = props.step1Data.startTime.substring(0, 2);
+            let end = props.step1Data.endTime.substring(0, 2);
+            //////// Checking unavailabilities
+            let result = unavailabilityCheck(
+              currentValue,
+              currentDate,
+              start,
+              end,
+              routingMeans,
+              "storage",
+            );
+            setRoutingMeans(result.mean);
+            if (result.msg === "found") {
+              if (!delunavaiableMsg.includes(currentValue.name)) {
+                delunavaiableMsg.push(currentValue.name);
+              }
+            } else if (result.msg === "notFound") {
+              if (delunavaiableMsg.includes(currentValue.name)) {
+                let i = delunavaiableMsg.indexOf(currentValue.name);
+                delunavaiableMsg.splice(i, 1);
+              }
+            }
+
+            if (result.data[0]) {
+              if (
+                !accumulator.some(
+                  (acc) => acc["value"] === result.data[0].value,
+                )
+              ) {
+                accumulator.push(result.data[0]);
+              }
+            }
+          }
+        }
+
+        return accumulator;
+      }, []),
+    );
+  };
+
+  const getMeans = async () => {
+    let currentDate = moment(props.step1Data.date).format("L");
+    setMeans(
+      props.means.reduce((accumulator, currentValue) => {
+        if (
+          currentValue.meanType === "ROUTING" &&
+          currentValue.location.find((loc) =>
+            loc.storageArea && loc.storageArea === storageArea
+              ? storageArea
+              : props.step2Data.storageArea,
+          ) &&
+          moment(props.date).isBetween(
+            currentValue.availability.start,
+            currentValue.availability.end,
+            "day",
+            "[]",
+          )
+        ) {
+          let start = props.step1Data.startTime.substring(0, 2);
+          let end = props.step1Data.endTime.substring(0, 2);
+          //////// Checking unavailabilities
+          let result = unavailabilityCheck(
+            currentValue,
+            currentDate,
+            start,
+            end,
+            routingMeans,
+            "mean",
+          );
+          setRoutingMeans(result.mean);
+          if (result.msg === "found") {
+            if (!delunavaiableMsg.includes(currentValue.name)) {
+              delunavaiableMsg.push(currentValue.name);
+            }
+          } else if (result.msg === "notFound") {
+            if (delunavaiableMsg.includes(currentValue.name)) {
+              let i = delunavaiableMsg.indexOf(currentValue.name);
+              delunavaiableMsg.splice(i, 1);
+            }
+          }
+
+          if (result.data[0]) {
+            if (
+              !accumulator.some((acc) => acc["value"] === result.data[0].value)
+            ) {
+              accumulator.push(result.data[0]);
+            }
+          }
+        }
+        return accumulator;
+      }, []),
+    );
+  };
+
   async function onSubmit(e) {
     e.preventDefault();
     let selectedRoutingMeans = means.filter((o1) =>
       routingMeans?.some((o2) => o1.value === o2),
     );
-    console.log("selectedRoutingMeans", selectedRoutingMeans);
+    // console.log("selectedRoutingMeans", selectedRoutingMeans);
 
     const values = {
       building,
@@ -278,54 +244,57 @@ export default function AddSiteStep1(props) {
     props.setStep(3);
   }
 
-  const selectedCompanyId = props.step1Data.company;
-  const filterStorageAreas = [];
-  propsFilterStorageArea?.forEach((val) => {
-    val.companies.map((cP) => {
-      if (cP === selectedCompanyId) {
-        filterStorageAreas.push(val);
-      }
-    });
-  });
+  // const selectedCompanyId = props.step1Data.company;
+  // const filterStorageAreas = [];
+  // propsFilterStorageArea?.forEach((val) => {
+  //   val.companies.map((cP) => {
+  //     if (cP === selectedCompanyId) {
+  //       filterStorageAreas.push(val);
+  //     }
+  //   });
+  // });
 
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
-        <FormLabel bold primary="LOCATION* :" />
+        <FormLabel bold primary={`${LOCATION}* :`} />
         <FormSelect
           name="location"
           value={building}
           disabled={props.eventId}
-          placeholder="Select a location"
+          placeholder={SELECT_LOCATION}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
           values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="LEVEL* :" />
+        <FormLabel bold primary={`${LEVEL}* :`} />
         <FormSelect
           name="level"
           value={level}
           values={levels}
-          placeholder="Select a Level"
+          placeholder={SELECT_LEVEL}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setLevel(value)}
           disabled={!building || building === "Exterior" || props.eventId}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="STORAGE AREA*:" />
+        <FormLabel bold primary={`${STORAGEAREA}*:`} />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"
             value={storageArea}
-            placeholder="Select Storage Area"
-            values={filterStorageAreas.filter((item) =>
-              building && building === "Exterior"
-                ? !item.level
-                : item.level === level,
-            )}
+            placeholder={SELECT_STORAGEAREA}
+            values={
+              propsFilterStorageArea
+              //   filterStorageAreas.filter((item) =>
+              //   building && building === "Exterior"
+              //     ? !item.level
+              //     : item.level === level,
+              // )
+            }
             onChange={({ target: { value } }) => setStorageArea(value)}
             disabled={
               !building || (building !== "Exterior" && !level) || props.eventId
@@ -333,14 +302,26 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
-
+      {delunavaiableMsg.length > 0 ? (
+        <Form.Row>
+          <FormLabel bold primary={""} />
+          <Form.Row width="48%" noMargin label=" " zIndex={5}>
+            <div style={{ color: "red" }}>
+              {delunavaiableMsg.join(", ")} is/are unavailable in the selected
+              timeslot.
+            </div>
+          </Form.Row>
+        </Form.Row>
+      ) : (
+        []
+      )}
       <Form.Row>
-        <FormLabel bold primary="TRANSPORTING MEANS* :" />
+        <FormLabel bold primary={`${TRANSPORTING_MEANS}* :`} />
         <Form.Row noMargin width="48%">
           <FormMultiSelect
             name="means"
             values={means}
-            placeholder="Means"
+            placeholder={MEANS}
             value={routingMeans}
             disabled={!storageArea || disableRoutingMeans}
             onChange={({ target: { value } }) => setRoutingMeans(value)}
@@ -368,7 +349,7 @@ export default function AddSiteStep1(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           disabled={
             !building || (building !== "Exterior" && !level) || !storageArea

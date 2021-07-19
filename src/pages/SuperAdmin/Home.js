@@ -137,6 +137,10 @@ export default function Home(props) {
     END_OF_SUBSCRIPTION,
     TARIFICATION_CLIENTS,
     Site,
+    INVOICE_LIST,
+    CLIENTS_LIST,
+    Locker_module,
+    Delivery_module,
   } = TEXTS;
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
@@ -398,10 +402,10 @@ export default function Home(props) {
           tabs: false,
           total: data && data?.clients?.total,
           path: "/clients",
-          text: "Clients list",
+          text: CLIENTS_LIST,
           items: [
-            { "Delivery Module": data && data?.clients.delivery },
-            { "Lockers module": data && data?.clients.lockers },
+            { "Module Livraison": data && data?.clients.delivery },
+            { "Locker Module": data && data?.clients.lockers },
           ],
         },
         {
@@ -409,7 +413,7 @@ export default function Home(props) {
           total: invoices && invoices.total,
           tabs: false,
           path: "/invoices",
-          text: "Invoices list",
+          text: INVOICE_LIST,
           items: [...invoiceArray],
         },
       ],
@@ -437,7 +441,7 @@ export default function Home(props) {
       tabs: true,
       items: [
         {
-          title: "site",
+          title: Site,
           items: siteIncidentArray,
         },
         {
@@ -453,7 +457,7 @@ export default function Home(props) {
       tabs: true,
       items: [
         {
-          title: "site",
+          title: Site,
           items: siteMeanArray,
         },
         {
@@ -469,7 +473,7 @@ export default function Home(props) {
       tabs: true,
       items: [
         {
-          title: "site",
+          title: Site,
           items: subSiteArray,
         },
         {
@@ -485,7 +489,7 @@ export default function Home(props) {
       tabs: true,
       items: [
         {
-          title: "site",
+          title: Site,
           items: siteCustomerRateArray,
         },
         {

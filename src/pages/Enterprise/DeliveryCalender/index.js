@@ -9,6 +9,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import { TEXTS } from "../../../assets/languages/french";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
@@ -58,6 +59,43 @@ let formats = {
 };
 
 const Calender = (props) => {
+  const {
+    DELIVERIES,
+    DELIVERY_REQUESTS,
+    PLANNING,
+    Not_availble,
+    VALIDATE,
+    CLOSE,
+    MEANS,
+    BOOKING_REASON,
+    Status_Color,
+    PENDING_VALIDATION,
+    STATUS,
+    BOOKING_DATE,
+    INCIDENT,
+    MEAN,
+    START_HOUR,
+    END_HOUR,
+    TYPE_OF_PLACE,
+    End_time,
+    BOOKING,
+    Please_Add_valid_Time_and_Event,
+    PLACE,
+    Edit_Delivery_Request,
+    Invalid_Time,
+    Start_time,
+    Edit_Event,
+    END_DATE,
+    Update_Event,
+    DISABLE_DAY,
+    DISABLE_HOURS,
+    SITE_DATE_OUT_OF_RANGE,
+    Booking_cant_be_in_Previous_day,
+    Delivery_Area_Site_By_SiteId_Error,
+    TOTAL_MEANS_Booking,
+    ALERTS,
+  } = TEXTS;
+
   moment.locale("es-es", {
     week: {
       dow: 1, //Monday is the first day of the week.
@@ -133,12 +171,15 @@ const Calender = (props) => {
   const [deliveryCount, setDeliveryCount] = useState(0);
   const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
   const [alertCount, setAlertCount] = useState(0);
+
+  // states to count
+
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
     }
     if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.type);
+      setTypeOfPlacevalue(props.location.selectedShape.name);
       if (props.location.selectedShape.type === "DELIVERYAREA") {
         getDeliveryAreaSiteBySiteId();
       } else if (props.location.selectedShape.type === "STORAGEAREA") {
@@ -724,7 +765,7 @@ const Calender = (props) => {
   const update_delivery_status = async (id) => {
     try {
       // 1invoice on validate DR
-      console.log("validate delivery", event);
+      // console.log("validate delivery", event);
       if (event.liftingMeans.length >= 1) {
         let startHour = moment(event.start).format("H");
         let endHour = moment(event.end).format("H");
@@ -999,6 +1040,8 @@ const Calender = (props) => {
   // console.log(userId);
   const filterBookingCalendar = async () => {
     let count = 0;
+    let alerts = 0;
+    let completeDeliveryCount = 0;
     let tempEvent;
     try {
       const response = await GLOBALS.API({
@@ -1070,7 +1113,7 @@ const Calender = (props) => {
             };
             // }
           });
-          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
+          setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             // if (key.userId._id === userId) {
@@ -1102,6 +1145,12 @@ const Calender = (props) => {
           });
           setSiteMeans(`TOTAL MEANS Booking : ${count}`);
         }
+        // Filtering events to with delivery area
+
+        tempEvent = tempEvent.filter((event) => {
+          return event.deliveryArea._id == props.location.selectedShape._id;
+        });
+        count = tempEvent.length;
         setEvents(tempEvent);
       }
 
@@ -1550,14 +1599,14 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="PLANNING" noWrap />
+                <Heading primary="Delivery Calender" noWrap />
                 {/* <SubHeading
-                  noMargin
-                  topPadding
-                  style={{ color: "#F80303", paddingRight: "3rem" }}
-                  primary={siteMeans}
-                  bold
-                /> */}
+                noMargin
+                topPadding
+                style={{ color: "#F80303", paddingRight: "3rem" }}
+                primary={siteMeans}
+                bold
+              /> */}
               </Form.Row>
             </Form.Row>
             <Form.Row alignItems="center" noMargin>
@@ -1575,11 +1624,30 @@ const Calender = (props) => {
                     }}
                   />
                 </div>
+                {/* {props.location.companyId != null ? (
+                <>
+                  <FormSelect
+                    placeholder="Enterprise"
+                    value={enterprise}
+                    values={dropdownCompany}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setEnterprise(e.target.value)}
+                  />
+                </>
+              ) : (
+                <>
+                  <FormSelect
+                    placeholder="Enterprise"
+                    value={enterprise}
+                    values={dropdownCompany}
+                    style={{ marginRight: "20px", maxWidth: 250 }}
+                    onChange={(e) => setEnterprise(e.target.value)}
+                  />
+                </>
+              )} */}
               </Form.Row>
             </Form.Row>
-            <Form.Row>
-              <Form.Row justifyContent="flex-start" noMargin></Form.Row>
-            </Form.Row>
+            <Form.Row></Form.Row>
           </div>
           {events ? (
             <Calendar
@@ -1599,7 +1667,7 @@ const Calender = (props) => {
               // onSelectEvent={bookingSlot}
               onSelecting={true}
               // onSelectSlot={AddEvent}
-              onSelectSlot={AddDeliveryRequest}
+              // onSelectSlot={AddDeliveryRequest}
               // onSelectSlot={AddAvailability}
               startAccessor="start"
               endAccessor="end"

@@ -40,6 +40,13 @@ export default function DeliveryArea(props) {
     Days_before_end_of_the_contract,
     NOTIFY_THE_ADDRESSES,
     Please_enter_email,
+    START_DATE,
+    END_DATE,
+    UNAVAILABILITIES,
+    ACCESSIBILITY_ADDRESSES,
+    Enter_vehicles,
+    MEANS_ALLOWED,
+    Please_enter_valid_email,
   } = TEXTS;
 
   const { setSelectedShape } = props;
@@ -285,7 +292,7 @@ export default function DeliveryArea(props) {
               error={errors.startDate}
               name="startDate"
               value={startDate}
-              placeholder={`Date de début`}
+              placeholder={START_DATE}
               min={
                 moment().isAfter(moment(adminStore.site.siteId.start), "day")
                   ? moment().format("YYYY-MM-DD")
@@ -301,7 +308,7 @@ export default function DeliveryArea(props) {
               type="date"
               name="endDate"
               disabled={!startDate}
-              placeholder="Date de fin"
+              placeholder={END_DATE}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end)
                 .add(1, "days")
@@ -315,7 +322,8 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="INDISPONIBILITES: " />
+          <FormLabel bold primary={`${UNAVAILABILITIES}: `} />
+
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
@@ -330,7 +338,8 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY ADDRESSES* :" />
+          <FormLabel bold primary={`${ACCESSIBILITY_ADDRESSES} :`} />
+
           <Form.Row noMargin width="65%">
             <DeliveryAreaAddressModal
               max={endDate}
@@ -352,14 +361,15 @@ export default function DeliveryArea(props) {
             <MultiAdderInput
               name="vehicles"
               values={vehicles}
-              placeholder="Enter vehicles"
+              placeholder={Enter_vehicles}
               style={GLOBALS.Styles.inputWidth}
               onChange={(values) => handleChange("vehicles", values)}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Moyens Allowed: " />
+          <FormLabel bold primary={`${MEANS_ALLOWED}:`} />
+
           <Form.Row noMargin width="65%" justifyContent="flex-start">
             {means.map((mean, index) => (
               <Chip key={index} label={mean} className={classes.chip} />
@@ -367,7 +377,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFICATION : " />
+          <FormLabel bold primary="Notification : " />
           <Form.Row
             noMargin
             width="65%"
@@ -398,7 +408,7 @@ export default function DeliveryArea(props) {
               name="notificationTo"
               values={notificationTo}
               style={{ width: "100%" }}
-              validateError="Invalid Email"
+              validateError={Please_enter_valid_email}
               placeholder={Please_enter_email}
               onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {

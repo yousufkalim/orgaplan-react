@@ -23,6 +23,7 @@ import SubHeading from "../../../components/SubHeading";
 import deliverIcon from "../../../assets/icons/delivery.png";
 import alertIcon from "../../../assets/icons/alerticon.png";
 import alertIcon1 from "../../../assets/icons/alerticon1.png";
+import { TEXTS } from "../../../assets/languages/french";
 
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
@@ -116,6 +117,9 @@ const PicCanvas = (props) => {
   const [shape, setShape] = useState("");
   const [openStorageModal, setOpenStorageModal] = useState(false);
 
+  // state to open delivery area model
+  const [openDeliveryModal, setOpenDeliveryModal] = useState(false);
+
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
   const [modal, setModal] = useState(false);
@@ -125,6 +129,21 @@ const PicCanvas = (props) => {
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
+  const {
+    SHOW_EXTERIOR,
+    SELECT_LEVEL,
+    ADD,
+    EDIT,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    MEANS,
+    update_shape_error,
+    Are_you_sure_You_want_to_delete_this_shape,
+    DELIVERIES,
+    ALERTS,
+  } = TEXTS;
+
   useEffect(() => {
     if (level) {
       fetchLevelPic(level);
@@ -520,7 +539,7 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
   const updateLevelShape = async (newShape) => {
@@ -536,13 +555,16 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
 
   const handleClick = (id, shape) => {
     if (shape.type == "STORAGEAREA") {
       checkStorageArea(shape);
+    }
+    if (shape.type == "DELIVERYAREA") {
+      setOpenDeliveryModal(true);
     }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
@@ -598,7 +620,7 @@ const PicCanvas = (props) => {
   // InfoDrawer
   const onDeleteShape = async () => {
     try {
-      if (window.confirm("Are you sure you want to delete this shape?")) {
+      if (window.confirm(Are_you_sure_You_want_to_delete_this_shape)) {
         if (level) {
           let response = await GLOBALS.API({
             method: "DELETE",
@@ -659,11 +681,11 @@ const PicCanvas = (props) => {
           name="level"
           value={level}
           values={levelsDropdown}
-          placeholder="Select Level"
+          placeholder={SELECT_LEVEL}
           onChange={({ target: { value } }) => {
             setLevel(value);
             if (value) {
-              console.log();
+              // console.log();
               const leve = allLeves.find((lev) => lev._id === value);
               fetchLevelPic(leve);
               setPdf(
@@ -711,7 +733,7 @@ const PicCanvas = (props) => {
           <div className={classes.infoDrawerContainer}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
-                text="Show Exterior"
+                text={SHOW_EXTERIOR}
                 className="mt-2"
                 onClick={() => {
                   setPdf(
@@ -732,7 +754,7 @@ const PicCanvas = (props) => {
             {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
               <>
                 <Button
-                  text="Show Exterior"
+                  text={SHOW_EXTERIOR}
                   className="mt-2"
                   onClick={() => {
                     setPdf(
@@ -772,7 +794,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {deliveryCount}
               </h3>
-              <h6 style={{ color: "white" }}>Deliveries</h6>
+              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
             </div>
             <div
               style={{
@@ -804,7 +826,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {alertCount}
               </h3>
-              <h6 style={{ color: "white" }}>Alerts</h6>
+              <h6 style={{ color: "white" }}>{ALERTS}</h6>
             </div>
             {selectedShape && (
               <div
@@ -814,8 +836,8 @@ const PicCanvas = (props) => {
                     : classes.infoDrawer
                 }
               >
-                <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+                {/* <SubHeading primary={selectedShape.name} bold fontSize={22} />
+                <SubHeading primary={`Type1 : ${selectedShape.type}`} /> */}
                 {selectedShape.type === "BUILDING" && (
                   <FormSelect
                     name="level"
@@ -878,7 +900,7 @@ const PicCanvas = (props) => {
                     </>
                   ) : selectedShape.type === "DELIVERYAREA" ? (
                     <>
-                      <NavLink
+                      {/* <NavLink
                         disabled={loading}
                         to={{
                           pathname: "/pic-interactive/calendar",
@@ -889,7 +911,7 @@ const PicCanvas = (props) => {
                         <IconButton>
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
-                      </NavLink>
+                      </NavLink> */}
                     </>
                   ) : (
                     <>
@@ -927,7 +949,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
+              title={`${shape ? ADD : EDIT} ${DELIVERYAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -952,7 +974,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
+              title={`${shape ? ADD : EDIT} ${STORAGEAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -977,7 +999,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
+              title={`${shape ? ADD : EDIT} ${BUILDING}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -1000,7 +1022,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} MEANs`}
+              title={`${shape ? ADD : EDIT} ${MEANS}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -1071,6 +1093,34 @@ const PicCanvas = (props) => {
               </Button>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openDeliveryModal}
+        onClose={() => setOpenDeliveryModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+          <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+          <div style={{ textAlign: "center" }}>
+            <NavLink
+              disabled={loading}
+              to={{
+                pathname: "/pic-interactive/calendar",
+                selectedShape: selectedShape,
+                company: company,
+              }}
+            >
+              <IconButton>
+                <Calendar className={classes.infoIcon} />
+              </IconButton>
+            </NavLink>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
