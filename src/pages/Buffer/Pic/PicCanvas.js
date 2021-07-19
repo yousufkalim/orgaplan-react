@@ -340,7 +340,7 @@ const PicCanvas = (props) => {
     let found = item.storageArea.companies.find(
       (item2) => String(item2) === String(company._id),
     );
-    console.log("found is ", found);
+    // console.log("found is ", found);
     if (found) {
       setOpenStorageModal(true);
       setStorageArea(found);
@@ -655,7 +655,7 @@ const PicCanvas = (props) => {
           onChange={({ target: { value } }) => {
             setLevel(value);
             if (value) {
-              console.log();
+              // console.log();
               const leve = allLeves.find((lev) => lev._id === value);
               fetchLevelPic(leve);
               setPdf(
@@ -884,7 +884,7 @@ const PicCanvas = (props) => {
                     </>
                   ) : (
                     <>
-                      {console.log("for storage", selectedShape)}
+                      {/* {console.log("for storage", selectedShape)} */}
 
                       <NavLink
                         disabled={loading}

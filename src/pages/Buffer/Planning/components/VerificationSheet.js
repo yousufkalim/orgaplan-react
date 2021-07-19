@@ -40,7 +40,7 @@ const VarificationSheet = (props) => {
   );
   const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  console.log(eventdata);
+  // console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -72,10 +72,10 @@ const VarificationSheet = (props) => {
   let departureIs = new Date(
     new Date(eventdata.start).setHours(departureTime.split(":")[0]),
   );
-  console.log("event data is ", eventdata);
+  // console.log("event data is ", eventdata);
 
   const onSubmit = async () => {
-    console.log(checkStatus);
+    // console.log(checkStatus);
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {

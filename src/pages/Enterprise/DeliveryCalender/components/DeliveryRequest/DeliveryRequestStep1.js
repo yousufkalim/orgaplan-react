@@ -15,6 +15,8 @@ import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 import { getTime } from "date-fns";
+import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
+
 export default function AddSiteStep1(props) {
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -36,6 +38,7 @@ export default function AddSiteStep1(props) {
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
   var minutes = [];
+  const [unavailableMsg, setunavailableMsg] = useState([]);
 
   const getDisabledHoursEndTime = () => {
     let startTimeIs = moment(startTime).toDate().getHours();
@@ -60,145 +63,105 @@ export default function AddSiteStep1(props) {
   };
   // filter delivery area Which are not availbile
   const filterUnavailableDeliveryArea = () => {
-    let tempArray = props.deliveryAreas.filter((filter, index) => {
-      let flag = 0;
-      filter.unavailability?.map((key, index) => {
-        if (key.dayOff === false) {
-          let DBStartTime = moment(key.date).set("hours", key.startHour);
-          let DBEndTime = moment(key.date).set("hours", key.endHour);
-          if (
-            moment(startTime).isBetween(
-              DBStartTime,
-              DBEndTime,
-              undefined,
-              "[]",
-            ) ||
-            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
-          ) {
-            // matched
-            flag = 1;
-          } else {
-            // not matched
+    let result = [];
+    let currentDate = moment(props.date).format("L");
+    setFilterdeliveryArea(
+      props.deliveryAreas.reduce((accumulator, currentValue) => {
+        let start = moment(startTime).format("HH:mm").substring(0, 2);
+        let end = moment(endTime).format("HH:mm").substring(0, 2);
+        //////// Checking unavailabilities
+        result = unavailabilityCheck(
+          currentValue,
+          currentDate,
+          start,
+          end,
+          liftingMeans,
+          "deliveryArea",
+        );
+        if (result.msg === "found") {
+          if (!unavailableMsg.includes(currentValue.name)) {
+            unavailableMsg.push(currentValue.name);
+          }
+        } else if (result.msg === "notFound") {
+          if (unavailableMsg.includes(currentValue.name)) {
+            let i = unavailableMsg.indexOf(currentValue.name);
+            unavailableMsg.splice(i, 1);
           }
         }
-      });
-      if (flag === 0) {
-        return filter;
-      }
-    });
-    setFilterdeliveryArea(tempArray);
+        if (result.data.length > 0) {
+          if (
+            !accumulator.some((acc) => acc["value"] === result.data[0].value)
+          ) {
+            accumulator.push(result.data[0]);
+          }
+        }
+        return accumulator;
+      }, []),
+    );
   };
 
-  const getAllDeliveryMean = async (meanArray) => {
-    let deliveryMeanArray = [];
-    let meanBooking = [];
-    if (meanArray.length !== 0) {
-      // if edit validate DR then
-      // if (props.editDelivery) {
-      //   return meanArray;
-      // }
-      // Start  checking mean Availabilty in Delivery Request
-      const getAllDelivery = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_VALIDATED_DELIVERY_MEAN}`,
-        token: store.token,
-      });
-      getAllDelivery.data?.map((delivery, dIndex) => {
-        /*start hours and mints Convert into Date Object*/
-        let DBstartDate = new Date(delivery.date);
-        let startHours = delivery.startTime.slice(0, 2);
-        let startmint = delivery.startTime.slice(3, 5);
-        DBstartDate.setHours(startHours);
-        DBstartDate.setMinutes(startmint);
-        /*start hours and mints Convert into Date Object*/
-
-        /*End hours and mints Convert into Date Object*/
-        let DBEndDate = new Date(delivery.date);
-        let endHours = delivery.endTime.slice(0, 2);
-        let endmint = delivery.endTime.slice(3, 5);
-        DBEndDate.setHours(endHours);
-        DBEndDate.setMinutes(endmint);
-        /*End hours and mints Convert into Date Object*/
-
-        delivery?.liftingMeans.map((dmean, dmIndex) => {
-          meanArray = meanArray?.filter((mean, mIndex) => {
-            if (
-              dmean === mean.value &&
-              moment(DBstartDate).isBetween(
-                startTime,
-                endTime,
-                undefined,
-                "[]",
-              ) &&
-              moment(DBEndDate).isBetween(startTime, endTime, undefined, "[]")
-            ) {
-              // remove matched array
-            } else {
-              // means which are not matched
-              return mean;
-            }
-          });
-        });
-      });
-      // END checking mean Availabilty in Delivery Request
-    }
-    // Start checking mean Availabilty in Mean Booking
-    const getAllMeanBooking = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.GET_VALIDATED_MEAN}`,
-      token: store.token,
-    });
-
-    getAllMeanBooking.data.map((meanB, Bindex) => {
-      meanArray = meanArray.filter((dmean, dindex) => {
-        if (
-          (dmean.value === meanB._id &&
-            moment(meanB.startDate).isBetween(
-              startTime,
-              endTime,
-              undefined,
-              "[]",
-            )) ||
-          // remove && operaator
-          moment(meanB.endDate).isBetween(startTime, endTime, undefined, "[]")
-        ) {
-          //match mean remove
-        } else {
-          // return filtered mean
-          return dmean;
-        }
-      });
-    });
-    // END checking mean Availabilty in Mean Booking
-
-    // check mean unavailability //
-
-    meanArray = meanArray.filter((filter, index) => {
-      let flag = 0;
-      filter.unavailability?.map((key, index) => {
-        if (key.dayOff === false) {
-          let DBStartTime = moment(key.date).set("hours", key.startHour);
-          let DBEndTime = moment(key.date).set("hours", key.endHour);
+  const getMeans = async () => {
+    try {
+      let result = [];
+      let currentDate = moment(props.date).format("L");
+      setMeans(
+        props.means.reduce((accumulator, currentValue) => {
           if (
-            moment(startTime).isBetween(
-              DBStartTime,
-              DBEndTime,
-              undefined,
+            currentValue.meanType === "LIFTING" &&
+            currentValue.location.find(
+              (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+            ) &&
+            moment(props.date).isBetween(
+              currentValue.availability.start,
+              currentValue.availability.end,
+              "day",
               "[]",
-            ) ||
-            moment(endTime).isBetween(DBStartTime, DBEndTime, undefined, "[]")
+            )
           ) {
-            // matched
-            flag = 1;
-          } else {
-            // not matched
+            let start = moment(startTime).format("HH:mm").substring(0, 2);
+            let end = moment(endTime).format("HH:mm").substring(0, 2);
+
+            //////// Checking unavailabilities
+
+            result = unavailabilityCheck(
+              currentValue,
+              currentDate,
+              start,
+              end,
+              liftingMeans,
+              "mean",
+            );
+
+            if (result.msg === "found") {
+              if (!unavailableMsg.includes(currentValue.name)) {
+                unavailableMsg.push(currentValue.name);
+              }
+            } else if (result.msg === "notFound") {
+              if (unavailableMsg.includes(currentValue.name)) {
+                let i = unavailableMsg.indexOf(currentValue.name);
+                unavailableMsg.splice(i, 1);
+              }
+            }
+
+            if (result.data[0]) {
+              if (
+                !accumulator.some(
+                  (acc) => acc["value"] === result.data[0].value,
+                )
+              ) {
+                accumulator.push(result.data[0]);
+              }
+            }
           }
-        }
-      });
-      if (flag === 0) {
-        return filter;
+          return accumulator;
+        }, []),
+      );
+      if (props.step1Data) {
+        if (props.step1Data.liftingMeans.length === 0) {
+          setDisableLiftingMeans(true);
+        } else setLiftingMeans(props.step1Data.liftingMeans);
       }
-    });
-    // check mean unavailability  //
-    return meanArray;
+    } catch (error) {}
   };
   useEffect(() => {
     if (props.step1Data) {
@@ -238,36 +201,9 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
+
   useEffect(() => {
-    let mean_array = props.means.reduce((accumulator, currentValue) => {
-      if (
-        currentValue.meanType === "LIFTING" &&
-        currentValue.location.find(
-          (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
-        ) &&
-        moment(props.date).isBetween(
-          currentValue.availability.start,
-          currentValue.availability.end,
-          "day",
-          "[]",
-        )
-      ) {
-        accumulator.push({
-          value: currentValue._id,
-          label: currentValue.name,
-          currentValue: currentValue,
-          unavailability: currentValue.unavailability,
-        });
-      }
-
-      return accumulator;
-    }, []);
-
-    let delivery_means = getAllDeliveryMean(mean_array);
-
-    delivery_means.then((mean) => {
-      setMeans(mean);
-    });
+    getMeans();
     filterUnavailableDeliveryArea();
     // eslint-disable-next-line
   }, [deliveryArea, date, startTime, endTime]);
@@ -299,16 +235,6 @@ export default function AddSiteStep1(props) {
     );
   }
 
-  const DateRangeforminmax2 = (value) => {
-    let customDate = "2021-06-06";
-
-    if (value === customDate) {
-      alert("notavailable");
-      return false;
-    } else {
-      return true;
-    }
-  };
   return (
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
@@ -406,6 +332,19 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
+      {unavailableMsg.length > 0 ? (
+        <Form.Row>
+          <FormLabel bold primary={""} />
+          <Form.Row width="48%" noMargin label=" " zIndex={5}>
+            <div style={{ color: "red" }}>
+              {unavailableMsg.join(", ")} is/are unavailable in the selected
+              timeslot.
+            </div>
+          </Form.Row>
+        </Form.Row>
+      ) : (
+        []
+      )}
       <Form.Row>
         <FormLabel bold primary="SELECT TRADES* :" />
         <FormMultiSelect

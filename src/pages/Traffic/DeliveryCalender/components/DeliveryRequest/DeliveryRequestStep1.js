@@ -291,16 +291,6 @@ export default function AddSiteStep1(props) {
     );
   }
 
-  const DateRangeforminmax2 = (value) => {
-    let customDate = "2021-06-06";
-
-    if (value === customDate) {
-      alert("notavailable");
-      return false;
-    } else {
-      return true;
-    }
-  };
   return (
     <Form.Form onSubmit={onSubmit}>
       {update && ""}

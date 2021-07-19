@@ -559,7 +559,7 @@ const PicCanvas = (props) => {
           onChange={({ target: { value } }) => {
             setLevel(value);
             if (value) {
-              console.log();
+              // console.log();
               const leve = allLeves.find((lev) => lev._id === value);
               fetchLevelPic(leve);
               setPdf(

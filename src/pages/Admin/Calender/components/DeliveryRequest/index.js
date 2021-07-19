@@ -113,11 +113,7 @@ export default function DeliveryRequest(props) {
             )
           ) {
             if (!currentValue.isDisable) {
-              accumulator.push({
-                value: currentValue._id,
-                label: currentValue.name,
-                unavailability: currentValue.unavailabilityDates,
-              });
+              accumulator.push(currentValue);
             }
           }
           return accumulator;
@@ -137,13 +133,7 @@ export default function DeliveryRequest(props) {
                 )
               ) {
                 if (!currentValue.isDisable) {
-                  accumulator.push({
-                    value: currentValue._id,
-                    label: currentValue.name,
-                    level: currentValue.level,
-                    companies: currentValue.companies,
-                    unavailability: currentValue.unavailability,
-                  });
+                  accumulator.push(currentValue);
                 }
               }
             }
@@ -163,11 +153,6 @@ export default function DeliveryRequest(props) {
             )
           ) {
             if (!currentValue.isDisable) {
-              // accumulator.push({
-              //   value: currentValue._id,
-              //   label: currentValue.name,
-              //   unavailability: currentValue.unavailability,
-              // });
               accumulator.push(currentValue);
             }
           }

@@ -32,13 +32,13 @@ export default function DeliveryRequestStep3(props) {
 
     comp && setCompany(comp.label);
     let deliv = props.deliveryAreas.find(
-      (item) => item.value === props.step1Data.deliveryArea,
+      (item) => item._id === props.step1Data.deliveryArea,
     );
-    deliv && setDeliveryArea(deliv.label);
+    deliv && setDeliveryArea(deliv.name);
     let stor = props.storageAreas.find(
-      (item) => item.value === props.step2Data.storageArea,
+      (item) => item._id === props.step2Data.storageArea,
     );
-    stor && setStorageArea(stor.label);
+    stor && setStorageArea(stor.name);
     let liftMea = props.means.filter((item) =>
       props.step1Data.liftingMeans?.includes(item._id),
     );

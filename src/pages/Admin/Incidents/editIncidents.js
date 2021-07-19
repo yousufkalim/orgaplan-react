@@ -109,7 +109,7 @@ export default function AddIncidents(props) {
     }
     // eslint-disable-next-line
   }, [companyId]);
-  console.log("mean data in edit", history.location.data);
+  // console.log("mean data in edit", history.location.data);
   const fetchData = async () => {
     try {
       const response = await GLOBALS.API({
@@ -287,8 +287,8 @@ export default function AddIncidents(props) {
   const timeChange = (e) => {
     setTime(moment(e?._d).format("HH:mm:ss"));
   };
-  console.log("selectedLocation", selectedLocation);
-  console.log("location", location);
+  // console.log("selectedLocation", selectedLocation);
+  // console.log("location", location);
 
   const validation = (name, value) => {
     if (name == "name") {
