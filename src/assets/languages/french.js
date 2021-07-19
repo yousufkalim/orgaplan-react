@@ -40,6 +40,7 @@ export const TEXTS = {
   BACK: "Précédent",
   NEXT: "Suivant",
   PLANNING: "Calendrier",
+
   LIST_OF_MEANS: "Liste des moyens",
   LIST_OF_USERS: "Liste des utilisateurs",
 
@@ -369,4 +370,5 @@ export const TEXTS = {
   df_FILE: "Fichier Pdf",
   EDIT_INVOICE: "Modifier facture",
   DOWNLOAD: "Télécharger",
+  PLANING: "Planification",
 };

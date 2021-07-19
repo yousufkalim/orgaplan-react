@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import { TEXTS } from "../../../assets/languages/french";
 import _ from "lodash";
 import moment from "moment";
 import Mean from "./Mean";
@@ -98,6 +99,7 @@ let selectedShapeReserver;
 const PicCanvas = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { DELIVERIES, ALERT } = TEXTS;
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
   const [userId, setUserId] = useState(store.user._id);
@@ -769,7 +771,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {deliveryCount}
               </h3>
-              <h6 style={{ color: "white" }}>Deliveries</h6>
+              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
             </div>
             <div
               style={{
@@ -801,7 +803,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {alertCount}
               </h3>
-              <h6 style={{ color: "white" }}>Alerts</h6>
+              <h6 style={{ color: "white" }}>{ALERT}</h6>
             </div>
             {selectedShape && (
               <div

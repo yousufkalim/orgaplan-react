@@ -36,6 +36,7 @@ import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
 import { EventToolTips } from "./components/TooltipCustom";
 import VerificationSheet from "./components/VerificationSheet";
+import { TEXTS } from "../../../assets/languages/french";
 
 let view = {
   month: true,
@@ -62,6 +63,15 @@ const Calender = (props) => {
   });
   const history = useHistory();
   const dispatch = useDispatch();
+  const {
+    DELIVERIES,
+    ALERT,
+    COMPLETE,
+    SELECT_COMPANY,
+    TYPE_OF_PLACE,
+    LOCATION,
+    PLANING,
+  } = TEXTS;
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [userId, setUserId] = useState(store.user._id);
@@ -1460,7 +1470,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="PLANNING" noWrap />
+                <Heading primary={PLANING} noWrap />
                 {/* <SubHeading
                   noMargin
                   topPadding
@@ -1488,7 +1498,7 @@ const Calender = (props) => {
                 {props.location.companyId != null ? (
                   <>
                     <FormSelect
-                      placeholder="SELECT COMPANY"
+                      placeholder={SELECT_COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1498,7 +1508,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="SELECT COMPANY"
+                      placeholder={SELECT_COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1540,7 +1550,7 @@ const Calender = (props) => {
                 {props.location.selectedShape != null ? (
                   <>
                     <FormSelect
-                      placeholder="Type of Location"
+                      placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1551,7 +1561,7 @@ const Calender = (props) => {
                       onChange={handleChangeTypeOfPlace}
                     />
                     <FormSelect
-                      placeholder="Location"
+                      placeholder={LOCATION}
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1561,7 +1571,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Type of Location"
+                      placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
                         { value: "DELIVERYAREA", label: "Delivery area" },
@@ -1572,7 +1582,7 @@ const Calender = (props) => {
                       onChange={handleChangeTypeOfPlace}
                     />
                     <FormSelect
-                      placeholder="Location"
+                      placeholder={LOCATION}
                       value={placeId}
                       values={typeOfPlace}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1667,7 +1677,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {deliveryCount}
             </h3>
-            <h6 style={{ color: "white" }}>Deliveries</h6>
+            <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
           </div>
           <div
             style={{
@@ -1682,7 +1692,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {totalCompDeliveries}
             </h3>
-            <h6 style={{ color: "white" }}>COMPLETED</h6>
+            <h6 style={{ color: "white" }}>{COMPLETE}</h6>
           </div>
           <div
             style={{
@@ -1713,7 +1723,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {alertCount}
             </h3>
-            <h6 style={{ color: "white" }}>Alerts</h6>
+            <h6 style={{ color: "white" }}>{ALERT}</h6>
           </div>
         </div>
       </div>
