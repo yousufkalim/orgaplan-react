@@ -46,6 +46,10 @@ export default function AddMean(props) {
     UNAVAILABILITIES,
     HOURLY_RATE,
     ADDITIONNAL_INFORMATION,
+    LIFTING,
+    TECHNICAL_SHEET,
+    ROUTING,
+    START_DATE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -339,11 +343,11 @@ export default function AddMean(props) {
               placeholder="Type"
               values={[
                 {
-                  label: "LIFTING",
+                  label: LIFTING,
                   value: "LIFTING",
                 },
                 {
-                  label: "ROUTING",
+                  label: ROUTING,
                   value: "ROUTING",
                 },
               ]}
@@ -377,7 +381,8 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="TECHNICAL SHEET :" />
+          <FormLabel bold primary={`${TECHNICAL_SHEET} * : `} />
+
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="techSheet"
@@ -414,7 +419,7 @@ export default function AddMean(props) {
               error={errors.startDate}
               value={startDate}
               style={{ width: "49%" }}
-              placeholder={`Start date`}
+              placeholder={START_DATE}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -488,7 +493,7 @@ export default function AddMean(props) {
               rows={3}
               maxLength="300"
               style={{ width: "100%" }}
-              placeholder="Informations complémentaires"
+              placeholder={ADDITIONNAL_INFORMATION}
               name="addInfo"
               className="means-addinfo"
               onChange={({ target: { name, value } }) => {

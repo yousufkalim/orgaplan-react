@@ -103,6 +103,8 @@ const Calender = (props) => {
     DELIVERYAREA,
     STORAGEAREA,
     PLACE,
+    ConstructBTP,
+    PENDING_VALIDATION,
   } = TEXTS;
 
   const dispatch = useDispatch();
@@ -1241,7 +1243,7 @@ const Calender = (props) => {
               <input
                 type="text"
                 style={{ border: "1px solid #707070" }}
-                placeholder="Company : ConstructBTP"
+                placeholder={`${COMPANY} : ${ConstructBTP}`}
                 className="w-100 p-2 mb-2"
               />
             </div>
@@ -1394,7 +1396,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel

@@ -4,6 +4,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { TEXTS } from "../../../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -24,12 +25,13 @@ export default function ControlledOpenSelect({
   handleChange,
 }) {
   const classes = useStyles();
+  const { ENABLE, DISABLE, OVERLAP } = TEXTS;
 
   return (
     <div>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-controlled-open-select-label">
-          Chevaucher
+          {OVERLAP}
         </InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
@@ -40,8 +42,8 @@ export default function ControlledOpenSelect({
           value={overlap}
           onChange={handleChange}
         >
-          <MenuItem value="Enable">Activer</MenuItem>
-          <MenuItem value="Disable">Désactiver</MenuItem>
+          <MenuItem value="Enable">{ENABLE}</MenuItem>
+          <MenuItem value="Disable">{DISABLE}</MenuItem>
         </Select>
       </FormControl>
     </div>
