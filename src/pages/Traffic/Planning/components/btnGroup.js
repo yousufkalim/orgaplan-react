@@ -4,6 +4,17 @@ import { Button, ButtonGroup } from "react-bootstrap";
 const Options = (props) => {
   const { selected, setSelected } = props;
 
+  useEffect(() => {
+    props.array.map((item) => {
+      setSelected((prev) => {
+        return {
+          ...prev,
+          [item]: true,
+        };
+      });
+    });
+  }, [props.array]);
+
   const toggleOption = (e) => {
     if (props.disabled === false) {
       const key = e.target.value; // e.g. 'A'
@@ -14,6 +25,7 @@ const Options = (props) => {
   return (
     <ButtonGroup className="btnselect">
       {props.array.map((btn, index) => {
+        // console.log(selected);
         return (
           <Button
             onClick={toggleOption}
