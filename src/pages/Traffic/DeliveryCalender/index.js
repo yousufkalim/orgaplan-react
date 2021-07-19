@@ -34,6 +34,11 @@ import Actions from "../../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 import DeliveryRequest from "./components/DeliveryRequest";
 import { EventToolTips } from "./components/TooltipCustom";
+
+import deliverIcon from "../../../assets/icons/delivery.png";
+import alertIcon from "../../../assets/icons/alerticon.png";
+import alertIcon1 from "../../../assets/icons/alerticon1.png";
+
 let view = {
   month: true,
   day: true,
@@ -112,7 +117,6 @@ const Calender = (props) => {
 
   // *****
   const [isLoading, setLoading] = useState(true);
-  const [siteMeans, setSiteMeans] = useState("");
   const [alertBoxTime, setAlertBoxTime] = useState(false);
   const [days] = useState([]);
   const [popoverShow, setpopoverShow] = useState(false);
@@ -172,12 +176,22 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
+
+  // states to count
+
+  const [deliveryCount, setDeliveryCount] = useState(0);
+  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
+
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
     }
     if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.type);
+      // Setting name of current delivery area to display at top
+
+      setTypeOfPlacevalue(props.location.selectedShape.name);
+
       if (props.location.selectedShape.type === "DELIVERYAREA") {
         getDeliveryAreaSiteBySiteId();
       } else if (props.location.selectedShape.type === "STORAGEAREA") {
@@ -203,7 +217,6 @@ const Calender = (props) => {
     status,
     typeOfPlacevalue,
     placeId,
-    siteMeans,
     updateMeanStatus,
     addDelivery,
     popoverShow,
@@ -653,7 +666,6 @@ const Calender = (props) => {
           Actions.notistack.snackbar(DELIVERY_DELETED, "success"),
         ),
       );
-      setSiteMeans("");
     } else if (confirm === "no") {
       setAlertBoxTime(false);
     } else {
@@ -856,18 +868,21 @@ const Calender = (props) => {
       );
     }
   };
-  function handleChangeTypeOfPlace(e) {
-    setTypeOfPlacevalue(e.target.value);
-    if (e.target.value === "DELIVERYAREA") {
-      getDeliveryAreaSiteBySiteId();
-    } else if (e.target.value === "STORAGEAREA") {
-      getStorageSiteBysiteId();
-    } else if (e.target.value === "BUILDING") {
-      getbuildingBysiteId();
-    } else {
-      setTypeOfPlace([]);
-    }
-  }
+
+  // type of place was used for filter which is not required anymore
+
+  // function handleChangeTypeOfPlace(e) {
+  //   setTypeOfPlacevalue(e.target.value);
+  //   if (e.target.value === "DELIVERYAREA") {
+  //     getDeliveryAreaSiteBySiteId();
+  //   } else if (e.target.value === "STORAGEAREA") {
+  //     getStorageSiteBysiteId();
+  //   } else if (e.target.value === "BUILDING") {
+  //     getbuildingBysiteId();
+  //   } else {
+  //     setTypeOfPlace([]);
+  //   }
+  // }
   const getbuildingBysiteId = async () => {
     try {
       const response = await GLOBALS.API({
@@ -1037,6 +1052,8 @@ const Calender = (props) => {
   // console.log(userId);
   const filterBookingCalendar = async () => {
     let count = 0;
+    let alerts = 0;
+    let completeDeliveryCount = 0;
     let tempEvent;
     try {
       const response = await GLOBALS.API({
@@ -1086,8 +1103,6 @@ const Calender = (props) => {
             end.setHours(endHours);
             end.setMinutes(endmint);
             /* End time converstion */
-
-            count++;
             return {
               objectName: "Deliveries",
               id: key._id,
@@ -1107,7 +1122,6 @@ const Calender = (props) => {
               user: key.userId,
             };
           });
-          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             let background = "";
@@ -1120,7 +1134,6 @@ const Calender = (props) => {
             }
             let start = new Date(key.startDate);
             let end = new Date(key.endDate);
-            count++;
             return {
               objectName: "Means",
               id: key._id,
@@ -1135,10 +1148,33 @@ const Calender = (props) => {
               user: key.userId,
             };
           });
-          setSiteMeans(`TOTAL MEANS Booking : ${count}`);
         }
+
+        // Filtering events to with delivery area
+
+        tempEvent = tempEvent.filter((event) => {
+          return event.deliveryArea._id == props.location.selectedShape._id;
+        });
+        count = tempEvent.length;
         setEvents(tempEvent);
       }
+
+      // checking response and setting count values
+      if (response.success) {
+        tempEvent.map((event) => {
+          if (event.status == "COMPLETED") {
+            completeDeliveryCount++;
+          }
+          if (event.alert) {
+            alert++;
+          }
+        });
+
+        setDeliveryCount(count);
+        setTotalCompDeliveries(completeDeliveryCount);
+        setAlertCount(alerts);
+      }
+
       setLoading(false);
     } catch (err) {
       dispatch(
@@ -1560,36 +1596,44 @@ const Calender = (props) => {
             setAddDelivery(true);
           }}
         />
-        <div style={{ flexBasis: "100%" }}>
-          <div className="px-2">
-            <Form.Row alignItems="center">
-              <Form.Row noMargin>
-                <Heading primary={PLANNING} noWrap />
-                <SubHeading
-                  noMargin
-                  topPadding
-                  style={{ color: "#F80303", paddingRight: "3rem" }}
-                  primary={siteMeans}
-                  bold
-                />
+        {/* removing filters and displaying counts */}
+        <div style={{ display: "flex" }}>
+          <div style={{ width: "80%" }}>
+            <div className="px-2">
+              <Form.Row alignItems="center">
+                <Form.Row noMargin>
+                  <Heading primary={typeOfPlacevalue} noWrap />
+                  {/* <SubHeading
+                    noMargin
+                    topPadding
+                    style={{ color: "#F80303", paddingRight: "3rem" }}
+                    primary={siteMeans}
+                    bold
+                  /> */}
+                </Form.Row>
               </Form.Row>
-            </Form.Row>
-            <Form.Row alignItems="center" noMargin>
-              <Form.Row justifyContent="flex-start" noMargin>
-                <div style={{ marginRight: "20px", width: 250 }}>
-                  <DatePicker
-                    showPopperArrow={true}
-                    dateFormat="dd-MM-yyyy"
-                    selected={filterDate}
-                    popperPlacement="top-start"
-                    showYearDropdown
-                    placeholderText={DELIVERY_DATE}
-                    onChange={(filterDate) => {
-                      setFilterDate(filterDate);
+              <Form.Row alignItems="center" noMargin>
+                <Form.Row justifyContent="flex-start" noMargin>
+                  <div
+                    style={{
+                      marginRight: "20px",
+                      width: 250,
+                      marginBottom: 20,
                     }}
-                  />
-                </div>
-                {props.location.companyId != null ? (
+                  >
+                    <DatePicker
+                      showPopperArrow={true}
+                      dateFormat="dd-MM-yyyy"
+                      selected={filterDate}
+                      popperPlacement="top-start"
+                      showYearDropdown
+                      placeholderText={DELIVERY_DATE}
+                      onChange={(filterDate) => {
+                        setFilterDate(filterDate);
+                      }}
+                    />
+                  </div>
+                  {/* {props.location.companyId != null ? (
                   <>
                     <FormSelect
                       placeholder={COMPANY}
@@ -1609,9 +1653,9 @@ const Calender = (props) => {
                       onChange={(e) => setEnterprise(e.target.value)}
                     />
                   </>
-                )}
+                )} */}
 
-                <FormSelect
+                  {/* <FormSelect
                   value={typeOfPlaning}
                   values={[
                     { value: "Deliveries", label: DELIVERIES },
@@ -1634,17 +1678,17 @@ const Calender = (props) => {
                     }
                   }}
                   style={{ marginRight: "20px", maxWidth: 250 }}
-                />
-                <FormSelect
+                /> */}
+                  {/* <FormSelect
                   placeholder={STATUS}
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
                   style={{ marginRight: "5px", maxWidth: 250 }}
-                />
+                /> */}
+                </Form.Row>
               </Form.Row>
-            </Form.Row>
-            <Form.Row>
+              {/* <Form.Row>
               <Form.Row justifyContent="flex-start" noMargin>
                 {props.location.selectedShape != null ? (
                   <>
@@ -1692,71 +1736,142 @@ const Calender = (props) => {
                   </>
                 )}
               </Form.Row>
-            </Form.Row>
+            </Form.Row> */}
+            </div>
+            {events ? (
+              <Calendar
+                tooltipAccessor={null}
+                components={{ event: EventToolTips }}
+                slotPropGetter={slotPropGetter}
+                popup
+                selectable
+                formats={formats}
+                localizer={localizer}
+                events={events}
+                views={view}
+                defaultView="work_week"
+                step={60}
+                timeslots={1}
+                onSelectEvent={handlePopoverShow}
+                // onSelectEvent={bookingSlot}
+                onSelecting={true}
+                // onSelectSlot={AddEvent}
+                // onSelectSlot={AddDeliveryRequest}
+                // onSelectSlot={AddAvailability}
+                startAccessor="start"
+                endAccessor="end"
+                style={{
+                  width: "98%",
+                  height: "540px",
+                  marginLeft: 15,
+                }}
+                eventPropGetter={(events, start, end, isSelected) => {
+                  let { background, fontColor } = events;
+                  let newStyle = {
+                    clear: "both",
+                    display: "block",
+                    borderRadius: "4px",
+                    padding: "5px",
+                    marginTop: "5px !important",
+                    marginLeft: "5px !important",
+                    lineHeight: "14px",
+                    background: `${background}`,
+                    border: "2px solid #fff",
+                    color: fontColor ? `${fontColor}` : "black",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  };
+
+                  if (events.isMine) {
+                    newStyle.backgroundColor = "color";
+                    newStyle.border = "2px solid #fff";
+                  }
+
+                  return {
+                    className: "",
+                    style: newStyle,
+                  };
+                }}
+                custom_week_days={days}
+                dayPropGetter={customDayPropGetter}
+                date={filterDate}
+                onNavigate={(date) => {
+                  setFilterDate(date);
+                }}
+              />
+            ) : (
+              <Loader.Progress />
+            )}
           </div>
-          {events ? (
-            <Calendar
-              tooltipAccessor={null}
-              components={{ event: EventToolTips }}
-              slotPropGetter={slotPropGetter}
-              popup
-              selectable
-              formats={formats}
-              localizer={localizer}
-              events={events}
-              views={view}
-              defaultView="work_week"
-              step={60}
-              timeslots={1}
-              onSelectEvent={handlePopoverShow}
-              // onSelectEvent={bookingSlot}
-              onSelecting={true}
-              // onSelectSlot={AddEvent}
-              // onSelectSlot={AddDeliveryRequest}
-              // onSelectSlot={AddAvailability}
-              startAccessor="start"
-              endAccessor="end"
+          <div style={{ width: "18%" }}>
+            <div
               style={{
-                width: "98%",
-                height: "540px",
+                backgroundColor: "#47A7EE",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-              eventPropGetter={(events, start, end, isSelected) => {
-                let { background, fontColor } = events;
-                let newStyle = {
-                  clear: "both",
-                  display: "block",
-                  borderRadius: "4px",
-                  padding: "5px",
-                  marginTop: "5px !important",
-                  marginLeft: "5px !important",
-                  lineHeight: "14px",
-                  background: `${background}`,
-                  border: "2px solid #fff",
-                  color: fontColor ? `${fontColor}` : "black",
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                };
-
-                if (events.isMine) {
-                  newStyle.backgroundColor = "color";
-                  newStyle.border = "2px solid #fff";
-                }
-
-                return {
-                  className: "",
-                  style: newStyle,
-                };
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                <img
+                  src={deliverIcon}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {deliveryCount}
+              </h3>
+              <h6 style={{ color: "white" }}>Deliveries</h6>
+            </div>
+            <div
+              style={{
+                backgroundColor: "#0EB227",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-              custom_week_days={days}
-              dayPropGetter={customDayPropGetter}
-              date={filterDate}
-              onNavigate={(date) => {
-                setFilterDate(date);
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}></div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {totalCompDeliveries}
+              </h3>
+              <h6 style={{ color: "white" }}>COMPLETED</h6>
+            </div>
+            <div
+              style={{
+                backgroundColor: "#E15141",
+                textAlign: "center",
+                color: "white",
+                padding: "5px",
+                margin: "5px",
               }}
-            />
-          ) : (
-            <Loader.Progress />
-          )}
+            >
+              <div style={{ textAlign: "left", padding: "5px" }}>
+                <img
+                  src={alertIcon1}
+                  style={{ width: 25, height: 25 }}
+                  alt="Icon"
+                />
+                <img
+                  src={alertIcon}
+                  style={{
+                    width: "5px",
+                    height: "18px",
+                    position: "relative",
+                    right: "15px",
+                  }}
+                  alt="Icon"
+                />
+              </div>
+              <h3 className="font-weight-bold" style={{ color: "white" }}>
+                {alertCount}
+              </h3>
+              <h6 style={{ color: "white" }}>Alerts</h6>
+            </div>
+          </div>
         </div>
       </div>
     </>
