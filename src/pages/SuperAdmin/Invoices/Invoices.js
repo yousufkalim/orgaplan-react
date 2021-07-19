@@ -114,7 +114,7 @@ export default function Invoices(props) {
       label: client.companyId.name,
     }),
   );
-  console.log("items", items);
+  // console.log("items", items);
   const rows = items.map((item) => [
     item.clientId.companyId.name,
     moment(item.startDate).format("DD/MM/YYYY"),

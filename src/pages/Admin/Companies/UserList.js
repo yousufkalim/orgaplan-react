@@ -260,7 +260,6 @@ export default function UserList(props) {
       formdata.append("companyId", companyId);
       formdata.append("userId", userId);
       for (let [key, value] of formdata) {
-        console.log(`user data ${key}: ${value}`);
       }
 
       let res = await GLOBALS.API({

@@ -585,7 +585,7 @@ const Incidents = (props) => {
                     icon
                     value={startDate}
                     onChange={(e) => {
-                      console.log("e", e.target.value);
+                      // console.log("e", e.target.value);
                       setStartDate(e.target.value);
                     }}
                     style={{

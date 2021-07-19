@@ -78,7 +78,7 @@ export default function Logs(props) {
             count={data.totalPages}
             onChange={(e, value) => {
               setPage(value);
-              console.log(page);
+              // console.log(page);
             }}
           />
         )}

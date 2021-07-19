@@ -25,7 +25,7 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   ];
   const tableRows = [];
 
-  console.log("tickets", tickets);
+  // console.log("tickets", tickets);
   tickets.forEach((ticket) => {
     const ticketData = [
       ticket.name,

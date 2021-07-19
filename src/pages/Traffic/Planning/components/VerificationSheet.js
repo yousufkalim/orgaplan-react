@@ -20,7 +20,7 @@ const VarificationSheet = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const admin = useSelector((state) => state.admin);
-  console.log(store, admin);
+  // console.log(store, admin);
   const [image, setImage] = useState([]);
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
@@ -33,7 +33,7 @@ const VarificationSheet = (props) => {
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  console.log(eventdata);
+  // console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -60,7 +60,7 @@ const VarificationSheet = (props) => {
   }, []);
 
   const onSubmit = async () => {
-    console.log(checkStatus);
+    // console.log(checkStatus);
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {
@@ -140,7 +140,7 @@ const VarificationSheet = (props) => {
   };
   return (
     <>
-      {console.log(materialsData)}
+      {/* {console.log(materialsData)} */}
       <div className="row">
         <div className="col-sm-12">
           <br />
