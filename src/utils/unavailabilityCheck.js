@@ -57,7 +57,7 @@ export default function Check(
           (unavail.startHour >= start && unavail.startHour < end) ||
           (unavail.endHour <= end && unavail.endHour > start)
         ) {
-          if (found != true) {
+          if (!found) {
             status = "hide";
             msg = "found";
 
@@ -69,7 +69,7 @@ export default function Check(
             }
           }
         } else {
-          if (found != true) {
+          if (!found) {
             status = "hide";
             if (!sameDay.some((acc) => acc["value"] === cId)) {
               sameDay.push({

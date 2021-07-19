@@ -123,8 +123,7 @@ export default function AddSiteStep1(props) {
           "L",
         );
 
-        if (moment(availability_date).isBefore(currentDate)) {
-        } else {
+        if (moment(availability_date).isAfter(currentDate)) {
           if (
             currentValue.companies.find(
               (company) => company && company === props.step1Data.company,
@@ -156,8 +155,7 @@ export default function AddSiteStep1(props) {
               }
             }
 
-            if (result.data[0] === undefined) {
-            } else {
+            if (result.data[0]) {
               if (
                 !accumulator.some(
                   (acc) => acc["value"] === result.data[0].value,
@@ -215,8 +213,7 @@ export default function AddSiteStep1(props) {
             }
           }
 
-          if (result.data[0] === undefined) {
-          } else {
+          if (result.data[0]) {
             if (
               !accumulator.some((acc) => acc["value"] === result.data[0].value)
             ) {

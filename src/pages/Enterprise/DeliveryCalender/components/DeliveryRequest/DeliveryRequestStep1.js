@@ -88,8 +88,7 @@ export default function AddSiteStep1(props) {
             unavailableMsg.splice(i, 1);
           }
         }
-        if (result.data.length === 0) {
-        } else {
+        if (result.data.length > 0) {
           if (
             !accumulator.some((acc) => acc["value"] === result.data[0].value)
           ) {
@@ -144,8 +143,7 @@ export default function AddSiteStep1(props) {
               }
             }
 
-            if (result.data[0] === undefined) {
-            } else {
+            if (result.data[0]) {
               if (
                 !accumulator.some(
                   (acc) => acc["value"] === result.data[0].value,
