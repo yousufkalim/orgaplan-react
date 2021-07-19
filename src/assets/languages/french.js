@@ -402,4 +402,10 @@ export const TEXTS = {
   DELIVERY_REALTIME: "TEMPS RÉEL DE LIVRAISON",
   NOT_RECEIVED: "cliquez si non reçu",
   DELIVERY_STATUS: "ÉTAT DE LIVRAISON",
+
+  //////////////////////////////  BY HAMZA //////////////////////////////
+  none: "Rien",
+  step1: "Étape 1: Aire De Livraison ",
+  step2: "Étape 2: Aire De Stockage",
+  step3: "Étape 1: Confirmation",
 };

@@ -3,6 +3,7 @@ import GLOBALS from "../../../globals";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import Actions from "../../../redux/actions";
+import { TEXTS } from "../../../assets/languages/french";
 
 import Form from "../../../components/Form";
 import Table from "../../../components/Table";
@@ -34,6 +35,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Historic = (props) => {
+  const {
+    DELIVERIES,
+    DELIVERY_REQUESTS,
+    PLANNING,
+    MEANS,
+    STATUS,
+    TYPE_OF_PLACE,
+    PLACE,
+
+    LIST_OF_MEANS,
+    HISTORIC,
+    COMPANY,
+    MEAN,
+  } = TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -145,7 +161,7 @@ const Historic = (props) => {
   return (
     <div className={classes.root}>
       <Form.Row alignItems="center">
-        <Heading primary="LIST OF MEANS - HISTORIC" noWrap />
+        <Heading primary={`${LIST_OF_MEANS} - ${HISTORIC}`} noWrap />
         <div>
           <Form.Row
             alignItems="flex-start"
@@ -166,7 +182,7 @@ const Historic = (props) => {
             style={{ marginRight: "20px", maxWidth: 250 }}
           /> */}
           <FormSelect
-            placeholder="Company"
+            placeholder={COMPANY}
             values={dropdownCompanies}
             value={selectedCompany}
             onChange={(event) => {
@@ -187,7 +203,7 @@ const Historic = (props) => {
             style={{ marginRight: "20px", maxWidth: 250 }}
           />
           <FormSelect
-            placeholder="Mean"
+            placeholder={MEAN}
             values={dorpdownMeans}
             value={selectedMean}
             onChange={(event) => {

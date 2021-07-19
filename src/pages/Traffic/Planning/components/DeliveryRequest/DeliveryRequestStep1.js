@@ -3,6 +3,7 @@ import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
 import { useSelector, useDispatch } from "react-redux";
+import { TEXTS } from "../../../../../assets/languages/french";
 
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
@@ -14,7 +15,25 @@ import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { getTime } from "date-fns";
 export default function AddSiteStep1(props) {
+  const {
+    COMPANY,
+    DELIVERYAREA,
+    STORAGEAREA,
+    Please_select_a_company,
+    Please_select_Delivery_Area,
+    DATE_AND_TIME,
+    Start_time,
+    End_time,
+    SELECT_TRADES,
+    TRADES,
+    UNLOADING_MEANS,
+    MEANS,
+    MATERIALS_DELIVERED,
+    ENTER_MATERIALS,
+  } = TEXTS;
+
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [company, setCompany] = useState("");
@@ -310,19 +329,21 @@ export default function AddSiteStep1(props) {
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
       <Form.Row>
-        <FormLabel bold primary="COMPANY* :" />
+        <FormLabel bold primary={`${COMPANY}* :`} />
         <FormSelect
           name="company"
           value={company}
           disabled={props.eventId}
           values={props.companies}
-          placeholder="Select a Company"
+          placeholder={Please_select_a_company}
           style={GLOBALS.Styles.inputWidth}
-          onChange={({ target: { value } }) => setCompany(value)}
+          onChange={({ target: { value } }) => {
+            setCompany(value);
+          }}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="DELIVERY AREA* :" />
+        <FormLabel bold primary={`${DELIVERYAREA}* :`} />
         <FormSelect
           name="deliveryArea"
           value={deliveryArea}
@@ -330,24 +351,47 @@ export default function AddSiteStep1(props) {
           // values={props.deliveryAreas}
           values={filterdeliveryArea}
           style={GLOBALS.Styles.inputWidth}
-          placeholder="Select a Delivery Area"
+          placeholder={Please_select_Delivery_Area}
           onChange={({ target: { value } }) => setDeliveryArea(value)}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="DATE AND TIME* :" />
+        <FormLabel bold primary={`${DATE_AND_TIME}* :`} />
         <Form.Row width="48%" noMargin>
           <FormInput
             type="date"
             name="date"
             value={date}
-            // disabled={true}
+            disabled={true}
             placeholder="Date"
             style={{ width: "31%" }}
             min={moment().format("YYYY-MM-DD")}
             // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
+
+              // Setting current time on current date and previous time
+              if (
+                moment(d).format("yyyy-DD-MM") ==
+                moment(value).format("yyyy-DD-MM")
+              ) {
+                if (
+                  moment(startTime).format("HH") <
+                  parseInt(moment(d).format("HH")) + 1
+                ) {
+                  const hour = new Date().getHours();
+                  setStartTime(
+                    moment(d)
+                      .set("hours", hour + 1)
+                      .set("minutes", 0),
+                  );
+                  setEndTime(
+                    moment(d)
+                      .set("hours", hour + 2)
+                      .set("minutes", 0),
+                  );
+                }
+              }
             }}
           />
           <TimeInput
@@ -361,7 +405,7 @@ export default function AddSiteStep1(props) {
                 moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
             }
             // disabledMinutes={(a) => getDisabledMinutes(a)}
-            placeholder="Start Time"
+            placeholder={Start_time}
             style={{ width: "31%" }}
             onChange={(value) => setStartTime(value)}
           />
@@ -372,18 +416,18 @@ export default function AddSiteStep1(props) {
             value={endTime}
             disabledHours={getDisabledHoursEndTime()}
             // disabledMinutes={(a) => getDisabledEndMinutes(a)}
-            placeholder="End Time"
+            placeholder={End_time}
             style={{ width: "31%" }}
             onChange={(value) => setEndTime(value)}
           />
         </Form.Row>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="SELECT TRADES* :" />
+        <FormLabel bold primary={`${SELECT_TRADES}* :`} />
         <FormMultiSelect
           name="trades"
           value={trades}
-          placeholder="Trades"
+          placeholder={TRADES}
           values={props.trades}
           disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
@@ -392,11 +436,11 @@ export default function AddSiteStep1(props) {
       </Form.Row>
 
       <Form.Row>
-        <FormLabel bold primary="UNLOADING MEANS* :" />
+        <FormLabel bold primary={`${UNLOADING_MEANS}* :`} />
         <FormMultiSelect
           name="means"
           values={means}
-          placeholder="Means"
+          placeholder={MEANS}
           value={liftingMeans}
           disabled={!deliveryArea || disableLiftingMeans}
           style={GLOBALS.Styles.inputWidth}
@@ -416,17 +460,17 @@ export default function AddSiteStep1(props) {
               setLiftingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={TEXTS.none}
           />
         </div>
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="MATERIALS DELIVERED* :" />
+        <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
         <MultiAdderInput
           name="materials"
           values={materials}
           disabled={props.eventId}
-          placeholder="Enter Materials"
+          placeholder={ENTER_MATERIALS}
           style={GLOBALS.Styles.inputWidth}
           onChange={(values) => {
             setMaterials(values);
