@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import _ from "lodash";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -28,6 +29,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddMean(props) {
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    LIFTING,
+    TECHNICAL_SHEET,
+    ROUTING,
+    START_DATE,
+  } = TEXTS;
   const classes = useStyles();
   const { setSelectedShape } = props;
   const dispatch = useDispatch();
@@ -269,7 +291,8 @@ export default function AddMean(props) {
       <Form.Form>
         <Form.Row>
           {update && ""}
-          <FormLabel bold primary="IDENTITY * : " />
+          <FormLabel bold primary={`${IDENTITY} * : `} />
+
           <Form.Row
             noMargin
             width="65%"
@@ -290,11 +313,11 @@ export default function AddMean(props) {
               placeholder="Type"
               values={[
                 {
-                  label: "LIFTING",
+                  label: LIFTING,
                   value: "LIFTING",
                 },
                 {
-                  label: "ROUTING",
+                  label: ROUTING,
                   value: "ROUTING",
                 },
               ]}
@@ -328,7 +351,8 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="TECHNICAL SHEET :" />
+          <FormLabel bold primary={`${TECHNICAL_SHEET} * : `} />
+
           <Form.Row noMargin width="65%">
             <FormMultipleUpload
               name="techSheet"
@@ -341,7 +365,8 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="ACCESSIBILITY * :  " />
+          <FormLabel bold primary={`${ACCESSIBILITY} * :`} />
+
           <Form.Row noMargin width="65%">
             <MeanLocationModal
               name="location"
@@ -357,14 +382,15 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITIES * :" />
+          <FormLabel bold primary={`${AVAILABILITIES} * :`} />
+
           <Form.Row noMargin width="65%" justifyContent="space-between">
             <FormInput
               type="date"
               name="startDate"
               value={startDate}
               style={{ width: "49%" }}
-              placeholder={`Start date`}
+              placeholder={START_DATE}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }
@@ -380,7 +406,7 @@ export default function AddMean(props) {
               name="endDate"
               value={endDate}
               disabled={!startDate}
-              placeholder="End date"
+              placeholder={END_DATE}
               style={{ width: "49%" }}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
@@ -393,7 +419,8 @@ export default function AddMean(props) {
         {startDate !== "" && endDate !== "" ? (
           <>
             <Form.Row>
-              <FormLabel bold primary="UNAVAILABILITIES" />
+              <FormLabel bold primary={UNAVAILABILITIES} />
+
               <Form.Row noMargin width="65%">
                 <UnavailabilityTimes
                   name="unavailabilityDates"
@@ -414,7 +441,8 @@ export default function AddMean(props) {
           ""
         )}
         <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="HOURLY RATE :" />
+          <FormLabel bold primary={`${HOURLY_RATE} :`} />
+
           <Form.Row noMargin width="65%">
             <div style={{ width: "49%", height: "100%", position: "relative" }}>
               <FormInput
@@ -432,14 +460,15 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row alignItems="flex-start">
-          <FormLabel bold primary="ADDITIONAL INFORMATION :" />
+          <FormLabel bold primary={`${ADDITIONNAL_INFORMATION} :`} />
+
           <Form.Row noMargin width="65%">
             <FormInput
               textArea
               rows={3}
               maxLength="300"
               style={{ width: "100%" }}
-              placeholder="Informations complémentaires"
+              placeholder={ADDITIONNAL_INFORMATION}
               name="addInfo"
               className="means-addinfo"
               onChange={({ target: { name, value } }) => {
@@ -453,7 +482,7 @@ export default function AddMean(props) {
           <Form.ButtonContainer style={{ width: "80%" }}>
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               loading={loading}
               fullWidth={false}
               onClick={createMean}

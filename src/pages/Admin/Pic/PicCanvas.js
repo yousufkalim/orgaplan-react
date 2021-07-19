@@ -90,7 +90,18 @@ const useStyles = makeStyles((theme) => ({
 
 let selectedShapeReserver;
 const PicCanvas = (props) => {
-  const {SHOW_EXTERIOR,SELECT_LEVEL,ADD,EDIT,DELIVERYAREA,STORAGEAREA,BUILDING,MEANS}=TEXTS;
+  const {
+    SHOW_EXTERIOR,
+    SELECT_LEVEL,
+    ADD,
+    EDIT,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    MEANS,
+    update_shape_error,
+    Are_you_sure_You_want_to_delete_this_shape,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -391,7 +402,7 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
   const updateLevelShape = async (newShape) => {
@@ -407,7 +418,7 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
 
@@ -466,7 +477,7 @@ const PicCanvas = (props) => {
   // InfoDrawer
   const onDeleteShape = async () => {
     try {
-      if (window.confirm("Are you sure you want to delete this shape?")) {
+      if (window.confirm(Are_you_sure_You_want_to_delete_this_shape)) {
         if (level) {
           let response = await GLOBALS.API({
             method: "DELETE",
@@ -527,7 +538,7 @@ const PicCanvas = (props) => {
           name="level"
           value={level}
           values={levelsDropdown}
-          placeholder="Select Level"
+          placeholder={SELECT_LEVEL}
           onChange={({ target: { value } }) => {
             setLevel(value);
             if (value) {

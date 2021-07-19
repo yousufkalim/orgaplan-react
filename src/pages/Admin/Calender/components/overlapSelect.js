@@ -24,14 +24,16 @@ export default function ControlledOpenSelect({
   handleClose,
   handleChange,
 }) {
-  const {ENABLE,DISABLE}=TEXTS;
-    
+  const { ENABLE, DISABLE, OVERLAP } = TEXTS;
+
   const classes = useStyles();
 
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label">{OVERLAP}</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">
+          {OVERLAP}
+        </InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"

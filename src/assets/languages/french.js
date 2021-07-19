@@ -47,8 +47,11 @@ export const TEXTS = {
   MEANS_REQUEST: "Demande De Moyen",
   NAME: "Nom",
   NAME_OF_COMPANY: "Nom de I'enterprise",
+  PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un Nom de I'enterprise",
+
   NAME_OF_USER: "Nom de I'User ",
   NAME_OF_INCIDENT: "Nom de I'Re-Facturation ",
+  PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom de I'Re-Facturation ",
 
   STATUS: "Statut",
   TYPE: "Type",
@@ -63,7 +66,7 @@ export const TEXTS = {
   Enter_vehicles: "Entrer Véhicules",
   Enter_site_addresses: "Entrer Chantier Adresses",
   Site_address: "Chantier Adresses",
-
+  MEANS_ALLOWED: "Moyens Permis",
   START_DATE: "Date De Démarrage",
   END_DATE: "Date De Fin",
   UPLOAD_PDF: "Charger Un Pdf",
@@ -136,6 +139,8 @@ export const TEXTS = {
   GENERAL: "Général",
   DESCRIPTION: "Description",
   COMMENT: "Commentaire",
+  ADD_COMMENT: "Ajouter un commentaire",
+
   COMMENT_INVOICE: "Commentaire Facture",
   Receive_Summary_by_email: "Recevoir Résumé Par Email",
   ADD: "Ajouter",
@@ -151,6 +156,8 @@ export const TEXTS = {
   VALIDATED: "Validé",
 
   COMPLETE: "Achevée",
+  COMPLETED: "Complété  ",
+
   General_Contractor: "Entreprise Générale",
   DASHBOARD: "Panel",
   CLIENTS: "Clients",
@@ -162,6 +169,8 @@ export const TEXTS = {
   SITE_NAME: "Chantier Nom",
 
   SITE_LIST: "Chantier Liste ",
+  INVOICE_LIST: "Facture Liste ",
+
   CLIENTS_LIST: "Clients Liste ",
   NAME_OF_CLIENT: "Nom Of Client",
 
@@ -183,11 +192,13 @@ export const TEXTS = {
   TYPE_OF_CONTRACT: "Type De Contrat",
   TYPE_OF_COMPANY: "Type De Entreprise",
   TYPE_OF_incident: "Type De Re-facturation",
+  PLEASE_SELECT_TYPE_OF_incident: "Type De Re-facturation",
 
   CONTRACT_DATE: "Date De Contrat",
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité Souscrite",
   AVAILABLE_FUNCTIONALITY: "Disponible Fonctionnalité",
-  AVAILABLE: "Disponible",
+  AVAILABLE: "Disponible ",
+  Unavailable: "Indisponible ",
 
   OLD_PASSWORD: "Vieux Mot De Passe ",
   NEW_PASSWORD: "Nouveau Mot De Passe ",
@@ -207,6 +218,7 @@ export const TEXTS = {
   SELECT_ZAC: "Sélectionner ZAC",
   COST_OF_DELIVERY_PENALITIES: "Coût Des Pénalités De Livraison",
   Delivery_module: "Module Livraison",
+
   DELAY: "Retard",
   UNEXPECTED_DELIVERY: "Inattendue Livraison",
   UNEXPECTED: "Inattendue",
@@ -217,9 +229,13 @@ export const TEXTS = {
   SEE_UNAVAILABILITIES: "Voir Indisponibilités",
   AVAILABILITIES: "Disponibilités",
   ACCESSIBILITY: "Accessibilité",
+  ACCESSIBILITY_ADDRESSES: "Accessibilité Addresses",
+
   UNAVAILABILITIES: "Indisponibilités",
   Add_Plan: "Ajouter un plan",
   Create_a_Building: "Créer un Bâtiment",
+  Select_a_Building: "Sélectionner un Bâtiment",
+
   Create_a_SITE: "Créer un Chantier",
   Create_a_Zac: "Créer un Zac",
 
@@ -227,6 +243,8 @@ export const TEXTS = {
   Modify: "Modifier",
   MODIIED: "Modifié",
   ALERT: "Alerte",
+  ALERTS: "Alertes",
+
   ADD_AN_INVOICE: "Ajouter UNE FACTURE",
   CREATE_AN_INVOICE: "Créer Une Facture",
   ALL: "Tous",
@@ -244,6 +262,8 @@ export const TEXTS = {
   Please_first_select_shape: "Sélectionner d'abord une entité",
   Are_you_sure_You_want_to_do_this: "Êtes-vous sûr, You vouloir faire ce",
   Are_you_sure_You_want_to_delete_this: "Êtes-vous sûr, You vouloir effacer ce",
+  Are_you_sure_You_want_to_delete_this_shape:
+    "Êtes-vous sûr, You vouloir effacer ce façonner",
 
   You_only_can_make_upto_Decagon_shape:
     "Vous ne pouvez créer que 10 points maximum",
@@ -265,6 +285,7 @@ export const TEXTS = {
   FILE_TOO_LARGE: "ficher trop grand",
   General_Information: "Information générale",
   Edit_Delivery_Request: "Modifier la requête de livraison",
+  REQUEST_SENT_SUCCESSFULLY: "la requête avec succès",
   Invalid_Time: "Heure incorrect",
   Please_Add_valid_Time_and_Event: "Merci Ajouter correcte Heure événement",
   Please_Add_logo: "Merci Ajouter Logo",
@@ -272,6 +293,8 @@ export const TEXTS = {
   LOGS: "Journauxs",
 
   MATERIALS_DELIVERED: "Materiel Livrée",
+  MEANS_DELIVERED: "Moyens Livrée",
+
   TRANSPORTING_MEANS: "Moyen D'acheminement",
   Confirmation: "Confirmation",
   Are_you_sure_to_Delete: "Êtes-vous sûr ?",
@@ -282,7 +305,7 @@ export const TEXTS = {
   REFUSE: "Refuser",
   COMPANY_1: "Entreprise1",
   COMPANY: "Entreprise",
-
+  ConstructBTP: "Construire BTP",
   something_went_wrong: "Une erreur s'est produite",
   Company_already_Exists_With_this_name:
     "Une entreprise du même nom existe déjà",
@@ -306,7 +329,10 @@ export const TEXTS = {
   Please_select_a_incident: "Sélectionner une re-facturation",
 
   Please_select_Delivery_Area: "Sélectionner une AIRE DE LIVRAISON",
-
+  Please_select_Date: "Sélectionner une date",
+  LIFTING: "Levage",
+  ROUTING: "Routage",
+  TECHNICAL_SHEET: "Fiche Technique",
   Please_enter_valid_email: "Entrez une adresse correcte",
   Please_enter_amount: "Entrez Une Montant",
 

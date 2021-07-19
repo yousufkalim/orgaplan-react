@@ -54,6 +54,8 @@ export default function DeliveryArea(props) {
     UNAVAILABILITIES,
     HOURLY_RATE,
     ADDITIONNAL_INFORMATION,
+    START_DATE,
+    Please_enter_valid_email,
   } = TEXTS;
 
   const { setSelectedShape } = props;
@@ -355,7 +357,7 @@ export default function DeliveryArea(props) {
                   : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
               }
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
-              placeholder={`Date de début`}
+              placeholder={START_DATE}
               style={GLOBALS.Styles.inputWidth}
               // onFocusOut={({ target: { name, value } }) =>
               //   validation(name, value)
@@ -368,7 +370,7 @@ export default function DeliveryArea(props) {
               type="date"
               name="endDate"
               disabled={!startDate}
-              placeholder="Date de fin"
+              placeholder={END_DATE}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end)
                 .add(1, "days")
@@ -471,7 +473,7 @@ export default function DeliveryArea(props) {
               name="notificationTo"
               values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
-              validateError="Invalid Email"
+              validateError={Please_enter_valid_email}
               placeholder={Please_enter_email}
               onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {

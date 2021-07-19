@@ -55,6 +55,22 @@ export default function AddIncidents(props) {
     PAID,
     AMOUNT,
     COMMENT_INVOICE,
+
+    PLEASE_ENTER_NAME_OF_INCIDENT,
+    PLEASE_ENTER_NAME_OF_COMPANY,
+    Please_select_Date,
+    PLEASE_SELECT_TYPE_OF_incident,
+    INCIDENT,
+    MEAN,
+    DELAY,
+    UNEXPECTED_DELIVERY,
+    STORAGEAREA,
+    DELIVERYAREA,
+    ADDITIONNAL_INFORMATION,
+    ADD_PHOTO,
+    STATUS,
+    ADD_COMMENT,
+    VALIDATE,
   } = TEXTS;
   const classes = useStyles();
   const history = useHistory();
@@ -293,25 +309,25 @@ export default function AddIncidents(props) {
   const validation = (name, value) => {
     if (name == "name") {
       if (!value) {
-        setNameError("Please enter name of incident");
+        setNameError(PLEASE_ENTER_NAME_OF_INCIDENT);
       } else {
         setNameError("");
       }
     } else if (name == "companyId") {
       if (!value) {
-        setCompanyError("Please select name of company");
+        setCompanyError(PLEASE_ENTER_NAME_OF_COMPANY);
       } else {
         setCompanyError("");
       }
     } else if (name == "date") {
       if (!value) {
-        setDateError("Please select date");
+        setDateError(Please_select_Date);
       } else {
         setDateError("");
       }
     } else if (name == "type") {
       if (!value) {
-        setTypeError("Please select type of incident");
+        setTypeError(PLEASE_SELECT_TYPE_OF_incident);
       } else {
         setTypeError("");
       }
@@ -337,10 +353,10 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 value={type}
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
+                  { value: "INCIDENT", label: INCIDENT },
+                  { value: "MEAN", label: MEAN },
+                  { value: "DELAY", label: DELAY },
+                  { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
                 ]}
               />
             </Form.Row>
@@ -352,7 +368,7 @@ export default function AddIncidents(props) {
             <FormInput
               name="name"
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Name of incident"
+              placeholder={NAME_OF_INCIDENT}
               onChange={nameChange}
               value={name}
               onBlur={({ target: { name, value } }) => validation(name, value)}
@@ -369,7 +385,7 @@ export default function AddIncidents(props) {
               justifyContent="space-between"
             >
               <FormSelect
-                placeholder="Nom de I'enterprise"
+                placeholder={NAME_OF_COMPANY}
                 name="companyId"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={nameChange}
@@ -417,8 +433,8 @@ export default function AddIncidents(props) {
                 onChange={locationTypeChange}
                 value={selectedLocationType}
                 values={[
-                  { value: "storageArea", label: "Storage Area" },
-                  { value: "deliveryArea", label: "Delivery Area" },
+                  { value: "storageArea", label: STORAGEAREA },
+                  { value: "deliveryArea", label: DELIVERYAREA },
                 ]}
               />
               <FormSelect
@@ -440,12 +456,12 @@ export default function AddIncidents(props) {
               value={description}
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
-              placeholder="Information complementaires"
+              placeholder={ADDITIONNAL_INFORMATION}
               name="description"
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Ajouter DES PHOTOS : " />
+            <FormLabel bold primary={`${ADD_PHOTO} : `} />
 
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
@@ -509,7 +525,8 @@ export default function AddIncidents(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="Status:" />
+            <FormLabel bold primary={`${STATUS}: `} />
+
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin>
                 <RadioButton
@@ -557,7 +574,7 @@ export default function AddIncidents(props) {
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
               value={comment}
-              placeholder="Ajouter un commentaire"
+              placeholder={ADD_COMMENT}
               name="comment"
             />
           </Form.Row>
@@ -565,7 +582,7 @@ export default function AddIncidents(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDER"
+              text={VALIDATE}
               fullWidth={false}
               disabled={!name || !date || !dropdownCompanies}
             />
