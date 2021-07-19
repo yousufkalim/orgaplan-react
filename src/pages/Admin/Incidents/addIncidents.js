@@ -54,6 +54,17 @@ export default function AddIncidents(props) {
     AMOUNT,
     COMMENT_INVOICE,
     ADD_PHOTO,
+    Please_select_Date,
+    PLEASE_SELECT_TYPE_OF_incident,
+    INCIDENT,
+    MEAN,
+    DELAY,
+    UNEXPECTED_DELIVERY,
+    STORAGEAREA,
+    DELIVERYAREA,
+    ADDITIONNAL_INFORMATION,
+    ADD_COMMENT,
+    VALIDATE,
   } = TEXTS;
   const classes = useStyles();
   const store = useSelector((state) => state.auth);
@@ -254,13 +265,13 @@ export default function AddIncidents(props) {
       }
     } else if (name == "date") {
       if (!value) {
-        setDateError("Sélectionner en date");
+        setDateError(Please_select_Date);
       } else {
         setDateError("");
       }
     } else if (name == "type") {
       if (!value) {
-        setTypeError("Sélectionner en type of re-facturation");
+        setTypeError(PLEASE_SELECT_TYPE_OF_incident);
       } else {
         setTypeError("");
       }
@@ -300,7 +311,7 @@ export default function AddIncidents(props) {
                 value={companyId}
                 onChange={nameChange}
                 values={dropdownCompanies}
-                placeholder="Nom de I'enterprise"
+                placeholder={NAME_OF_COMPANY}
                 style={GLOBALS.Styles.inputWidth}
                 error={companyError}
               />
@@ -347,10 +358,10 @@ export default function AddIncidents(props) {
                 onChange={nameChange}
                 value={type}
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexpected delivery" },
+                  { value: "INCIDENT", label: INCIDENT },
+                  { value: "MEAN", label: MEAN },
+                  { value: "DELAY", label: DELAY },
+                  { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
                 ]}
                 error={typeError}
               />
@@ -366,8 +377,8 @@ export default function AddIncidents(props) {
                 onChange={locationTypeChange}
                 value={selectedLocationType}
                 values={[
-                  { value: "storageArea", label: "Storage Area" },
-                  { value: "deliveryArea", label: "Delivery Area" },
+                  { value: "storageArea", label: STORAGEAREA },
+                  { value: "deliveryArea", label: DELIVERYAREA },
                 ]}
               />
               <FormSelect
@@ -383,14 +394,14 @@ export default function AddIncidents(props) {
           </Form.Row>
 
           <Form.Row>
-            <FormLabel bold primary="DESCRIPTION : " />
+            <FormLabel bold primary="Description : " />
             <FormInput
               textArea
               rows={5}
               maxLength="300"
               style={GLOBALS.Styles.inputWidth}
               onChange={nameChange}
-              placeholder="Information complementaires"
+              placeholder={ADDITIONNAL_INFORMATION}
               name="description"
             />
           </Form.Row>
@@ -481,14 +492,14 @@ export default function AddIncidents(props) {
               maxLength="300"
               onChange={nameChange}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Ajouter un commentaire"
+              placeholder={ADD_COMMENT}
             />
           </Form.Row>
           <Form.ButtonContainer>
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDER"
+              text={VALIDATE}
               fullWidth={false}
               disabled={
                 !name ||

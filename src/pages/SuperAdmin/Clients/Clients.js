@@ -64,6 +64,7 @@ export default function Clients(props) {
     START_DATE,
     END_DATE,
     ADDITIONNAL_INFORMATION,
+    Per_site,
   } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -534,7 +535,7 @@ export default function Clients(props) {
                   handleChange(name, value)
                 }
                 items={[
-                  { value: "CLIENTPERSITE", label: "Per Site" },
+                  { value: "CLIENTPERSITE", label: Per_site },
                   { value: "MASTERCLIENT", label: "Master Contract" },
                 ]}
               />

@@ -341,7 +341,7 @@ export default function AddSiteStep1(props) {
               setRoutingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={TEXTS.none}
           />
         </div>
       </Form.Row>

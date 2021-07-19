@@ -11,6 +11,7 @@ import Stepper from "../../../../../components/Stepper";
 import DeliveryRequestStep1 from "./DeliveryRequestStep1";
 import DeliveryRequestStep2 from "./DeliveryRequestStep2";
 import DeliveryRequestStep3 from "./DeliveryRequestStep3";
+import { TEXTS } from "../../../../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -227,11 +228,7 @@ export default function DeliveryRequest(props) {
         step={step}
         disabled={true}
         setStep={setStep}
-        steps={[
-          "Step 1: Delivery Area",
-          "Step 2: Storage Area",
-          "Text 1: Confirmation",
-        ]}
+        steps={[TEXTS.step1, TEXTS.step2, TEXTS.step3]}
       />
       <div className={classes.content}>
         {loading ? (
@@ -250,8 +247,6 @@ export default function DeliveryRequest(props) {
             editDelivery={props.editDelivery}
             trades={trades}
             means={means}
-            selectedcompany={props?.history?.location?.company}
-            selectedDA={props?.history?.location?.selectedShape}
             eventId={props.eventId}
             deliveryArea={deliveryArea}
             setDeliveryArea={setDeliveryArea}

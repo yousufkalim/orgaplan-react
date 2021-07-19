@@ -23,6 +23,7 @@ import SubHeading from "../../../components/SubHeading";
 import deliverIcon from "../../../assets/icons/delivery.png";
 import alertIcon from "../../../assets/icons/alerticon.png";
 import alertIcon1 from "../../../assets/icons/alerticon1.png";
+import { TEXTS } from "../../../assets/languages/french";
 
 import FullScreenModal from "../../../components/FullScreenModal";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
@@ -128,6 +129,21 @@ const PicCanvas = (props) => {
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
   const [levelsDropdown, setLevelsDropdown] = useState([]);
+  const {
+    SHOW_EXTERIOR,
+    SELECT_LEVEL,
+    ADD,
+    EDIT,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    MEANS,
+    update_shape_error,
+    Are_you_sure_You_want_to_delete_this_shape,
+    DELIVERIES,
+    ALERTS,
+  } = TEXTS;
+
   useEffect(() => {
     if (level) {
       fetchLevelPic(level);
@@ -523,7 +539,7 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
   const updateLevelShape = async (newShape) => {
@@ -539,7 +555,7 @@ const PicCanvas = (props) => {
       });
       setRendering(response);
     } catch (error) {
-      console.log(error, "update shape error");
+      console.log(error, update_shape_error);
     }
   };
 
@@ -604,7 +620,7 @@ const PicCanvas = (props) => {
   // InfoDrawer
   const onDeleteShape = async () => {
     try {
-      if (window.confirm("Are you sure you want to delete this shape?")) {
+      if (window.confirm(Are_you_sure_You_want_to_delete_this_shape)) {
         if (level) {
           let response = await GLOBALS.API({
             method: "DELETE",
@@ -665,7 +681,7 @@ const PicCanvas = (props) => {
           name="level"
           value={level}
           values={levelsDropdown}
-          placeholder="Select Level"
+          placeholder={SELECT_LEVEL}
           onChange={({ target: { value } }) => {
             setLevel(value);
             if (value) {
@@ -717,7 +733,7 @@ const PicCanvas = (props) => {
           <div className={classes.infoDrawerContainer}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
-                text="Show Exterior"
+                text={SHOW_EXTERIOR}
                 className="mt-2"
                 onClick={() => {
                   setPdf(
@@ -738,7 +754,7 @@ const PicCanvas = (props) => {
             {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
               <>
                 <Button
-                  text="Show Exterior"
+                  text={SHOW_EXTERIOR}
                   className="mt-2"
                   onClick={() => {
                     setPdf(
@@ -778,7 +794,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {deliveryCount}
               </h3>
-              <h6 style={{ color: "white" }}>Deliveries</h6>
+              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
             </div>
             <div
               style={{
@@ -810,7 +826,7 @@ const PicCanvas = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {alertCount}
               </h3>
-              <h6 style={{ color: "white" }}>Alerts</h6>
+              <h6 style={{ color: "white" }}>{ALERTS}</h6>
             </div>
             {selectedShape && (
               <div
@@ -933,7 +949,7 @@ const PicCanvas = (props) => {
               : selectedShape.type === "DELIVERYAREA"
           ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} DELIVERY AREA`}
+              title={`${shape ? ADD : EDIT} ${DELIVERYAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -958,7 +974,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "STORAGEAREA"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} STORAGE AREA`}
+              title={`${shape ? ADD : EDIT} ${STORAGEAREA}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -983,7 +999,7 @@ const PicCanvas = (props) => {
                 : selectedShape.type === "BUILDING"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} BUILDING`}
+              title={`${shape ? ADD : EDIT} ${BUILDING}`}
               open={modal}
               onClose={() => {
                 checkShape();
@@ -1006,7 +1022,7 @@ const PicCanvas = (props) => {
               shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
             ) ? (
             <FullScreenModal
-              title={`${shape ? "ADD" : "EDIT"} MEANs`}
+              title={`${shape ? ADD : EDIT} ${MEANS}`}
               open={modal}
               onClose={() => {
                 checkShape();
