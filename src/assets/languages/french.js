@@ -140,6 +140,7 @@ export const TEXTS = {
   DESCRIPTION: "Description",
   COMMENT: "Commentaire",
   ADD_COMMENT: "Ajouter un commentaire",
+  COMMENT_TRAFFIC: "COMMENTAIRES AGENT DE TRAFIC",
 
   COMMENT_INVOICE: "Commentaire Facture",
   Receive_Summary_by_email: "Recevoir Résumé Par Email",
@@ -157,6 +158,8 @@ export const TEXTS = {
 
   COMPLETE: "Achevée",
   COMPLETED: "Complété  ",
+  COMPLETED_WITH_ISSUES: "Terminé avec des problèmes",
+  NOT_COMPLETED: "Pas achevé",
 
   General_Contractor: "Entreprise Générale",
   DASHBOARD: "Panel",
@@ -395,4 +398,8 @@ export const TEXTS = {
   PDF_FILE: "Fichier PDF",
   EDIT_INVOICE: "Modifier FACTURE",
   DOWNLOAD: "Télécharger",
+  VERIFICATION_SHEET: "FICHE DE VERIFICATION POUR LA LIVRAISON",
+  DELIVERY_REALTIME: "TEMPS RÉEL DE LIVRAISON",
+  NOT_RECEIVED: "cliquez si non reçu",
+  DELIVERY_STATUS: "ÉTAT DE LIVRAISON",
 };
