@@ -20,7 +20,7 @@ import Button from "../../../components/Button";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import FullScreenModal from "../../../components/FullScreenModal";
-import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
+import { ReactComponent as Trash } from "../../../assets/icons/trash.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 import { TEXTS } from "../../../assets/languages/french";
@@ -770,7 +770,7 @@ const PicCanvas = (props) => {
                   onDeleteShape();
                 }}
               >
-                <Cross className={classes.infoIcon} />
+                <Trash className={classes.infoIcon} />
               </IconButton>
             </Form.Row>
           </div>
@@ -863,7 +863,7 @@ const PicCanvas = (props) => {
                   onDeleteShape();
                 }}
               >
-                <Cross className={classes.infoIcon} />
+                <Trash className={classes.infoIcon} />
               </IconButton>
             </Form.Row>
           </div>
@@ -928,7 +928,7 @@ const PicCanvas = (props) => {
                   onDeleteShape();
                 }}
               >
-                <Cross className={classes.infoIcon} />
+                <Trash className={classes.infoIcon} />
               </IconButton>
             </Form.Row>
           </div>
@@ -977,7 +977,7 @@ const PicCanvas = (props) => {
                   onDeleteShape();
                 }}
               >
-                <Cross className={classes.infoIcon} />
+                <Trash className={classes.infoIcon} />
               </IconButton>
             </Form.Row>
           </div>
