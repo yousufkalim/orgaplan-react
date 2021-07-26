@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
+import { TEXTS } from "../assets/languages/french";
+
 import moment from "moment";
 import Form from "./Form";
 import Modal from "./Modal";
@@ -28,6 +30,7 @@ const addUnavailabilityYup = Yup.object().shape({
 export default function MultiAdderInputModal(props) {
   const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
     props;
+  const { SEE_OPENING_TIMES, YES, NO } = TEXTS;
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -102,7 +105,7 @@ export default function MultiAdderInputModal(props) {
     { value: 9, label: "9" },
     { value: 10, label: "10" },
     { value: 11, label: "11" },
-    { value: 12,label:  "12" },
+    { value: 12, label: "12" },
     { value: 13, label: "13" },
     { value: 14, label: "14" },
     { value: 15, label: "15" },
@@ -221,13 +224,13 @@ export default function MultiAdderInputModal(props) {
         minWidth={200}
         fullWidth={false}
         color={theme.palette.blue}
-        text="SEE UNAVAILABILITIES"
+        text={SEE_OPENING_TIMES}
         onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
         open={modal}
-        title="UNAVAILABILITIES"
+        title={SEE_OPENING_TIMES}
         onClose={() => setModal((st) => !st)}
         body={
           <>

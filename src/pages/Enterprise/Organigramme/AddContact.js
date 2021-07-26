@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -30,6 +31,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddContact(props) {
+  const {
+    SITE,
+    LOGISTICS,
+    Please_enter_valid_email,
+    Telephone_must_have_10_to_25_digits,
+    something_went_wrong,
+    ADD_A_CONTACT,
+    TYPE_OF_ORGANIGRAMME,
+    CONTACT_INFO,
+    Please_enter_email,
+    TELEPHONE,
+    FIRST_NAME,
+    IDENTITY,
+    LAST_NAME,
+    COMPANY,
+    VALIDATE,
+  } = TEXTS;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -65,8 +84,8 @@ export default function AddContact(props) {
       // });
 
       const typeArray = [
-        { value: "LOGISTICS", label: "LOGISTICS" },
-        { value: "SITE", label: "SITE" },
+        { value: "LOGISTICS", label: LOGISTICS },
+        { value: "SITE", label: SITE },
       ];
 
       setDropdownType(typeArray);
@@ -90,14 +109,14 @@ export default function AddContact(props) {
       var mailformat =
         /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
-        setEmailError("Please enter valid format");
+        setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
     } else if (name === "phone") {
       setPhone(value);
       if (value.length < 10 || value.length > 25) {
-        setPhoneError("Telephone must have 10 to 25 digits");
+        setPhoneError(Telephone_must_have_10_to_25_digits);
       } else {
         setPhoneError("");
       }
@@ -147,7 +166,7 @@ export default function AddContact(props) {
         companyError !== "" ||
         roleError !== ""
       ) {
-        alert("something went wrong");
+        alert(something_went_wrong);
       } else {
         setLoading(true);
         var formdata = new FormData();
@@ -187,11 +206,11 @@ export default function AddContact(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="ADD A CONTACT" />
+      <Heading primary={ADD_A_CONTACT} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF ORGANIGRAMME*: " />
+            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}*: `} />
             <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
@@ -213,7 +232,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO*: " />
+            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
             <Form.Row
               noMargin
               width="55%"
@@ -224,7 +243,7 @@ export default function AddContact(props) {
                   name="email"
                   value={email}
                   // error={firstName}
-                  placeholder="Adresse e-mail"
+                  placeholder={Please_enter_email}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -239,7 +258,7 @@ export default function AddContact(props) {
                   name="phone"
                   value={phone}
                   type="number"
-                  placeholder="Téléphone"
+                  placeholder={TELEPHONE}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     value.length < 26 ? handleChange(name, value) : ""
@@ -252,7 +271,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY*:  " />
+            <FormLabel bold primary={`${IDENTITY} :`} />
             <Form.Row
               noMargin
               width="55%"
@@ -262,7 +281,7 @@ export default function AddContact(props) {
                 <FormInput
                   name="firstName"
                   value={firstName}
-                  placeholder="First Name"
+                  placeholder={FIRST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -276,7 +295,7 @@ export default function AddContact(props) {
                 <FormInput
                   name="lastName"
                   value={lastName}
-                  placeholder="Last Name"
+                  placeholder={LAST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -298,13 +317,13 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY*: " />
+            <FormLabel bold primary={`${COMPANY} :`} />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
                   name="company"
                   value={company}
-                  placeholder="Enterprise"
+                  placeholder={COMPANY}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -340,7 +359,7 @@ export default function AddContact(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={

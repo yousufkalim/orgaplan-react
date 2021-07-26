@@ -139,8 +139,6 @@ export default function Home(props) {
     Site,
     INVOICE_LIST,
     CLIENTS_LIST,
-    Locker_module,
-    Delivery_module,
   } = TEXTS;
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
@@ -404,8 +402,8 @@ export default function Home(props) {
           path: "/clients",
           text: CLIENTS_LIST,
           items: [
-            { "Module Livraison": data && data?.clients.delivery },
-            { "Locker Module": data && data?.clients.lockers },
+            { "Livraison De Module": data && data?.clients.delivery },
+            { "Module bloqué": data && data?.clients.lockers },
           ],
         },
         {

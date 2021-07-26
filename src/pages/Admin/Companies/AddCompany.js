@@ -328,7 +328,7 @@ export default function AddCompanies(props) {
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY}* :`} />
+            <FormLabel bold primary={`${IDENTITY} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <Autocomplete

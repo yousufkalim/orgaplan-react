@@ -89,6 +89,7 @@ const Calender = (props) => {
     Booking_cant_be_in_Previous_day,
     Delivery_Area_Site_By_SiteId_Error,
     TOTAL_MEANS_Booking,
+    UNEXPECTED,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -1374,7 +1375,7 @@ const Calender = (props) => {
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },
                   { value: "DELAY", label: MEAN },
-                  { value: "UNEXPRECTED", label: "Inattendue" },
+                  { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
               />

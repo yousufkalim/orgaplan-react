@@ -29,7 +29,7 @@ export const TEXTS = {
 
   STORAGEAREA: "Aire De Stockage",
   BUILDING: "Bâtiment",
-  BUILDING_Nom: "Bâtiment nom",
+  BUILDING_Nom: "Nom de Bâtiment",
 
   PLACE: "Localisation",
   WORK_WEEK: "Semaine de travail",
@@ -48,8 +48,9 @@ export const TEXTS = {
   MEANS_REQUEST: "Demande de moyen",
   NAME: "Nom",
   NAME_OF_COMPANY: "Nom de I'enterprise",
-  PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un Nom de I'enterprise",
 
+  PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un Nom de I'enterprise",
+  COMPANY_LOGO: "Logo de I'enterprise ",
   NAME_OF_USER: "Nom de I'User ",
   NAME_OF_INCIDENT: "Nom de I'Re-Facturation ",
   PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom de I'Re-Facturation ",
@@ -62,11 +63,11 @@ export const TEXTS = {
   SELECT: "Séléctionner",
   LOCATION: "Localisation",
   LEVEL: "Niveau",
-  LEVEL_NAME: "Niveau Nom",
+  LEVEL_NAME: "Nom de Niveau",
   Vehicles: "Véhicules",
   Enter_vehicles: "Entrer Véhicules",
   Enter_site_addresses: "Entrer chantier adresses",
-  Site_address: "Chantier Adresses",
+  Site_address: "Adresse De Chantier ",
   MEANS_ALLOWED: "Moyens Permis",
   START_DATE: "Date De Démarrage",
   END_DATE: "Date De Fin",
@@ -86,10 +87,13 @@ export const TEXTS = {
   CLOSE: "Fermé",
   SUBCONTRACTOR: "Sous-traitant",
   RESPONSIBLE: "Responsable",
-  SITE_RESPONSIBLE: "Chanter de responsable",
+  SITE_RESPONSIBLE: "Responsable de chanter",
+  COMPANY_RESPONSIBLE: "Nom de responsable",
+  CONTACT_RESPONSIBLE: "Contact de responsable",
+
   OPPENING_TIME: "Ouverture Heure",
 
-  UNAVAILABILITY_TIME: "Indisponibilités Heure",
+  UNAVAILABILITY_TIME: "Indisponibilités",
   ACCESS_REQUEST_TO_ZONES: "Demande d'accès aux zones",
   ACCESS_REQUEST_TO_STROGAEAREA: "Demande d'accès aux aire de stockage",
 
@@ -98,7 +102,7 @@ export const TEXTS = {
   EDIT_A_CONTACT: "Modifier un contact",
 
   SITE_ORGANIGAMME: "Organigramme de chanter",
-  SITE_PICTURE: "Chanter de photo",
+  SITE_PICTURE: "Photo De Chanter ",
 
   LOGISTIC_ORGANIGAMME: "Organigramme Logistique",
   POSITION: "Rôle",
@@ -110,13 +114,17 @@ export const TEXTS = {
 
   LAST_NAME: "Nom",
   TYPE_OF_PLACE: "Type d' Localisation",
-  TYPE_OF_ADMIN: "Type d' admin",
+  TYPE_OF_ADMIN: "Type d'admin*",
+  TYPE_OF_CONTRACT: "Type de contrat",
+  MASTER_CONTRACT: "Maître contrat",
+
+  CONTRACT_DATE: "Duree du contrat",
 
   TYPE_OF_ORGANIGRAMME: "Type d'organigramme",
   CONTACT_INFO: "Information de contact",
-  IDENTITY: "Identité",
+  IDENTITY: "Identité*",
   TRADES: "Lots",
-  ENTER_TRADES: "Entrer Lots",
+  ENTER_TRADES: "Inttendu De Livraison",
 
   SELECT_TRADES: " Sélectionner Lots",
   SELECT_ADMIN: " Sélectionner Admin",
@@ -163,22 +171,25 @@ export const TEXTS = {
   NOT_COMPLETED: "Pas achevé",
 
   General_Contractor: "Entreprise Générale",
-  DASHBOARD: "Panel",
+  DASHBOARD: "Tableau de bord",
   CLIENTS: "Clients",
   MORE_INFO: "Plus d'informations",
   COMMENTS: "Commentaires",
-  Delivery_Module: "Module de livraison",
-  Lockers_module: "Module de casiers",
+  Delivery_Module: "Livraison De Module",
+  Lockers_module: "Module bloqué",
   Per_site: "Par chantier",
-  SITE_NAME: "Chantier nom",
+  SITE_NAME: "Nom De Chantier",
 
-  SITE_LIST: "Chantier Liste ",
-  INVOICE_LIST: "Facture Liste ",
+  SITE_LIST: "Liste de chantier ",
+  INVOICE_LIST: "Liste Des Factures ",
+  INVOICE_DATES: "Facture Des Dates ",
 
-  CLIENTS_LIST: "Clients Liste ",
-  NAME_OF_CLIENT: "Nom Of Client",
+  CLIENTS_LIST: "Liste Des Clients ",
+  MEAN_NAME: "Nom du moyen",
+  NAME_OF_CLIENT:
+    "Nom Du Client(par soucis coherence avec la page liste des clients)",
 
-  Per_client: "Par clients",
+  Per_client: "Par client",
   INVOICE: "Facture",
   INVOICES: "Factures",
 
@@ -186,6 +197,8 @@ export const TEXTS = {
   TARIFICATION_CLIENTS: "Tarification client",
   Home: "Accueil",
   Admins: "Admins",
+  Admins_list: "Liste des Admins",
+
   Site: "Chantier",
 
   Sites: "Chantiers",
@@ -193,14 +206,12 @@ export const TEXTS = {
   CREATE_A_LEVEL: "Créer un Niveau",
 
   LOGO: "Logo",
-  TYPE_OF_CONTRACT: "Type De Contrat",
   TYPE_OF_COMPANY: "Type De Entreprise",
   TYPE_OF_incident: "Type De Re-facturation",
   PLEASE_SELECT_TYPE_OF_incident: "Type De Re-facturation",
 
-  CONTRACT_DATE: "Date De Contrat",
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité Souscrite",
-  AVAILABLE_FUNCTIONALITY: "Disponible Fonctionnalité",
+  AVAILABLE_FUNCTIONALITY: "Fonctionnalité Disponible",
   AVAILABLE: "Disponible ",
   Unavailable: "Indisponible ",
 
@@ -217,17 +228,16 @@ export const TEXTS = {
   archived_sites: "archivés chantiers",
 
   Archive: "Archiver",
-  ZAC_NAME: "Nom de zac",
+  ZAC_NAME: "Nom de la zac",
   ZAC_OF_SITE: "Zac de chantier",
   SELECT_ZAC: "Sélectionner zac",
   COST_OF_DELIVERY_PENALITIES: "Coût des pénalités de livraison",
-  Delivery_module: "Module Livraison",
 
   DELAY: "Retard",
   UNEXPECTED_DELIVERY: "Inattendue livraison",
   UNEXPECTED: "Inattendue",
 
-  SEE_OPENING_TIMES: "Voir heures d'ouverture",
+  SEE_OPENING_TIMES: "Jours d' ouverture",
   OPENING_TIME: "Heures d'ouverture",
 
   SEE_UNAVAILABILITIES: "Voir indisponibilités",
@@ -241,7 +251,7 @@ export const TEXTS = {
   Select_a_Building: "Sélectionner un Bâtiment",
 
   Create_a_SITE: "Créer un Chantier",
-  Create_a_Zac: "Créer un Zac",
+  Create_a_Zac: "Créer une Zac",
 
   Exterior: "Extérieur",
   Modify: "Modifier",
@@ -251,10 +261,11 @@ export const TEXTS = {
 
   ADD_AN_INVOICE: "Ajouter UNE FACTURE",
   CREATE_AN_INVOICE: "Créer Une Facture",
-  ALL: "Tous",
+  ALL: "Toutes les factures",
   DISABLE_DAY: "Desactiver jour",
   YES: "Oui",
   NO: "Non",
+  PDF_FILE: "Fichier PDF",
   Delivery_Area_Site_By_SiteId_Error: "Aire de livraison id du chantier erreur",
   DISABLE_HOURS: "Desactiver heurs",
   BOOKING_REASON: "La réservation raison",
@@ -285,7 +296,7 @@ export const TEXTS = {
   Are_you_sure: "Êtes-vous sûr ?",
   The_current_file_will_be_deleted: "Le ficher va être supprimé",
   Site_Plan: "Plan de chantier",
-  SITE_DATES: "Chantier dates",
+  SITE_DATES: "Dates de chantier",
   FILE_TOO_LARGE: "ficher trop grand",
   General_Information: "Information générale",
   Edit_Delivery_Request: "Modifier la requête de livraison",
@@ -293,8 +304,8 @@ export const TEXTS = {
   Invalid_Time: "Heure incorrect",
   Please_Add_valid_Time_and_Event: "Merci ajouter correcte heure événement",
   Please_Add_logo: "Merci ajouter logo",
-  ACTIVITY_LOGS: " Activité journaux",
-  LOGS: "Journauxs",
+  ACTIVITY_LOGS: "Journal d' Activité",
+  LOGS: "Journal",
 
   MATERIALS_DELIVERED: "Materiel Livrée",
   MEANS_DELIVERED: "Moyens Livrée",
@@ -310,6 +321,8 @@ export const TEXTS = {
   COMPANY_1: "Entreprise1",
   COMPANY: "Entreprise",
   ConstructBTP: "Construire BTP",
+  COMPANY_ConstructBTP: "Entreprise : Construire BTP",
+
   something_went_wrong: "Une erreur s'est produite",
   Company_already_Exists_With_this_name:
     "Une entreprise du même nom existe déjà",
@@ -358,6 +371,7 @@ export const TEXTS = {
   Add_COMPANY: "Ajouter un entreprise",
   EDIT_COMPANY: "Modifier un entreprise",
   EDIT_CLIENT: "Modifier un client",
+  EDIT_SITE: " Modifier Un Chantier",
 
   ACCEPT: "J'accepte",
   REJECT: "Rejeter",
@@ -367,7 +381,9 @@ export const TEXTS = {
   START_HOUR: "Heure de début",
   END_HOUR: "Heure de fin",
   End_time: "Heure de fin",
-  Status_Color: "Couleur",
+  Status_Color: "couleur d'état",
+  COLOR: "Couleur ",
+
   Not_availble: "Indisponible",
   PENDING_VALIDATION: "Validation en attente",
   Update_Event: "Charger un événement",
@@ -385,13 +401,13 @@ export const TEXTS = {
   ADD_AN_ADMIN: "Ajouter un admin",
   SELECT_COMPANY: "Séléctionner entreprise",
   SELECT_CLIENT: "Séléctionner client",
-  SELECT_SITE: "Séléctionner site",
+  SELECT_SITE: "Séléctionner Chantier",
   DELETE: "Effacer",
   CREATE_AN_ADMIN: "Créer un admin",
   COMPANY_NAME: "Entreprise nom",
   CONTRACT: "Traitant",
-  ADD_A_CLIENT: "Ajouter client",
-  PROFILE: "profil",
+  ADD_A_CLIENT: "Ajouter un client",
+  PROFILE: "Photo de profil",
   EDIT_ADMIN: "Modifier admin",
   VERIFY_A_QUOTE: "Vérifier un devis",
   CLIENT_NAME: "Client nom",
@@ -410,4 +426,12 @@ export const TEXTS = {
   step1: "Étape 1: Aire De Livraison ",
   step2: "Étape 2: Aire De Stockage",
   step3: "Étape 1: Confirmation",
+
+  // new variables
+  ACTIVE: "",
+  INACTIVE: "",
+  Maximum_characters_limit_30: "",
+  please_add_a_level: "",
+
+  IMAGE: "",
 };

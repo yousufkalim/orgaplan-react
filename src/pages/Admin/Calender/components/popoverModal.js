@@ -18,12 +18,30 @@ const PopoverModal = ({
   handleValidateDelivery,
   onEditDelivery,
 }) => {
-  const {YES,NO,
-  BOOKING,EDIT,Modified_By,COMPANY_1,MEANS,NAME,TYPE,REASON,MATERIAL,DELIVERYAREA,
-STORAGEAREA,Start_time,BOOKING_REASON,End_time,VALIDATE,MORE_INFO,REFUSE,COMPANY,
-MEAN
-
-  }=TEXTS;
+  const {
+    YES,
+    NO,
+    BOOKING,
+    EDIT,
+    Modified_By,
+    COMPANY_1,
+    MEANS,
+    NAME,
+    TYPE,
+    REASON,
+    MATERIAL,
+    DELIVERYAREA,
+    STORAGEAREA,
+    Start_time,
+    BOOKING_REASON,
+    End_time,
+    VALIDATE,
+    MORE_INFO,
+    REFUSE,
+    COMPANY,
+    MEAN,
+    Are_you_sure_You_want_to_delete_this,
+  } = TEXTS;
 
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
@@ -96,7 +114,7 @@ MEAN
           <Modal.Title className="text-center">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="Are you sure to Delete" />
+          <Alertbox message={Are_you_sure_You_want_to_delete_this} />
           <div className="showPopover">
             <div style={{ textAlign: "right" }}>
               <button
@@ -126,7 +144,7 @@ MEAN
                         margin: "10px 0px",
                       }}
                     >
-                      {"Name: " +
+                      {`${NAME}: ` +
                         event.user.firstName +
                         " " +
                         event.user.lastName +
@@ -247,7 +265,7 @@ MEAN
                         margin: "10px 0px",
                       }}
                     >
-                      {" Name:  " + event.storageArea.name} <br />
+                      {" Nom:  " + event.storageArea.name} <br />
                       {event.storageArea.alert
                         ? event.storageArea.alert.map((item, index) => {
                             return `Reason ${index + 1}   :   ${item.reason} `;
@@ -294,7 +312,7 @@ MEAN
                   {getStartTime(event.start)}
                 </div>
                 <br />
-                <span style={{}}>{End_time}:</span>
+                <span>{End_time}:</span>
                 <div
                   style={{
                     backgroundColor: "#f7f7f7",
@@ -408,7 +426,7 @@ MEAN
                   {getStartTime(event.start)}
                 </div>
                 <br />
-                <span style={{}}>{End_time}:</span>
+                <span>{End_time}:</span>
                 <div
                   style={{
                     backgroundColor: "#f7f7f7",

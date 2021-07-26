@@ -30,7 +30,7 @@ export default function AddSiteStep1(props) {
     SITE_RESPONSIBLE,
     SELECT_ADMIN,
     AVAILABLE_FUNCTIONALITY,
-    Delivery_module,
+    Delivery_Module,
     Site_address,
     Enter_site_addresses,
     TRADES,
@@ -275,7 +275,7 @@ export default function AddSiteStep1(props) {
             value={functionality}
             // error={functionality}
             style={GLOBALS.Styles.inputWidth}
-            items={[{ value: "DELIVERY", label: Delivery_module }]}
+            items={[{ value: "DELIVERY", label: Delivery_Module }]}
             onChange={({ target: { name, value } }) =>
               handleChange(name, value)
             }

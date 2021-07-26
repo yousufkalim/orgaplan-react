@@ -60,6 +60,7 @@ export default function AddInvoice(props) {
     Please_enter_site,
     Please_enter_amount,
     UPLOAD_PDF,
+    INVOICE_DATES,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -275,7 +276,7 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="INVOICE DATES* : " />
+            <FormLabel bold primary={`${INVOICE_DATES}* : `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
@@ -366,7 +367,7 @@ export default function AddInvoice(props) {
             /> */}
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary="DESCRIPTION:" />
+            <FormLabel bold primary={`${DESCRIPTION}:`} />
             <FormInput
               textArea
               rows={3}

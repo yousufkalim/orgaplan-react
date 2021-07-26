@@ -23,6 +23,7 @@ export default function AddSiteStep1(props) {
     TRANSPORTING_MEANS,
     VALIDATE,
     MEANS,
+    Exterior,
   } = TEXTS;
 
   const dispatch = useDispatch();
@@ -265,7 +266,7 @@ export default function AddSiteStep1(props) {
           placeholder={SELECT_LOCATION}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
-          values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
+          values={[...[{ label: Exterior, value: "Exterior" }], ...buildings]}
         />
       </Form.Row>
       <Form.Row>

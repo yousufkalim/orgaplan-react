@@ -50,6 +50,7 @@ const Means = () => {
     SELECT_STORAGEAREA,
     START_DATE,
     END_DATE,
+    MEAN_NAME,
   } = TEXTS;
 
   const classes = useStyles();
@@ -456,7 +457,7 @@ const Means = () => {
             onChange={({ target: { value } }) => setEndDate(value)}
           />
           <SearchInput
-            placeholder="Moyen Nom"
+            placeholder={MEAN_NAME}
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={(e) => filterMeanByName(e.target.value)}
           />

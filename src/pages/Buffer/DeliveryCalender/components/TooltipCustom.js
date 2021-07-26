@@ -6,6 +6,7 @@ import { Overlay, Tooltip, Button, Row, Col } from "react-bootstrap";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { faWindowClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { TEXTS } from "../../../../assets/languages/french";
 
 const localizer = momentLocalizer(moment);
 
@@ -14,12 +15,20 @@ export const IconStyle = {
 };
 
 export const TooltipContent = ({ onClose, event }) => {
+  const { COMPANY, DELIVERYAREA, STORAGEAREA } = TEXTS;
+
   return (
     <>
       <div style={{ textAlign: "left", "font-size": "11px" }}>
-        <div>Company: {event.event.company.name}</div>
-        <div>Delivery Area: {event.event.deliveryArea.name}</div>
-        <div>Storage Area: {event.event.storageArea.name}</div>
+        <div>
+          {COMPANY}: {event.event.company.name}
+        </div>
+        <div>
+          {DELIVERYAREA}: {event.event.deliveryArea.name}
+        </div>
+        <div>
+          {STORAGEAREA}: {event.event.storageArea.name}
+        </div>
       </div>
     </>
   );

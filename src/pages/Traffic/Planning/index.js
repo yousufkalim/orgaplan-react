@@ -97,6 +97,15 @@ const Calender = (props) => {
     Booking_cant_be_in_Previous_day,
     Delivery_Area_Site_By_SiteId_Error,
     TOTAL_MEANS_Booking,
+    DELIVERY_DELETED,
+    COMPANY_ConstructBTP,
+    UNEXPECTED,
+    DELIVERY_DATE,
+    COMPANY,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    COMPLETE,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -500,26 +509,26 @@ const Calender = (props) => {
       if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable Day", "error"),
+            Actions.notistack.snackbar(DISABLE_DAY, "error"),
           ),
         );
       } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable hours", "error"),
+            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
           ),
         );
       } else if (betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Site Date is Out of Range", "error"),
+            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
           ),
         );
       } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Booking can't be in Previous day",
+              Booking_cant_be_in_Previous_day,
               "error",
             ),
           ),
@@ -579,7 +588,7 @@ const Calender = (props) => {
       delete_Delivery(eventID);
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Delivery Deleted", "success"),
+          Actions.notistack.snackbar(DELIVERY_DELETED, "success"),
         ),
       );
       setSiteMeans("");
@@ -862,7 +871,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
+            Actions.notistack.snackbar(Delivery_Area_Site_By_SiteId_Error),
           ),
         );
       }
@@ -1153,14 +1162,14 @@ const Calender = (props) => {
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">{BOOKING}</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Invalid Time" />
+        <Alertbox message={Invalid_Time} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
               <input
                 type="text"
                 style={{ border: "1px solid #707070" }}
-                placeholder="Company : ConstructBTP"
+                placeholder={COMPANY_ConstructBTP}
                 className="w-100 p-2 mb-2"
               />
             </div>
@@ -1251,7 +1260,7 @@ const Calender = (props) => {
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },
                   { value: "DELAY", label: MEAN },
-                  { value: "UNEXPRECTED", label: "Inattendue" },
+                  { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
               />
@@ -1503,7 +1512,7 @@ const Calender = (props) => {
                     selected={filterDate}
                     popperPlacement="top-start"
                     showYearDropdown
-                    placeholderText="Delivery date"
+                    placeholderText={DELIVERY_DATE}
                     onChange={(filterDate) => {
                       setFilterDate(filterDate);
                     }}
@@ -1512,7 +1521,7 @@ const Calender = (props) => {
                 {props.location.companyId != null ? (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder={COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1522,7 +1531,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder={COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1569,9 +1578,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
@@ -1591,9 +1600,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
@@ -1710,7 +1719,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {totalCompDeliveries}
             </h3>
-            <h6 style={{ color: "white" }}>COMPLÉTÉ</h6>
+            <h6 style={{ color: "white" }}>{COMPLETE}</h6>
           </div>
           <div
             style={{
