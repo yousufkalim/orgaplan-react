@@ -636,6 +636,9 @@ const PicCanvas = (props) => {
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
                   setSelectedShape={setSelectedShape}
+                  onClose={() => {
+                    setOpenDeliveryModal(false);
+                  }}
                 />
               }
             />
@@ -664,6 +667,9 @@ const PicCanvas = (props) => {
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
                   setSelectedShape={setSelectedShape}
+                  onClose={() => {
+                    setOpenStorageModal(false);
+                  }}
                 />
               }
             />
@@ -692,6 +698,9 @@ const PicCanvas = (props) => {
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
                   setSelectedShape={setSelectedShape}
+                  onClose={() => {
+                    setOpenBuildingModal(false);
+                  }}
                 />
               }
             />
@@ -720,6 +729,9 @@ const PicCanvas = (props) => {
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
                   setSelectedShape={setSelectedShape}
+                  onClose={() => {
+                    setOpenMeanModal(false);
+                  }}
                 />
               }
             />

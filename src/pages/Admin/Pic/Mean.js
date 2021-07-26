@@ -200,7 +200,7 @@ export default function AddMean(props) {
   const createMean = async () => {
     try {
       setLoading(true);
-
+      props.onClose();
       const locationsAr = locations.map((ite) => {
         let vals =
           ite.type === "STORAGEAREA"
