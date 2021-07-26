@@ -141,6 +141,7 @@ const PicCanvas = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
   const [selectedBuilding, setselectedBuilding] = useState("");
+  const [openMeanModal, setOpenMeanModal] = useState(false);
   const [levelName, setLevelName] = useState("");
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
@@ -566,9 +567,10 @@ const PicCanvas = (props) => {
   const handleClick = (id, shape) => {
     if (shape.type == "STORAGEAREA") {
       checkStorageArea(shape);
-    }
-    if (shape.type == "DELIVERYAREA") {
+    } else if (shape.type == "DELIVERYAREA") {
       setOpenDeliveryModal(true);
+    } else if (shape.type == "MEAN") {
+      setOpenMeanModal(true);
     }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
@@ -846,116 +848,6 @@ const PicCanvas = (props) => {
               </h3>
               <h6 style={{ color: "white" }}>{ALERTS}</h6>
             </div>
-            {selectedShape && (
-              <div
-                className={
-                  selectedShape && selectedShape.type !== "BUILDING" && level
-                    ? classes.infoDrawer3
-                    : classes.infoDrawer
-                }
-              >
-                {/* <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type1 : ${selectedShape.type}`} /> */}
-                {selectedShape.type === "BUILDING" && (
-                  <FormSelect
-                    name="level"
-                    value={level}
-                    values={levelsDropdown}
-                    placeholder={SELECT_LEVEL}
-                    onChange={({ target: { value } }) => {
-                      setLevel(value);
-                      findlevelName(value);
-                      if (value) {
-                        fetchLevelPic(value);
-                        const leve = allLeves.find((lev) => lev._id === value);
-                        setPdf(
-                          leve?.plan
-                            ? GLOBALS.Constants.BASE_URL + leve.plan
-                            : undefined,
-                        );
-                      }
-                    }}
-                  />
-                )}
-                <Form.Row>
-                  {/* {level === "" ? (
-                    <IconButton
-                      disabled={loading}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModal(true);
-                      }}
-                    >
-                      <Pencil className={classes.infoIcon} />
-                    </IconButton>
-                  ) : selectedShape.type === "BUILDING" ? (
-                    ""
-                  ) : (
-                    <IconButton
-                      disabled={loading}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModal(true);
-                      }}
-                    >
-                      <Pencil className={classes.infoIcon} />
-                    </IconButton>
-                  )} */}
-
-                  {selectedShape.type === "MEAN" ? (
-                    <>
-                      <NavLink
-                        disabled={loading}
-                        to={{
-                          pathname: "/means/calendar",
-                          selectedShape: selectedShape,
-                        }}
-                      >
-                        <IconButton>
-                          <Calendar className={classes.infoIcon} />
-                        </IconButton>
-                      </NavLink>
-                    </>
-                  ) : selectedShape.type === "DELIVERYAREA" ? (
-                    <>
-                      {/* <NavLink
-                        disabled={loading}
-                        to={{
-                          pathname: "/pic-interactive/calendar",
-                          selectedShape: selectedShape,
-                        }}
-                      >
-                        <IconButton>
-                          <Calendar className={classes.infoIcon} />
-                        </IconButton>
-                      </NavLink> */}
-                    </>
-                  ) : (
-                    <>
-                      {/* {console.log("for storage", selectedShape)} */}
-
-                      <NavLink
-                        disabled={loading}
-                        to={{
-                          pathname: "/pic-interactive/calendar",
-                          selectedShape: selectedShape,
-                        }}
-                      ></NavLink>
-                    </>
-                  )}
-
-                  {/* <IconButton
-                    disabled={loading}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteShape();
-                    }}
-                  >
-                    <Cross className={classes.infoIcon} />
-                  </IconButton> */}
-                </Form.Row>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -1066,6 +958,35 @@ const PicCanvas = (props) => {
             ""
           ))}
       </>
+      {/*--------------------------------- Mean modal-------------------------------- */}
+      <Dialog
+        open={openMeanModal}
+        onClose={() => setOpenMeanModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent style={{ margin: "30px" }}>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+          <SubHeading primary={`Type : ${selectedShape.type}`} />
+
+          {/* <div style={{ textAlign: "center" }}>
+            <NavLink
+              disabled={loading}
+              to={{
+                pathname: "/means/calendar",
+                selectedShape: selectedShape,
+              }}
+            >
+              <IconButton>
+                <Calendar className={classes.infoIcon} />
+              </IconButton>
+            </NavLink>
+          </div> */}
+        </DialogContent>
+      </Dialog>
+
       <Dialog
         open={openStorageModal}
         onClose={() => setOpenStorageModal(false)}
