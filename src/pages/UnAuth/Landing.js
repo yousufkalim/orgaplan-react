@@ -45,10 +45,19 @@ export default function LandingPage() {
         ),
       ),
     );
-    await GLOBALS.API({
+    GLOBALS.API({
       method: "POST",
       uri: GLOBALS.Constants.CONTACTUS,
-      body: formData,
+      body: JSON.stringify(formData),
+    }).then(() => {
+      setFormData({
+        name: "",
+        city: "",
+        company: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
     });
   };
 
@@ -235,7 +244,6 @@ export default function LandingPage() {
               </div>
               <div className="col-6">
                 <form onSubmit={onSubmit}>
-
                   <FormInput
                     type="text"
                     name="company"
