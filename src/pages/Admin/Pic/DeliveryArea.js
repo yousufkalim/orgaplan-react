@@ -431,6 +431,7 @@ export default function DeliveryArea(props) {
               disabled={
                 loading || !name || !color || !startDate || addresses.length < 1
               }
+              onClick={props.onClose}
             />
           </Form.ButtonContainer>
         </Form.Row>

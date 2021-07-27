@@ -98,6 +98,10 @@ export default function Clients(props) {
 
   const [errors, setErrors] = useState({});
 
+  // state to count verified client
+
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -111,6 +115,15 @@ export default function Clients(props) {
       });
       setItems(result.data.items);
       setData(result.data);
+
+      // Count of verified clients
+
+      const verifiedClients = result.data.items.filter(
+        (item) => item.companyId.quoteVerified === true,
+      );
+
+      setCount(verifiedClients.length);
+
       setModal(false);
       setLoading(false);
     } catch (err) {
@@ -373,7 +386,7 @@ export default function Clients(props) {
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 noMargin
-                primary={data && `Total : ${data.totalItems} Clients`}
+                primary={data && `Total : ${count} Clients`}
                 bold
               />
               <Button
@@ -400,9 +413,12 @@ export default function Clients(props) {
           ) : (
             <Table
               rows={rows}
-              onClick={(index) =>
-                props.history.push(`/sites/${items[index]._id}`)
-              }
+              onClick={(index) => {
+                return (
+                  items[index].companyId.quoteVerified &&
+                  props.history.push(`/sites/${items[index]._id}`)
+                );
+              }}
               headers={GLOBALS.Data.clients.headings}
             />
           )}

@@ -682,7 +682,6 @@ const Calender = (props) => {
   };
 
   const handlePopoverShow = (event) => {
-    // console.log("handlepopup show", event.id);
     setAlertBoxTime(false);
     seteventID(event.id);
     const fill = events.filter((e) => e.id === event.id);

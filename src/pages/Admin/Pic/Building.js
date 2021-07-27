@@ -635,6 +635,7 @@ export default function AddSiteStep3(props) {
                 fullWidth={false}
                 onClick={onCreateLevel}
                 disabled={loading || !levelNumber}
+                // onClick={props.onClose}
               />
             </Form.Row>
           </Form.Form>

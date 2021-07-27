@@ -137,6 +137,7 @@ const PicCanvas = (props) => {
   const [modal, setModal] = useState(false);
   const [selectedShape, setSelectedShape] = useState("");
   const [selectedBuilding, setselectedBuilding] = useState("");
+  const [openMeanModal, setOpenMeanModal] = useState(false);
   const [levelName, setLevelName] = useState("");
   const [level, setLevel] = useState("");
   const [allLeves, setAllLevels] = useState([]);
@@ -549,12 +550,12 @@ const PicCanvas = (props) => {
   };
 
   const handleClick = (id, shape) => {
-    console.log("aaaa", shape);
-    if (shape.type == "DELIVERYAREA") {
-      setOpenShapeModal(true);
-    }
     if (shape.type == "STORAGEAREA") {
       checkStorageArea(shape);
+    } else if (shape.type == "DELIVERYAREA") {
+      setOpenShapeModal(true);
+    } else if (shape.type == "MEAN") {
+      setOpenMeanModal(true);
     }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
@@ -1038,6 +1039,35 @@ const PicCanvas = (props) => {
             ""
           ))}
       </>
+      {/*--------------------------------- Mean modal-------------------------------- */}
+      <Dialog
+        open={openMeanModal}
+        onClose={() => setOpenMeanModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent style={{ margin: "30px" }}>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+          <SubHeading primary={`Type : ${selectedShape.type}`} />
+
+          {/* <div style={{ textAlign: "center" }}>
+            <NavLink
+              disabled={loading}
+              to={{
+                pathname: "/means/calendar",
+                selectedShape: selectedShape,
+              }}
+            >
+              <IconButton>
+                <Calendar className={classes.infoIcon} />
+              </IconButton>
+            </NavLink>
+          </div> */}
+        </DialogContent>
+      </Dialog>
+
       <Dialog
         open={openStorageModal}
         onClose={() => setOpenStorageModal(false)}
