@@ -30,7 +30,7 @@ const addUnavailabilityYup = Yup.object().shape({
 export default function MultiAdderInputModal(props) {
   const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
     props;
-  const { SEE_OPENING_TIMES, YES, NO } = TEXTS;
+  const { SEE_OPENING_TIMES, YES, NO, REASON } = TEXTS;
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -289,7 +289,7 @@ export default function MultiAdderInputModal(props) {
 
               <Form.Row>
                 <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Reason:" />
+                  <FormLabel disableMargin bold primary={`${REASON}:`} />
                 </Form.Row>
 
                 <Form.Row noMargin>
@@ -300,7 +300,7 @@ export default function MultiAdderInputModal(props) {
                     onChange={getreason}
                     maxLength="50"
                     minLength="3"
-                    placeholder="Reason"
+                    placeholder={REASON}
                     style={{ width: "100%" }}
                   />
                 </Form.Row>
@@ -327,7 +327,7 @@ export default function MultiAdderInputModal(props) {
                       <th>Date</th>
                       <th>Start</th>
                       <th>End</th>
-                      <th>Reason</th>
+                      <th>{REASON}</th>
                       <th>Action</th>
                     </tr>
                   </thead>

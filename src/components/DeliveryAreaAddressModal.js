@@ -3,6 +3,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import moment from "moment";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -16,7 +17,7 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-
+  const { VALIDATE, LOCATION, AVAILABILITIES, START_DATE, END_DATE } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -193,7 +194,7 @@ export default function MultiAdderInputModal(props) {
                   maxLength="80"
                   value={location}
                   error={errors.location}
-                  placeholder="Location"
+                  placeholder={LOCATION}
                   onBlur={({ target: { name, value } }) =>
                     validation(name, value)
                   }
@@ -220,7 +221,7 @@ export default function MultiAdderInputModal(props) {
               </Form.Row>
             </Form.Row>
             <Form.Row>
-              <FormLabel bold primary="AVAILABILITIES * :" />
+              <FormLabel bold primary={`${AVAILABILITIES}*:`} />
               <Form.Row
                 noMargin
                 width="65%"
@@ -232,7 +233,7 @@ export default function MultiAdderInputModal(props) {
                   name="startDate"
                   error={errors.startDate}
                   value={startDate}
-                  placeholder={`Start date`}
+                  placeholder={START_DATE}
                   min={moment(props.min).format("YYYY-MM-DD")}
                   max={moment(props.max).format("YYYY-MM-DD")}
                   onChange={({ target: { name, value } }) =>
@@ -241,7 +242,7 @@ export default function MultiAdderInputModal(props) {
                 />
                 <FormInput
                   type="date"
-                  placeholder="End date"
+                  placeholder={END_DATE}
                   name="endDate"
                   value={endDate}
                   min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
@@ -255,7 +256,7 @@ export default function MultiAdderInputModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 loading={loading}
                 fullWidth={false}
                 onClick={onSubmit}

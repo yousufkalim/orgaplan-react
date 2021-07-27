@@ -28,6 +28,8 @@ const PopoverModal = ({
     Are_you_sure_You_want_to_delete_this,
     Start_time,
     End_time,
+    NO,
+    YES,
     VALIDATE,
   } = TEXTS;
   const getStartDate = (start) => {
@@ -58,7 +60,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              NO
+              {NO}
             </div>
             <div
               onClick={() => {
@@ -66,7 +68,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              YES
+              {YES}
             </div>
           </>
         ) : (
@@ -77,7 +79,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              NO
+              {NO}
             </div>{" "}
             &nbsp;&nbsp;
             <div
@@ -86,7 +88,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              YES
+              {YES}
             </div>
           </>
         )}

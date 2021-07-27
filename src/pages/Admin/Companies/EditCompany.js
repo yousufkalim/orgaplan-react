@@ -496,7 +496,7 @@ export default function AddCompanies(props) {
           <Form.ButtonContainer>
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               onClick={onSubmit}

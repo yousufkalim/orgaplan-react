@@ -50,6 +50,7 @@ const Means = () => {
     SELECT_STORAGEAREA,
     START_DATE,
     END_DATE,
+    Exterior,
   } = TEXTS;
 
   const classes = useStyles();
@@ -346,10 +347,7 @@ const Means = () => {
           />
           <FormSelect
             value={building}
-            values={[
-              ...[{ label: "Exterior", value: "Exterior" }],
-              ...buildings,
-            ]}
+            values={[...[{ label: Exterior, value: "Exterior" }], ...buildings]}
             placeholder={LOCATION}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {

@@ -72,6 +72,7 @@ const Calender = (props) => {
     STATUS,
     BOOKING_DATE,
     INCIDENT,
+    ConstructBTP,
     MEAN,
     START_HOUR,
     END_HOUR,
@@ -95,6 +96,12 @@ const Calender = (props) => {
     DELIVERY_DATE,
     COMPLETED,
     ALERTS,
+    DISABLE_DAY,
+    DISABLE_HOURS,
+    SITE_DATE_OUT_OF_RANGE,
+    Booking_cant_be_in_Previous_day,
+    DELIVERY_DELETED,
+    Delivery_Area_Site_By_SiteId_Error,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -497,26 +504,26 @@ const Calender = (props) => {
       if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable Day", "error"),
+            Actions.notistack.snackbar(DISABLE_DAY, "error"),
           ),
         );
       } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable hours", "error"),
+            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
           ),
         );
       } else if (betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Site Date is Out of Range", "error"),
+            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
           ),
         );
       } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Booking can't be in Previous day",
+              Booking_cant_be_in_Previous_day,
               "error",
             ),
           ),
@@ -650,7 +657,7 @@ const Calender = (props) => {
       delete_Delivery(eventID);
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Delivery Deleted", "success"),
+          Actions.notistack.snackbar(DELIVERY_DELETED, "success"),
         ),
       );
       setSiteMeans("");
@@ -953,7 +960,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
+            Actions.notistack.snackbar(Delivery_Area_Site_By_SiteId_Error),
           ),
         );
       }
@@ -1111,7 +1118,7 @@ const Calender = (props) => {
             };
             // }
           });
-          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
+          setSiteMeans(`${DELIVERY_REQUESTS}: ${count} ${DELIVERIES}`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             // if (key.userId._id === userId) {
@@ -1240,7 +1247,7 @@ const Calender = (props) => {
         <Modal.Header closeButton style={{ border: "none" }}>
           <Modal.Title className="text-center w-100">{BOOKING}</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Invalid Time" />
+        <Alertbox message={Invalid_Time} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
@@ -1336,7 +1343,7 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="ConstructBTP"
+                placeholder={ConstructBTP}
                 values={[
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },

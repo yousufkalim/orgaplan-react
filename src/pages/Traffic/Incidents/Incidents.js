@@ -83,6 +83,7 @@ const Incidents = (props) => {
     START_DATE,
     END_DATE,
     DESIGNATION,
+    TOTAL,
   } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -383,7 +384,7 @@ const Incidents = (props) => {
                 noMargin
                 topPadding
                 style={{ color: "#F80303" }}
-                primary={`TOTAL: ${tatalInvoices} ${RE_INVOICING}
+                primary={`${TOTAL}: ${tatalInvoices} ${RE_INVOICING}
               ${tatalPrice}€`}
                 bold
               />

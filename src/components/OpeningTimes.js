@@ -74,7 +74,7 @@ const addOpeningTimes = Yup.object().shape({
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-  const { SEE_OPENING_TIMES, YES, NO } = TEXTS;
+  const { SEE_OPENING_TIMES, YES, NO, VALIDATE } = TEXTS;
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -443,7 +443,7 @@ export default function MultiAdderInputModal(props) {
               <Button
                 type="submit"
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 loading={formik.isSubmitting}
                 disabled={formik.isSubmitting}

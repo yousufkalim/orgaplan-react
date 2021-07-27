@@ -56,6 +56,7 @@ export default function DeliveryArea(props) {
     HOURLY_RATE,
     ADDITIONNAL_INFORMATION,
     START_DATE,
+    is_Full,
     Please_enter_valid_email,
   } = TEXTS;
   const classes = useStyles();
@@ -267,7 +268,7 @@ export default function DeliveryArea(props) {
                 }
               />
             }
-            label="isFull"
+            label={is_Full}
           />
         </Form.Row>
         <Form.Row>

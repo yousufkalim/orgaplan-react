@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -12,7 +13,7 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-
+  const { VALIDATE } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -178,7 +179,7 @@ export default function MultiAdderInputModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
                 disabled={
