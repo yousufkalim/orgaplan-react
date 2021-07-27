@@ -40,9 +40,7 @@ let view = {
   work_week: MyWorkWeek,
   agenda: true,
 };
-
 const localizer = momentLocalizer(moment);
-
 let formats = {
   dateFormat: "DD",
   monthHeaderFormat: "DD/MM/YYYY",

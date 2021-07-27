@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
 
 import "./Landing.css";
@@ -11,14 +11,46 @@ import { Images } from "../../assets/Assets";
 import FormInput from "../../components/FormInput";
 import CustomButton from "../../components/Button";
 import { TEXTS } from "../../assets/languages/french";
+import Actions from "../../redux/actions";
 
 export default function LandingPage() {
+  const dispatch = useDispatch();
   const { LOGIN, MESSAGE, SUBMIT } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [quoteMessage, setQuoteMessage] = useState("");
   const [quoteMessageType, setQuoteMessageType] = useState("success");
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    city: "",
+    company: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+  const { name, city, company, phone, email, message } = formData;
+  const onChange = (e) =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(
+      Actions.notistack.enqueueSnackbar(
+        Actions.notistack.snackbar(
+          "Votre demande a bien été prise en compte, nous vous reviendrons vers vous au plus vite. ",
+          "success",
+        ),
+      ),
+    );
+    await GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.CONTACTUS,
+      body: formData,
+    });
+  };
 
   async function onQuoteSubmit(values, { setSubmitting }) {
     try {
@@ -124,7 +156,18 @@ export default function LandingPage() {
               entreprises de réserver leurs aires de stockage directement via la
               plateforme.
             </p>
-            <button className="hero-btn">En savoir plus</button>
+            <button
+              onClick={() => {
+                window.scroll({
+                  top: document.body.offsetHeight,
+                  left: 0,
+                  behavior: "smooth",
+                });
+              }}
+              className="hero-btn"
+            >
+              En savoir plus
+            </button>
           </div>
         </div>
         <div className="section-2">
@@ -191,34 +234,44 @@ export default function LandingPage() {
                 <img src={Images.landPeople} alt="People Contacting Us" />
               </div>
               <div className="col-6">
-                <form>
+                <form onSubmit={(e) => onSubmit(e)}>
                   <FormInput
                     type="text"
                     name="company"
+                    onChange={onChange}
+                    value={company}
                     textAlign="left"
                     placeholder="Nom de l’entreprise"
                   />
                   <FormInput
                     type="text"
                     name="city"
+                    value={city}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Ville"
                   />
                   <FormInput
                     type="text"
                     name="name"
+                    value={name}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Prénom et Nom du contact"
                   />
                   <FormInput
                     type="number"
                     name="phone"
+                    value={phone}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Téléphone"
                   />
                   <FormInput
                     type="email"
                     name="email"
+                    value={email}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Adresse e-mail"
                   />
@@ -226,13 +279,18 @@ export default function LandingPage() {
                     textArea
                     width={"100"}
                     name="message"
+                    value={message}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Message"
                   />
                   <CustomButton
-                    // type="submit"
+                    type="submit"
                     fullWidth={false}
                     text={GLOBALS.I18n.t(SUBMIT)}
+                    disabled={
+                      !name || !message || !email || !phone || !city || !company
+                    }
                   />
                 </form>
               </div>
