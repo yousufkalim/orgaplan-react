@@ -234,7 +234,8 @@ export default function LandingPage() {
                 <img src={Images.landPeople} alt="People Contacting Us" />
               </div>
               <div className="col-6">
-                <form onSubmit={(e) => onSubmit(e)}>
+                <form onSubmit={onSubmit}>
+
                   <FormInput
                     type="text"
                     name="company"
