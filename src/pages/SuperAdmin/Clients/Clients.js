@@ -410,9 +410,12 @@ export default function Clients(props) {
           ) : (
             <Table
               rows={rows}
-              onClick={(index) =>
-                props.history.push(`/sites/${items[index]._id}`)
-              }
+              onClick={(index) => {
+                return (
+                  items[index].companyId.quoteVerified &&
+                  props.history.push(`/sites/${items[index]._id}`)
+                );
+              }}
               headers={GLOBALS.Data.clients.headings}
             />
           )}
