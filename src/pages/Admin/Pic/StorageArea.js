@@ -498,6 +498,7 @@ export default function DeliveryArea(props) {
                 selectedDeliveryAreas.length < 1 ||
                 selectedCompanies.length < 1
               }
+              onClick={props.onClose}
             />
           </Form.ButtonContainer>
         </Form.Row>
