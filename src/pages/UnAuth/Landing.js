@@ -13,7 +13,7 @@ import CustomButton from "../../components/Button";
 import { TEXTS } from "../../assets/languages/french";
 
 export default function LandingPage() {
-  const {LOGIN,MESSAGE,SUBMIT}=TEXTS;
+  const { LOGIN, MESSAGE, SUBMIT } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [quoteMessage, setQuoteMessage] = useState("");
@@ -49,23 +49,48 @@ export default function LandingPage() {
       setQuoteMessage(err.message);
     }
   }
-
   return (
     <>
       <div className="land-container">
         <div className="hero">
           <div className="d-flex justify-content-between p-1">
             <nav className="d-flex justify-content-between align-self-start pt-3 w-50">
-              <Link to="/">
+              <Link
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
                 <img src={Images.logo} className="hero-logo" alt="logo" />
               </Link>
-              <Link to="/" className="text-white">
+
+              <Link
+                onClick={() => {
+                  window.scroll({
+                    top: document.body.offsetHeight,
+                    left: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                className="text-white"
+              >
                 Fonctionnalites
               </Link>
-              <Link to="/" className="text-white">
+              <Link
+                onClick={() => setShowQuoteModal((st) => !st)}
+                className="text-white"
+              >
                 S'inscrire
               </Link>
-              <Link to="/" className="text-white">
+              <Link
+                onClick={() => {
+                  window.scroll({
+                    top: 2100,
+                    left: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                className="text-white"
+              >
                 Nous contacter
               </Link>
             </nav>
@@ -90,7 +115,8 @@ export default function LandingPage() {
           </div>
           <div className="d-flex flex-column justify-content-center p-2 w-75 hero-title">
             <h1 className="white-color">
-              LA PLATEFORME AU SERVICE DE VOTRE ORGANISATION DE CHANTIER !
+              LA PLATEFORME AU SERVICE DE <br /> VOTRE ORGANISATION DE CHANTIER
+              !
             </h1>
             <p className="w-75">
               Avec Orgaplan, la logistique de vos chantiers est facilitée :
@@ -235,7 +261,7 @@ export default function LandingPage() {
       </div>
       <Modal
         maxWidth="sm"
-        title="REQUEST A QUOTE"
+        title="S'inscrire"
         open={showQuoteModal}
         onClose={() => {
           setShowQuoteModal(false);
@@ -327,7 +353,7 @@ export default function LandingPage() {
                     value={values.email}
                     onChange={handleChange}
                     className="login-input"
-                    placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+                    placeholder="Adresse e-mail"
                   />
                 </div>
                 <div className="w-100 mx-auto my-2">
