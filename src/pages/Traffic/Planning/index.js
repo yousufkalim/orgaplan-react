@@ -69,6 +69,7 @@ const Calender = (props) => {
     PLANNING,
     VALIDATE,
     CLOSE,
+    DELAY,
     MEANS,
     ALERTS,
     BOOKING_REASON,
@@ -106,6 +107,8 @@ const Calender = (props) => {
     STORAGEAREA,
     BUILDING,
     COMPLETE,
+    ConstructBTP,
+    BOOK,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -1255,11 +1258,11 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="ConstructBTP"
+                placeholder={ConstructBTP}
                 values={[
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },
-                  { value: "DELAY", label: MEAN },
+                  { value: "DELAY", label: DELAY },
                   { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
@@ -1359,7 +1362,7 @@ const Calender = (props) => {
             style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
             onClick={saveEvent}
           >
-            LIVRE
+            {BOOK}
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             {CLOSE}

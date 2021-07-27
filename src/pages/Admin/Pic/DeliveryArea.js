@@ -47,6 +47,9 @@ export default function DeliveryArea(props) {
     Enter_vehicles,
     MEANS_ALLOWED,
     Please_enter_valid_email,
+    NAME_REQUIRED,
+    Please_enter_start_date,
+    ADDRESS_INFO_REQUIRED,
   } = TEXTS;
 
   const { setSelectedShape } = props;
@@ -138,7 +141,7 @@ export default function DeliveryArea(props) {
         setName(value);
         setErrors({ ...errors, name: "" });
       } else if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
         setName("");
       }
     } else if (name === "color") setColor(value);
@@ -148,7 +151,7 @@ export default function DeliveryArea(props) {
         setErrors({ ...errors, startDate: "" });
       } else if ((value && value.length < 1) || value === null) {
         setStartDate("");
-        setErrors({ ...errors, startDate: "Please enter starting date" });
+        setErrors({ ...errors, startDate: Please_enter_start_date });
       }
     } else if (name === "endDate") setEndDate(value);
     else if (name === "addresses") {
@@ -168,12 +171,12 @@ export default function DeliveryArea(props) {
   function validation(name, value) {
     if (name === "name") {
       if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
       } else setErrors({ ...errors, name: "" });
     }
     if (!handleFormFilling) {
       if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, addresses: "Address Info is required" });
+        setErrors({ ...errors, addresses: ADDRESS_INFO_REQUIRED });
       } else setErrors({ ...errors, addresses: "" });
     }
   }

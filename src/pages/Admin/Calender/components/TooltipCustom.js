@@ -15,14 +15,20 @@ export const IconStyle = {
 };
 
 export const TooltipContent = ({ onClose, event }) => {
-  const {COMPANY,DELIVERYAREA,STORAGEAREA}=TEXTS;
-  
+  const { COMPANY, DELIVERYAREA, STORAGEAREA } = TEXTS;
+
   return (
     <>
       <div style={{ textAlign: "left", "font-size": "11px" }}>
-        <div>{COMPANY}: {event.event.company.name}</div>
-        <div>{DELIVERYAREA}: {event.event.deliveryArea.name}</div>
-        <div>{STORAGEAREA}: {event.event.storageArea.name}</div>
+        <div>
+          {COMPANY}: {event.event.company.name}
+        </div>
+        <div>
+          {DELIVERYAREA}: {event.event.deliveryArea.name}
+        </div>
+        <div>
+          {STORAGEAREA}: {event.event.storageArea.name}
+        </div>
       </div>
     </>
   );

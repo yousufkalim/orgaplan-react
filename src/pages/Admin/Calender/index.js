@@ -90,6 +90,20 @@ const Calender = (props) => {
     Delivery_Area_Site_By_SiteId_Error,
     TOTAL_MEANS_Booking,
     UNEXPECTED,
+    COMPANY_ConstructBTP,
+    BOOK,
+    DELAY,
+    DELIVERY_DATE,
+    COMPANY,
+    PENDING,
+    VALIDATED,
+    MODIFIED,
+    ALERT,
+    AVAILABLE,
+    UNAVAILABLE,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -1284,7 +1298,7 @@ const Calender = (props) => {
               <input
                 type="text"
                 style={{ border: "1px solid #707070" }}
-                placeholder="Entreprise : ConstructBTP"
+                placeholder={COMPANY_ConstructBTP}
                 className="w-100 p-2 mb-2"
               />
             </div>
@@ -1340,7 +1354,7 @@ const Calender = (props) => {
               borderRadius: "5px",
             }}
           >
-            Livre
+            {BOOK}
           </button>
         </Modal.Footer>
       </Modal>
@@ -1374,7 +1388,7 @@ const Calender = (props) => {
                 values={[
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },
-                  { value: "DELAY", label: MEAN },
+                  { value: "DELAY", label: DELAY },
                   { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
@@ -1474,7 +1488,7 @@ const Calender = (props) => {
             style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
             onClick={saveEvent}
           >
-            LIVRE
+            {BOOK}
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             {CLOSE}
@@ -1483,9 +1497,9 @@ const Calender = (props) => {
       </Modal>
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Event </Modal.Title>
+          <Modal.Title>{Edit_Event} </Modal.Title>
         </Modal.Header>
-        <Alertbox message="Please Add valid Time and Event" />
+        <Alertbox message={Please_Add_valid_Time_and_Event} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
@@ -1626,7 +1640,7 @@ const Calender = (props) => {
                     selected={filterDate}
                     popperPlacement="top-start"
                     showYearDropdown
-                    placeholderText="Delivery date"
+                    placeholderText={DELIVERY_DATE}
                     onChange={(filterDate) => {
                       setFilterDate(filterDate);
                     }}
@@ -1635,7 +1649,7 @@ const Calender = (props) => {
                 {props.location.companyId != null ? (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder={COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1645,7 +1659,7 @@ const Calender = (props) => {
                 ) : (
                   <>
                     <FormSelect
-                      placeholder="Enterprise"
+                      placeholder={COMPANY}
                       value={enterprise}
                       values={dropdownCompany}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1664,15 +1678,15 @@ const Calender = (props) => {
                     setTypeOfPlaning(e.target.value);
                     if (e.target.value === "Deliveries") {
                       setDeliveriesMeansStatus([
-                        { value: "PENDING", label: "PENDING" },
-                        { value: "VALIDATED", label: "VALIDATED" },
-                        { value: "MODIFIED", label: "MODIFIED" },
-                        { value: "ALERT", label: "ALERT" },
+                        { value: "PENDING", label: PENDING },
+                        { value: "VALIDATED", label: VALIDATED },
+                        { value: "MODIFIED", label: MODIFIED },
+                        { value: "ALERT", label: ALERT },
                       ]);
                     } else if (e.target.value === "Means") {
                       setDeliveriesMeansStatus([
-                        { value: "AVAILABLE", label: "AVAILABLE" },
-                        { value: "UNAVAILABLE", label: "UNAVAILABLE" },
+                        { value: "AVAILABLE", label: AVAILABLE },
+                        { value: "UNAVAILABLE", label: UNAVAILABLE },
                       ]);
                     }
                   }}
@@ -1695,9 +1709,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
@@ -1717,9 +1731,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}

@@ -108,6 +108,9 @@ export const TEXTS = {
   POSITION: "Rôle",
   FIRST_NAME: "Prénom",
   FIRST_NAME_REQUIRED: "Prénom est obligatoire",
+  NAME_REQUIRED: "Nom est obligatoire",
+  ADDRESS_INFO_REQUIRED: "Info adresse est obligatoire",
+
   LAST_NAME_REQUIRED: "Prénom est obligatoire",
 
   EMAIL_REQUIRED: "Nom est obligatoire",
@@ -255,7 +258,7 @@ export const TEXTS = {
 
   Exterior: "Extérieur",
   Modify: "Modifier",
-  MODIIED: "Modifié",
+  MODIFIED: "Modifié",
   ALERT: "Alerte",
   ALERTS: "Alertes",
 
@@ -315,6 +318,7 @@ export const TEXTS = {
   Are_you_sure_to_Delete: "Êtes-vous sûr ?",
   Modified_By: "Modifié par",
   BOOKING: "Réservation",
+  BOOK: "Livre",
   BOOKING_DATE: "Réservation date",
   SITE_DATE_OUT_OF_RANGE: "Chantier date en dehors de intervalle",
   REFUSE: "Refuser",
@@ -434,4 +438,11 @@ export const TEXTS = {
   please_add_a_level: "",
 
   IMAGE: "",
+  Delivery_Calender: "",
+  VERIFICATION_SHEET_FOR_DELIVERY: "",
+  RETURN_BUFFER_AREA: "",
+
+  TIME_OF_ARRIVAL: "",
+  IMMATRICULATION_PLATE: "",
+  TIME_OF_DEPARTURE: "",
 };

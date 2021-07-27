@@ -39,6 +39,7 @@ const PopoverModal = ({
     MORE_INFO,
     REFUSE,
     COMPANY,
+    Are_you_sure_You_want_to_delete_this,
     MEAN,
   } = TEXTS;
 
@@ -113,7 +114,7 @@ const PopoverModal = ({
           <Modal.Title className="text-center">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="Are you sure to Delete" />
+          <Alertbox message={Are_you_sure_You_want_to_delete_this} />
           <div className="showPopover">
             <div style={{ textAlign: "right" }}>
               <button
@@ -143,7 +144,7 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {"Name: " +
+                      {`${NAME}: ` +
                         event.user.firstName +
                         " " +
                         event.user.lastName +

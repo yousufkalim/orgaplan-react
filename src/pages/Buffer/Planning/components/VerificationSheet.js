@@ -13,7 +13,23 @@ import IconButton from "@material-ui/core/IconButton";
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
 import moment from "moment";
+import { TEXTS } from "../../../../assets/languages/french";
+
 const VarificationSheet = (props) => {
+  const {
+    COMPANY,
+    DATE_AND_TIME,
+    DELIVERYAREA,
+    MEAN,
+    STORAGEAREA,
+    MATERIALS_DELIVERED,
+    ADDITIONNAL_INFORMATION,
+    ADD_COMMENT,
+    ADD_PHOTO,
+    YES,
+    NO,
+    VALIDATE,
+  } = TEXTS;
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -160,10 +176,14 @@ const VarificationSheet = (props) => {
       {/* <Form.Form> */}
       <div className="row box">
         <div className="col-sm-6">
-          <div className="label">COMPANY : </div>
-          <div className="label">DATE AND TIME :</div>
-          <div className="label">DELIVERY AREA / MEAN : </div>
-          <div className="label">STORAGE AREA / MEAN : </div>
+          <div className="label">{COMPANY} : </div>
+          <div className="label">{DATE_AND_TIME}:</div>
+          <div className="label">
+            {DELIVERYAREA} / {MEAN} :{" "}
+          </div>
+          <div className="label">
+            {STORAGEAREA} / {MEAN} :{" "}
+          </div>
         </div>
         <div className="col-sm-6">
           <div className="value">{eventdata.company.name}</div>
@@ -186,7 +206,7 @@ const VarificationSheet = (props) => {
           <>
             <div className="col-sm-6">
               <div className="label" style={{ padding: "25px 0px" }}>
-                MATERIEL LIVRÉ :<br />
+                {MATERIALS_DELIVERED} :<br />
               </div>
             </div>
             <div className="col-sm-6">
@@ -228,7 +248,7 @@ const VarificationSheet = (props) => {
             </div> */}
             <div className="col-sm-6">
               <div className="label" style={{ padding: "25px 0px" }}>
-                MATERIEL LIVRÉ :<br />
+                {MATERIALS_DELIVERED} :<br />
               </div>
             </div>
             <div className="col-sm-6">
@@ -242,7 +262,7 @@ const VarificationSheet = (props) => {
           </>
         )}
         <div className="col-sm-6">
-          <div className="label">ADDITIONAL INFORMATION:</div>
+          <div className="label">{ADDITIONNAL_INFORMATION}:</div>
         </div>
         <div className="col-sm-6">
           <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -250,7 +270,7 @@ const VarificationSheet = (props) => {
               as="textarea"
               rows={1}
               value={comments}
-              placeholder="Ajouter un commentaire"
+              placeholder={ADD_COMMENT}
               disabled={true}
               onChange={(e) => {
                 setComments(e.target.value);
@@ -259,7 +279,7 @@ const VarificationSheet = (props) => {
           </Form.Group>
         </div>
         <div className="col-sm-6">
-          <div className="label">ADD PICTURES :</div>
+          <div className="label">{ADD_PHOTO} :</div>
         </div>
         <div className="col-sm-6">
           <FormMultipleUpload
@@ -289,7 +309,7 @@ const VarificationSheet = (props) => {
                 <>
                   <Form.Check
                     type="radio"
-                    label="YES"
+                    label={YES}
                     name="bufferArea"
                     className="green"
                     style={{ marginRight: "5px" }}
@@ -301,7 +321,7 @@ const VarificationSheet = (props) => {
                   />
                   <Form.Check
                     type="radio"
-                    label="NO"
+                    label={NO}
                     name="bufferArea"
                     defaultChecked={location?.state?.event?.bufferArea == false}
                     value={false}
@@ -387,7 +407,7 @@ const VarificationSheet = (props) => {
         }
         onClick={onSubmit}
       >
-        VALIDATE
+        {VALIDATE}
       </Button>
       {/* </Form.Form> */}
     </>

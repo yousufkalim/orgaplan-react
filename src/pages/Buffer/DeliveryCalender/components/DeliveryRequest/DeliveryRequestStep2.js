@@ -9,7 +9,21 @@ import FormLabel from "../../../../../components/FormLabel";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import FormCheckbox from "../../../../../components/FormCheckbox";
+import { TEXTS } from "../../../../../assets/languages/french";
+
 export default function AddSiteStep1(props) {
+  const {
+    LOCATION,
+    SELECT_LOCATION,
+    LEVEL,
+    SELECT_LEVEL,
+    STORAGEAREA,
+    SELECT_STORAGEAREA,
+    TRANSPORTING_MEANS,
+    VALIDATE,
+    MEANS,
+  } = TEXTS;
+
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -291,36 +305,36 @@ export default function AddSiteStep1(props) {
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
-        <FormLabel bold primary="LOCATION* :" />
+        <FormLabel bold primary={`${LOCATION}* :`} />
         <FormSelect
           name="location"
           value={building}
           disabled={props.eventId}
-          placeholder="Select a location"
+          placeholder={SELECT_LOCATION}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
           values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="LEVEL* :" />
+        <FormLabel bold primary={`${LEVEL}* :`} />
         <FormSelect
           name="level"
           value={level}
           values={levels}
-          placeholder="Select a Level"
+          placeholder={SELECT_LEVEL}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setLevel(value)}
           disabled={!building || building === "Exterior" || props.eventId}
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary="STORAGE AREA*:" />
+        <FormLabel bold primary={`${STORAGEAREA}*:`} />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"
             value={storageArea}
-            placeholder="Select Storage Area"
+            placeholder={SELECT_STORAGEAREA}
             values={filterStorageAreas.filter((item) =>
               building && building === "Exterior"
                 ? !item.level
@@ -335,12 +349,12 @@ export default function AddSiteStep1(props) {
       </Form.Row>
 
       <Form.Row>
-        <FormLabel bold primary="TRANSPORTING MEANS* :" />
+        <FormLabel bold primary={`${TRANSPORTING_MEANS}* :`} />
         <Form.Row noMargin width="48%">
           <FormMultiSelect
             name="means"
             values={means}
-            placeholder="Means"
+            placeholder={MEANS}
             value={routingMeans}
             disabled={!storageArea || disableRoutingMeans}
             onChange={({ target: { value } }) => setRoutingMeans(value)}
@@ -368,7 +382,7 @@ export default function AddSiteStep1(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           disabled={
             !building || (building !== "Exterior" && !level) || !storageArea
