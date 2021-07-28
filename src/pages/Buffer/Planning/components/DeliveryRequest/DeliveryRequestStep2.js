@@ -23,6 +23,7 @@ export default function AddSiteStep1(props) {
     VALIDATE,
     MEANS,
     Exterior,
+    NONE,
   } = TEXTS;
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
@@ -374,7 +375,7 @@ export default function AddSiteStep1(props) {
               setRoutingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={NONE}
           />
         </div>
       </Form.Row>

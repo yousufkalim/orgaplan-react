@@ -23,6 +23,7 @@ export default function AddSiteStep1(props) {
     TRANSPORTING_MEANS,
     VALIDATE,
     MEANS,
+    NONE,
   } = TEXTS;
 
   const dispatch = useDispatch();
@@ -341,7 +342,7 @@ export default function AddSiteStep1(props) {
               setRoutingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={NONE}
           />
         </div>
       </Form.Row>

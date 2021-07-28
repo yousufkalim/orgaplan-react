@@ -37,6 +37,7 @@ const Means = () => {
   const {
     DELIVERIES,
     DELIVERY_REQUESTS,
+    STATUS,
     MEANS,
     TOTAL,
     LEVEL,
@@ -403,7 +404,7 @@ const Means = () => {
           <FormSelect
             value={status}
             values={statuses}
-            placeholder="Status"
+            placeholder={STATUS}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setStatus(value);

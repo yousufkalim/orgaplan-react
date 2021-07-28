@@ -1597,7 +1597,7 @@ const Calender = (props) => {
                   style={{ marginRight: "20px", maxWidth: 250 }}
                 /> */}
                 {/* <FormSelect
-                  placeholder="Status"
+                  placeholder="Statut"
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}

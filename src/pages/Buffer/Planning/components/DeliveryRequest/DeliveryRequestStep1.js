@@ -32,6 +32,7 @@ export default function AddSiteStep1(props) {
     MATERIALS_DELIVERED,
     ENTER_MATERIALS,
     VALIDATE,
+    NONE,
   } = TEXTS;
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -424,7 +425,7 @@ export default function AddSiteStep1(props) {
               setLiftingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={NONE}
           />
         </div>
       </Form.Row>

@@ -430,7 +430,7 @@ const Means = () => {
           <FormSelect
             value={status}
             values={statuses}
-            placeholder="Status"
+            placeholder="Statut"
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setStatus(value);

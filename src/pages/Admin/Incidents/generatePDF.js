@@ -21,7 +21,7 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
     "Type_of_Re-invoice",
     "Date/Time",
     "Amount",
-    "Status",
+    "Statut",
   ];
   const tableRows = [];
 
