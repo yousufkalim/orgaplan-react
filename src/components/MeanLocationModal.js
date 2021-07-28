@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -13,17 +14,17 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 const types = [
   {
     value: "STORAGEAREA",
-    label: "Storage Area",
+    label: "Aire De Stockage",
   },
   {
     value: "DELIVERYAREA",
-    label: "Delivery Area",
+    label: "Aire de livraison",
   },
 ];
 
 export default function CustomInputModal(props) {
   const theme = useTheme();
-
+  const { VALIDATE } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -163,7 +164,7 @@ export default function CustomInputModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 onClick={onAdd}
                 disabled={!area}
                 fullWidth={false}

@@ -99,15 +99,10 @@ const Calender = (props) => {
     MEANS,
     PENDING,
     VALIDATED,
-    MODIIED,
-    ALERT,
-    AVAILABLE,
-    Unavailable,
-    STATUS,
-    TYPE_OF_PLACE,
-    DELIVERYAREA,
-    STORAGEAREA,
-    PLACE,
+    MODIFIED,
+    DELAY,
+    COMPLETED,
+    ALERTS,
     ConstructBTP,
     PENDING_VALIDATION,
   } = TEXTS;
@@ -1365,11 +1360,11 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="ConstructBTP"
+                placeholder={ConstructBTP}
                 values={[
                   { value: "INCIDENT", label: INCIDENT },
                   { value: "MEAN", label: MEAN },
-                  { value: "DELAY", label: MEAN },
+                  { value: "DELAY", label: DELAY },
                   { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
@@ -1526,7 +1521,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel
@@ -1825,7 +1820,7 @@ const Calender = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {deliveryCount}
               </h3>
-              <h6 style={{ color: "white" }}>Deliveries</h6>
+              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
             </div>
             <div
               style={{
@@ -1840,7 +1835,7 @@ const Calender = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {totalCompDeliveries}
               </h3>
-              <h6 style={{ color: "white" }}>COMPLETED</h6>
+              <h6 style={{ color: "white" }}>{COMPLETED}</h6>
             </div>
             <div
               style={{
@@ -1871,7 +1866,7 @@ const Calender = (props) => {
               <h3 className="font-weight-bold" style={{ color: "white" }}>
                 {alertCount}
               </h3>
-              <h6 style={{ color: "white" }}>Alerts</h6>
+              <h6 style={{ color: "white" }}>{ALERTS}</h6>
             </div>
           </div>
         </div>

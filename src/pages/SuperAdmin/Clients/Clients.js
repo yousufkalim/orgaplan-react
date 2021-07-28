@@ -65,6 +65,9 @@ export default function Clients(props) {
     END_DATE,
     ADDITIONNAL_INFORMATION,
     Per_site,
+    MASTER_CONTRACT,
+    Delivery_Module,
+    Please_enter_email,
   } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -490,7 +493,7 @@ export default function Clients(props) {
                 name="email"
                 value={email}
                 error={errors.email}
-                placeholder="E-mail Address"
+                placeholder={Please_enter_email}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
@@ -552,7 +555,7 @@ export default function Clients(props) {
                 }
                 items={[
                   { value: "CLIENTPERSITE", label: Per_site },
-                  { value: "MASTERCLIENT", label: "Master Contract" },
+                  { value: "MASTERCLIENT", label: MASTER_CONTRACT },
                 ]}
               />
             </Form.Row>
@@ -561,7 +564,7 @@ export default function Clients(props) {
                 name="functionality"
                 value={functionality}
                 style={GLOBALS.Styles.inputWidth}
-                items={[{ value: "DELIVERY", label: "Delivery module" }]}
+                items={[{ value: "DELIVERY", label: Delivery_Module }]}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }

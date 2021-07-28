@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Organigramme(props) {
+  const { ORGANIGRAMME, SITE_ORGANIGAMME, LOGISTIC_ORGANIGAMME } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
@@ -107,7 +109,7 @@ export default function Organigramme(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
-          <Heading primary="ORGANIGRAMME" noWrap />
+          <Heading primary={ORGANIGRAMME} noWrap />
           {/* <div>
             <Form.Row alignItems="center" noMargin>
               <Button
@@ -127,7 +129,7 @@ export default function Organigramme(props) {
           <Form.Row style={{ justifyContent: "flex-start" }} noMargin>
             <Button
               fullWidth={false}
-              text="SITE ORGANIGAMME"
+              text={SITE_ORGANIGAMME}
               style={{
                 marginLeft: "20px",
                 backgroundColor:
@@ -138,7 +140,7 @@ export default function Organigramme(props) {
             />
             <Button
               fullWidth={false}
-              text="LOGISTIC ORGANIGAMME"
+              text={LOGISTIC_ORGANIGAMME}
               style={{
                 marginLeft: "20px",
                 backgroundColor: selectedFilter === "SITE" ? "#fff" : "#140772",

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
+import { TEXTS } from "../assets/languages/french";
 
 import GLOBALS from "../globals";
 
@@ -73,6 +74,7 @@ const addOpeningTimes = Yup.object().shape({
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
+  const { SEE_OPENING_TIMES, YES, NO, VALIDATE } = TEXTS;
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -129,14 +131,14 @@ export default function MultiAdderInputModal(props) {
       <Button
         minWidth={200}
         fullWidth={false}
-        text="SEE OPENING TIMES"
+        text={SEE_OPENING_TIMES}
         color={theme.palette.blue}
         onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
         open={modal}
-        title="OPENING TIMES"
+        title={SEE_OPENING_TIMES}
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form onSubmit={formik.handleSubmit}>
@@ -156,8 +158,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -198,8 +200,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -240,8 +242,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -282,8 +284,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -324,8 +326,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -366,8 +368,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -408,8 +410,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -441,7 +443,7 @@ export default function MultiAdderInputModal(props) {
               <Button
                 type="submit"
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 loading={formik.isSubmitting}
                 disabled={formik.isSubmitting}

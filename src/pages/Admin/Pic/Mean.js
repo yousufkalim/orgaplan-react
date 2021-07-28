@@ -330,7 +330,7 @@ export default function AddMean(props) {
               name="name"
               error={errors.name}
               value={name}
-              placeholder="Nom"
+              placeholder={NAME}
               style={{ width: "32%" }}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>

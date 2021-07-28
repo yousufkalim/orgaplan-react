@@ -21,6 +21,7 @@ import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
 export default function AddSiteStep1(props) {
   const {
     COMPANY,
+    VALIDATE,
     DELIVERYAREA,
     STORAGEAREA,
     Please_select_a_company,
@@ -34,6 +35,7 @@ export default function AddSiteStep1(props) {
     MEANS,
     MATERIALS_DELIVERED,
     ENTER_MATERIALS,
+    NONE,
   } = TEXTS;
 
   const adminStore = useSelector((state) => state.admin);
@@ -401,7 +403,7 @@ export default function AddSiteStep1(props) {
               setLiftingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={NONE}
           />
         </div>
       </Form.Row>
@@ -427,7 +429,7 @@ export default function AddSiteStep1(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           disabled={
             !company ||

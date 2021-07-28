@@ -6,6 +6,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Chip from "@material-ui/core/Chip";
 import _ from "lodash";
 import moment from "moment";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -33,6 +34,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DeliveryArea(props) {
   const { setSelectedShape } = props;
+  const {
+    NAME,
+    VALIDATE,
+    AVAILABILITY,
+    Enter_site_addresses,
+    END_DATE,
+    DELIVERYAREAS,
+    COMPANIES,
+    is_Full,
+    Vehicles,
+    Days_before_end_of_the_contract,
+    NOTIFY_THE_ADDRESSES,
+    Please_enter_email,
+    MEANS,
+    NOTIFICATION,
+    IDENTITY,
+    ACCESSIBILITY,
+    AVAILABILITIES,
+    UNAVAILABILITIES,
+    HOURLY_RATE,
+    ADDITIONNAL_INFORMATION,
+    START_DATE,
+    Please_enter_valid_email,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -177,7 +202,7 @@ export default function DeliveryArea(props) {
       let propShape = props.shape
         ? _.cloneDeep(props.shape)
         : _.cloneDeep(props.selectedShape);
-      
+
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
       propShapes[inde]._id = response.data._id;
       propShape._id = response.data._id;
@@ -217,7 +242,7 @@ export default function DeliveryArea(props) {
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
-      props.setSelectedShape("")
+      props.setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -243,16 +268,16 @@ export default function DeliveryArea(props) {
                 }
               />
             }
-            label="isFull"
+            label={is_Full}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Name : " />
+          <FormLabel bold primary={`${NAME}* : `} />
           <Form.Row noMargin width="65%">
             <FormInput
               name="name"
               value={name}
-              placeholder="Name"
+              placeholder={NAME}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -267,7 +292,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="AVAILABILITY :" />
+          <FormLabel bold primary={`${AVAILABILITIES}* :`} />
           <Form.Row noMargin width="65%">
             <FormInput
               type="date"
@@ -279,7 +304,7 @@ export default function DeliveryArea(props) {
                   : moment(adminStore.site.siteId.start).format("YYYY-MM-DD")
               }
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
-              placeholder={`Date de début`}
+              placeholder={START_DATE}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -289,7 +314,7 @@ export default function DeliveryArea(props) {
               type="date"
               name="endDate"
               disabled={!startDate}
-              placeholder="Date de fin"
+              placeholder={END_DATE}
               min={moment(startDate).add(1, "days").format("YYYY-MM-DD")}
               max={moment(adminStore.site.siteId.end).format("YYYY-MM-DD")}
               style={GLOBALS.Styles.inputWidth}
@@ -301,7 +326,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Unavailabilities: " />
+          <FormLabel bold primary={`${UNAVAILABILITIES}* :`} />
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
@@ -316,12 +341,12 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Delivery Areas: " />
+          <FormLabel bold primary={`${DELIVERYAREAS}* :`} />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="deliveryAreas"
               values={deliveryAreas}
-              placeholder="Delivery Areas"
+              placeholder={DELIVERYAREAS}
               value={selectedDeliveryAreas}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -331,12 +356,12 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Companies: " />
+          <FormLabel bold primary={`${COMPANIES}* :`} />
           <Form.Row noMargin width="65%">
             <FormMultiSelect
               name="companies"
               values={companies}
-              placeholder="Companies"
+              placeholder={COMPANIES}
               value={selectedCompanies}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
@@ -346,7 +371,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="Means : " />
+          <FormLabel bold primary={`${MEANS} : `} />
           <Form.Row noMargin width="65%" justifyContent="flex-start">
             {means.map((mean, index) => (
               <Chip key={index} label={mean} className={classes.chip} />
@@ -354,7 +379,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFICATION : " />
+          <FormLabel bold primary={`${NOTIFICATION} : `} />
           <Form.Row
             noMargin
             width="65%"
@@ -373,20 +398,20 @@ export default function DeliveryArea(props) {
               }
             />
             <SmallText
-              primary="Days before end of the contract"
+              primary={Days_before_end_of_the_contract}
               style={{ marginLeft: "10px", marginBottom: 0 }}
             />
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary="NOTIFY THE ADDRESSES : " />
+          <FormLabel bold primary={`${NOTIFY_THE_ADDRESSES} : `} />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="notificationTo"
               values={notificationTo ? notificationTo : ""}
               style={{ width: "100%" }}
-              validateError="Invalid Email"
-              placeholder="Enter email address"
+              validateError={Please_enter_valid_email}
+              placeholder={Please_enter_email}
               onChange={(values) => handleChange("notificationTo", values)}
               validate={(text) => {
                 const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
@@ -400,7 +425,7 @@ export default function DeliveryArea(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               disabled={loading || !name || !color || !startDate}
             />

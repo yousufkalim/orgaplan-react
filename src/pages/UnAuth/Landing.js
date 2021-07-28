@@ -14,8 +14,14 @@ import { TEXTS } from "../../assets/languages/french";
 import Actions from "../../redux/actions";
 
 export default function LandingPage() {
+  const {
+    LOGIN,
+    MESSAGE,
+    SUBMIT,
+    Your_request_has_been_received,
+    You_will_be_contacted_soon,
+  } = TEXTS;
   const dispatch = useDispatch();
-  const { LOGIN, MESSAGE, SUBMIT } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [quoteMessage, setQuoteMessage] = useState("");
@@ -81,7 +87,7 @@ export default function LandingPage() {
       });
       setQuoteMessageType("success");
       setQuoteMessage(
-        "Your request has been received. You will be contacted soon.",
+        `${Your_request_has_been_received}. ${You_will_be_contacted_soon}.`,
       );
       setSubmitting(false);
     } catch (err) {

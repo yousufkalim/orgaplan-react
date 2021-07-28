@@ -50,7 +50,7 @@ export default function Sites(props) {
     ZACS_LIST,
     Create_a_SITE,
     See_archived_sites,
-
+    STATUS,
     SITE_NAME,
   } = TEXTS;
   const classes = useStyles();
@@ -147,7 +147,7 @@ export default function Sites(props) {
     }),
   );
   const statusArray = [
-    { value: "ALL", label: "Status" },
+    { value: "ALL", label: STATUS },
     { value: "ACTIVE", label: "Active" },
     { value: "INACTIVE", label: "Inactive" },
   ];

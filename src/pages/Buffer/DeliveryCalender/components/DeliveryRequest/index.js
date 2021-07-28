@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { TEXTS } from "../../../../../assets/languages/french";
 
 import GLOBALS from "../../../../../globals";
 import Actions from "../../../../../redux/actions";
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeliveryRequest(props) {
+  const { STORAGEAREA, DELIVERYAREA } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -243,8 +245,8 @@ export default function DeliveryRequest(props) {
         disabled={true}
         setStep={setStep}
         steps={[
-          "Step 1: Delivery Area",
-          "Step 2: Storage Area",
+          `Step 1:${DELIVERYAREA}`,
+          `Step 2: ${STORAGEAREA}`,
           "Text 1: Confirmation",
         ]}
       />

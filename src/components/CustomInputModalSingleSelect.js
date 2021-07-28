@@ -6,6 +6,7 @@ import Chip from "@material-ui/core/Chip";
 import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -32,7 +33,7 @@ export default function CustomInputModalSingleSelect(props) {
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
   const borderColor = props.error ? error : theme.palette.grey[100];
-
+  const { VALIDATE } = TEXTS;
   const formik = useFormik({
     initialValues: {
       logo: [],
@@ -188,7 +189,7 @@ export default function CustomInputModalSingleSelect(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
                 disabled={!props.value}

@@ -5,6 +5,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 // import * as Yup from "yup";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -33,6 +34,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditContact(props) {
+  const {
+    SITE,
+    LOGISTICS,
+    Please_enter_valid_email,
+    Telephone_must_have_10_to_25_digits,
+    something_went_wrong,
+    ADD_A_CONTACT,
+    TYPE_OF_ORGANIGRAMME,
+    CONTACT_INFO,
+    Please_enter_email,
+    TELEPHONE,
+    FIRST_NAME,
+    IDENTITY,
+    LAST_NAME,
+    COMPANY,
+    VALIDATE,
+    EDIT_A_CONTACT,
+    Are_you_sure_You_want_to_delete_this,
+    DELETE,
+  } = TEXTS;
+
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -93,14 +115,14 @@ export default function EditContact(props) {
       var mailformat =
         /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
       if (!value.match(mailformat)) {
-        setEmailError("Please enter valid format");
+        setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
     } else if (name === "phone") {
       setPhone(value);
       if (value.length < 10 || value.length > 25) {
-        setPhoneError("Telephone must have 10 to 25 digits");
+        setPhoneError(Telephone_must_have_10_to_25_digits);
       } else {
         setPhoneError("");
       }
@@ -139,7 +161,7 @@ export default function EditContact(props) {
 
   async function onDelete() {
     try {
-      if (window.confirm("Are you sure, you want to delete this?")) {
+      if (window.confirm(Are_you_sure_You_want_to_delete_this)) {
         setLoading(true);
         // console.log(store.token);
         await GLOBALS.API({
@@ -173,7 +195,7 @@ export default function EditContact(props) {
         companyError !== "" ||
         roleError !== ""
       ) {
-        alert("something went wrong");
+        alert(something_went_wrong);
       } else {
         e.preventDefault();
         setLoading(true);
@@ -217,19 +239,19 @@ export default function EditContact(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT A CONTACT" />
+      <Heading primary={EDIT_A_CONTACT} />
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary="TYPE OF ORGANIGRAMME: " />
+            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}: `} />
             <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
                 value={type}
                 // error={companyId}
                 values={[
-                  { value: "LOGISTICS", label: "LOGISTICS" },
-                  { value: "SITE", label: "SITE" },
+                  { value: "LOGISTICS", label: LOGISTICS },
+                  { value: "SITE", label: SITE },
                 ]}
                 placeholder="Type"
                 style={GLOBALS.Styles.inputWidth}
@@ -249,7 +271,7 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="CONTACT INFO : " />
+            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
             <Form.Row
               noMargin
               width="55%"
@@ -260,7 +282,7 @@ export default function EditContact(props) {
                   name="email"
                   value={email}
                   // error={firstName}
-                  placeholder="Adresse e-mail"
+                  placeholder={Please_enter_email}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -276,7 +298,7 @@ export default function EditContact(props) {
                   value={phone}
                   type="number"
                   // error={lastName}
-                  placeholder="Téléphone"
+                  placeholder={TELEPHONE}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -289,7 +311,7 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IDENTITY :  " />
+            <FormLabel bold primary={`${IDENTITY} :`} />
             <Form.Row
               noMargin
               width="55%"
@@ -300,7 +322,7 @@ export default function EditContact(props) {
                   name="firstName"
                   value={firstName}
                   // error={firstName}
-                  placeholder="First Name"
+                  placeholder={FIRST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -315,7 +337,7 @@ export default function EditContact(props) {
                   name="lastName"
                   value={lastName}
                   // error={lastName}
-                  placeholder="Last Name"
+                  placeholder={LAST_NAME}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -337,14 +359,14 @@ export default function EditContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="COMPANY: " />
+            <FormLabel bold primary={`${COMPANY} :`} />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
                   name="company"
                   value={company}
                   // error={lastName}
-                  placeholder="Enterprise"
+                  placeholder={COMPANY}
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -364,7 +386,7 @@ export default function EditContact(props) {
                   name="role"
                   value={role}
                   // error={lastName}
-                  placeholder="Role"
+                  placeholder="Rôle"
                   style={{ width: "100%" }}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -380,7 +402,7 @@ export default function EditContact(props) {
             <Button
               type="submit"
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               loading={loading}
               disabled={
@@ -390,7 +412,7 @@ export default function EditContact(props) {
           </Form.ButtonContainer>
 
           <Button
-            text="DELETE"
+            text={DELETE}
             minWidth={200}
             fullWidth={false}
             color={theme.palette.error.main}

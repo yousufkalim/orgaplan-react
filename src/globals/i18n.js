@@ -1,6 +1,5 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
 export const getLanguage = () => {
   return i18n.language || "en";
 };
@@ -17,21 +16,21 @@ export default i18n.use(initReactI18next).init({
         loginHeaderPrimary: "Login to your account",
         forgotPasswordHeaderPrimary: "Forgot Password?",
         forgotPasswordHeaderSecondary: "Enter your email to reset password",
-        submit: "SUBMIT",
+        submit: "Envoyer",
         register: "REGISTER",
-        login: "LOGIN",
+        login: "Connexion",
         orLogin: "Or Login Now",
         forgotPassword: "Forgot Password ?",
         dontHaveAccount: "Don't have an account?",
         // Placeholders
-        companyPlaceholder: "Company",
+        companyPlaceholder: "Entreprise",
         emailPlaceholder: "E-mail address",
-        firstNamePlaceholder: "First Name",
-        lastNamePlaceholder: "Last Name",
+        firstNamePlaceholder: "Prénom",
+        lastNamePlaceholder: "Nom",
         dateOfBirthPlaceholder: "Date of Birth",
-        passwordPlaceholder: "Password",
-        phonePlaceholder: "Phone Number",
-        confirmPasswordPlaceholder: "Confirm Password",
+        passwordPlaceholder: "Mot de passe",
+        phonePlaceholder: "Téléphone",
+        confirmPasswordPlaceholder: "Confirmer nouveau mot de p asse",
         // Errors
         emailInvalid: "Email is invalid!",
         passwordInvalid: "Password is invalid!",

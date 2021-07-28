@@ -37,6 +37,7 @@ const Means = () => {
   const {
     DELIVERIES,
     DELIVERY_REQUESTS,
+    STATUS,
     MEANS,
     TOTAL,
     LEVEL,
@@ -50,6 +51,7 @@ const Means = () => {
     SELECT_STORAGEAREA,
     START_DATE,
     END_DATE,
+    Exterior,
   } = TEXTS;
 
   const classes = useStyles();
@@ -346,10 +348,7 @@ const Means = () => {
           />
           <FormSelect
             value={building}
-            values={[
-              ...[{ label: "Exterior", value: "Exterior" }],
-              ...buildings,
-            ]}
+            values={[...[{ label: Exterior, value: "Exterior" }], ...buildings]}
             placeholder={LOCATION}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
@@ -405,7 +404,7 @@ const Means = () => {
           <FormSelect
             value={status}
             values={statuses}
-            placeholder="Status"
+            placeholder={STATUS}
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setStatus(value);
