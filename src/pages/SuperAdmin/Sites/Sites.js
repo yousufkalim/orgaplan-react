@@ -80,14 +80,24 @@ export default function Sites(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.SITES}?page=${page}&name=${query}&status=${status}&client=${client}`,
+        uri: `${GLOBALS.Constants.SITES}?page=${page}&name=${query}&status=${status}`,
       });
       const clients = await GLOBALS.API({
         uri: `${GLOBALS.Constants.CLIENTS}`,
       });
 
       setClients(clients.data.items);
-      setItems(result.data.items);
+      client === "ALL"
+        ? setItems(result.data.items)
+        : setItems(
+            result.data.items.filter((item) => {
+              let filteredItems = item.clientAdmin.filter((cli) => {
+                return cli.clientId._id === client;
+              });
+
+              return filteredItems.length > 0 && filteredItems;
+            }),
+          );
       setData(result.data);
       setLoading(false);
     } catch (err) {
@@ -184,7 +194,7 @@ export default function Sites(props) {
           <Form.Row alignItems="center" noMargin>
             <SubHeading
               noMargin
-              primary={data && `Total : ${data.totalItems} Chantiers`}
+              primary={data && `Total : ${items.length} Chantiers`}
               bold
             />
             <Button
@@ -220,6 +230,7 @@ export default function Sites(props) {
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               props.history.replace("/sites");
+              console.log("clientID", value);
               setClient(value);
             }}
           />
