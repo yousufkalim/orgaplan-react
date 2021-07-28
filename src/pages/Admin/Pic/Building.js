@@ -234,6 +234,8 @@ export default function AddSiteStep3(props) {
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       propShapes[inde].levels = activeBuildingObj.levels;
+      propShapes[inde].building.levels = activeBuildingObj.levels;
+
       propShape.levels = activeBuildingObj.levels;
 
       propsShapesCon = _.cloneDeep(propShapes);

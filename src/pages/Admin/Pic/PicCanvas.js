@@ -142,7 +142,7 @@ const PicCanvas = (props) => {
       fetchSitePic();
     }
     // eslint-disable-next-line
-  }, [adminStore, rendering, level]);
+  }, [adminStore, rendering, level, setShapes]);
   const findlevelName = (value) => {
     let name = levelsDropdown.find((a) => a.value == value);
     if (name) {
@@ -442,12 +442,15 @@ const PicCanvas = (props) => {
     }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
+      let inde = shapes.findIndex((item) => item._id === shape._id);
+
+      console.log(shapes[inde].building.levels, "propShapes[inde].levels");
+
       setselectedBuilding(shape);
       setOpenBuildingModal(true);
       let levelsArr = _.cloneDeep(shape.building.levels);
       setAllLevels(_.cloneDeep(levelsArr));
       let levs = [];
-
       levelsArr.map((le) =>
         levs.push({
           label: le.number === 0 ? "RDC" : le.number,
@@ -458,6 +461,8 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
+  console.log(levelsDropdown, "levelsDropdown");
+
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
@@ -694,6 +699,7 @@ const PicCanvas = (props) => {
                   shape={shape}
                   pic={level ? levelPic : sitePic}
                   level={level}
+                  setLevelsDropdown={setLevelsDropdown}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
