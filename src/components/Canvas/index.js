@@ -356,12 +356,9 @@ class App extends Component {
 
   handleConvaClick = (event) => {
     const {
-      Please_first_select_shape,
       You_only_can_make_upto_Decagon_shape,
       Upload_a_pdf_first,
       Select_an_element_first,
-      You_can_upload_only_pdf_file,
-      FILE_TOO_LARGE,
     } = TEXTS;
     const {
       state: {
@@ -379,6 +376,7 @@ class App extends Component {
       getMousePos,
     } = this;
     var finishDisable = false;
+
     var checkMean = false;
     const stage = event.target.getStage();
     const pointer = stage.getPointerPosition();
@@ -427,6 +425,7 @@ class App extends Component {
           finishDisable = this.isInsideDecagon(flat, pointer.x, pointer.y);
         }
       }
+
       if (event.target.attrs.meanFinish === false) {
         checkMean = true;
       } else if (event.target.attrs.meanFinish === true) {
@@ -1091,7 +1090,7 @@ class App extends Component {
     /* Calculate AreaOfTriangle of triangle PAB */
     let A3 = AreaOfTriangle(x1, y1, x2, y2, x, y);
     /* Check if sum of A1, A2 and A3 is same as A */
-    let check = false;
+    let check = true;
     if (A === A1 + A2 + A3) {
       check = true;
     }

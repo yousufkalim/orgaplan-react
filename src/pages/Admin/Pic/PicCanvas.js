@@ -142,7 +142,7 @@ const PicCanvas = (props) => {
       fetchSitePic();
     }
     // eslint-disable-next-line
-  }, [adminStore, rendering, level]);
+  }, [adminStore, rendering, level, setShapes]);
   const findlevelName = (value) => {
     let name = levelsDropdown.find((a) => a.value == value);
     if (name) {
@@ -447,7 +447,6 @@ const PicCanvas = (props) => {
       let levelsArr = _.cloneDeep(shape.building.levels);
       setAllLevels(_.cloneDeep(levelsArr));
       let levs = [];
-
       levelsArr.map((le) =>
         levs.push({
           label: le.number === 0 ? "RDC" : le.number,
@@ -458,6 +457,7 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
+
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
@@ -694,6 +694,7 @@ const PicCanvas = (props) => {
                   shape={shape}
                   pic={level ? levelPic : sitePic}
                   level={level}
+                  setLevelsDropdown={setLevelsDropdown}
                   shapes={shapes}
                   setShapes={setShapesFn}
                   selectedShape={selectedShape}
