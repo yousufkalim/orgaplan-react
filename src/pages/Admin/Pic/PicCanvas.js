@@ -442,10 +442,6 @@ const PicCanvas = (props) => {
     }
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
-      let inde = shapes.findIndex((item) => item._id === shape._id);
-
-      console.log(shapes[inde].building.levels, "propShapes[inde].levels");
-
       setselectedBuilding(shape);
       setOpenBuildingModal(true);
       let levelsArr = _.cloneDeep(shape.building.levels);
@@ -461,7 +457,6 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
-  console.log(levelsDropdown, "levelsDropdown");
 
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
