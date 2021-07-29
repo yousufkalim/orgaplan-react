@@ -83,6 +83,10 @@ const Incidents = (props) => {
     END_DATE,
     DESIGNATION,
     COMPANY,
+    UNEXPECTED,
+    MEAN,
+    INCIDENT,
+    DELAY,
   } = TEXTS;
 
   const classes = useStyles();
@@ -485,10 +489,10 @@ const Incidents = (props) => {
               placeholder="Type"
               value={selectedType}
               values={[
-                { value: "INCIDENT", label: "Incident" },
-                { value: "MEAN", label: "Mean" },
-                { value: "DELAY", label: "Delay" },
-                { value: "UNEXPRECTED", label: "Unexp" },
+                { value: "INCIDENT", label: INCIDENT },
+                { value: "MEAN", label: MEAN },
+                { value: "DELAY", label: DELAY },
+                { value: "UNEXPRECTED", label: UNEXPECTED },
               ]}
               style={{ marginRight: "5px", maxWidth: 250 }}
               onChange={(event) => {

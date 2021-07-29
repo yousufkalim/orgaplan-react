@@ -70,6 +70,7 @@ const Calender = (props) => {
     DISABLE_DAY,
     DISABLE_HOURS,
     Booking_cant_be_in_Previous_day,
+    Mean_not_Available,
   } = TEXTS;
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -578,7 +579,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Mean not Available", "error"),
+            Actions.notistack.snackbar(Mean_not_Available, "error"),
           ),
         );
       }

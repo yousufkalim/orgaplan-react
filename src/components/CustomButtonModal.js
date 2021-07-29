@@ -20,7 +20,7 @@ import Button from "./Button";
 
 export default function CustomButtonModal(props) {
   const theme = useTheme();
-  const { VALIDATE } = TEXTS;
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
   const error = theme.palette.error.main;
   const primaryColor = theme.palette.primary.contrastText;
   const borderColor = props.error ? error : theme.palette.grey[100];
@@ -156,7 +156,7 @@ export default function CustomButtonModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={

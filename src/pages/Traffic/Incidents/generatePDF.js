@@ -3,10 +3,12 @@ import "jspdf-autotable";
 import moment from "moment";
 import SiteImage from "../../../assets/images/Site.png";
 import GLOBALS from "../../../globals";
+import { TEXTS } from "../../../assets/languages/french";
 
 const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
   var today = moment(new Date()).format("DD/MM/YYYY");
   var newdate = "Date: " + today;
+  const { Name_Of_Reinvoice, AMOUNT, TYPE_OF_Re_invoice, STATUS } = TEXTS;
 
   var companyName = "Company : " + companyName;
   var siteName = "Site : " + sitedata?.name;
@@ -17,11 +19,11 @@ const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
     : SiteImage;
   const doc = new jsPDF();
   const tableColumn = [
-    "Name_of_Re-invoice",
-    "Type_of_Re-invoice",
+    Name_Of_Reinvoice,
+    TYPE_OF_Re_invoice,
     "Date/Time",
-    "Amount",
-    "Status",
+    AMOUNT,
+    STATUS,
   ];
   const tableRows = [];
 

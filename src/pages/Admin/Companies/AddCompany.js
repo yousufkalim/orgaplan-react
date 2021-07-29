@@ -372,7 +372,7 @@ export default function AddCompanies(props) {
                     <TextField
                       {...params}
                       name="name"
-                      label="Name"
+                      label={NAME}
                       variant="outlined"
                       onBlur={({ target: { name, value } }) =>
                         validation(name, value)

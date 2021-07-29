@@ -27,7 +27,11 @@ const VarificationSheet = (props) => {
     ADD_COMMENT,
     ADD_PHOTO,
     YES,
+    TIME_OF_ARRIVAL,
+    VERIFICATION_SHEET_FOR_DELIVERY,
+    RETURN_BUFFER_AREA,
     NO,
+    TIME_OF_DEPARTURE,
     VALIDATE,
   } = TEXTS;
   const history = useHistory();
@@ -167,7 +171,7 @@ const VarificationSheet = (props) => {
           <IconButton onClick={() => history.goBack()}>
             <BackArrow style={{ width: 30, height: 30 }} />
           </IconButton>
-          <h1 className="heading">VERIFICATION SHEET FOR DELIVERY</h1>
+          <h1 className="heading">{VERIFICATION_SHEET_FOR_DELIVERY}</h1>
           {/* <Button variant="danger" className="incedentBtn">
             CREATE AN INCIDENT
           </Button> */}
@@ -301,7 +305,7 @@ const VarificationSheet = (props) => {
           <>
             <div className="col-sm-6">
               <br />
-              <div className="label">RETURN BUFFER AREA: </div>
+              <div className="label">{RETURN_BUFFER_AREA}: </div>
             </div>
             <div className="col-sm-6">
               <br />
@@ -334,7 +338,7 @@ const VarificationSheet = (props) => {
             </div>
             <div className="col-sm-6">
               <br />
-              <div className="label">TIME OF ARRIVAL: </div>
+              <div className="label">{TIME_OF_ARRIVAL}: </div>
             </div>
             <div className="col-sm-6">
               <br />
@@ -372,7 +376,7 @@ const VarificationSheet = (props) => {
             </div>
             <div className="col-sm-6">
               <br />
-              <div className="label">TIME OF DEPARTURE: </div>
+              <div className="label">{TIME_OF_DEPARTURE}: </div>
             </div>
             <div className="col-sm-6">
               <br />

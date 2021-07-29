@@ -114,6 +114,10 @@ const Calender = (props) => {
     SELECT_COMPANY,
     LOCATION,
     ALERT,
+
+    PENDING,
+    VALIDATED,
+    MODIFIED,
   } = TEXTS;
 
   const adminStore = useSelector((state) => state.admin);
@@ -161,10 +165,10 @@ const Calender = (props) => {
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
   const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: "PENDING" },
-    { value: "VALIDATED", label: "VALIDATED" },
-    { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERT", label: "ALERT" },
+    { value: "PENDING", label: PENDING },
+    { value: "VALIDATED", label: VALIDATED },
+    { value: "MODIFIED", label: MODIFIED },
+    { value: "ALERT", label: ALERT },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);

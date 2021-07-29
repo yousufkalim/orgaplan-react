@@ -51,6 +51,7 @@ export default function EditContact(props) {
     COMPANY,
     VALIDATE,
     EDIT_A_CONTACT,
+    Maximum_characters_limit_30,
     Are_you_sure_You_want_to_delete_this,
     DELETE,
   } = TEXTS;
@@ -129,28 +130,28 @@ export default function EditContact(props) {
     } else if (name === "firstName") {
       setFirstName(value);
       if (value.length > 30) {
-        setFirstNameError("Maximum chracters limit 30");
+        setFirstNameError(Maximum_characters_limit_30);
       } else {
         setFirstNameError("");
       }
     } else if (name === "lastName") {
       setLastName(value);
       if (value.length > 30) {
-        setLastNameError("Maximum chracters limit 30");
+        setLastNameError(Maximum_characters_limit_30);
       } else {
         setLastNameError("");
       }
     } else if (name === "company") {
       setCompany(value);
       if (value.length > 30) {
-        setCompanyError("Maximum chracters limit 30");
+        setCompanyError(Maximum_characters_limit_30);
       } else {
         setCompanyError("");
       }
     } else if (name === "role") {
       setRole(value);
       if (value.length > 30) {
-        setRoleError("Maximum chracters limit 30");
+        setRoleError(Maximum_characters_limit_30);
       } else {
         setRoleError("");
       }
