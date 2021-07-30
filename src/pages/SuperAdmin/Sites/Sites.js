@@ -52,6 +52,8 @@ export default function Sites(props) {
     See_archived_sites,
     STATUS,
     SITE_NAME,
+    ACTIVE,
+    INACTIVE,
   } = TEXTS;
   const classes = useStyles();
   const theme = useTheme();
@@ -148,8 +150,8 @@ export default function Sites(props) {
   );
   const statusArray = [
     { value: "ALL", label: STATUS },
-    { value: "ACTIVE", label: "Active" },
-    { value: "INACTIVE", label: "Inactive" },
+    { value: "ACTIVE", label: ACTIVE },
+    { value: "INACTIVE", label: INACTIVE },
   ];
   const rows = items.map((item) => [
     <img

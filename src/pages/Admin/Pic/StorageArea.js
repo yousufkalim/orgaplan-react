@@ -56,6 +56,7 @@ export default function DeliveryArea(props) {
     ADDITIONNAL_INFORMATION,
     START_DATE,
     Please_enter_valid_email,
+    NAME_REQUIRED,
   } = TEXTS;
 
   const { setSelectedShape } = props;
@@ -159,7 +160,7 @@ export default function DeliveryArea(props) {
         setName(value);
         setErrors({ ...errors, name: "" });
       } else if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
         setName("");
       }
     } else if (name === "isFull") setIsFull(value);
@@ -210,7 +211,7 @@ export default function DeliveryArea(props) {
   function validation(name, value) {
     if (name === "name") {
       if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
       } else setErrors({ ...errors, name: "" });
     }
   }

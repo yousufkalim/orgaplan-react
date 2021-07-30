@@ -33,7 +33,7 @@ export default function CustomInputModalSingleSelect(props) {
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
   const borderColor = props.error ? error : theme.palette.grey[100];
-  const { VALIDATE } = TEXTS;
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
   const formik = useFormik({
     initialValues: {
       logo: [],
@@ -165,7 +165,7 @@ export default function CustomInputModalSingleSelect(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={

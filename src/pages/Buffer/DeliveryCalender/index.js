@@ -87,7 +87,7 @@ const Calender = (props) => {
     Edit_Event,
     END_DATE,
     Update_Event,
-
+    Delivery_Calender,
     TOTAL_MEANS_Booking,
     UNEXPECTED,
     COMPANY_ConstructBTP,
@@ -102,6 +102,10 @@ const Calender = (props) => {
     Booking_cant_be_in_Previous_day,
     DELIVERY_DELETED,
     Delivery_Area_Site_By_SiteId_Error,
+    PENDING,
+    VALIDATED,
+    MODIFIED,
+    ALERT,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -158,10 +162,10 @@ const Calender = (props) => {
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
   const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: "PENDING" },
-    { value: "VALIDATED", label: "VALIDATED" },
-    { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERT", label: "ALERT" },
+    { value: "PENDING", label: PENDING },
+    { value: "VALIDATED", label: VALIDATED },
+    { value: "MODIFIED", label: MODIFIED },
+    { value: "ALERT", label: ALERT },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
@@ -1585,7 +1589,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="Delivery Calender" noWrap />
+                <Heading primary={Delivery_Calender} noWrap />
                 {/* <SubHeading
                   noMargin
                   topPadding

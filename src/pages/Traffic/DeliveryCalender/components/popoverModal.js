@@ -133,7 +133,7 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {"Name: " +
+                      {`${NAME}: ` +
                         event.user.firstName +
                         " " +
                         event.user.lastName +

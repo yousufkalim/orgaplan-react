@@ -24,7 +24,7 @@ const types = [
 
 export default function CustomInputModal(props) {
   const theme = useTheme();
-  const { VALIDATE } = TEXTS;
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -134,7 +134,7 @@ export default function CustomInputModal(props) {
       </div>
       <Modal
         open={modal}
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>

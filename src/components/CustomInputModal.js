@@ -86,7 +86,7 @@ export default function CustomInputModal(props) {
       fontSize: theme.typography.pxToRem(12),
     },
   }));
-  const { VALIDATE } = TEXTS;
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
 
   const classes = useStyles();
   const [modal, setModal] = useState(false);
@@ -157,7 +157,7 @@ export default function CustomInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={

@@ -63,6 +63,7 @@ const Calender = (props) => {
     DELIVERIES,
     DELIVERY_REQUESTS,
     PLANNING,
+    Delivery_Calender,
     Not_availble,
     VALIDATE,
     CLOSE,
@@ -1613,7 +1614,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="Delivery Calender" noWrap />
+                <Heading primary={Delivery_Calender} noWrap />
                 {/* <SubHeading
                 noMargin
                 topPadding

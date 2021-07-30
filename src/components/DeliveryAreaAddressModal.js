@@ -17,7 +17,14 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-  const { VALIDATE, LOCATION, AVAILABILITIES, START_DATE, END_DATE } = TEXTS;
+  const {
+    VALIDATE,
+    LOCATION,
+    AVAILABILITIES,
+    START_DATE,
+    END_DATE,
+    ADD_ADDRESS,
+  } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -176,7 +183,7 @@ export default function MultiAdderInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD ADDRESSES"
+        title={ADD_ADDRESS}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={

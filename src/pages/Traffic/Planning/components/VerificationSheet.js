@@ -35,6 +35,7 @@ const VarificationSheet = (props) => {
     COMPLETED_WITH_ISSUES,
     NOT_COMPLETED,
     CREATE_AN_INCIDENT,
+    PENDING,
   } = TEXTS;
 
   const history = useHistory();
@@ -297,7 +298,7 @@ const VarificationSheet = (props) => {
               <>
                 <Form.Check
                   type="radio"
-                  label="PENDING"
+                  label={PENDING}
                   name="status"
                   checked
                   className="pending"

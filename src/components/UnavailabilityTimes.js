@@ -30,7 +30,15 @@ const addUnavailabilityYup = Yup.object().shape({
 export default function MultiAdderInputModal(props) {
   const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
     props;
-  const { SEE_OPENING_TIMES, YES, NO, REASON } = TEXTS;
+  const {
+    SEE_OPENING_TIMES,
+    YES,
+    NO,
+    REASON,
+    Day_Off,
+    This_time_is_not_available,
+    Please_select_a_Vaild_time,
+  } = TEXTS;
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -195,14 +203,14 @@ export default function MultiAdderInputModal(props) {
         } else {
           dispatch(
             Actions.notistack.enqueueSnackbar(
-              Actions.notistack.snackbar("This time is not available", "error"),
+              Actions.notistack.snackbar(This_time_is_not_available, "error"),
             ),
           );
         }
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Please select a Vaild time ", "error"),
+            Actions.notistack.snackbar(Please_select_a_Vaild_time, "error"),
           ),
         );
       }
@@ -260,7 +268,7 @@ export default function MultiAdderInputModal(props) {
                         color="primary"
                       />
                     }
-                    label="Day Off"
+                    label={Day_Off}
                   />
                 </Form.Row>
               </Form.Row>

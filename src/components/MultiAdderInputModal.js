@@ -13,7 +13,15 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-  const { VALIDATE } = TEXTS;
+  const {
+    VALIDATE,
+    ADD_ADDRESS,
+    text_only,
+    CITY,
+    STREET,
+    FIVE_digits_only,
+    POSTAL,
+  } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -133,7 +141,7 @@ export default function MultiAdderInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD ADDRESS"
+        title={ADD_ADDRESS}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
@@ -144,7 +152,7 @@ export default function MultiAdderInputModal(props) {
                 value={street}
                 maxLength="80"
                 textAlign="center"
-                placeholder="Street"
+                placeholder={`${STREET}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -156,7 +164,7 @@ export default function MultiAdderInputModal(props) {
                 value={city}
                 maxLength="30"
                 textAlign="center"
-                placeholder="City (text only)"
+                placeholder={`${CITY} ${text_only}`}
                 onChange={({ target: { name, value } }) => {
                   (/^[A-Za-z]+$/.test(value) || value === "") &&
                     handleChange(name, value);
@@ -170,7 +178,7 @@ export default function MultiAdderInputModal(props) {
                 maxLength={5}
                 value={postal}
                 textAlign="center"
-                placeholder="Postal (5 digits only)"
+                placeholder={`${POSTAL} ${FIVE_digits_only}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
