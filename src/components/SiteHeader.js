@@ -230,8 +230,16 @@ export default function SiteHeader(props) {
         }}
       >
         <div className={classes.drawerContainer}>
-          <div className={classes.logoContainer}>
-            <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
+          <div
+            className={classes.logoContainer}
+            onClick={() => dispatch(Actions.admin.reset_state())}
+          >
+            <img
+              src={Logo}
+              alt="Orgaplan-Logo"
+              className={classes.logo}
+              onClick={() => dispatch(Actions.admin.reset_state())}
+            />
           </div>
           <div className={classes.imageContainer}>
             <div
