@@ -63,6 +63,7 @@ export default function AddSiteStep2(props) {
     day7Off: true,
   });
   const [unavailabilityDates, setUnavailabilityDates] = useState([]);
+  console.log(unavailabilityDates);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
