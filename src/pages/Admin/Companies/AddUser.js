@@ -178,8 +178,10 @@ export default function AddUser(props) {
                     }
                   });
                 }}
-                options={users.map(
-                  (option) => option.email !== undefined && option.email,
+                options={users.map((option) =>
+                  option.status !== "DELETED"
+                    ? option.email !== undefined && option.email
+                    : "",
                 )}
                 renderInput={(params) => (
                   <TextField
