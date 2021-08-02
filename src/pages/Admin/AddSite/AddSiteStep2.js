@@ -148,7 +148,7 @@ export default function AddSiteStep2(props) {
       formdata.append("name", step1.name);
       step1.logo.length > 0 && formdata.append("logo", step1.logo[0].file);
       formdata.append("zacId", step1.zacId);
-      formdata.append("adminId", step1.adminId);
+      formdata.append("clientAdmin", JSON.stringify(step1.clientAdmin));
       formdata.append("functionality", step1.functionality);
       formdata.append("addresses", JSON.stringify(addresses));
       formdata.append("trades", JSON.stringify(trades));

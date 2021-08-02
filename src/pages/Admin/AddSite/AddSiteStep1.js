@@ -46,6 +46,9 @@ export default function AddSiteStep1(props) {
   const [logo, setLogo] = useState([]);
   const [zacId, setZacId] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [clientId, setClientId] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [clientAdmin, setClientAdmin] = useState([]);
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -59,10 +62,13 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     clients.map((client) =>
-      client.adminIds.map(
-        (admin) =>
-          admin._id === adminId && setClientName(client.companyId.name),
-      ),
+      client.adminIds.map((admin) => {
+        if (admin._id === adminId) {
+          setClientName(client.companyId.name);
+          setClientId(client._id);
+          setCompanyId(client.companyId._id);
+        }
+      }),
     );
   }, [clients, adminId]);
 
@@ -90,6 +96,13 @@ export default function AddSiteStep1(props) {
       });
       setZacs(zacsArray);
       setAdmins(adminsArray);
+      setClientAdmin([
+        {
+          adminId: store.user._id,
+          clientId: clientId,
+          companyId: companyId,
+        },
+      ]);
       setClients(clientsResult.data.items);
       setAdminId(store.user._id);
       setLoading(false);
@@ -124,7 +137,7 @@ export default function AddSiteStep1(props) {
       name,
       logo,
       zacId,
-      adminId,
+      clientAdmin,
       functionality,
       addresses,
       trades,
