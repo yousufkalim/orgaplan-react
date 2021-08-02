@@ -230,7 +230,6 @@ export default function Sites(props) {
             style={{ marginRight: "20px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               props.history.replace("/sites");
-              console.log("clientID", value);
               setClient(value);
             }}
           />

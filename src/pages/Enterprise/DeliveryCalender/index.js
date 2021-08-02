@@ -1073,7 +1073,7 @@ const Calender = (props) => {
             } else if (key.status === "MODIFIED") {
               background = "orange";
             } else {
-              background = "green";
+              background = "#32CD32";
             }
 
             /* start time converstion */
@@ -1121,7 +1121,7 @@ const Calender = (props) => {
             let fontColor = "white";
 
             if (key.status === "VALIDATED") {
-              background = "green";
+              background = "#32CD32";
             } else {
               background = "";
             }
