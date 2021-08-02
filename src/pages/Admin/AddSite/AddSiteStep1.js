@@ -46,8 +46,6 @@ export default function AddSiteStep1(props) {
   const [logo, setLogo] = useState([]);
   const [zacId, setZacId] = useState("");
   const [adminId, setAdminId] = useState("");
-  const [clientId, setClientId] = useState("");
-  const [companyId, setCompanyId] = useState("");
   const [clientAdmin, setClientAdmin] = useState([]);
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
@@ -65,12 +63,17 @@ export default function AddSiteStep1(props) {
       client.adminIds.map((admin) => {
         if (admin._id === adminId) {
           setClientName(client.companyId.name);
-          setClientId(client._id);
-          setCompanyId(client.companyId._id);
+          setClientAdmin([
+            {
+              adminId: store.user._id,
+              clientId: client._id,
+              companyId: client.companyId._id,
+            },
+          ]);
         }
       }),
     );
-  }, [clients, adminId, clientId, companyId, clientAdmin]);
+  }, [clients, adminId]);
   async function fetchData() {
     try {
       const zacsResult = await GLOBALS.API({
@@ -95,13 +98,7 @@ export default function AddSiteStep1(props) {
       });
       setZacs(zacsArray);
       setAdmins(adminsArray);
-      setClientAdmin([
-        {
-          adminId: store.user._id,
-          clientId: clientId,
-          companyId: companyId,
-        },
-      ]);
+
       setClients(clientsResult.data.items);
       setAdminId(store.user._id);
       setLoading(false);
