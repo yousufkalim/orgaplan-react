@@ -1123,9 +1123,9 @@ const Calender = (props) => {
             } else {
               if (key.alert === true && status === "ALERT") {
                 fontColor = "red";
-                background = "green";
+                background = "#32CD32";
               } else {
-                background = "green";
+                background = "#32CD32";
               }
             }
 
@@ -1172,7 +1172,7 @@ const Calender = (props) => {
             let fontColor = "white";
 
             if (key.status === "VALIDATED") {
-              background = "green";
+              background = "#32CD32";
             } else {
               background = "";
             }

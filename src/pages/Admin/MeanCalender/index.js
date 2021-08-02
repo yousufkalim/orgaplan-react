@@ -840,7 +840,7 @@ const Calender = (props) => {
         const tempmeanData = response.data.history.map((key, index) => {
           let colour = "";
           if (key.status === "VALIDATED") {
-            colour = "green";
+            colour = "#32CD32";
           } else {
             colour = "#FFFF00";
           }
@@ -926,7 +926,7 @@ const Calender = (props) => {
             siteId: key.siteId,
             userId: key.userId,
             _id: key._id,
-            color: "green",
+            color: "#32CD32",
             status: key.status,
           };
         });
@@ -934,7 +934,7 @@ const Calender = (props) => {
           (key, index) => {
             let colour = "";
             if (key.status === "VALIDATED") {
-              colour = "green";
+              colour = "#32CD32";
             } else {
               colour = "#FFFF00";
             }
@@ -1376,7 +1376,7 @@ const Calender = (props) => {
               {PENDING}
             </span>
 
-            <FiberManualRecordIcon style={{ color: "green" }} />
+            <FiberManualRecordIcon style={{ color: "#32CD32" }} />
             <span style={{ display: "inline-block", paddingRight: "14px" }}>
               {" "}
               {VALIDATE}
