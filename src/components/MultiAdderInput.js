@@ -134,9 +134,9 @@ export default function MultiAdderInput(props) {
             setText(e.target.value);
             if (props.name === "trades") {
               if (!e.target.value && props.trades.length < 1) {
-                props.setTradeError(Please_enter_atleast_one_trade);
+                props?.setTradeError(Please_enter_atleast_one_trade);
               } else {
-                props.setTradeError("");
+                props?.setTradeError("");
               }
             }
           }}

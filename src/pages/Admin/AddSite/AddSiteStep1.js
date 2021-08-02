@@ -46,6 +46,7 @@ export default function AddSiteStep1(props) {
   const [logo, setLogo] = useState([]);
   const [zacId, setZacId] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [TradeError, setTradeError] = useState("");
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -243,6 +244,7 @@ export default function AddSiteStep1(props) {
                 placeholder={DELAY}
                 name="penaltyforLateDelivery"
                 value={penaltyforLateDelivery}
+                setTradeError={setTradeError}
                 onChange={({ target: { name, value } }) =>
                   value >= 0 && handleChange(name, value)
                 }
