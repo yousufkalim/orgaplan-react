@@ -51,8 +51,8 @@ const TabsComponent = ({ items }) => {
         indicatorColor="primary"
         scrollButtons="auto"
       >
-        <Tab label={"Per " + items[0].title} className={classes.tab} />
-        <Tab label={"Per " + items[1].title} className={classes.tab} />
+        <Tab label={"Par " + items[0].title} className={classes.tab} />
+        <Tab label={"Par " + items[1].title} className={classes.tab} />
       </Tabs>
       {items[value].items.map((item, index) => (
         <Form.Row key={index}>

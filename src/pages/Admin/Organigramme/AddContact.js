@@ -40,6 +40,12 @@ export default function AddContact(props) {
     LAST_NAME,
     VALIDATE,
     TYPE,
+    FIRST_NAME_REQUIRED,
+    Telephone_must_have_10_to_25_digits,
+    LAST_NAME_REQUIRED,
+    Please_enter_company_name,
+    Please_enter_type_of_organigramme,
+    Please_enter_valid_email,
   } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -119,37 +125,37 @@ export default function AddContact(props) {
     if (name == "email") {
       const emailValidation = /\S+@\S+\.\S+/;
       if (!value.match(emailValidation)) {
-        setEmailError("Please enter valid email");
+        setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
     } else if (name == "phone") {
       if (value.length < 10 || value.length > 25) {
-        setPhoneError("Telephone must have 10 to 25 digits");
+        setPhoneError(Telephone_must_have_10_to_25_digits);
       } else {
         setPhoneError("");
       }
     } else if (name == "firstName") {
       if (!value) {
-        setFirstNameError("Please enter firstname");
+        setFirstNameError(FIRST_NAME_REQUIRED);
       } else {
         setFirstNameError("");
       }
     } else if (name == "lastName") {
       if (!value) {
-        setLastNameError("Please enter lastname");
+        setLastNameError(LAST_NAME_REQUIRED);
       } else {
         setLastNameError("");
       }
     } else if (name == "company") {
       if (!value) {
-        setCompanyError("Please enter Company");
+        setCompanyError(Please_enter_company_name);
       } else {
         setCompanyError("");
       }
     } else if (name == "type") {
       if (!value) {
-        setTypeError("Please enter type of organigramme");
+        setTypeError(Please_enter_type_of_organigramme);
       } else {
         setTypeError("");
       }

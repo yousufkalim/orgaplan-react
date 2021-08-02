@@ -190,7 +190,7 @@ export default function SiteHeader(props) {
           {
             name: PLANNING,
             path: "/Plannig",
-            icon: <Means />,
+            icon: <Calender />,
           },
 
           {

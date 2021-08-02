@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddUser(props) {
   const {
     IDENTITY,
-
+    CONSTRUCTION_SITE,
     LAST_NAME,
     FIRST_NAME,
     Add_USER,
@@ -258,7 +258,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY} : `} />
+            <FormLabel bold primary={`${COMPANY}* : `} />
             <Form.Row noMargin width="48%">
               <FormSelect
                 placeholder={COMPANY}
@@ -279,7 +279,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RÔLE : " />
+            <FormLabel bold primary="RÔLE*: " />
             <Form.Row noMargin width="48%">
               <FormSelect
                 name="color"
@@ -301,7 +301,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Construction Chantier : " />
+            <FormLabel bold primary={`${CONSTRUCTION_SITE}: `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="site"
