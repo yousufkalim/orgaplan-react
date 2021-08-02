@@ -131,6 +131,7 @@ const PicCanvas = (props) => {
   const [shape, setShape] = useState("");
   const [openStorageModal, setOpenStorageModal] = useState(false);
   const [openshapeModal, setOpenShapeModal] = useState(false);
+  const [openBuildingModal, setOpenBuildingModal] = useState(false);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -560,6 +561,7 @@ const PicCanvas = (props) => {
     setSelectedShape(shape);
     if (shape.type === "BUILDING") {
       setselectedBuilding(shape);
+      setOpenBuildingModal(true);
       let levelsArr = _.cloneDeep(shape.building.levels);
       setAllLevels(_.cloneDeep(levelsArr));
       let levs = [];
@@ -827,29 +829,6 @@ const PicCanvas = (props) => {
                     : classes.infoDrawer
                 }
               >
-                {/* <SubHeading primary={selectedShape.name} bold fontSize={22} />
-                <SubHeading primary={`Type1 : ${selectedShape.type}`} /> */}
-                {selectedShape.type === "BUILDING" && (
-                  <FormSelect
-                    name="level"
-                    value={level}
-                    values={levelsDropdown}
-                    placeholder={SELECT_LEVEL}
-                    onChange={({ target: { value } }) => {
-                      setLevel(value);
-                      findlevelName(value);
-                      if (value) {
-                        fetchLevelPic(value);
-                        const leve = allLeves.find((lev) => lev._id === value);
-                        setPdf(
-                          leve?.plan
-                            ? GLOBALS.Constants.BASE_URL + leve.plan
-                            : undefined,
-                        );
-                      }
-                    }}
-                  />
-                )}
                 <Form.Row>
                   {/* {level === "" ? (
                     <IconButton
@@ -884,9 +863,9 @@ const PicCanvas = (props) => {
                           selectedShape: selectedShape,
                         }}
                       >
-                        <IconButton>
+                        {/* <IconButton>
                           <Calendar className={classes.infoIcon} />
-                        </IconButton>
+                        </IconButton> */}
                       </NavLink>
                     </>
                   ) : selectedShape.type === "DELIVERYAREA" ? (
@@ -1039,6 +1018,71 @@ const PicCanvas = (props) => {
             ""
           ))}
       </>
+      {/* --------------------Building modal-------------------- */}
+      <Dialog
+        open={openBuildingModal}
+        onClose={() => setOpenBuildingModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent style={{ margin: "30px" }}>
+          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+            {selectedShape?.name}
+          </h4>
+          <SubHeading primary={`Type : ${selectedShape.type}`} />
+          <div
+            className={classes.infoDrawerContainer}
+            style={{ width: "100%" }}
+          >
+            {selectedShape && selectedShape.type === "BUILDING" && level && (
+              <Button
+                text={SHOW_EXTERIOR}
+                className="mt-2"
+                style={{ marginBottom: "5px" }}
+                onClick={() => {
+                  setOpenBuildingModal(false);
+                  setTimeout(function () {
+                    setPdf(
+                      adminStore.site.siteId?.plan
+                        ? GLOBALS.Constants.BASE_URL +
+                            adminStore.site.siteId?.plan
+                        : undefined,
+                    );
+                    setShapes(sitePic.shapes);
+                    setLevel("");
+                    setSelectedShape("");
+                    setselectedBuilding("");
+                    selectedShapeReserver = null;
+                  }, 4);
+                }}
+              />
+            )}
+
+            {selectedShape.type === "BUILDING" && (
+              <FormSelect
+                name="level"
+                value={level}
+                values={levelsDropdown}
+                placeholder={SELECT_LEVEL}
+                onChange={({ target: { value } }) => {
+                  setLevel(value);
+                  findlevelName(value);
+                  if (value) {
+                    fetchLevelPic(value);
+                    const leve = allLeves.find((lev) => lev._id === value);
+                    setPdf(
+                      leve?.plan
+                        ? GLOBALS.Constants.BASE_URL + leve.plan
+                        : undefined,
+                    );
+                  }
+                }}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/*--------------------------------- Mean modal-------------------------------- */}
       <Dialog
         open={openMeanModal}
