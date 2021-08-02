@@ -65,6 +65,7 @@ export default function AddSiteStep3(props) {
     CREATE_A_LEVEL,
     LEVEL_NAME,
     Modify,
+    BUILDING,
   } = TEXTS;
 
   const theme = useTheme();
@@ -501,7 +502,7 @@ export default function AddSiteStep3(props) {
             <FormLabel
               bold
               noMargin
-              primary={`Building: ${activeBuilding.name}`}
+              primary={`${BUILDING}: ${activeBuilding.name}`}
             />
             <Divider />
             <div className={classes.content}>

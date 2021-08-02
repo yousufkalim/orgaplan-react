@@ -388,7 +388,7 @@
     ]
   },
   "zacs": {
-    "headings": ["Nom de la zac", "Chantiers", "Actions"],
+    "headings": ["Nom de la Zac", "Chantiers", "Actions"],
     "items": [
       ["ZAC 1", 3],
       ["ZAC 1", 3],
@@ -402,7 +402,7 @@
     "headings": [
       "Image",
       "Nom De Chantier",
-      "Nom de la zac",
+      "Nom de la Zac",
       "Responsible",
       "Statut",
       "Actions"
@@ -459,7 +459,7 @@
     ]
   },
   "levels": {
-    "headings": ["Niveaus", "Plan", "Actions"],
+    "headings": ["Niveaux", "Plan", "Actions"],
     "items": [
       ["RDC", "Plan 1.pdf"],
       ["2", "Plan 2.pdf"],
@@ -477,7 +477,7 @@
     ]
   },
   "admins": {
-    "headings": ["Entreprise", "Nom", "téléphoner", "Chantiers", "Actions"],
+    "headings": ["Entreprise", "Nom", "Téléphone", "Chantiers", "Actions"],
     "items": [
       ["ContructBTP", "Thierry Marles", "0666446644", 2],
       ["ContructBTP", "Thierry Marles", "0666446644", "-"],
@@ -491,10 +491,10 @@
   },
   "meansOfHistoric": {
     "headings": [
-      "Démarrer De Réservation",
-      "End of réservation",
+      "Début de la réservation",
+      "Fin de la réservation",
       "Entreprise",
-      "Raison De Réservation"
+      "Raison de la réservation"
     ],
     "items": [
       [
@@ -536,7 +536,7 @@
     ]
   },
   "means": {
-    "headings": ["Nom", "Statut", "Type", "Aire", "Zone", "Actions"],
+    "headings": ["Nom", "Statut", "Ouvert", "Aire", "Zone", "Actions"],
     "items": [
       [
         "Marché couvert des ULYSSES",
@@ -585,7 +585,7 @@
   "incidents": {
     "headings": [
       "Date",
-      "Type",
+      "Ouvert",
       "Designation",
       "Entreprise",
       "Statut",

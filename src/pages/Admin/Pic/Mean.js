@@ -41,6 +41,7 @@ export default function AddMean(props) {
     NOTIFY_THE_ADDRESSES,
     Please_enter_email,
     IDENTITY,
+    TYPE,
     ACCESSIBILITY,
     AVAILABILITIES,
     UNAVAILABILITIES,
@@ -341,7 +342,7 @@ export default function AddMean(props) {
             <FormSelect
               name="type"
               value={meanType}
-              placeholder="Type"
+              placeholder={TYPE}
               values={[
                 {
                   label: LIFTING,

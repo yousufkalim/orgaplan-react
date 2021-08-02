@@ -31,7 +31,7 @@ export default function MultiAdderInputModal(props) {
   const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
     props;
   const {
-    SEE_OPENING_TIMES,
+    SEE_UNAVAILABILITIES,
     YES,
     NO,
     REASON,
@@ -232,13 +232,13 @@ export default function MultiAdderInputModal(props) {
         minWidth={200}
         fullWidth={false}
         color={theme.palette.blue}
-        text={SEE_OPENING_TIMES}
+        text={SEE_UNAVAILABILITIES}
         onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
         open={modal}
-        title={SEE_OPENING_TIMES}
+        title={SEE_UNAVAILABILITIES}
         onClose={() => setModal((st) => !st)}
         body={
           <>

@@ -40,6 +40,7 @@ const Means = () => {
     MEANS,
     TOTAL,
     LEVEL,
+    TYPE,
     LIST_OF_MEANS,
     HISTORIC,
     COMPANY,
@@ -408,7 +409,7 @@ const Means = () => {
           <FormSelect
             value={type}
             values={types}
-            placeholder="Type"
+            placeholder={TYPE}
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setType(value);
