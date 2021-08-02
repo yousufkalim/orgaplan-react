@@ -70,8 +70,7 @@ export default function AddSiteStep1(props) {
         }
       }),
     );
-  }, [clients, adminId]);
-
+  }, [clients, adminId, clientId, companyId, clientAdmin]);
   async function fetchData() {
     try {
       const zacsResult = await GLOBALS.API({
@@ -130,7 +129,7 @@ export default function AddSiteStep1(props) {
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
   }
-
+  console.log(clientAdmin);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
@@ -144,6 +143,7 @@ export default function AddSiteStep1(props) {
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
     };
+
     props.setStep1Data(values);
     props.setStep(2);
   }

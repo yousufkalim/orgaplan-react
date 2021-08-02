@@ -143,7 +143,6 @@ export default function AddSiteStep2(props) {
           dayOff: openingHours.day7Off,
         },
       ];
-
       var formdata = new FormData();
       formdata.append("name", step1.name);
       step1.logo.length > 0 && formdata.append("logo", step1.logo[0].file);
