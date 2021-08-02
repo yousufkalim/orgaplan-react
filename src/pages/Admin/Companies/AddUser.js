@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export default function AddUser(props) {
   const {
     IDENTITY,
-
     LAST_NAME,
     FIRST_NAME,
     Add_USER,
@@ -193,10 +192,6 @@ export default function AddUser(props) {
                       users.forEach((item, index) => {
                         if (item.email !== e.target.value) {
                           setEmail(e.target.value);
-                          setFirstName("");
-                          setLastName("");
-                          setPhone("");
-                          setLogo([]);
                           setDisableUser(true);
                         }
                       });
