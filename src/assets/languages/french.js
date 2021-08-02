@@ -10,8 +10,8 @@ export const TEXTS = {
   MEAN: "Moyen",
 
   PIC_INTERACTIF: "Pic Interactif",
-  INCIDENTS: "Re-Facturations",
-  INCIDENT: "Re-Facturation",
+  INCIDENTS: "Incidents",
+  INCIDENT: "Incident",
 
   COMPANIES: "Entreprises",
   ORGANIGRAMME: "Organigramme",
@@ -52,11 +52,11 @@ export const TEXTS = {
   PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un nom d'enterprise",
   COMPANY_LOGO: "Logo de I'enterprise ",
   NAME_OF_USER: "Nom de l'utilisateur",
-  NAME_OF_INCIDENT: "Nom de la re-facturation",
-  PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom de re-facturation ",
+  NAME_OF_INCIDENT: "Nom de la incident",
+  PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom de incident ",
 
   STATUS: "Statut",
-  TYPE: "Type",
+  TYPE: "Ouvert",
   AREA: "Aire",
   ZONE: "Zone",
   ACTION: "Action",
@@ -116,16 +116,16 @@ export const TEXTS = {
   EMAIL_REQUIRED: "Le nom est obligatoire",
 
   LAST_NAME: "Nom",
-  TYPE_OF_PLACE: "Type de localisation",
-  TYPE_OF_Re_invoice: "Type de re-facturation",
+  TYPE_OF_PLACE: "Ouvert de localisation",
+  TYPE_OF_Re_invoice: "Ouvert de re-facturation",
 
-  TYPE_OF_ADMIN: "Type d'admin*",
-  TYPE_OF_CONTRACT: "Type de contrat",
+  TYPE_OF_ADMIN: "Ouvert d'admin*",
+  TYPE_OF_CONTRACT: "Ouvert de contrat",
   MASTER_CONTRACT: "Contrat Master",
 
   CONTRACT_DATE: "Durée du contrat",
 
-  TYPE_OF_ORGANIGRAMME: "Type d'organigramme",
+  TYPE_OF_ORGANIGRAMME: "Ouvert d'organigramme",
   CONTACT_INFO: "Information de contact",
   IDENTITY: "Identité*",
   TRADES: "Lots",
@@ -210,9 +210,9 @@ export const TEXTS = {
   CREATE_A_LEVEL: "Créer un niveau",
 
   LOGO: "Logo",
-  TYPE_OF_COMPANY: "Type d'entreprise",
-  TYPE_OF_incident: "Type de re-facturation",
-  PLEASE_SELECT_TYPE_OF_incident: "Type de re-facturation",
+  TYPE_OF_COMPANY: "Ouvert d'entreprise",
+  TYPE_OF_incident: "Ouvert de rincident",
+  PLEASE_SELECT_TYPE_OF_incident: "Ouvert de incident",
 
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité souscrite",
   AVAILABLE_FUNCTIONALITY: "Fonctionnalité disponible",
@@ -238,8 +238,8 @@ export const TEXTS = {
   COST_OF_DELIVERY_PENALITIES: "Coût des pénalités de livraison",
 
   DELAY: "Retard",
-  UNEXPECTED_DELIVERY: "Inattendue livraison",
-  UNEXPECTED: "Inattendue",
+  UNEXPECTED_DELIVERY: "Imprévu livraison",
+  UNEXPECTED: "Imprévu",
 
   SEE_OPENING_TIMES: "Jours d'ouverture",
   OPENING_TIME: "Heures d'ouverture",
@@ -347,7 +347,7 @@ export const TEXTS = {
 
   Please_select_end_date: "Sélectionner une date de fin",
 
-  Please_select_a_incident: "Sélectionner une re-facturation",
+  Please_select_a_incident: "Sélectionner une incident",
 
   Please_select_Delivery_Area: "Sélectionner une aire de livraison",
   Please_select_Date: "Sélectionner une date",
@@ -396,7 +396,7 @@ export const TEXTS = {
   HISTORIC: "Historique",
   LOGISTICS: "Logistiques",
   Telephone_must_have_10_to_25_digits: "Format de téléphone incorrect",
-  Please_enter_type_of_organigramme: "Indiquer le type d'organigramme",
+  Please_enter_type_of_organigramme: "Indiquer le Ouvert d'organigramme",
   Informations_complémentaires: "Informations complémentaires",
   HOURLY_RATE: "Tarif Horaire",
   update_shape_error: "Erreur de chargement de la forme",
@@ -452,9 +452,7 @@ export const TEXTS = {
   EDIT_PROFILE: "ÉDITER LE PROFIL",
   EDIT_PASSWORD: "MODIFIER LE MOT DE PASSE",
   THERE_WAS_AN_ERROR: "Une erreur s'est produite",
-  REQUEST_SENT_SUCCESSFULLY: "Demande envoyée avec succès",
   BUILDING_LEVELS: "Niveaux de construction",
-  BOOK: "Réserver",
   LIST_OF_INCIDENTS: "LISTE DES INCIDENTS",
   IMMATRICULATION_PLATE: "Plaque d’immatriculation",
 
@@ -476,7 +474,7 @@ export const TEXTS = {
   Mean_not_Available: "Moyen non disponible",
   Invalid_combination: "Combinaison non valide",
   ADD_LOCATION: "AJOUTER UNE LOCALISATION",
-  SELECT_TYPE: "SÉLECTIONNER UN TYPE",
+  SELECT_TYPE: "SÉLECTIONNER UN Ouvert",
   ADD_ADDRESS: "AJOUTER UNE ADRESSE",
   STREET: "RUE",
   CITY: "VILLE",
@@ -549,7 +547,7 @@ export const TEXTS = {
   TOTAL_DELIVERIES: "TOTAL LIVRAISON",
   COMPLETED_DELIVERIES: "LIVRAISON COMPLETÉES",
   INCOMPLETE_DELIVERIES: "LIVRAISONS INCOMPLETES",
-  TYPE_OF_LOCATION: "TYPE DE LOCALISATION",
+  TYPE_OF_LOCATION: "Ouvert DE LOCALISATION",
   DELIVERY_UPDATED: "LIVRAISON MISE A JOUR",
   MODIFIED_BY_ADMIN: "MODIFIÉ PAR L'ADMINISTRATEUR",
 

@@ -39,6 +39,7 @@ export default function AddContact(props) {
     FIRST_NAME,
     LAST_NAME,
     VALIDATE,
+    TYPE,
   } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -216,7 +217,7 @@ export default function AddContact(props) {
                 value={type}
                 // error={companyId}
                 values={dropdownType}
-                placeholder="Type"
+                placeholder={TYPE}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(e) => {
                   const index = e.target.selectedIndex - 1;

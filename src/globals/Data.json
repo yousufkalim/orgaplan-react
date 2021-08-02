@@ -536,7 +536,7 @@
     ]
   },
   "means": {
-    "headings": ["Nom", "Statut", "Type", "Aire", "Zone", "Actions"],
+    "headings": ["Nom", "Statut", "Ouvert", "Aire", "Zone", "Actions"],
     "items": [
       [
         "Marché couvert des ULYSSES",
@@ -585,7 +585,7 @@
   "incidents": {
     "headings": [
       "Date",
-      "Type",
+      "Ouvert",
       "Designation",
       "Entreprise",
       "Statut",

@@ -87,6 +87,7 @@ const Incidents = (props) => {
     MEAN,
     INCIDENT,
     DELAY,
+    TYPE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -486,7 +487,7 @@ const Incidents = (props) => {
               }}
             />
             <FormSelect
-              placeholder="Type"
+              placeholder={TYPE}
               value={selectedType}
               values={[
                 { value: "INCIDENT", label: INCIDENT },
@@ -697,7 +698,7 @@ const Incidents = (props) => {
                   style={{ marginRight: "20px", maxWidth: "50%" }}
                 />
                 <FormSelect
-                  placeholder="Type"
+                  placeholder={TYPE}
                   value={selectedType}
                   values={[
                     { value: "INCIDENT", label: INCIDENT },
