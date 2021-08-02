@@ -232,6 +232,7 @@ export default function AddSiteStep1(props) {
             values={trades}
             placeholder={ENTER_TRADES}
             style={GLOBALS.Styles.inputWidth}
+            setTradeError={setTradeError}
             onChange={(values) => handleChange("trades", values)}
           />
         </Form.Row>
@@ -244,7 +245,6 @@ export default function AddSiteStep1(props) {
                 placeholder={DELAY}
                 name="penaltyforLateDelivery"
                 value={penaltyforLateDelivery}
-                setTradeError={setTradeError}
                 onChange={({ target: { name, value } }) =>
                   value >= 0 && handleChange(name, value)
                 }
