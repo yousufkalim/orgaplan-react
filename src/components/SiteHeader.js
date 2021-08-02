@@ -233,6 +233,7 @@ export default function SiteHeader(props) {
           <div
             className={classes.logoContainer}
             onClick={() => dispatch(Actions.admin.reset_state())}
+            style={{ cursor: "pointer" }}
           >
             <img
               src={Logo}
