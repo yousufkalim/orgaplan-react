@@ -1682,7 +1682,7 @@ const Calender = (props) => {
               // onSelectEvent={bookingSlot}
               onSelecting={true}
               // onSelectSlot={AddEvent}
-              // onSelectSlot={AddDeliveryRequest}
+              onSelectSlot={AddDeliveryRequest}
               // onSelectSlot={AddAvailability}
               startAccessor="start"
               endAccessor="end"

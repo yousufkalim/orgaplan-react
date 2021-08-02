@@ -410,17 +410,19 @@ const Calender = (props) => {
 
   const AddDeliveryRequest = ({ start, end }) => {
     setAddDelivery(false);
-    setDeliverStartHours(start.getHours());
     setDeliverEndHours(end.getHours());
+    setDeliverStartHours(start.getHours());
+
     // start.setHours(0);
     setDeliverDate(start);
     let flagDate = false;
     let flagOpeningHoursDay = false;
     let flagHours = false;
-    let flagOpeningHours = false;
     let disableDayFlag = false;
     let pastdayFlag = false;
     let betweenDay = false;
+    let flagOpeningHours = false;
+
     let preDateTime = new Date();
     let milliseconds = Date.parse(preDateTime);
     milliseconds = milliseconds - 1 * 60 * 1000;
@@ -490,10 +492,10 @@ const Calender = (props) => {
     if (
       flagDate ||
       flagOpeningHoursDay ||
-      flagOpeningHours ||
       disableDayFlag ||
       pastdayFlag ||
       flagHours ||
+      flagOpeningHours ||
       betweenDay
     ) {
       if (flagDate || disableDayFlag || betweenDay) {
@@ -602,15 +604,16 @@ const Calender = (props) => {
   //     }
   //   }
   // };
-  const statusColorChange = (event) => {
-    setValue(event.target.value);
-  };
   const handlePopoverClose = () => {
     seteventID("");
     setEvent("");
     setEditDelivery(false);
     setpopoverShow(false);
   };
+  const statusColorChange = (event) => {
+    setValue(event.target.value);
+  };
+
   const handleEditEvent = () => {
     setpopoverShow(!popoverShow);
     setShowEdit(true);
