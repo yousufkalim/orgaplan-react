@@ -6,6 +6,7 @@ import Chip from "@material-ui/core/Chip";
 import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -19,7 +20,7 @@ import Button from "./Button";
 
 export default function CustomButtonModal(props) {
   const theme = useTheme();
-
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
   const error = theme.palette.error.main;
   const primaryColor = theme.palette.primary.contrastText;
   const borderColor = props.error ? error : theme.palette.grey[100];
@@ -155,7 +156,7 @@ export default function CustomButtonModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
@@ -191,7 +192,7 @@ export default function CustomButtonModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
                 disabled={props.disabled ? false : !formik.values.color}

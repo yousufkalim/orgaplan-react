@@ -1,6 +1,7 @@
 import React from "react";
 import reactCSS from "reactcss";
 import { SketchPicker } from "react-color";
+import { TEXTS } from "../assets/languages/french";
 
 class ColorPicker extends React.Component {
   state = {
@@ -17,6 +18,7 @@ class ColorPicker extends React.Component {
   };
 
   render() {
+    const { COLOR } = TEXTS;
     const styles = reactCSS({
       default: {
         color: {
@@ -65,7 +67,7 @@ class ColorPicker extends React.Component {
           }}
         >
           <div style={{ padding: "5px", color: "rgb(139, 137, 137)" }}>
-            Color
+            {COLOR}
           </div>
           <div style={styles.color} />
         </div>

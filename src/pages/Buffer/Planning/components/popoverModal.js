@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import "./sass/custom.scss";
 import { Modal, Alert } from "react-bootstrap";
+import { TEXTS } from "../../../../assets/languages/french";
 
 const PopoverModal = ({
   popoverShow,
@@ -17,6 +18,31 @@ const PopoverModal = ({
   handleValidateDelivery,
   onEditDelivery,
 }) => {
+  const {
+    YES,
+    NO,
+    BOOKING,
+    EDIT,
+    Modified_By,
+    COMPANY_1,
+    MEANS,
+    NAME,
+    TYPE,
+    REASON,
+    MATERIAL,
+    DELIVERYAREA,
+    STORAGEAREA,
+    Start_time,
+    BOOKING_REASON,
+    End_time,
+    VALIDATE,
+    MORE_INFO,
+    REFUSE,
+    COMPANY,
+    MEAN,
+    Are_you_sure_You_want_to_delete_this,
+  } = TEXTS;
+
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
     var mm = String(start.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -45,7 +71,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              NO
+              {NO}
             </div>
             <div
               onClick={() => {
@@ -53,7 +79,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              YES
+              {YES}
             </div>
           </>
         ) : (
@@ -64,7 +90,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              NO
+              {NO}
             </div>{" "}
             &nbsp;&nbsp;
             <div
@@ -73,7 +99,7 @@ const PopoverModal = ({
               }}
               className="alert-link"
             >
-              YES
+              {YES}
             </div>
           </>
         )}
@@ -85,10 +111,10 @@ const PopoverModal = ({
     return (
       <Modal show={popoverShow} onHide={handlePopoverClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Booking</Modal.Title>
+          <Modal.Title className="text-center">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message="Are you sure to Delete" />
+          <Alertbox message={Are_you_sure_You_want_to_delete_this} />
           <div className="showPopover">
             <div style={{ textAlign: "right" }}>
               <button
@@ -98,14 +124,14 @@ const PopoverModal = ({
                   onEditDelivery(event);
                 }}
               >
-                <i class="fas fa-trash"></i> <span>Edit</span>
+                <i class="fas fa-trash"></i> <span>{EDIT}</span>
               </button>
             </div>
             {event.objectName === "Deliveries" ? (
               <>
                 {event.status === "MODIFIED" ? (
                   <>
-                    <span>Modified By</span>
+                    <span>{Modified_By}</span>
 
                     <h5
                       className="text-center"
@@ -118,7 +144,7 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {"Name: " +
+                      {`${NAME}: ` +
                         event.user.firstName +
                         " " +
                         event.user.lastName +
@@ -130,7 +156,8 @@ const PopoverModal = ({
                   <></>
                 )}
 
-                <span>Company1</span>
+                <span>{COMPANY_1}</span>
+
                 <h5
                   className="text-center"
                   style={{
@@ -145,7 +172,8 @@ const PopoverModal = ({
                   {event.company.name}
                 </h5>
 
-                <span>Means</span>
+                <span>{MEANS}</span>
+
                 <h5
                   style={{
                     backgroundColor: "#f7f7f7",
@@ -157,9 +185,9 @@ const PopoverModal = ({
                 >
                   <table style={{ width: "100%" }}>
                     <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Reason</th>
+                      <th>{NAME}</th>
+                      <th>{TYPE}</th>
+                      <th>{REASON}</th>
                     </tr>
                     {event.liftingMeans.map((key, index) => {
                       return (
@@ -181,7 +209,8 @@ const PopoverModal = ({
                     })}
                   </table>
                 </h5>
-                <span>Material</span>
+                <span>{MATERIAL}</span>
+
                 <h5
                   style={{
                     backgroundColor: "#f7f7f7",
@@ -203,7 +232,8 @@ const PopoverModal = ({
                 </h5>
                 {event.deliveryArea !== null ? (
                   <>
-                    <span>Delivery area</span>
+                    <span>{DELIVERYAREA}</span>
+
                     <h5
                       className="text-center"
                       style={{
@@ -227,7 +257,8 @@ const PopoverModal = ({
 
                 {event.storageArea !== null ? (
                   <>
-                    <span>Storage area</span>
+                    <span>{STORAGEAREA}</span>
+
                     <h5
                       className="text-center"
                       style={{
@@ -250,7 +281,8 @@ const PopoverModal = ({
                 ) : (
                   <></>
                 )}
-                <span>Booking Reason</span>
+                <span>{BOOKING_REASON}</span>
+
                 <h5
                   className="text-center"
                   style={{
@@ -270,7 +302,7 @@ const PopoverModal = ({
                     fontWeight: "normal",
                   }}
                 >
-                  Start Time:
+                  {Start_time}:
                 </span>
                 <div
                   style={{
@@ -286,7 +318,8 @@ const PopoverModal = ({
                   {getStartTime(event.start)}
                 </div>
                 <br />
-                <span style={{}}>End Time:</span>
+                <span style={{}}>{End_time}:</span>
+
                 <div
                   style={{
                     backgroundColor: "#f7f7f7",
@@ -336,7 +369,8 @@ const PopoverModal = ({
               </>
             ) : (
               <>
-                <span>Company</span>
+                <span>{COMPANY}</span>
+
                 <h5
                   className="text-center"
                   style={{
@@ -350,7 +384,8 @@ const PopoverModal = ({
                 >
                   {event.companyName}
                 </h5>
-                <span>Mean</span>
+                <span>{MEAN}</span>
+
                 <h5
                   className="text-center"
                   style={{
@@ -364,7 +399,8 @@ const PopoverModal = ({
                 >
                   {event.meanName}
                 </h5>
-                <span>Booking Reason</span>
+                <span>{BOOKING_REASON}</span>
+
                 <h5
                   className="text-center"
                   style={{
@@ -384,7 +420,7 @@ const PopoverModal = ({
                     fontWeight: "normal",
                   }}
                 >
-                  Start Time:
+                  {Start_time}:
                 </span>
                 <div
                   style={{
@@ -400,7 +436,8 @@ const PopoverModal = ({
                   {getStartTime(event.start)}
                 </div>
                 <br />
-                <span style={{}}>End Time:</span>
+                <span style={{}}>{End_time}:</span>
+
                 <div
                   style={{
                     backgroundColor: "#f7f7f7",
@@ -422,7 +459,7 @@ const PopoverModal = ({
                         className="btn btn-light"
                         onClick={() => onEditDelivery(event)}
                       >
-                        <i class="fas fa-trash"></i> <span>Edit</span>
+                        <i class="fas fa-trash"></i> <span>{EDIT}</span>
                       </button>
                     </div>
                     {/* <hr />

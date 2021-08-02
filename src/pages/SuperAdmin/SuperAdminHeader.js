@@ -110,7 +110,7 @@ const userItems = [
     icon: <Invoices />,
   },
   {
-    name: "Journauxs",
+    name: "Journals",
     path: "/logs",
     icon: <Companies />,
   },

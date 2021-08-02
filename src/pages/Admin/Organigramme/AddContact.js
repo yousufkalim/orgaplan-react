@@ -274,7 +274,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY}*: `} />
+            <FormLabel bold primary={`${IDENTITY}: `} />
             <Form.Row
               noMargin
               width="55%"

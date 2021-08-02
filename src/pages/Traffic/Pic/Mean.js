@@ -301,7 +301,7 @@ export default function AddMean(props) {
             <FormInput
               name="name"
               value={name}
-              placeholder="Name"
+              placeholder={NAME}
               style={{ width: "32%" }}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)

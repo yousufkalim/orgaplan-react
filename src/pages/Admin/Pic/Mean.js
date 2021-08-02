@@ -50,6 +50,7 @@ export default function AddMean(props) {
     TECHNICAL_SHEET,
     ROUTING,
     START_DATE,
+    NAME_REQUIRED,
   } = TEXTS;
 
   const classes = useStyles();
@@ -167,7 +168,7 @@ export default function AddMean(props) {
         setName(value);
         setErrors({ ...errors, name: "" });
       } else if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
         setName("");
       }
     } else if (name === "color") setColor(value);
@@ -193,7 +194,7 @@ export default function AddMean(props) {
   function validation(name, value) {
     if (name === "name") {
       if (GLOBALS.Functions.empty(value)) {
-        setErrors({ ...errors, name: "Name is required" });
+        setErrors({ ...errors, name: NAME_REQUIRED });
       } else setErrors({ ...errors, name: "" });
     }
   }
@@ -330,7 +331,7 @@ export default function AddMean(props) {
               name="name"
               error={errors.name}
               value={name}
-              placeholder="Nom"
+              placeholder={NAME}
               style={{ width: "32%" }}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>

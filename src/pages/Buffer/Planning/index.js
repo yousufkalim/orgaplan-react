@@ -65,13 +65,61 @@ const Calender = (props) => {
   const dispatch = useDispatch();
   const {
     DELIVERIES,
-    ALERT,
-    COMPLETE,
-    SELECT_COMPANY,
+    DELIVERY_REQUESTS,
+    VERIFICATION_SHEET,
+    Not_availble,
+    PLANNING,
+    VALIDATE,
+    CLOSE,
+    DELAY,
+    MEANS,
+    ALERTS,
+    BOOKING_REASON,
+    Status_Color,
+    PENDING_VALIDATION,
+    STATUS,
+    BOOKING_DATE,
+    INCIDENT,
+    MEAN,
+    START_HOUR,
+    END_HOUR,
     TYPE_OF_PLACE,
+    End_time,
+    BOOKING,
+    Please_Add_valid_Time_and_Event,
+    PLACE,
+    Edit_Delivery_Request,
+    Invalid_Time,
+    Start_time,
+    Edit_Event,
+    END_DATE,
+    Update_Event,
+    DISABLE_DAY,
+    DISABLE_HOURS,
+    SITE_DATE_OUT_OF_RANGE,
+    Booking_cant_be_in_Previous_day,
+    Delivery_Area_Site_By_SiteId_Error,
+    TOTAL_MEANS_Booking,
+    DELIVERY_DELETED,
+    COMPANY_ConstructBTP,
+    UNEXPECTED,
+    DELIVERY_DATE,
+    COMPANY,
+    DELIVERYAREA,
+    STORAGEAREA,
+    BUILDING,
+    COMPLETE,
+    ConstructBTP,
+    BOOK,
+    SELECT_COMPANY,
     LOCATION,
-    PLANING,
+    ALERT,
+
+    PENDING,
+    VALIDATED,
+    MODIFIED,
   } = TEXTS;
+
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [userId, setUserId] = useState(store.user._id);
@@ -117,10 +165,10 @@ const Calender = (props) => {
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
   const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: "PENDING" },
-    { value: "VALIDATED", label: "VALIDATED" },
-    { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERT", label: "ALERT" },
+    { value: "PENDING", label: PENDING },
+    { value: "VALIDATED", label: VALIDATED },
+    { value: "MODIFIED", label: MODIFIED },
+    { value: "ALERT", label: ALERT },
   ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
@@ -460,26 +508,26 @@ const Calender = (props) => {
       if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable Day", "error"),
+            Actions.notistack.snackbar(DISABLE_DAY, "error"),
           ),
         );
       } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable hours", "error"),
+            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
           ),
         );
       } else if (betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Site Date is Out of Range", "error"),
+            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
           ),
         );
       } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Booking can't be in Previous day",
+              Booking_cant_be_in_Previous_day,
               "error",
             ),
           ),
@@ -538,7 +586,7 @@ const Calender = (props) => {
       delete_Delivery(eventID);
       dispatch(
         Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar("Delivery Deleted", "success"),
+          Actions.notistack.snackbar(DELIVERY_DELETED, "success"),
         ),
       );
       setSiteMeans("");
@@ -823,7 +871,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
+            Actions.notistack.snackbar(Delivery_Area_Site_By_SiteId_Error),
           ),
         );
       }
@@ -988,7 +1036,7 @@ const Calender = (props) => {
             };
             // }
           });
-          setSiteMeans(`DELIVERY REQUESTS : ${count} DELIVERIES`);
+          setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             // if (key.userId._id === userId) {
@@ -1017,7 +1065,7 @@ const Calender = (props) => {
             };
             // }
           });
-          setSiteMeans(`TOTAL MEANS Booking : ${count}`);
+          setSiteMeans(`${TOTAL_MEANS_Booking} : ${count}`);
         }
         setEvents(tempEvent);
       }
@@ -1108,7 +1156,7 @@ const Calender = (props) => {
     <>
       <FullScreenModal
         open={addVarification}
-        title={"VERIFICATION SHEET FOR DELIVERY"}
+        title={VERIFICATION_SHEET}
         onClose={() => {
           setAddVarification(false);
         }}
@@ -1116,7 +1164,7 @@ const Calender = (props) => {
       />
       <FullScreenModal
         open={addDelivery}
-        title={editDelivery ? "Edit Delivery Request" : "Delivery Request"}
+        title={editDelivery ? Edit_Delivery_Request : DELIVERY_REQUESTS}
         onClose={() => {
           setAddDelivery(false);
           setEditDelivery(false);
@@ -1141,9 +1189,9 @@ const Calender = (props) => {
       />
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
-          <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
+          <Modal.Title className="text-center w-100">{BOOKING}</Modal.Title>
         </Modal.Header>
-        <Alertbox message="Invalid Time" />
+        <Alertbox message={Invalid_Time} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
@@ -1158,7 +1206,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-12">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
+
                 <TimePicker
                   value={bookingstartTimeslice}
                   onChange={(e) => setBookingstartTimeslice(e)}
@@ -1168,7 +1217,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-12">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{End_time}</label>
+
                 <TimePicker
                   value={bookingendTimeslice}
                   onChange={(e) => setBookingendTimeslice(e)}
@@ -1212,7 +1262,7 @@ const Calender = (props) => {
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>{BOOKING}</Modal.Title>
         </Modal.Header>
         <Alertbox message="Please Add valid Time and Event" />
         <Modal.Body>
@@ -1236,12 +1286,12 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="ConstructBTP"
+                placeholder={ConstructBTP}
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
+                  { value: "INCIDENT", label: INCIDENT },
+                  { value: "MEAN", label: MEAN },
+                  { value: "DELAY", label: DELAY },
+                  { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
               />
@@ -1250,7 +1300,8 @@ const Calender = (props) => {
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start hour</label>
+                <label>{START_HOUR}</label>
+
                 <TimePicker
                   value={starttimeslice}
                   onChange={(e) => setstarttimeslice(e)}
@@ -1260,7 +1311,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End hour</label>
+                <label>{END_HOUR}</label>
+
                 <TimePicker
                   value={Endtimeslice}
                   onChange={(e) => setEndtimeslice(e)}
@@ -1274,7 +1326,7 @@ const Calender = (props) => {
               <div className="description">
                 <div class="form-group">
                   <textarea
-                    placeholder="Reason of booking"
+                    placeholder={BOOKING_REASON}
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -1287,7 +1339,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-6">
               <div class="form-group statusColor">
-                <label>Status Color </label>
+                <label>{Status_Color}</label>
+
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="gender"
@@ -1303,7 +1356,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel
@@ -1314,7 +1367,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Not availble"
+                      label={Not_availble}
                       className="notAvailble"
                     />
                     <FormControlLabel
@@ -1325,7 +1378,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Validate"
+                      label={VALIDATE}
                       className="validate"
                     />
                   </RadioGroup>
@@ -1340,10 +1393,10 @@ const Calender = (props) => {
             style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
             onClick={saveEvent}
           >
-            Book
+            {BOOK}
           </Button>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            {CLOSE}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1351,13 +1404,15 @@ const Calender = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Edit Event </Modal.Title>
         </Modal.Header>
-        <Alertbox message="Please Add valid Time and Event" />
+        <Alertbox message={Please_Add_valid_Time_and_Event} />
+
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Edit Event</label>
+                  <label for="exampleFormControlTextarea1">{Edit_Event}</label>
+
                   <textarea
                     class="form-control"
                     id="exampleFormControlTextarea1"
@@ -1372,7 +1427,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
+
                 <TimePicker
                   value={starttimesliceEdit}
                   onChange={(e) => setstarttimesliceEdit(e)}
@@ -1381,7 +1437,8 @@ const Calender = (props) => {
               </div>
               <div class="form-group statusColor">
                 {value && ""}
-                <label>Status Color </label>
+                <label>{Status_Color}</label>
+
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="statusColor"
@@ -1397,7 +1454,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel
@@ -1408,7 +1465,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Not availble"
+                      label={Not_availble}
                       className="notAvailble"
                     />
                     <FormControlLabel
@@ -1419,7 +1476,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Validate"
+                      label={VALIDATE}
                       className="validate"
                     />
                   </RadioGroup>
@@ -1428,7 +1485,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{END_DATE}</label>
+
                 <TimePicker
                   value={endtimesliceEdit}
                   onChange={(e) => setEndtimesliceEdit(e)}
@@ -1440,10 +1498,10 @@ const Calender = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={updateEvent}>
-            Update Event
+            {Update_Event}
           </Button>
           <Button variant="secondary" onClick={() => setShowEdit(false)}>
-            Close
+            {CLOSE}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1472,7 +1530,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary={PLANING} noWrap />
+                <Heading primary={PLANNING} noWrap />
                 {/* <SubHeading
                   noMargin
                   topPadding
@@ -1543,7 +1601,7 @@ const Calender = (props) => {
                   style={{ marginRight: "20px", maxWidth: 250 }}
                 /> */}
                 {/* <FormSelect
-                  placeholder="Status"
+                  placeholder="Statut"
                   value={status}
                   values={deliveriesMeansStatus}
                   onChange={(e) => setStatus(e.target.value)}
@@ -1555,9 +1613,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}
@@ -1576,9 +1634,9 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: "Delivery area" },
-                        { value: "STORAGEAREA", label: "Storage area" },
-                        { value: "BUILDING", label: "Emplacement" },
+                        { value: "DELIVERYAREA", label: DELIVERYAREA },
+                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
                       onChange={handleChangeTypeOfPlace}

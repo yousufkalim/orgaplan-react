@@ -219,7 +219,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY}* :`} />
+            <FormLabel bold primary={`${IDENTITY} :`} />
             <Form.Row width="48%">
               <FormInput
                 name="firstName"

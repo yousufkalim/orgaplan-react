@@ -23,6 +23,7 @@ export default function AddSiteStep1(props) {
     COMPANY,
     DELIVERYAREA,
     STORAGEAREA,
+    VALIDATE,
     Please_select_a_company,
     Please_select_Delivery_Area,
     DATE_AND_TIME,
@@ -34,6 +35,7 @@ export default function AddSiteStep1(props) {
     MEANS,
     MATERIALS_DELIVERED,
     ENTER_MATERIALS,
+    NONE,
   } = TEXTS;
 
   const adminStore = useSelector((state) => state.admin);
@@ -403,7 +405,7 @@ export default function AddSiteStep1(props) {
               setLiftingMeans([]);
             }}
             style={{ color: "#DBB20A" }}
-            label="none"
+            label={NONE}
           />
         </div>
       </Form.Row>
@@ -429,7 +431,7 @@ export default function AddSiteStep1(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           disabled={
             !company ||

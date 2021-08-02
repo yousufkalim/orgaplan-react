@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../../../../assets/languages/french";
 
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditSite(props) {
+  const { EDIT_SITE, General_Information } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
   // const store = useSelector((state) => state.auth);
@@ -122,11 +124,15 @@ export default function EditSite(props) {
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
-      <Heading primary="EDIT A SITE" />
+      <Heading primary={EDIT_SITE} />
       <Stepper
         step={step}
         setStep={setStep}
-        steps={["Step 1: General Information", "Step 2: Dates", "Text 1: PIC"]}
+        steps={[
+          `Step 1: ${General_Information}`,
+          "Step 2: Dates",
+          "Step 3: Plan",
+        ]}
       />
       <div className={classes.content}>
         {!loading &&

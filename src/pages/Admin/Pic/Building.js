@@ -64,6 +64,8 @@ export default function AddSiteStep3(props) {
     Select_a_Building,
     BUILDING_Nom,
     Create_a_Building,
+    Add_Plan,
+    DOWNLOAD,
   } = TEXTS;
 
   const { setSelectedShape } = props;
@@ -232,6 +234,8 @@ export default function AddSiteStep3(props) {
       let inde = propShapes.findIndex((item) => item._id === propShape._id);
 
       propShapes[inde].levels = activeBuildingObj.levels;
+      propShapes[inde].building.levels = activeBuildingObj.levels;
+
       propShape.levels = activeBuildingObj.levels;
 
       propsShapesCon = _.cloneDeep(propShapes);
@@ -402,7 +406,7 @@ export default function AddSiteStep3(props) {
       level.plan,
       <Form.Row style={{ justifyContent: "center" }}>
         <SmallButton
-          text="Add Plan"
+          text={Add_Plan}
           disabled={loading}
           color={theme.palette.primary.contrastText}
           onClick={() => {
@@ -477,7 +481,7 @@ export default function AddSiteStep3(props) {
         moment(level.createdAt).format("DD/MM/YYYY"),
         <Form.Row style={{ justifyContent: "center" }}>
           <SmallButton
-            text="Download"
+            text={DOWNLOAD}
             disabled={level.name ? false : true}
             color={theme.palette.primary.contrastText}
             onClick={async () => {

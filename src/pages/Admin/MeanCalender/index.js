@@ -61,6 +61,7 @@ const Calender = (props) => {
     VALIDATE,
     Update_Event,
     CLOSE,
+    Mean_not_Available,
     SELECT_MEANS,
     PENDING,
     Loading,
@@ -399,7 +400,7 @@ const Calender = (props) => {
             // console.log("mean is ", props.location.mean);
             let startHour = moment(startTime).format("H");
             let endHour = moment(endTime).format("H");
-            // create invoive 
+            // create invoive
             // 1Booking
             var formdata = new FormData();
 
@@ -632,7 +633,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Mean not Available", "error"),
+            Actions.notistack.snackbar(Mean_not_Available, "error"),
           ),
         );
       }

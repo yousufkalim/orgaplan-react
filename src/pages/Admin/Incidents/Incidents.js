@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Images } from "../../../assets/Assets";
 import Modal from "react-bootstrap/Modal";
 import "./popover.scss";
-import {TEXTS} from "../../../assets/languages/french";
+import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -67,10 +67,27 @@ let statciincidentsdata = [
 let siteis = { name: "test site" };
 
 const Incidents = (props) => {
-  const {LIST_OF_COMPANIES,Add_COMPANY,NAME_OF_COMPANY,ACCESS_REQUEST_TO_ZONES,ACCESS_REQUEST_TO_STROGAEAREA,
-  RE_INVOICING,CREATE_AN_INCIDENT,DELIVERYAREA,LOCATION,LEVEL,STORAGEAREA,START_DATE,
-  END_DATE,DESIGNATION,COMPANY
-  }=TEXTS
+  const {
+    LIST_OF_COMPANIES,
+    Add_COMPANY,
+    NAME_OF_COMPANY,
+    ACCESS_REQUEST_TO_ZONES,
+    ACCESS_REQUEST_TO_STROGAEAREA,
+    RE_INVOICING,
+    CREATE_AN_INCIDENT,
+    DELIVERYAREA,
+    LOCATION,
+    LEVEL,
+    STORAGEAREA,
+    START_DATE,
+    END_DATE,
+    DESIGNATION,
+    COMPANY,
+    UNEXPECTED,
+    MEAN,
+    INCIDENT,
+    DELAY,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -472,10 +489,10 @@ const Incidents = (props) => {
               placeholder="Type"
               value={selectedType}
               values={[
-                { value: "INCIDENT", label: "Incident" },
-                { value: "MEAN", label: "Mean" },
-                { value: "DELAY", label: "Delay" },
-                { value: "UNEXPRECTED", label: "Unexp" },
+                { value: "INCIDENT", label: INCIDENT },
+                { value: "MEAN", label: MEAN },
+                { value: "DELAY", label: DELAY },
+                { value: "UNEXPRECTED", label: UNEXPECTED },
               ]}
               style={{ marginRight: "5px", maxWidth: 250 }}
               onChange={(event) => {
@@ -494,7 +511,7 @@ const Incidents = (props) => {
         <Form.Row alignItems="center" className="mt-3">
           <Form.Row justifyContent="flex-start" noMargin>
             <FormSelect
-              placeholder="Company"
+              placeholder={COMPANY}
               value={companyId}
               values={siteComapny}
               onChange={(event) => {

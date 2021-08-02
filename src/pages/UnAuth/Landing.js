@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
 
 import "./Landing.css";
@@ -11,14 +11,61 @@ import { Images } from "../../assets/Assets";
 import FormInput from "../../components/FormInput";
 import CustomButton from "../../components/Button";
 import { TEXTS } from "../../assets/languages/french";
+import Actions from "../../redux/actions";
 
 export default function LandingPage() {
-  const {LOGIN,MESSAGE,SUBMIT}=TEXTS;
+  const {
+    LOGIN,
+    MESSAGE,
+    SUBMIT,
+    Your_request_has_been_received,
+    You_will_be_contacted_soon,
+  } = TEXTS;
+  const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
 
   const [quoteMessage, setQuoteMessage] = useState("");
   const [quoteMessageType, setQuoteMessageType] = useState("success");
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    city: "",
+    company: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+  const { name, city, company, phone, email, message } = formData;
+  const onChange = (e) =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(
+      Actions.notistack.enqueueSnackbar(
+        Actions.notistack.snackbar(
+          "Votre demande a bien été prise en compte, nous vous reviendrons vers vous au plus vite. ",
+          "success",
+        ),
+      ),
+    );
+    GLOBALS.API({
+      method: "POST",
+      uri: GLOBALS.Constants.CONTACTUS,
+      body: JSON.stringify(formData),
+    }).then(() => {
+      setFormData({
+        name: "",
+        city: "",
+        company: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
+    });
+  };
 
   async function onQuoteSubmit(values, { setSubmitting }) {
     try {
@@ -40,7 +87,7 @@ export default function LandingPage() {
       });
       setQuoteMessageType("success");
       setQuoteMessage(
-        "Your request has been received. You will be contacted soon.",
+        `${Your_request_has_been_received}. ${You_will_be_contacted_soon}.`,
       );
       setSubmitting(false);
     } catch (err) {
@@ -49,23 +96,48 @@ export default function LandingPage() {
       setQuoteMessage(err.message);
     }
   }
-
   return (
     <>
       <div className="land-container">
         <div className="hero">
           <div className="d-flex justify-content-between p-1">
             <nav className="d-flex justify-content-between align-self-start pt-3 w-50">
-              <Link to="/">
+              <Link
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
                 <img src={Images.logo} className="hero-logo" alt="logo" />
               </Link>
-              <Link to="/" className="text-white">
+
+              <Link
+                onClick={() => {
+                  window.scroll({
+                    top: document.body.offsetHeight,
+                    left: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                className="text-white"
+              >
                 Fonctionnalites
               </Link>
-              <Link to="/" className="text-white">
+              <Link
+                onClick={() => setShowQuoteModal((st) => !st)}
+                className="text-white"
+              >
                 S'inscrire
               </Link>
-              <Link to="/" className="text-white">
+              <Link
+                onClick={() => {
+                  window.scroll({
+                    top: 2100,
+                    left: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                className="text-white"
+              >
                 Nous contacter
               </Link>
             </nav>
@@ -90,7 +162,8 @@ export default function LandingPage() {
           </div>
           <div className="d-flex flex-column justify-content-center p-2 w-75 hero-title">
             <h1 className="white-color">
-              LA PLATEFORME AU SERVICE DE VOTRE ORGANISATION DE CHANTIER !
+              LA PLATEFORME AU SERVICE DE <br /> VOTRE ORGANISATION DE CHANTIER
+              !
             </h1>
             <p className="w-75">
               Avec Orgaplan, la logistique de vos chantiers est facilitée :
@@ -98,7 +171,18 @@ export default function LandingPage() {
               entreprises de réserver leurs aires de stockage directement via la
               plateforme.
             </p>
-            <button className="hero-btn">En savoir plus</button>
+            <button
+              onClick={() => {
+                window.scroll({
+                  top: document.body.offsetHeight,
+                  left: 0,
+                  behavior: "smooth",
+                });
+              }}
+              className="hero-btn"
+            >
+              En savoir plus
+            </button>
           </div>
         </div>
         <div className="section-2">
@@ -165,34 +249,44 @@ export default function LandingPage() {
                 <img src={Images.landPeople} alt="People Contacting Us" />
               </div>
               <div className="col-6">
-                <form>
+                <form onSubmit={onSubmit}>
                   <FormInput
                     type="text"
                     name="company"
+                    onChange={onChange}
+                    value={company}
                     textAlign="left"
                     placeholder="Nom de l’entreprise"
                   />
                   <FormInput
                     type="text"
                     name="city"
+                    value={city}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Ville"
                   />
                   <FormInput
                     type="text"
                     name="name"
+                    value={name}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Prénom et Nom du contact"
                   />
                   <FormInput
                     type="number"
                     name="phone"
+                    value={phone}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Téléphone"
                   />
                   <FormInput
                     type="email"
                     name="email"
+                    value={email}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Adresse e-mail"
                   />
@@ -200,13 +294,18 @@ export default function LandingPage() {
                     textArea
                     width={"100"}
                     name="message"
+                    value={message}
+                    onChange={onChange}
                     textAlign="left"
                     placeholder="Message"
                   />
                   <CustomButton
-                    // type="submit"
+                    type="submit"
                     fullWidth={false}
                     text={GLOBALS.I18n.t(SUBMIT)}
+                    disabled={
+                      !name || !message || !email || !phone || !city || !company
+                    }
                   />
                 </form>
               </div>
@@ -235,7 +334,7 @@ export default function LandingPage() {
       </div>
       <Modal
         maxWidth="sm"
-        title="REQUEST A QUOTE"
+        title="S'inscrire"
         open={showQuoteModal}
         onClose={() => {
           setShowQuoteModal(false);
@@ -327,7 +426,7 @@ export default function LandingPage() {
                     value={values.email}
                     onChange={handleChange}
                     className="login-input"
-                    placeholder={GLOBALS.I18n.t("emailPlaceholder")}
+                    placeholder="Adresse e-mail"
                   />
                 </div>
                 <div className="w-100 mx-auto my-2">

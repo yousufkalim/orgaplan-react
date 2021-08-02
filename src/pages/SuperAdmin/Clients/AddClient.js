@@ -45,8 +45,9 @@ export default function AddClient(props) {
     VALIDATE,
     NOTIFICATION,
     ADDITIONNAL_INFORMATION,
-    COMPANY_NAME,
-    COMPANY,
+    NAME_OF_COMPANY,
+    COMPANY_RESPONSIBLE,
+    COMPANY_LOGO,
     RESPONSIBLE,
     ADD_A_CLIENT,
     Days_before_end_of_the_site,
@@ -57,6 +58,11 @@ export default function AddClient(props) {
     Please_select_end_date,
     Please_enter_valid_email,
     Please_enter_email,
+    CONTACT_RESPONSIBLE,
+    TYPE_OF_CONTRACT,
+    Per_site,
+    MASTER_CONTRACT,
+    CONTRACT_DATE,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
@@ -192,13 +198,13 @@ export default function AddClient(props) {
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY_NAME}* :`} />
+            <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
             <FormInput
               name="name"
               value={name}
               maxLength="30"
               error={nameError}
-              placeholder={COMPANY_NAME}
+              placeholder={NAME_OF_COMPANY}
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
@@ -208,7 +214,7 @@ export default function AddClient(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY} LOGO* :`} />
+            <FormLabel bold primary={`${COMPANY_LOGO}* :`} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
@@ -226,7 +232,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${RESPONSIBLE} ${COMPANY}`} />
+            <FormLabel bold primary={`${COMPANY_RESPONSIBLE}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 maxLength="30"
@@ -257,12 +263,12 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${RESPONSIBLE} CONTACT`} />
+            <FormLabel bold primary={`${CONTACT_RESPONSIBLE}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
                 value={email}
-                placeholder="E-mail Address"
+                placeholder={Please_enter_email}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
@@ -281,7 +287,7 @@ export default function AddClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`TYPE OF ${CONTRACT}`} />
+            <FormLabel bold primary={`${TYPE_OF_CONTRACT}`} />
             <RadioButton
               name="contractType"
               value={contractType}
@@ -290,13 +296,13 @@ export default function AddClient(props) {
                 handleChange(name, value)
               }
               items={[
-                { value: "CLIENTPERSITE", label: "Per Site" },
-                { value: "MASTERCLIENT", label: "Master Contract" },
+                { value: "CLIENTPERSITE", label: Per_site },
+                { value: "MASTERCLIENT", label: MASTER_CONTRACT },
               ]}
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONTRACT} DATE* :`} />
+            <FormLabel bold primary={`${CONTRACT_DATE}* :`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"
@@ -351,7 +357,7 @@ export default function AddClient(props) {
               name="additionalInfo"
               value={additionalInfo}
               style={GLOBALS.Styles.inputWidth}
-              placeholder="Additional information"
+              placeholder={ADDITIONNAL_INFORMATION}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)

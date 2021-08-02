@@ -61,6 +61,8 @@ export default function Admins(props) {
     CREATE_AN_ADMIN,
     Are_you_sure_to_Delete,
     EDIT_ADMIN,
+    Admins_list,
+    NAME_OF_CLIENT,
   } = TEXTS;
 
   const store = useSelector((state) => state.auth);
@@ -275,7 +277,7 @@ export default function Admins(props) {
     <>
       <div className={classes.root}>
         <Form.Row alignItems="center">
-          <Heading primary="ADMINS LIST" noWrap />
+          <Heading primary={Admins_list} noWrap />
           <div>
             <Form.Row alignItems="center" noMargin>
               <SubHeading
@@ -296,7 +298,7 @@ export default function Admins(props) {
         <Form.Row noMargin>
           <SearchInput
             value={query}
-            placeholder="Name"
+            placeholder={NAME_OF_CLIENT}
             onClick={fetchData}
             onChange={({ target: { value } }) => setQuery(value)}
           />

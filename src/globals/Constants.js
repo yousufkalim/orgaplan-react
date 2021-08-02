@@ -49,6 +49,8 @@ const endpoints = {
   // QUOTE
   QUOTE: BASE_URL_V1 + "superadmin/quotes",
   QUOTE_VERIFY: BASE_URL_V1 + "superadmin/quotes/verify",
+  // CONTACTUS
+  CONTACTUS: BASE_URL_V1 + "superadmin/contactus",
   // SITE
   SITES: BASE_URL_V1 + "superadmin/sites",
   SITE_GET: BASE_URL_V1 + "superadmin/sites/get",

@@ -63,6 +63,7 @@ const Calender = (props) => {
     DELIVERIES,
     DELIVERY_REQUESTS,
     PLANNING,
+    Delivery_Calender,
     Not_availble,
     VALIDATE,
     CLOSE,
@@ -94,6 +95,12 @@ const Calender = (props) => {
     Delivery_Area_Site_By_SiteId_Error,
     TOTAL_MEANS_Booking,
     ALERTS,
+    COMPANY_ConstructBTP,
+    BOOK,
+    ConstructBTP,
+    DELAY,
+    UNEXPECTED,
+    COMPLETED,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -499,26 +506,26 @@ const Calender = (props) => {
       if (flagDate || disableDayFlag || betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable Day", "error"),
+            Actions.notistack.snackbar(DISABLE_DAY, "error"),
           ),
         );
       } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable hours", "error"),
+            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
           ),
         );
       } else if (betweenDay) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Site Date is Out of Range", "error"),
+            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
           ),
         );
       } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Booking can't be in Previous day",
+              Booking_cant_be_in_Previous_day,
               "error",
             ),
           ),
@@ -955,7 +962,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Delivery Area Site By SiteId Error"),
+            Actions.notistack.snackbar(Delivery_Area_Site_By_SiteId_Error),
           ),
         );
       }
@@ -1143,7 +1150,7 @@ const Calender = (props) => {
             };
             // }
           });
-          setSiteMeans(`TOTAL MEANS Booking : ${count}`);
+          setSiteMeans(`${TOTAL_MEANS_Booking}: ${count}`);
         }
         // Filtering events to with delivery area
 
@@ -1242,7 +1249,7 @@ const Calender = (props) => {
     <>
       <FullScreenModal
         open={addDelivery}
-        title={editDelivery ? "Edit Delivery Request" : "Delivery Request"}
+        title={editDelivery ? Edit_Delivery_Request : DELIVERY_REQUESTS}
         onClose={() => {
           setAddDelivery(false);
           setEditDelivery(false);
@@ -1267,7 +1274,7 @@ const Calender = (props) => {
       />
       <Modal show={bookingslot} onHide={() => setbookingslot(false)} centered>
         <Modal.Header closeButton style={{ border: "none" }}>
-          <Modal.Title className="text-center w-100">BOOKING</Modal.Title>
+          <Modal.Title className="text-center w-100">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Alertbox message="Invalid Time" />
         <Modal.Body>
@@ -1276,7 +1283,7 @@ const Calender = (props) => {
               <input
                 type="text"
                 style={{ border: "1px solid #707070" }}
-                placeholder="Company : ConstructBTP"
+                placeholder={COMPANY_ConstructBTP}
                 className="w-100 p-2 mb-2"
               />
             </div>
@@ -1284,7 +1291,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-12">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
+
                 <TimePicker
                   value={bookingstartTimeslice}
                   onChange={(e) => setBookingstartTimeslice(e)}
@@ -1294,7 +1302,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-12">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{End_time}</label>
+
                 <TimePicker
                   value={bookingendTimeslice}
                   onChange={(e) => setBookingendTimeslice(e)}
@@ -1311,7 +1320,7 @@ const Calender = (props) => {
                   <textarea
                     className="form-control"
                     id="exampleFormControlTextarea1"
-                    placeholder="Reason of booking"
+                    placeholder={BOOKING_REASON}
                     rows="3"
                     value={bookingTitle}
                     onChange={(e) => setBookingTitle(e.target.value)}
@@ -1332,13 +1341,13 @@ const Calender = (props) => {
               borderRadius: "5px",
             }}
           >
-            Book
+            {BOOK}
           </button>
         </Modal.Footer>
       </Modal>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Booking</Modal.Title>
+          <Modal.Title>{BOOKING}</Modal.Title>
         </Modal.Header>
         <Alertbox message="Please Add valid Time and Event" />
         <Modal.Body>
@@ -1352,7 +1361,7 @@ const Calender = (props) => {
                   popperPlacement="top-start"
                   showYearDropdown
                   minDate={addDays(new Date(), 1)}
-                  placeholderText="Booking Date"
+                  placeholderText={BOOKING_DATE}
                   onChange={(date) => {
                     setStartDate(date);
                   }}
@@ -1362,12 +1371,12 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6 mb-4">
               <FormSelect
-                placeholder="ConstructBTP"
+                placeholder={ConstructBTP}
                 values={[
-                  { value: "INCIDENT", label: "Incident" },
-                  { value: "MEAN", label: "Mean" },
-                  { value: "DELAY", label: "Delay" },
-                  { value: "UNEXPRECTED", label: "Unexp" },
+                  { value: "INCIDENT", label: INCIDENT },
+                  { value: "MEAN", label: MEAN },
+                  { value: "DELAY", label: DELAY },
+                  { value: "UNEXPRECTED", label: UNEXPECTED },
                 ]}
                 style={{ marginRight: "20px" }}
               />
@@ -1376,7 +1385,8 @@ const Calender = (props) => {
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start hour</label>
+                <label>{START_HOUR}</label>
+
                 <TimePicker
                   value={starttimeslice}
                   onChange={(e) => setstarttimeslice(e)}
@@ -1386,7 +1396,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End hour</label>
+                <label>{END_HOUR}</label>
+
                 <TimePicker
                   value={Endtimeslice}
                   onChange={(e) => setEndtimeslice(e)}
@@ -1400,7 +1411,7 @@ const Calender = (props) => {
               <div className="description">
                 <div class="form-group">
                   <textarea
-                    placeholder="Reason of booking"
+                    placeholder={BOOKING_REASON}
                     class="form-control"
                     id="exampleFormControlTextarea1"
                     rows="3"
@@ -1413,7 +1424,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-6">
               <div class="form-group statusColor">
-                <label>Status Color </label>
+                <label>{Status_Color}</label>
+
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="gender"
@@ -1429,7 +1441,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel
@@ -1440,7 +1452,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Not availble"
+                      label={Not_availble}
                       className="notAvailble"
                     />
                     <FormControlLabel
@@ -1451,7 +1463,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColor(e.target.value)}
                         />
                       }
-                      label="Validate"
+                      label={VALIDATE}
                       className="validate"
                     />
                   </RadioGroup>
@@ -1466,24 +1478,24 @@ const Calender = (props) => {
             style={{ backgroundColor: "#DBB20A", padding: "5px 20px" }}
             onClick={saveEvent}
           >
-            Book
+            {BOOK}
           </Button>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            {CLOSE}
           </Button>
         </Modal.Footer>
       </Modal>
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Event </Modal.Title>
+          <Modal.Title>{Edit_Event} </Modal.Title>
         </Modal.Header>
-        <Alertbox message="Please Add valid Time and Event" />
+        <Alertbox message={Please_Add_valid_Time_and_Event} />
         <Modal.Body>
           <div className="row">
             <div className="col-md-12">
               <div className="description">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Edit Event</label>
+                  <label for="exampleFormControlTextarea1">{Edit_Event}</label>
                   <textarea
                     class="form-control"
                     id="exampleFormControlTextarea1"
@@ -1498,7 +1510,8 @@ const Calender = (props) => {
           <div className="row">
             <div className="col-md-6">
               <div className="starttime">
-                <label>Start time</label>
+                <label>{Start_time}</label>
+
                 <TimePicker
                   value={starttimesliceEdit}
                   onChange={(e) => setstarttimesliceEdit(e)}
@@ -1507,7 +1520,8 @@ const Calender = (props) => {
               </div>
               <div class="form-group statusColor">
                 {value && ""}
-                <label>Status Color </label>
+                <label>{Status_Color}</label>
+
                 <FormControl component="fieldset">
                   <RadioGroup
                     aria-label="statusColor"
@@ -1523,7 +1537,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Pending validation"
+                      label={PENDING_VALIDATION}
                       className="pending"
                     />
                     <FormControlLabel
@@ -1534,7 +1548,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Not availble"
+                      label={Not_availble}
                       className="notAvailble"
                     />
                     <FormControlLabel
@@ -1545,7 +1559,7 @@ const Calender = (props) => {
                           onChange={(e) => setStatusColorEdit(e.target.value)}
                         />
                       }
-                      label="Validate"
+                      label={VALIDATE}
                       className="validate"
                     />
                   </RadioGroup>
@@ -1554,7 +1568,8 @@ const Calender = (props) => {
             </div>
             <div className="col-md-6">
               <div className="endTime">
-                <label>End Time</label>
+                <label>{END_DATE}</label>
+
                 <TimePicker
                   value={endtimesliceEdit}
                   onChange={(e) => setEndtimesliceEdit(e)}
@@ -1566,10 +1581,10 @@ const Calender = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={updateEvent}>
-            Update Event
+            {Update_Event}
           </Button>
           <Button variant="secondary" onClick={() => setShowEdit(false)}>
-            Close
+            {CLOSE}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1599,7 +1614,7 @@ const Calender = (props) => {
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <Heading primary="Delivery Calender" noWrap />
+                <Heading primary={Delivery_Calender} noWrap />
                 {/* <SubHeading
                 noMargin
                 topPadding
@@ -1733,7 +1748,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {deliveryCount}
             </h3>
-            <h6 style={{ color: "white" }}>Deliveries</h6>
+            <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
           </div>
           <div
             style={{
@@ -1748,7 +1763,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {totalCompDeliveries}
             </h3>
-            <h6 style={{ color: "white" }}>COMPLETED</h6>
+            <h6 style={{ color: "white" }}>{COMPLETED}</h6>
           </div>
           <div
             style={{
@@ -1779,7 +1794,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {alertCount}
             </h3>
-            <h6 style={{ color: "white" }}>Alerts</h6>
+            <h6 style={{ color: "white" }}>{ALERTS}</h6>
           </div>
         </div>
       </div>

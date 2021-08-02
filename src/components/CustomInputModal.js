@@ -5,6 +5,7 @@ import Chip from "@material-ui/core/Chip";
 import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -85,6 +86,7 @@ export default function CustomInputModal(props) {
       fontSize: theme.typography.pxToRem(12),
     },
   }));
+  const { VALIDATE, ADD_LOCATION } = TEXTS;
 
   const classes = useStyles();
   const [modal, setModal] = useState(false);
@@ -155,7 +157,7 @@ export default function CustomInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD LOCATION"
+        title={ADD_LOCATION}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
@@ -190,7 +192,7 @@ export default function CustomInputModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
                 disabled={!props.rightValue || !props.leftValue}

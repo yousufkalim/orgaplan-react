@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
+import { TEXTS } from "../assets/languages/french";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -12,7 +13,15 @@ import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-
+  const {
+    VALIDATE,
+    ADD_ADDRESS,
+    text_only,
+    CITY,
+    STREET,
+    FIVE_digits_only,
+    POSTAL,
+  } = TEXTS;
   const error = theme.palette.error.main;
   const white = theme.palette.common.white;
   const primaryColor = theme.palette.primary.contrastText;
@@ -132,7 +141,7 @@ export default function MultiAdderInputModal(props) {
         </Grid>
       </div>
       <Modal
-        title="ADD ADDRESS"
+        title={ADD_ADDRESS}
         open={modal}
         onClose={() => setModal((st) => !st)}
         body={
@@ -143,7 +152,7 @@ export default function MultiAdderInputModal(props) {
                 value={street}
                 maxLength="80"
                 textAlign="center"
-                placeholder="Street"
+                placeholder={`${STREET}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -155,7 +164,7 @@ export default function MultiAdderInputModal(props) {
                 value={city}
                 maxLength="30"
                 textAlign="center"
-                placeholder="City (text only)"
+                placeholder={`${CITY} ${text_only}`}
                 onChange={({ target: { name, value } }) => {
                   (/^[A-Za-z]+$/.test(value) || value === "") &&
                     handleChange(name, value);
@@ -169,7 +178,7 @@ export default function MultiAdderInputModal(props) {
                 maxLength={5}
                 value={postal}
                 textAlign="center"
-                placeholder="Postal (5 digits only)"
+                placeholder={`${POSTAL} ${FIVE_digits_only}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -178,7 +187,7 @@ export default function MultiAdderInputModal(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
                 disabled={

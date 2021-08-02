@@ -65,7 +65,12 @@ const Calender = (props) => {
     PENDING,
     Loading,
     Time_is_Invalid,
+    you_can_not_Select_Disable_Hours_of_a_Day,
     Please_Select_Company_name_or_Booking_Reason,
+    DISABLE_DAY,
+    DISABLE_HOURS,
+    Booking_cant_be_in_Previous_day,
+    Mean_not_Available,
   } = TEXTS;
   const dispatch = useDispatch();
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -372,7 +377,7 @@ const Calender = (props) => {
             return 0;
           });
           if (flagHours || disableHoursSiteUnavailabilityDatesFlag) {
-            setAlertMsg("you can not Select Disable Hours of a Day");
+            setAlertMsg(you_can_not_Select_Disable_Hours_of_a_Day);
             setAlertBoxTime(true);
             setTimeout(function () {
               setAlertBoxTime(false);
@@ -400,14 +405,14 @@ const Calender = (props) => {
           setSelectedCompany("");
         }
       } else {
-        setAlertMsg("Time is Invalid");
+        setAlertMsg(Time_is_Invalid);
         setAlertBoxTime(true);
         setTimeout(function () {
           setAlertBoxTime(false);
         }, 1000);
       }
     } else {
-      setAlertMsg("Please Select Company name or Booking Reason");
+      setAlertMsg(Please_Select_Company_name_or_Booking_Reason);
       setAlertBoxTime(true);
       setTimeout(function () {
         setAlertBoxTime(false);
@@ -501,7 +506,7 @@ const Calender = (props) => {
       if (flagDate || unavailabilitySite) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable Day", "error"),
+            Actions.notistack.snackbar(DISABLE_DAY, "error"),
           ),
         );
       } else if (
@@ -512,14 +517,14 @@ const Calender = (props) => {
       ) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Disable hours", "error"),
+            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
           ),
         );
       } else if (pastdayFlag) {
         dispatch(
           Actions.notistack.enqueueSnackbar(
             Actions.notistack.snackbar(
-              "Booking can't be allowed in past day ",
+              Booking_cant_be_in_Previous_day,
               "error",
             ),
           ),
@@ -574,7 +579,7 @@ const Calender = (props) => {
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Mean not Available", "error"),
+            Actions.notistack.snackbar(Mean_not_Available, "error"),
           ),
         );
       }

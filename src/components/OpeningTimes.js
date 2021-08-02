@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
+import { TEXTS } from "../assets/languages/french";
 
 import GLOBALS from "../globals";
 
@@ -15,64 +16,65 @@ import RadioButton from "./RadioButton";
 const addOpeningTimes = Yup.object().shape({
   day1Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day1End"), "Invalid combination")
+    .lessThan(Yup.ref("day1End"), "Combinaison non valide")
     .required(),
   day1End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day1Start"), "Invalid combination")
+    .moreThan(Yup.ref("day1Start"), "Combinaison non valide")
     .required(),
   day2Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day2End"), "Invalid combination")
+    .lessThan(Yup.ref("day2End"), "Combinaison non valide")
     .required(),
   day2End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day2Start"), "Invalid combination")
+    .moreThan(Yup.ref("day2Start"), "Combinaison non valide")
     .required(),
   day3Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day3End"), "Invalid combination")
+    .lessThan(Yup.ref("day3End"), "Combinaison non valide")
     .required(),
   day3End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day3Start"), "Invalid combination")
+    .moreThan(Yup.ref("day3Start"), "Combinaison non valide")
     .required(),
   day4Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day4End"), "Invalid combination")
+    .lessThan(Yup.ref("day4End"), "Combinaison non valide")
     .required(),
   day4End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day4Start"), "Invalid combination")
+    .moreThan(Yup.ref("day4Start"), "Combinaison non valide")
     .required(),
   day5Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day5End"), "Invalid combination")
+    .lessThan(Yup.ref("day5End"), "Combinaison non valide")
     .required(),
   day5End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day5Start"), "Invalid combination")
+    .moreThan(Yup.ref("day5Start"), "Combinaison non valide")
     .required(),
   day6Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day6End"), "Invalid combination")
+    .lessThan(Yup.ref("day6End"), "Combinaison non valide")
     .required(),
   day6End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day6Start"), "Invalid combination")
+    .moreThan(Yup.ref("day6Start"), "Combinaison non valide")
     .required(),
   day7Start: Yup.number()
     .integer()
-    .lessThan(Yup.ref("day7End"), "Invalid combination")
+    .lessThan(Yup.ref("day7End"), "Combinaison non valide")
     .required(),
   day7End: Yup.number()
     .integer()
-    .moreThan(Yup.ref("day7Start"), "Invalid combination")
+    .moreThan(Yup.ref("day7Start"), "Combinaison non valide")
     .required(),
 });
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
+  const { SEE_OPENING_TIMES, YES, NO, VALIDATE, Day_Off } = TEXTS;
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -129,19 +131,19 @@ export default function MultiAdderInputModal(props) {
       <Button
         minWidth={200}
         fullWidth={false}
-        text="SEE OPENING TIMES"
+        text={SEE_OPENING_TIMES}
         color={theme.palette.blue}
         onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
         open={modal}
-        title="OPENING TIMES"
+        title={SEE_OPENING_TIMES}
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form onSubmit={formik.handleSubmit}>
             <Form.Row alignItems="center" justifyContent="center">
-              <FormLabel noMargin bold primary="Day Off" />
+              <FormLabel noMargin bold primary={Day_Off} />
             </Form.Row>
             <Form.Row>
               <Form.Row noMargin>
@@ -156,8 +158,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -198,8 +200,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -240,8 +242,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -282,8 +284,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -324,8 +326,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -366,8 +368,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -408,8 +410,8 @@ export default function MultiAdderInputModal(props) {
                   formik.setFieldValue(name, value === "true" ? true : false)
                 }
                 items={[
-                  { value: true, label: "Yes" },
-                  { value: false, label: "No" },
+                  { value: true, label: YES },
+                  { value: false, label: NO },
                 ]}
               />
               <Form.Row noMargin>
@@ -441,7 +443,7 @@ export default function MultiAdderInputModal(props) {
               <Button
                 type="submit"
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 loading={formik.isSubmitting}
                 disabled={formik.isSubmitting}

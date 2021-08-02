@@ -208,8 +208,13 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
 }
 
 export default function Sites(props) {
-  const { GO_TO_HOME_PAGE, OLD_PASSWORD, NEW_PASSWORD, CONFIRM_PASSWORD } =
-    TEXTS;
+  const {
+    GO_TO_HOME_PAGE,
+    OLD_PASSWORD,
+    NEW_PASSWORD,
+    CONFIRM_PASSWORD,
+    VALIDATE,
+  } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -552,7 +557,7 @@ export default function Sites(props) {
             <Form.Row justifyContent="center">
               <Button
                 type="submit"
-                text="VALIDATE"
+                text={VALIDATE}
                 minWidth="30%"
                 fullWidth={false}
                 loading={actionLoading}

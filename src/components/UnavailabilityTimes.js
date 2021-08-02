@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import GLOBALS from "../globals";
 import { useTheme } from "@material-ui/core/styles";
 import * as Yup from "yup";
+import { TEXTS } from "../assets/languages/french";
+
 import moment from "moment";
 import Form from "./Form";
 import Modal from "./Modal";
@@ -28,6 +30,15 @@ const addUnavailabilityYup = Yup.object().shape({
 export default function MultiAdderInputModal(props) {
   const { unavailabilityDates, setUnavailabilityDates, startRange, endRange } =
     props;
+  const {
+    SEE_OPENING_TIMES,
+    YES,
+    NO,
+    REASON,
+    Day_Off,
+    This_time_is_not_available,
+    Please_select_a_Vaild_time,
+  } = TEXTS;
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -102,7 +113,7 @@ export default function MultiAdderInputModal(props) {
     { value: 9, label: "9" },
     { value: 10, label: "10" },
     { value: 11, label: "11" },
-    { value: 12,label:  "12" },
+    { value: 12, label: "12" },
     { value: 13, label: "13" },
     { value: 14, label: "14" },
     { value: 15, label: "15" },
@@ -192,14 +203,14 @@ export default function MultiAdderInputModal(props) {
         } else {
           dispatch(
             Actions.notistack.enqueueSnackbar(
-              Actions.notistack.snackbar("This time is not available", "error"),
+              Actions.notistack.snackbar(This_time_is_not_available, "error"),
             ),
           );
         }
       } else {
         dispatch(
           Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar("Please select a Vaild time ", "error"),
+            Actions.notistack.snackbar(Please_select_a_Vaild_time, "error"),
           ),
         );
       }
@@ -221,13 +232,13 @@ export default function MultiAdderInputModal(props) {
         minWidth={200}
         fullWidth={false}
         color={theme.palette.blue}
-        text="SEE UNAVAILABILITIES"
+        text={SEE_OPENING_TIMES}
         onClick={() => setModal(true)}
       />
       {update && ""}
       <Modal
         open={modal}
-        title="UNAVAILABILITIES"
+        title={SEE_OPENING_TIMES}
         onClose={() => setModal((st) => !st)}
         body={
           <>
@@ -257,7 +268,7 @@ export default function MultiAdderInputModal(props) {
                         color="primary"
                       />
                     }
-                    label="Day Off"
+                    label={Day_Off}
                   />
                 </Form.Row>
               </Form.Row>
@@ -286,7 +297,7 @@ export default function MultiAdderInputModal(props) {
 
               <Form.Row>
                 <Form.Row noMargin>
-                  <FormLabel disableMargin bold primary="Reason:" />
+                  <FormLabel disableMargin bold primary={`${REASON}:`} />
                 </Form.Row>
 
                 <Form.Row noMargin>
@@ -297,7 +308,7 @@ export default function MultiAdderInputModal(props) {
                     onChange={getreason}
                     maxLength="50"
                     minLength="3"
-                    placeholder="Reason"
+                    placeholder={REASON}
                     style={{ width: "100%" }}
                   />
                 </Form.Row>
@@ -324,7 +335,7 @@ export default function MultiAdderInputModal(props) {
                       <th>Date</th>
                       <th>Start</th>
                       <th>End</th>
-                      <th>Reason</th>
+                      <th>{REASON}</th>
                       <th>Action</th>
                     </tr>
                   </thead>

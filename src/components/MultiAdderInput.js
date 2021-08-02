@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
 import IconButton from "@material-ui/core/IconButton";
+import { TEXTS } from "../assets/languages/french";
 
 import { ReactComponent as Plus } from "../assets/icons/Plus.svg";
 
@@ -88,7 +89,7 @@ export default function MultiAdderInput(props) {
     },
   }));
   const classes = useStyles();
-
+  const { Please_enter_atleast_one_trade } = TEXTS;
   const [text, setText] = useState("");
   const [isValid, setIsValid] = useState(true);
 
@@ -133,7 +134,7 @@ export default function MultiAdderInput(props) {
             setText(e.target.value);
             if (props.name === "trades") {
               if (!e.target.value && props.trades.length < 1) {
-                props.setTradeError("Please enter atleast one trade");
+                props.setTradeError(Please_enter_atleast_one_trade);
               } else {
                 props.setTradeError("");
               }

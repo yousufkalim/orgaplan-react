@@ -58,7 +58,7 @@ export default function VerifyClient(props) {
     Please_select_a_company,
     ADDITIONNAL_INFORMATION_MUST_BE_LESS_THAN_30_CHARACTERS,
     TYPE_OF_CONTRACT,
-    Delivery_module,
+    Delivery_Module,
     Please_enter_valid_email,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
@@ -311,7 +311,7 @@ export default function VerifyClient(props) {
               name="functionality"
               value={functionality}
               style={GLOBALS.Styles.inputWidth}
-              items={[{ value: "DELIVERY", label: Delivery_module }]}
+              items={[{ value: "DELIVERY", label: Delivery_Module }]}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }

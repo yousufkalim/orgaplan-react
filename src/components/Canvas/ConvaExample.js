@@ -79,8 +79,7 @@ export default function Canvas({
     }
     return obj;
   };
-  {
-  }
+
   const info = (area) => {
     message.config({
       duration: 2,

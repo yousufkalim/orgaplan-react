@@ -15,6 +15,7 @@ import FormLabel from "../../../components/FormLabel";
 import FormInput from "../../../components/FormInput";
 import FormSelect from "../../../components/FormSelect";
 import SmallButton from "../../../components/SmallButton";
+import { TEXTS } from "../../../assets/languages/french";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -53,6 +54,19 @@ const levelNumberList = [
 let propsShapesCon = [];
 let propsShapeCon = "";
 export default function AddSiteStep3(props) {
+  const {
+    LEVEL_NAME,
+    VALIDATE,
+    BUILDING,
+    Are_you_sure,
+    The_current_file_will_be_deleted,
+    Max_size_can_be_10MB_of_type,
+    Select_a_Building,
+    BUILDING_Nom,
+    Create_a_Building,
+    DOWNLOAD,
+    Add_Plan,
+  } = TEXTS;
   const { setSelectedShape } = props;
 
   const theme = useTheme();
@@ -183,7 +197,7 @@ export default function AddSiteStep3(props) {
 
       props.setShapes(propShapes, propShape, true);
       setSelectedShape("");
-      props.setSelectedShape("")
+      props.setSelectedShape("");
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -389,7 +403,7 @@ export default function AddSiteStep3(props) {
       level.plan,
       <Form.Row style={{ justifyContent: "center" }}>
         <SmallButton
-          text="Add Plan"
+          text={Add_Plan}
           disabled={loading}
           color={theme.palette.primary.contrastText}
           onClick={() => {
@@ -440,7 +454,6 @@ export default function AddSiteStep3(props) {
           color={theme.palette.primary.contrastText}
           onClick={() => {
             if (level) {
-              
               getHistoryPlan(level);
             } else {
               alert("Please add a level");
@@ -462,7 +475,7 @@ export default function AddSiteStep3(props) {
         moment(level.createdAt).format("DD/MM/YYYY"),
         <Form.Row style={{ justifyContent: "center" }}>
           <SmallButton
-            text="Download"
+            text={DOWNLOAD}
             disabled={level.name ? false : true}
             color={theme.palette.primary.contrastText}
             onClick={async () => {
@@ -519,16 +532,16 @@ export default function AddSiteStep3(props) {
       {!activeBuilding && (
         <Form.Form>
           <Form.Row justifyContent="center">
-            <FormLabel noMargin bold primary="Select a Building" />
+            <FormLabel noMargin bold primary={Select_a_Building} />
           </Form.Row>
           <Form.Row>
             <Form.Row noMargin>
-              <FormLabel noMargin bold primary="Building" />
+              <FormLabel noMargin bold primary={BUILDING} />
             </Form.Row>
             <FormSelect
               name="buildingName"
               value={selectedBuilding}
-              placeholder="Building Name"
+              placeholder={BUILDING_Nom}
               style={GLOBALS.Styles.inputWidth}
               onChange={async ({ target: { value } }) =>
                 setSelectedBuilding(value)
@@ -542,24 +555,24 @@ export default function AddSiteStep3(props) {
           <Form.Row justifyContent="center">
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               onClick={addExistingBuilding}
               disabled={loading || !selectedBuilding}
             />
           </Form.Row>
           <Form.Row justifyContent="center">
-            <FormLabel noMargin bold primary="OR Create a building" />
+            <FormLabel noMargin bold primary={`OR ${Create_a_Building}`} />
           </Form.Row>
           <Form.Row>
             <Form.Row noMargin>
-              <FormLabel noMargin bold primary="Building Name" />
+              <FormLabel noMargin bold primary={BUILDING_Nom} />
             </Form.Row>
             <FormInput
               name="buildingName"
               value={buildingName}
               maxLength="30"
-              placeholder="Building Name"
+              placeholder={BUILDING_Nom}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -569,7 +582,7 @@ export default function AddSiteStep3(props) {
           <Form.Row justifyContent="center">
             <Button
               minWidth={200}
-              text="VALIDATE"
+              text={VALIDATE}
               fullWidth={false}
               onClick={onCreateBuilding}
               disabled={loading || !buildingName}
@@ -582,13 +595,13 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary="Level Name" />
+                <FormLabel noMargin bold primary={LEVEL_NAME} />
               </Form.Row>
               {activeBuilding && (
                 <FormInput
                   name="levelNumber"
                   value={levelNumber}
-                  placeholder="Level Name"
+                  placeholder={LEVEL_NAME}
                   style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)
@@ -614,7 +627,7 @@ export default function AddSiteStep3(props) {
             <Form.Row justifyContent="center">
               <Button
                 minWidth={200}
-                text="VALIDATE"
+                text={VALIDATE}
                 fullWidth={false}
                 onClick={onCreateLevel}
                 disabled={loading || !levelNumber}

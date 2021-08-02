@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Invoices(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { CREATE_AN_INVOICE, Are_you_sure_to_Delete, INVOICE } = TEXTS;
+  const { CREATE_AN_INVOICE, Are_you_sure_to_Delete, INVOICE, ALL } = TEXTS;
   const store = useSelector((state) => state.auth);
 
   const [page, setPage] = useState(1);
@@ -105,7 +105,7 @@ export default function Invoices(props) {
   let clientsArray = [
     {
       value: "ALL",
-      label: "ALL",
+      label: ALL,
     },
   ];
   clients.map((client) =>

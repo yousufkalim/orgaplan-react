@@ -328,7 +328,7 @@ export default function AddCompanies(props) {
       <div className={classes.content}>
         <Form.Form>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY}* :`} />
+            <FormLabel bold primary={`${IDENTITY} :`} />
             <Form.Row width="48%" noMargin>
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <Autocomplete
@@ -372,7 +372,7 @@ export default function AddCompanies(props) {
                     <TextField
                       {...params}
                       name="name"
-                      label="Name"
+                      label={NAME}
                       variant="outlined"
                       onBlur={({ target: { name, value } }) =>
                         validation(name, value)

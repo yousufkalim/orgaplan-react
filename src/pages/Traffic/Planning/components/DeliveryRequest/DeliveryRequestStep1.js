@@ -34,6 +34,7 @@ export default function AddSiteStep1(props) {
     MEANS,
     MATERIALS_DELIVERED,
     ENTER_MATERIALS,
+    VALIDATE,
   } = TEXTS;
 
   const adminStore = useSelector((state) => state.admin);
@@ -426,7 +427,7 @@ export default function AddSiteStep1(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           disabled={
             !company ||

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import { TEXTS } from "../../../../../assets/languages/french";
 
 import GLOBALS from "../../../../../globals";
 import Actions from "../../../../../redux/actions";
@@ -15,6 +16,17 @@ export default function DeliveryRequestStep3(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
+  const {
+    STORAGEAREA,
+    IDENTITY,
+    DATE_AND_TIME,
+    DELIVERYAREA,
+    MATERIALS_DELIVERED,
+    COMMENTS,
+    Receive_Summary_by_email,
+    VALIDATE,
+    MEAN,
+  } = TEXTS;
 
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState("");
@@ -210,7 +222,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="IDENTITY :"
+          primary={`${IDENTITY} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel primary={company || "-"} style={GLOBALS.Styles.inputWidth} />
@@ -218,7 +230,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="DATE AND TIME :"
+          primary={`${DATE_AND_TIME} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -251,7 +263,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="DELIVERY AREA / MEAN :"
+          primary={`${DELIVERYAREA}/ ${MEAN} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -262,7 +274,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="STORAGE AREA / MEAN :"
+          primary={`${STORAGEAREA}/ ${MEAN} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -273,7 +285,7 @@ export default function DeliveryRequestStep3(props) {
       <Form.Row>
         <FormLabel
           bold
-          primary="MATERIALS DELIVERED :"
+          primary={`${MATERIALS_DELIVERED} :`}
           style={GLOBALS.Styles.inputWidth}
         />
         <FormLabel
@@ -286,13 +298,13 @@ export default function DeliveryRequestStep3(props) {
         />
       </Form.Row>
       <Form.Row alignItems="flex-start">
-        <FormLabel bold primary="COMMENTS:" />
+        <FormLabel bold primary={`${COMMENTS}:`} />
         <FormInput
           textArea
           rows={3}
           name="comments"
           value={comments}
-          placeholder="Comments"
+          placeholder={COMMENTS}
           disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setComments(value)}
@@ -305,7 +317,7 @@ export default function DeliveryRequestStep3(props) {
             name="receiveSummary"
             checked={receiveSummary}
             disabled={props.eventId}
-            label="Receive Summary by e-mail"
+            label={Receive_Summary_by_email}
             onChange={({ target: { checked } }) => setReceiveSummary(checked)}
           />
         </Form.Row>
@@ -314,7 +326,7 @@ export default function DeliveryRequestStep3(props) {
         <Button
           type="submit"
           minWidth={200}
-          text="VALIDATE"
+          text={VALIDATE}
           fullWidth={false}
           loading={loading}
           disabled={loading || !company || !storageArea || !deliveryArea}
