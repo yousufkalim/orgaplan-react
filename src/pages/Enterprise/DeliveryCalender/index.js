@@ -1728,7 +1728,15 @@ const Calender = (props) => {
             <Loader.Progress />
           )}
         </div>
-        <div style={{ width: "18%" }}>
+        <div
+          style={{
+            width: "140px",
+            height: "100%",
+            marginRight: "12px",
+            position: "absolute",
+            right: "15px",
+          }}
+        >
           <div
             style={{
               backgroundColor: "#47A7EE",
