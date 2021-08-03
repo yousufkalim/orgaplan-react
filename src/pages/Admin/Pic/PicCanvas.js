@@ -220,14 +220,15 @@ const PicCanvas = (props) => {
       });
 
       let shapes = response.data.shapes;
-      let newShapes = expiredShapes(shapes);
 
+      let newShapes = expiredShapes(shapes);
       if (newShapes) {
         newShapes.map((st) => handleColorAndNameOfShape(st));
 
         setShapes(newShapes);
       } else {
         shapes.map((st) => handleColorAndNameOfShape(st));
+
         setShapes(shapes);
       }
       // setShapes(response.data.shapes);
@@ -252,6 +253,7 @@ const PicCanvas = (props) => {
       setlevelPic(response.data);
       let shapes = response.data.shapes;
       shapes.map((st) => handleColorAndNameOfShape(st));
+
       setShapes(shapes);
       setLoading(false);
     } catch (err) {
@@ -357,7 +359,9 @@ const PicCanvas = (props) => {
 
       let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
+
       updatedShape && setShape(updatedShape);
+
       setShapes(shapesArray);
       updateShape(updatedShape);
       // remove object
@@ -382,6 +386,7 @@ const PicCanvas = (props) => {
       let updatedShape = shapesArray[removeIndex];
       level && (selectedShapeReserver = selectedShape);
       updatedShape && setShape(updatedShape);
+
       setShapes(shapesArray);
       updateLevelShape(updatedShape);
       // remove object
