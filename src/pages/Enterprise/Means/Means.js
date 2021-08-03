@@ -52,6 +52,7 @@ const Means = () => {
     START_DATE,
     END_DATE,
     Exterior,
+    TYPE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -382,7 +383,7 @@ const Means = () => {
           <FormSelect
             value={type}
             values={types}
-            placeholder="Type"
+            placeholder={TYPE}
             style={{ marginRight: "5px", maxWidth: 250 }}
             onChange={({ target: { value } }) => {
               setType(value);

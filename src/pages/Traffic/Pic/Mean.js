@@ -49,6 +49,7 @@ export default function AddMean(props) {
     TECHNICAL_SHEET,
     ROUTING,
     START_DATE,
+    TYPE,
   } = TEXTS;
   const classes = useStyles();
   const { setSelectedShape } = props;
@@ -310,7 +311,7 @@ export default function AddMean(props) {
             <FormSelect
               name="type"
               value={meanType}
-              placeholder="Type"
+              placeholder={TYPE}
               values={[
                 {
                   label: LIFTING,

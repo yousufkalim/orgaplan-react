@@ -49,7 +49,16 @@ export default function AddAdmin(props) {
     IDENTITY,
     PROFILE,
     COMPANIES,
+    Please_enter_email,
     TYPE_OF_ADMIN,
+    FIRST_NAME_REQUIRED,
+    Telephone_must_have_10_to_25_digits,
+    LAST_NAME_REQUIRED,
+    Please_enter_company_name,
+    Please_enter_type_of_organigramme,
+    Please_enter_valid_email,
+    please_add_profile_image,
+    Please_select_a_company,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -166,29 +175,28 @@ export default function AddAdmin(props) {
   function validation(name, value) {
     if (name === "email") {
       if (GLOBALS.Functions.email(value))
-        setEmailError("Please enter valid email");
+        setEmailError(Please_enter_valid_email);
       else setEmailError("");
     } else if (name === "phone") {
       if (GLOBALS.Functions.phone(value))
-        setPhoneError("Phone must be 10-25 digits");
+        setPhoneError(Telephone_must_have_10_to_25_digits);
       else setPhoneError("");
     } else if (name === "firstName") {
       if (GLOBALS.Functions.empty(value))
-        setFirstNameError("First name is required");
+        setFirstNameError(FIRST_NAME_REQUIRED);
       else setFirstNameError("");
     } else if (name === "lastName") {
-      if (GLOBALS.Functions.empty(value))
-        setLastNameError("Last name is required");
+      if (GLOBALS.Functions.empty(value)) setLastNameError(LAST_NAME_REQUIRED);
       else setLastNameError("");
     } else if (name === "image") {
       if (GLOBALS.Functions.empty(value.length)) {
-        setImageError("Please add a profile image");
+        setImageError(please_add_profile_image);
       } else {
         setImageError("");
       }
     } else if (name === "companyId") {
       if (GLOBALS.Functions.empty(value))
-        setCompanyIdError("Please select a company");
+        setCompanyIdError(Please_select_a_company);
       else setCompanyIdError("");
     }
   }

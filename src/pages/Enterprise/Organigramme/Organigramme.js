@@ -133,7 +133,7 @@ export default function Organigramme(props) {
               style={{
                 marginLeft: "20px",
                 backgroundColor:
-                  selectedFilter === "LOGISTICS" ? "#fff" : "#140772",
+                  selectedFilter === "LOGISTICS" ? "#fff" : "#DBB20A",
               }}
               textColor={selectedFilter === "LOGISTICS" ? "#7E7878" : ""}
               onClick={() => getOrganigramme("SITE")}
@@ -143,7 +143,7 @@ export default function Organigramme(props) {
               text={LOGISTIC_ORGANIGAMME}
               style={{
                 marginLeft: "20px",
-                backgroundColor: selectedFilter === "SITE" ? "#fff" : "#140772",
+                backgroundColor: selectedFilter === "SITE" ? "#fff" : "#DBB20A",
               }}
               textColor={selectedFilter === "SITE" ? "#7E7878" : ""}
               onClick={() => getOrganigramme("LOGISTICS")}

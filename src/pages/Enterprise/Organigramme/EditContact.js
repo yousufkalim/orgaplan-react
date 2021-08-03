@@ -46,6 +46,7 @@ export default function EditContact(props) {
     Please_enter_email,
     TELEPHONE,
     FIRST_NAME,
+    TYPE,
     IDENTITY,
     LAST_NAME,
     COMPANY,
@@ -254,7 +255,7 @@ export default function EditContact(props) {
                   { value: "LOGISTICS", label: LOGISTICS },
                   { value: "SITE", label: SITE },
                 ]}
-                placeholder="Type"
+                placeholder={TYPE}
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(e) => {
                   const index = e.target.selectedIndex - 1;
