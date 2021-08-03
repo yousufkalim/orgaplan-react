@@ -119,7 +119,7 @@ export const TEXTS = {
   TYPE_OF_PLACE: "Ouvert du localisation",
   TYPE_OF_Re_invoice: "Ouvert du re-facturation",
 
-  TYPE_OF_ADMIN: "Ouvert d'admin*",
+  TYPE_OF_ADMIN: "Ouvert d'admin",
   TYPE_OF_CONTRACT: "Ouvert du contrat",
   MASTER_CONTRACT: "Contrat Master",
 
