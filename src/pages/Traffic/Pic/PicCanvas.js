@@ -171,7 +171,6 @@ const PicCanvas = (props) => {
   };
   const expiredShapes = (shapes) => {
     let array = [];
-    console.log("shapes in expiredShapes 155");
     shapes.map((sp) => {
       if (sp.storageArea && Object.keys(sp.storageArea).length > 0) {
         let isExist = sp?.storageArea?.availability?.end;
@@ -201,7 +200,6 @@ const PicCanvas = (props) => {
         array.push(sp);
       }
     });
-    console.log("185 array after expire shapes remove", shapes);
     return array;
   };
   const handleColorAndNameOfShape = (shape) => {
