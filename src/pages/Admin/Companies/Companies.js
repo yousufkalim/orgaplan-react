@@ -214,68 +214,68 @@ export default function Companies(props) {
 
       <div>
         {item.companyId.adminIds.map((id, index) => {
-          if (id === store.user._id) {
-            return (
-              <>
-                <div>
-                  <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-                    <NavLink
-                      to={{
-                        pathname: `/companies/user-list/${item.companyId._id}`,
-                        id: item.companyId._id,
-                      }}
-                    >
-                      <img
-                        src={Images.comapnies}
-                        style={{ width: 18, height: 17 }}
-                        alt="Icon"
-                      />
-                    </NavLink>
-                  </IconButton>
-                  <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-                    <NavLink to={`/companies/edit/${item.companyId._id}`}>
-                      <img
-                        src={Images.pencil}
-                        style={{ width: 18, height: 17 }}
-                        alt="Icon"
-                      />
-                    </NavLink>
-                  </IconButton>
-                  <IconButton style={{ padding: "6px" }} onClick={() => {}}>
-                    <NavLink
-                      to={{
-                        pathname: "/",
-                        companyId: item.companyId._id,
-                      }}
-                    >
-                      <img
-                        src={Images.calender}
-                        style={{ width: 18, height: 17 }}
-                        alt="Icon"
-                      />
-                    </NavLink>
-                  </IconButton>
-                  <IconButton
-                    style={{ padding: "6px", color: "#1890ff" }}
-                    onClick={() => {}}
+          // if (id === store.user._id) {
+          return (
+            <>
+              <div>
+                <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+                  <NavLink
+                    to={{
+                      pathname: `/companies/user-list/${item.companyId._id}`,
+                      id: item.companyId._id,
+                    }}
                   >
-                    <NavLink
-                      to={{
-                        pathname: `/incidents`,
-                        search: `?companyId=${item.companyId._id}`,
-                      }}
-                    >
-                      <img
-                        src={Images.incidents}
-                        style={{ width: 18, height: 17 }}
-                        alt="Icon"
-                      />
-                    </NavLink>
-                  </IconButton>
-                </div>
-              </>
-            );
-          }
+                    <img
+                      src={Images.comapnies}
+                      style={{ width: 18, height: 17 }}
+                      alt="Icon"
+                    />
+                  </NavLink>
+                </IconButton>
+                <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+                  <NavLink to={`/companies/edit/${item.companyId._id}`}>
+                    <img
+                      src={Images.pencil}
+                      style={{ width: 18, height: 17 }}
+                      alt="Icon"
+                    />
+                  </NavLink>
+                </IconButton>
+                <IconButton style={{ padding: "6px" }} onClick={() => {}}>
+                  <NavLink
+                    to={{
+                      pathname: "/",
+                      companyId: item.companyId._id,
+                    }}
+                  >
+                    <img
+                      src={Images.calender}
+                      style={{ width: 18, height: 17 }}
+                      alt="Icon"
+                    />
+                  </NavLink>
+                </IconButton>
+                <IconButton
+                  style={{ padding: "6px", color: "#1890ff" }}
+                  onClick={() => {}}
+                >
+                  <NavLink
+                    to={{
+                      pathname: `/incidents`,
+                      search: `?companyId=${item.companyId._id}`,
+                    }}
+                  >
+                    <img
+                      src={Images.incidents}
+                      style={{ width: 18, height: 17 }}
+                      alt="Icon"
+                    />
+                  </NavLink>
+                </IconButton>
+              </div>
+            </>
+          );
+          // }
         })}
       </div>,
     ];

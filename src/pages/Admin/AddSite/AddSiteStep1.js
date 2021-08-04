@@ -47,6 +47,7 @@ export default function AddSiteStep1(props) {
   const [zacId, setZacId] = useState("");
   const [adminId, setAdminId] = useState("");
   const [TradeError, setTradeError] = useState("");
+  const [clientAdmin, setClientAdmin] = useState([]);
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
@@ -60,13 +61,20 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     clients.map((client) =>
-      client.adminIds.map(
-        (admin) =>
-          admin._id === adminId && setClientName(client.companyId.name),
-      ),
+      client.adminIds.map((admin) => {
+        if (admin._id === adminId) {
+          setClientName(client.companyId.name);
+          setClientAdmin([
+            {
+              adminId: store.user._id,
+              clientId: client._id,
+              companyId: client.companyId._id,
+            },
+          ]);
+        }
+      }),
     );
   }, [clients, adminId]);
-
   async function fetchData() {
     try {
       const zacsResult = await GLOBALS.API({
@@ -91,6 +99,7 @@ export default function AddSiteStep1(props) {
       });
       setZacs(zacsArray);
       setAdmins(adminsArray);
+
       setClients(clientsResult.data.items);
       setAdminId(store.user._id);
       setLoading(false);
@@ -118,20 +127,21 @@ export default function AddSiteStep1(props) {
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
   }
-
+  console.log(clientAdmin);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
       name,
       logo,
       zacId,
-      adminId,
+      clientAdmin,
       functionality,
       addresses,
       trades,
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
     };
+
     props.setStep1Data(values);
     props.setStep(2);
   }
