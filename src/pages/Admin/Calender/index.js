@@ -10,7 +10,7 @@ import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { TEXTS } from "../../../assets/languages/french";
-
+import "moment/locale/fr"; //change calender texts to french
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
@@ -40,6 +40,7 @@ let view = {
   work_week: MyWorkWeek,
   agenda: true,
 };
+moment.locale("en"); //change calender texts to french
 const localizer = momentLocalizer(moment);
 let formats = {
   dateFormat: "DD",
@@ -50,6 +51,24 @@ let formats = {
     localizer.format(date, "HH:mm", culture),
   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
+};
+
+//change calender texts to french
+
+const messagesFrench = {
+  allDay: "Journée",
+  previous: "<",
+  next: ">",
+  today: "Aujourd'hui",
+  month: "Mois",
+  week: "Semaine",
+  day: "Jour",
+  agenda: "Événements à venir",
+  date: "Date",
+  time: "Heure",
+  event: "Événement", // Or anything you want
+  work_week: "Semaine de travail",
+  showMore: (total) => `+ ${total} événement(s) supplémentaire(s)`,
 };
 
 const Calender = (props) => {
@@ -65,6 +84,9 @@ const Calender = (props) => {
     Status_Color,
     PENDING_VALIDATION,
     STATUS,
+    DELIVERY_AREA,
+    STORAGE_AREA,
+
     BOOKING_DATE,
     INCIDENT,
     MEAN,
@@ -1710,8 +1732,8 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: DELIVERYAREA },
-                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "DELIVERYAREA", label: DELIVERY_AREA },
+                        { value: "STORAGEAREA", label: STORAGE_AREA },
                         { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1732,8 +1754,8 @@ const Calender = (props) => {
                       placeholder={TYPE_OF_PLACE}
                       value={typeOfPlacevalue}
                       values={[
-                        { value: "DELIVERYAREA", label: DELIVERYAREA },
-                        { value: "STORAGEAREA", label: STORAGEAREA },
+                        { value: "DELIVERYAREA", label: DELIVERY_AREA },
+                        { value: "STORAGEAREA", label: STORAGE_AREA },
                         { value: "BUILDING", label: BUILDING },
                       ]}
                       style={{ marginRight: "20px", maxWidth: 250 }}
@@ -1754,6 +1776,8 @@ const Calender = (props) => {
           </div>
           {events ? (
             <Calendar
+              culture="fr"
+              messages={messagesFrench}
               tooltipAccessor={null}
               components={{ event: EventToolTips }}
               slotPropGetter={slotPropGetter}

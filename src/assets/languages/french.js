@@ -25,9 +25,12 @@ export const TEXTS = {
 
   DELIVERIES: "Livraisons",
   DELIVERYAREA: "Aire du livraison",
+  DELIVERY_AREA: "Zone de livraison",
+  STORAGE_AREA: "Zone de stockage",
   DELIVERYAREAS: "Aire du livraisons",
 
   STORAGEAREA: "Aire Du Stockage",
+
   BUILDING: "Bâtiment",
   BUILDING_Nom: "Nom du Bâtiment",
 
@@ -47,11 +50,11 @@ export const TEXTS = {
   TOTAL: "Total",
   MEANS_REQUEST: "Demandu du moyen",
   NAME: "Nom",
-  NAME_OF_COMPANY: "Nom du I'enterprise",
+  NAME_OF_COMPANY: "Nom de I'enterprise",
 
   PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un nom d'enterprise",
-  COMPANY_LOGO: "Logo du I'enterprise ",
-  NAME_OF_USER: "Nom du l'utilisateur",
+  COMPANY_LOGO: "Logo de I'enterprise ",
+  NAME_OF_USER: "Nom de l'utilisateur",
   NAME_OF_INCIDENT: "Nom du la incident",
   PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom du incident ",
 
@@ -116,11 +119,11 @@ export const TEXTS = {
   EMAIL_REQUIRED: "Le nom est obligatoire",
 
   LAST_NAME: "Nom",
-  TYPE_OF_PLACE: "Ouvert du localisation",
-  TYPE_OF_Re_invoice: "Ouvert du re-facturation",
+  TYPE_OF_PLACE: "Type de localisation",
+  TYPE_OF_Re_invoice: "Type de re-facturation",
 
-  TYPE_OF_ADMIN: "Ouvert d'admin",
-  TYPE_OF_CONTRACT: "Ouvert du contrat",
+  TYPE_OF_ADMIN: "Type d'admin",
+  TYPE_OF_CONTRACT: "Type de contrat",
   MASTER_CONTRACT: "Contrat Master",
 
   CONTRACT_DATE: "Durée du contrat",
@@ -142,7 +145,7 @@ export const TEXTS = {
   SELECT_LEVEL: "Sélectionner un niveau",
   SELECT_STORAGEAREA: "Sélectionner une aire du stockage",
 
-  UNLOADING_MEANS: "Moyens du déchargement",
+  UNLOADING_MEANS: "Moyens de déchargement",
   MATERIALS: "Matériels",
   MATERIAL: "Matériel",
 
@@ -239,6 +242,8 @@ export const TEXTS = {
 
   DELAY: "Retard",
   UNEXPECTED_DELIVERY: "Imprévu livraison",
+  UNEXPECTED_DELIVERY_PENALITIES: "Inattendu de livraison",
+
   UNEXPECTED: "Imprévu",
 
   SEE_OPENING_TIMES: "Jours d'ouverture",
@@ -413,7 +418,8 @@ export const TEXTS = {
   COMPANY_NAME: "Nom du l'entreprise",
   CONTRACT: "Contrat",
   ADD_A_CLIENT: "Ajouter un client",
-  PROFILE: "Photo du profil",
+  PROFILE: "Photo de profil",
+
   EDIT_ADMIN: "Modifier admin",
   VERIFY_A_QUOTE: "Vérifier un devis",
   CLIENT_NAME: "Nom du client",
@@ -550,7 +556,7 @@ export const TEXTS = {
   TOTAL_DELIVERIES: "TOTAL LIVRAISON",
   COMPLETED_DELIVERIES: "LIVRAISON COMPLETÉES",
   INCOMPLETE_DELIVERIES: "LIVRAISONS INCOMPLETES",
-  TYPE_OF_LOCATION: "Ouvert Du LOCALISATION",
+  TYPE_OF_LOCATION: "Type De LOCALISATION",
   DELIVERY_UPDATED: "LIVRAISON MISE A JOUR",
   MODIFIED_BY_ADMIN: "MODIFIÉ PAR L'ADMINISTRATEUR",
 

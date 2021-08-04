@@ -59,6 +59,7 @@ export default function AddAdmin(props) {
     Please_enter_valid_email,
     please_add_profile_image,
     Please_select_a_company,
+    Per_site,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -355,7 +356,7 @@ export default function AddAdmin(props) {
                   handleChange(name, value)
                 }
                 items={[
-                  { value: "ADMINPERSITE", label: "Admin Per Site" },
+                  { value: "ADMINPERSITE", label: `Admin ${Per_site}` },
                   { value: "MASTERADMIN", label: "Master Admin" },
                 ]}
               />
