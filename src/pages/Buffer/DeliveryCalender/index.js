@@ -10,6 +10,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import "moment/locale/fr"; //change calender texts to french
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
@@ -43,6 +44,7 @@ let view = {
   work_week: MyWorkWeek,
   agenda: true,
 };
+moment.locale("en"); //change calender texts to french
 
 const localizer = momentLocalizer(moment);
 
@@ -57,6 +59,23 @@ let formats = {
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
 };
 
+//change calender texts to french
+
+const messagesFrench = {
+  allDay: "Journée",
+  previous: "<",
+  next: ">",
+  today: "Aujourd'hui",
+  month: "Mois",
+  week: "Semaine",
+  day: "Jour",
+  agenda: "Événements à venir",
+  date: "Date",
+  time: "Heure",
+  event: "Événement", // Or anything you want
+  work_week: "Semaine de travail",
+  showMore: (total) => `+ ${total} événement(s) supplémentaire(s)`,
+};
 const Calender = (props) => {
   const {
     DELIVERIES,
@@ -1641,6 +1660,8 @@ const Calender = (props) => {
           </div>
           {events ? (
             <Calendar
+              culture="fr"
+              messages={messagesFrench}
               tooltipAccessor={null}
               components={{ event: EventToolTips }}
               slotPropGetter={slotPropGetter}

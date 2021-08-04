@@ -39,6 +39,7 @@ export default function EditSiteStep1(props) {
     UNEXPECTED_DELIVERY,
     VALIDATE,
     DELAY,
+    UNEXPECTED_DELIVERY_PENALITIES,
   } = TEXTS;
 
   const dispatch = useDispatch();
@@ -339,7 +340,7 @@ export default function EditSiteStep1(props) {
             <Form.Row width="48%" noMargin alignItems="center">
               <FormInput
                 type="number"
-                placeholder={UNEXPECTED_DELIVERY}
+                placeholder={UNEXPECTED_DELIVERY_PENALITIES}
                 name="penaltyforUnexpDelivery"
                 value={penaltyforUnexpDelivery}
                 // error={penaltyforUnexpDelivery}
