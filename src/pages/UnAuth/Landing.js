@@ -447,7 +447,6 @@ export default function LandingPage() {
                     loading={isSubmitting}
                     disabled={
                       isSubmitting ||
-                      !values.message ||
                       !values.email ||
                       !values.city ||
                       !values.name ||

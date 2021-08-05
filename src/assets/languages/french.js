@@ -562,4 +562,6 @@ export const TEXTS = {
 
   INCIDENT_CREATED: "INCIDENT CRÉÉ",
   ADDITIONAL_INFORMATION: "INFORMATION ADDITIONEL",
+  ADMIN_CREATED: "Admin Établie",
+  VIEW_ADMIN: "Consulter la liste des admins",
 };

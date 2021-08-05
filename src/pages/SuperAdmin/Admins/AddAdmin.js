@@ -22,6 +22,12 @@ import { TEXTS } from "../../../assets/languages/french";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 
+// dialogue box
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import { NavLink } from "react-router-dom";
+import SubHeading from "../../../components/SubHeading";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: GLOBALS.Styles.pagePadding,
@@ -60,6 +66,8 @@ export default function AddAdmin(props) {
     please_add_profile_image,
     Please_select_a_company,
     Per_site,
+    ADMIN_CREATED,
+    VIEW_ADMIN,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -88,6 +96,9 @@ export default function AddAdmin(props) {
   // States to get user data and disable fields
   const [users, setUsers] = useState([]);
   const [disableUser, setDisableUser] = useState(false);
+
+  // state to open delivery area model
+  const [openDeliveryModal, setOpenDeliveryModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -145,7 +156,7 @@ export default function AddAdmin(props) {
         body: formdata,
       });
       setLoading(false);
-      props.history.push("/admins");
+      setOpenDeliveryModal(true);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -384,6 +395,26 @@ export default function AddAdmin(props) {
             />
           </Form.ButtonContainer>
         </Form.Form>
+        <Dialog
+          open={openDeliveryModal}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+              {ADMIN_CREATED}
+            </h4>
+            <SubHeading primary={VIEW_ADMIN} />
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <Button
+                fullWidth={false}
+                component={NavLink}
+                text="OKAY"
+                to={"/admins"}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
