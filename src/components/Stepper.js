@@ -26,7 +26,7 @@ const StepsComponent = ({ className, ...props }) => {
           disableRipple={props.disabled}
           disableFocusRipple={props.disabled}
           // onClick={() => !props.disabled && props.setStep(index + 1)}
-          onClick={() => props.setStep(index + 1)}
+          onClick={props.setStep && (() => props.setStep(index + 1))}
           maxWidth={String(100 / props.steps.length - 1.5) + "%"}
           color={props.step !== index + 1 && theme.palette.common.white}
           textColor={props.step !== index + 1 && theme.palette.common.black}

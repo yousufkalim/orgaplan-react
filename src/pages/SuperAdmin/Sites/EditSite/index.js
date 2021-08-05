@@ -38,6 +38,8 @@ export default function EditSite(props) {
   const [step2Data, setStep2Data] = useState("");
   const [step2SubmittedData, setStep2SubmittedData] = useState("");
 
+  const [disabled, setDisabled] = useState(true);
+
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -127,7 +129,7 @@ export default function EditSite(props) {
       <Heading primary={EDIT_SITE} />
       <Stepper
         step={step}
-        setStep={setStep}
+        setStep={!disabled && setStep}
         steps={[
           `Step 1: ${General_Information}`,
           "Step 2: Dates",
@@ -146,6 +148,8 @@ export default function EditSite(props) {
               step2Data={step2Data}
               setStep1Data={setStep1Data}
               setStep2Data={setStep2Data}
+              setDisabled={setDisabled}
+              disabled={disabled}
             />
           ) : step === 2 ? (
             <EditSiteStep2
@@ -159,6 +163,8 @@ export default function EditSite(props) {
               setStep2Data={setStep2Data}
               step2SubmittedData={step2SubmittedData}
               setStep2SubmittedData={setStep2SubmittedData}
+              setDisabled={setDisabled}
+              disabled={disabled}
             />
           ) : (
             <EditSiteStep3

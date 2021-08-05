@@ -353,22 +353,24 @@ export default function EditSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.ButtonContainer>
+          {!name ||
+          nameError ||
+          adminId.length === 0 ||
+          adminError ||
+          addresses.length === 0 ||
+          addressError ||
+          !trades ||
+          tradesError
+            ? props.setDisabled(true)
+            : props.setDisabled(false)}
+
           <Button
             type="submit"
             minWidth={200}
             text={VALIDATE}
             fullWidth={false}
             loading={loading}
-            disabled={
-              !name ||
-              nameError ||
-              adminId.length === 0 ||
-              adminError ||
-              addresses.length === 0 ||
-              addressError ||
-              !trades ||
-              tradesError
-            }
+            disabled={props.disabled}
           />
         </Form.ButtonContainer>
       </Form.Form>

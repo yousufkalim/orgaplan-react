@@ -106,7 +106,7 @@ export default function AddSiteStep2(props) {
     try {
       e.preventDefault();
       setLoading(true);
-
+      debugger;
       const notificationToArray = notificationTo.map((item) => item.label);
 
       let step1 = props.step1Data;
@@ -348,13 +348,16 @@ export default function AddSiteStep2(props) {
         />
       </Form.Row>
       <Form.ButtonContainer>
+        {loading || !start || !end
+          ? props.setDisabled(true)
+          : props.setDisabled(false)}
         <Button
           type="submit"
           minWidth={200}
           text={VALIDATE}
           fullWidth={false}
           loading={loading}
-          disabled={loading || !start || !end}
+          disabled={props.disabled}
         />
       </Form.ButtonContainer>
     </Form.Form>
