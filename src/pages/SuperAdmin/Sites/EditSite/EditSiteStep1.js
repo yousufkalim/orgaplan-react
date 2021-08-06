@@ -69,7 +69,26 @@ export default function EditSiteStep1(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, []);
+    !name ||
+    nameError ||
+    adminId.length === 0 ||
+    adminError ||
+    addresses.length === 0 ||
+    addressError ||
+    !trades ||
+    tradesError
+      ? props.setDisabled(true)
+      : props.setDisabled(false);
+  }, [
+    name,
+    nameError,
+    adminId,
+    adminError,
+    addresses,
+    addressError,
+    trades,
+    tradesError,
+  ]);
 
   useEffect(() => {
     clients.map((client) =>
@@ -353,17 +372,6 @@ export default function EditSiteStep1(props) {
           </Form.Row>
         </Form.Row>
         <Form.ButtonContainer>
-          {!name ||
-          nameError ||
-          adminId.length === 0 ||
-          adminError ||
-          addresses.length === 0 ||
-          addressError ||
-          !trades ||
-          tradesError
-            ? props.setDisabled(true)
-            : props.setDisabled(false)}
-
           <Button
             type="submit"
             minWidth={200}

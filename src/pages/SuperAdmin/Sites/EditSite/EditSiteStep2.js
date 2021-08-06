@@ -80,7 +80,11 @@ export default function AddSiteStep2(props) {
       setNotificationPriorToDays(propData.notificationPriorToDays);
     propData.notificationTo && setNotificationTo(propData.notificationTo);
     // eslint-disable-next-line
-  }, []);
+
+    loading || !start || !end
+      ? props.setDisabled(true)
+      : props.setDisabled(false);
+  }, [loading, start, end]);
 
   function handleChange(name, value) {
     if (name === "start") {
@@ -106,7 +110,6 @@ export default function AddSiteStep2(props) {
     try {
       e.preventDefault();
       setLoading(true);
-      debugger;
       const notificationToArray = notificationTo.map((item) => item.label);
 
       let step1 = props.step1Data;
@@ -348,9 +351,6 @@ export default function AddSiteStep2(props) {
         />
       </Form.Row>
       <Form.ButtonContainer>
-        {loading || !start || !end
-          ? props.setDisabled(true)
-          : props.setDisabled(false)}
         <Button
           type="submit"
           minWidth={200}
