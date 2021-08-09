@@ -104,42 +104,49 @@ export default function EditSiteStep1(props) {
 
   async function fetchData() {
     try {
-      const zacsResult = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.ZACS}`,
-      });
-      const clientsResult = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.CLIENTS}`,
-      });
-      const zacsArray = zacsResult.data.items.map((zac) => ({
-        value: zac._id,
-        label: zac.name,
-      }));
-      const adminsArray = [];
-      clientsResult.data.items.map((client) => {
-        client.adminIds.map((admin) =>
-          adminsArray.push({
-            value: admin._id,
-            label: `${admin.firstName} ${admin.lastName} (${client.companyId.name})`,
-            clientId: client._id,
-            companyId: client.companyId._id,
-          }),
-        );
-        return true;
-      });
-      setZacs(zacsArray);
-      setAdmins(adminsArray);
-      setClients(clientsResult.data.items);
+      // const zacsResult = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.ZACS}`,
+      // });
+      // const clientsResult = await GLOBALS.API({
+      //   uri: `${GLOBALS.Constants.CLIENTS}`,
+      // });
+      // const zacsArray = zacsResult.data.items.map((zac) => ({
+      //   value: zac._id,
+      //   label: zac.name,
+      // }));
+      // const adminsArray = [];
+      // clientsResult.data.items.map((client) => {
+      //   client.adminIds.map((admin) =>
+      //     adminsArray.push({
+      //       value: admin._id,
+      //       label: `${admin.firstName} ${admin.lastName} (${client.companyId.name})`,
+      //       clientId: client._id,
+      //       companyId: client.companyId._id,
+      //     }),
+      //   );
+      //   return true;
+      // });
+
       // setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
 
       // Filling the fields
       const propData = props.step1Data;
+
+      propData.zacsArray && setZacs(propData.zacsArray);
+      propData.adminsArray && setAdmins(propData.adminsArray);
+      propData.clientsResult && setClients(propData.clientsResult);
       propData.name && setName(propData.name);
       propData.logo &&
         setLogo([{ key: 0, file: undefined, uri: propData.logo }]);
       propData.zacId && setZacId(propData.zacId);
-      const propsadminIds = propData.clientAdmin.map((key, index) => {
+      let propsadminIds = propData.clientAdmin.map((key, index) => {
         return key.adminId._id;
       });
+      if (typeof propsadminIds[0] === "undefined") {
+        propsadminIds = propData.clientAdmin.map((item) => {
+          return item.adminId;
+        });
+      }
       setAdminId(propsadminIds);
       propData.functionality && setFunctionality(propData.functionality);
       propData.addresses && setAddresses(propData.addresses);
@@ -232,6 +239,9 @@ export default function EditSiteStep1(props) {
       trades,
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
+      zacsArray: zacs,
+      clientsResult: clients,
+      adminsArray: admins,
     };
     props.setStep1Data(values);
     props.setStep(2);
@@ -272,6 +282,7 @@ export default function EditSiteStep1(props) {
           {" "}
           <FormLabel bold primary={`${ZAC_OF_SITE} : `} />
           <Form.Row width="48%" noMargin>
+            {console.log("zacs:", zacs)}
             <FormSelect
               name="zacId"
               values={zacs}

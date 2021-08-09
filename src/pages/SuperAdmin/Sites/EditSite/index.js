@@ -63,6 +63,30 @@ export default function EditSite(props) {
         postal: address.postal,
         label: `${address.street} ${address.city} ${address.postal}`,
       }));
+
+      const zacsResult = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ZACS}`,
+      });
+      const clientsResult = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.CLIENTS}`,
+      });
+      const zacsArray = zacsResult.data.items.map((zac) => ({
+        value: zac._id,
+        label: zac.name,
+      }));
+      const adminsArray = [];
+      clientsResult.data.items.map((client) => {
+        client.adminIds.map((admin) =>
+          adminsArray.push({
+            value: admin._id,
+            label: `${admin.firstName} ${admin.lastName} (${client.companyId.name})`,
+            clientId: client._id,
+            companyId: client.companyId._id,
+          }),
+        );
+        return true;
+      });
+
       setStep1Data({
         name: response.name,
         logo: response.logo,
@@ -73,6 +97,9 @@ export default function EditSite(props) {
         trades: trades,
         penaltyforLateDelivery: response.penaltyforLateDelivery,
         penaltyforUnexpDelivery: response.penaltyforUnexpDelivery,
+        zacsArray: zacsArray,
+        adminsArray: adminsArray,
+        clientsResult: clientsResult.data.items,
       });
 
       const openingHours = {};
