@@ -80,7 +80,9 @@ export default function AddSiteStep2(props) {
       setNotificationPriorToDays(propData.notificationPriorToDays);
     propData.notificationTo && setNotificationTo(propData.notificationTo);
     // eslint-disable-next-line
+  }, []);
 
+  useEffect(() => {
     loading || !start || !end
       ? props.setDisabled(true)
       : props.setDisabled(false);
