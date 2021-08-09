@@ -114,12 +114,16 @@ export default function AddSiteStep2(props) {
 
       let step1 = props.step1Data;
 
-      const trades = step1.trades.map((item) => item.label);
-      const addresses = step1.addresses.map((item) => ({
-        street: item.street,
-        city: item.city,
-        postal: item.postal,
-      }));
+      const trades =
+        step1.trades.length > 0 ? step1.trades.map((item) => item.label) : [];
+      const addresses =
+        step1.addresses.length > 0
+          ? step1.addresses.map((item) => ({
+              street: item.street,
+              city: item.city,
+              postal: item.postal,
+            }))
+          : [];
 
       let openingHoursArray = [
         {
@@ -168,22 +172,35 @@ export default function AddSiteStep2(props) {
 
       var formdata = new FormData();
       formdata.append("siteId", props.data._id);
-      formdata.append("name", step1.name);
-      step1.logo.length > 0 &&
-        step1.logo[0].file &&
-        formdata.append("logo", step1.logo[0].file);
-      step1.zacId && formdata.append("zacId", step1.zacId);
-      formdata.append("clientAdmin", JSON.stringify(step1.clientAdmin));
-      formdata.append("functionality", step1.functionality);
+      formdata.append("name", step1.name ? step1.name : "");
+      formdata.append(
+        "logo",
+        step1.logo?.length > 0 && step1.logo[0]?.file ? step1.logo[0].file : [],
+      );
+      step1.zacId && formdata.append("zacId", step1.zacId ? step1.zacId : "");
+      formdata.append(
+        "clientAdmin",
+        JSON.stringify(step1.clientAdmin ? step1.clientAdmin : []),
+      );
+      formdata.append(
+        "functionality",
+        step1.functionality ? step1.functionality : "",
+      );
       formdata.append("addresses", JSON.stringify(addresses));
       formdata.append("trades", JSON.stringify(trades));
       formdata.append(
         "penaltyforLateDelivery",
-        Number(step1.penaltyforLateDelivery),
+        Number(
+          step1.penaltyforLateDelivery > 0 ? step1.penaltyforLateDelivery : "",
+        ),
       );
       formdata.append(
         "penaltyforUnexpDelivery",
-        Number(step1.penaltyforUnexpDelivery),
+        Number(
+          step1.penaltyforUnexpDelivery > 0
+            ? step1.penaltyforUnexpDelivery
+            : "",
+        ),
       );
 
       formdata.append("start", start);

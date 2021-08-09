@@ -69,6 +69,9 @@ export default function EditSiteStep1(props) {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     !name ||
     nameError ||
     adminId.length === 0 ||
@@ -134,7 +137,7 @@ export default function EditSiteStep1(props) {
       propData.logo &&
         setLogo([{ key: 0, file: undefined, uri: propData.logo }]);
       propData.zacId && setZacId(propData.zacId);
-      const propsadminIds = propData.adminId.map((key, index) => {
+      const propsadminIds = propData.clientAdmin.map((key, index) => {
         return key.adminId._id;
       });
       setAdminId(propsadminIds);
