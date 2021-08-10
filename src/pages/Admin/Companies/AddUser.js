@@ -262,10 +262,9 @@ export default function AddUser(props) {
             <FormLabel bold primary={`${CONSTRUCTION_SITE}: `} />
             <Form.Row noMargin width="48%">
               <FormInput
-                name="site"
+                name="company"
                 disabled={true}
                 value={company.label}
-                placeholder={SITE}
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
               />
             </Form.Row>

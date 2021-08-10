@@ -29,7 +29,7 @@ export default function AddSite(props) {
   const [step2SubmittedData, setStep2SubmittedData] = useState("");
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{ backgroundColor: "#F8F8F8" }}>
       <IconButton onClick={() => props.history.goBack()}>
         <BackArrow style={{ width: 30, height: 30 }} />
       </IconButton>
