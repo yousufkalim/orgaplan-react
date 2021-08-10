@@ -398,7 +398,6 @@ export default function UserList(props) {
                 primary={`Total : ${userList.length} utilisateurs`}
                 bold
               />
-              {console.log("filter:  ", filterCompanyId)}
               <Button
                 fullWidth={false}
                 component={NavLink}

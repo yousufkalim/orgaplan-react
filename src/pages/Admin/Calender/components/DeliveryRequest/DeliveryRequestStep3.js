@@ -114,19 +114,24 @@ export default function DeliveryRequestStep3(props) {
                 .set("hours", props.step1Data.endTime.split(":")[0])
                 .format("H");
 
+              const response = await GLOBALS.API({
+                uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
+                token: store.token,
+              });
+              const mean = response.data.meanList.find(
+                (mean) => mean._id == m.value,
+              );
               // create invoive
               var formdata1 = new FormData();
-              formdata1.append("name", m.currentValue?.name);
+              formdata1.append("name", mean?.name);
               formdata1.append(
                 "date",
                 moment(props.step1Data.date).format("YYYY-MM-DD"),
               );
-              m.currentValue?.isInside
+              mean?.isInside
                 ? formdata1.append(
                     "meanLocation",
-                    m.currentValue.levelName +
-                      "/" +
-                      m.currentValue.buildingName,
+                    mean.levelName + "/" + mean.buildingName,
                   )
                 : formdata1.append("meanLocation", "Exterior");
 
@@ -135,11 +140,11 @@ export default function DeliveryRequestStep3(props) {
               formdata1.append("isBillable", true);
               formdata1.append(
                 "price",
-                m.currentValue?.pricePerHour * (endHour - startHour),
+                mean.pricePerHour * (endHour - startHour),
               );
               formdata1.append("isPaid", false);
               formdata1.append("companyId", props.step1Data?.company);
-              formdata1.append("siteId", m.currentValue?.siteId);
+              formdata1.append("siteId", mean.siteId);
 
               // for (let [key, value] of formdata1) {
               //   console.log(
@@ -166,19 +171,25 @@ export default function DeliveryRequestStep3(props) {
                 .set("hours", props.step1Data.endTime.split(":")[0])
                 .format("H");
 
+              const response = await GLOBALS.API({
+                uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
+                token: store.token,
+              });
+              const mean = response.data.meanList.find(
+                (mean) => mean._id == m.value,
+              );
+
               // create invoive
               var formdata1 = new FormData();
-              formdata1.append("name", m.currentValue?.name);
+              formdata1.append("name", mean.name);
               formdata1.append(
                 "date",
                 moment(props.step1Data.date).format("YYYY-MM-DD"),
               );
-              m.currentValue?.isInside
+              mean?.isInside
                 ? formdata1.append(
                     "meanLocation",
-                    m.currentValue.levelName +
-                      "/" +
-                      m.currentValue.buildingName,
+                    mean.levelName + "/" + mean.buildingName,
                   )
                 : formdata1.append("meanLocation", "Exterior");
 
@@ -187,11 +198,11 @@ export default function DeliveryRequestStep3(props) {
               formdata1.append("isBillable", true);
               formdata1.append(
                 "price",
-                m.currentValue?.pricePerHour * (endHour - startHour),
+                mean.pricePerHour * (endHour - startHour),
               );
               formdata1.append("isPaid", false);
               formdata1.append("companyId", props.step1Data?.company);
-              formdata1.append("siteId", m.currentValue?.siteId);
+              formdata1.append("siteId", mean.siteId);
 
               // for (let [key, value] of formdata1) {
               //   console.log(
