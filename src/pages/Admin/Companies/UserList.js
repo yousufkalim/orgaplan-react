@@ -398,12 +398,16 @@ export default function UserList(props) {
                 primary={`Total : ${userList.length} utilisateurs`}
                 bold
               />
+              {console.log("filter:  ", filterCompanyId)}
               <Button
                 fullWidth={false}
                 component={NavLink}
                 text={Add_USER}
                 style={{ marginLeft: "20px" }}
-                to={"/companies/add-user"}
+                to={{
+                  pathname: `/companies/add-user/${filterCompanyId}`,
+                  id: filterCompanyId,
+                }}
               />
             </Form.Row>
           </div>

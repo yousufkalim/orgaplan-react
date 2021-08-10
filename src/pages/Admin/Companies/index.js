@@ -18,7 +18,11 @@ export default function Index(props) {
         path={props.match.path + "/user-list/:id"}
         component={Users}
       />
-      <Route exact path={props.match.path + "/add-user"} component={AddUser} />
+      <Route
+        exact
+        path={props.match.path + "/add-user/:id"}
+        component={AddUser}
+      />
       <Redirect from="*" to={props.match.path + "/"} />
     </Switch>
   );

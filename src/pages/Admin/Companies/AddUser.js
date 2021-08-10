@@ -44,8 +44,7 @@ export default function AddUser(props) {
 
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [dropdownCompanies, setDropdownCompanies] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [company, setcompany] = useState([]);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -85,7 +84,11 @@ export default function AddUser(props) {
             value: item.companyId._id,
           });
         });
-        setDropdownCompanies(companyTemp);
+        setcompany(
+          companyTemp.find((item) => {
+            return item.value === props.match.params.id && item.label;
+          }),
+        );
       }
       if (response.data.roles != null) {
         const rolesTemp = [];
@@ -114,7 +117,7 @@ export default function AddUser(props) {
       formdata.append("email", email);
       formdata.append("phone", "+" + phone);
       formdata.append("siteId", adminStore.site.siteId._id);
-      formdata.append("companyId", selectedCompany);
+      formdata.append("companyId", company.value);
       formdata.append("role", selectedRole);
       // for (let [key, value] of formdata) {
       //   console.log(`formdata in add user ${key}: ${value}`);
@@ -256,23 +259,14 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY}* : `} />
+            <FormLabel bold primary={`${CONSTRUCTION_SITE}: `} />
             <Form.Row noMargin width="48%">
-              <FormSelect
-                placeholder={COMPANY}
-                values={dropdownCompanies}
-                value={selectedCompany}
-                onChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
-                  if (index !== -1) {
-                    const item = event.target.value;
-
-                    setSelectedCompany(item);
-                  } else {
-                    setSelectedCompany("");
-                  }
-                }}
-                style={{ marginRight: "20px", maxWidth: 250 }}
+              <FormInput
+                name="site"
+                disabled={true}
+                value={company.label}
+                placeholder={SITE}
+                style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
               />
             </Form.Row>
           </Form.Row>
@@ -323,7 +317,6 @@ export default function AddUser(props) {
                 !lastName ||
                 !email ||
                 !phone ||
-                !selectedCompany ||
                 !selectedRole
               }
             />
