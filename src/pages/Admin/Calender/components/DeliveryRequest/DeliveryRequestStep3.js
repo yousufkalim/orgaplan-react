@@ -101,6 +101,10 @@ export default function DeliveryRequestStep3(props) {
         // console.log("status pending", props.step1Data.selectedMeans);
       } else {
         if (props.step1Data.selectedMeans.length >= 1) {
+          const response = await GLOBALS.API({
+            uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
+            token: store.token,
+          });
           if (props.step2Data.selectedRoutingMeans.length >= 1) {
             // console.log(
             //   "here is routing means",
@@ -114,10 +118,6 @@ export default function DeliveryRequestStep3(props) {
                 .set("hours", props.step1Data.endTime.split(":")[0])
                 .format("H");
 
-              const response = await GLOBALS.API({
-                uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
-                token: store.token,
-              });
               const mean = response.data.meanList.find(
                 (mean) => mean._id == m.value,
               );
@@ -171,10 +171,6 @@ export default function DeliveryRequestStep3(props) {
                 .set("hours", props.step1Data.endTime.split(":")[0])
                 .format("H");
 
-              const response = await GLOBALS.API({
-                uri: `${GLOBALS.Constants.GET_LIST_OF_MEANS}/${adminStore.site.siteId._id}`,
-                token: store.token,
-              });
               const mean = response.data.meanList.find(
                 (mean) => mean._id == m.value,
               );
