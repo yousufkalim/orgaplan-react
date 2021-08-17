@@ -285,7 +285,7 @@ export default function AddInvoice(props) {
                 error={errors.startDate}
                 placeholder={START_DATE}
                 style={GLOBALS.Styles.inputWidth}
-                min={moment().format("YYYY-MM-DD")}
+                // min={moment().format("YYYY-MM-DD")}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }

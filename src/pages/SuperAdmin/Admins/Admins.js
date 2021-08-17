@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
+import { message } from "antd";
 
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
@@ -176,7 +177,7 @@ export default function Admins(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm({ Are_you_sure_to_Delete })) {
+      if (window.confirm(Are_you_sure_to_Delete)) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
@@ -186,6 +187,8 @@ export default function Admins(props) {
         const itemsArray = items.filter((item) => item._id !== itemId);
         setItems(itemsArray);
         fetchData();
+        setModal(false);
+        message.success("Utilisateur supprimé avec succès");
       }
     } catch (err) {
       setLoading(false);

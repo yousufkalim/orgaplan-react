@@ -300,7 +300,7 @@ export default function Home(props) {
       });
 
     data?.clientIncidents?.map((item, index) => {
-      return clientTemp.push({ [item.comapanyName]: item.count });
+      return clientTemp.push({ [item.comapanyName.name]: item.count });
     });
     setSiteIncidentArray(siteTemp);
     setClientIncidentArray(clientTemp);
@@ -335,7 +335,7 @@ export default function Home(props) {
       });
 
     data?.clientDeliveries?.map((item, index) => {
-      return clientTemp.push({ [item.comapanyName]: item.count });
+      return clientTemp.push({ [item.comapanyName.name]: item.count });
     });
 
     setSiteDeliveryArray(siteTemp);

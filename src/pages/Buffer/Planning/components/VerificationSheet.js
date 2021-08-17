@@ -165,7 +165,6 @@ const VarificationSheet = (props) => {
   return (
     <>
       <div className="row">
-        {console.log(bufferArea)}
         <div className="col-sm-12">
           <br />
           <IconButton onClick={() => history.goBack()}>

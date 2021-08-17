@@ -411,7 +411,6 @@ const PicCanvas = (props) => {
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
-      console.log("err", err);
     }
   };
 
@@ -886,8 +885,6 @@ const PicCanvas = (props) => {
                     </>
                   ) : (
                     <>
-                      {/* {console.log("for storage", selectedShape)} */}
-
                       <NavLink
                         disabled={loading}
                         to={{
