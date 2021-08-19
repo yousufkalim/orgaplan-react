@@ -217,7 +217,7 @@ export default function AddSiteStep1(props) {
         uri: `${GLOBALS.Constants.GET_ADMIN_COMPANY}/${store.user._id}`,
       });
       setCompany(userCompany.data);
-      setDeliveryArea(props?.selectedDA?._id);
+      setDeliveryArea(props.selectedDeliverArea._id);
       setDate(props.date);
       setStartTime(moment(props.date).set("hour", props.start));
       setEndTime(moment(props.date).set("hour", props.end));

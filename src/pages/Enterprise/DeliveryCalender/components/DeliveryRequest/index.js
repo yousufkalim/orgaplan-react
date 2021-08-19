@@ -250,6 +250,9 @@ export default function DeliveryRequest(props) {
             eventId={props.eventId}
             deliveryArea={deliveryArea}
             setDeliveryArea={setDeliveryArea}
+            selectedDeliverArea={
+              props.history.location.selectedShape.deliveryArea
+            }
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2
