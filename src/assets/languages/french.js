@@ -10,7 +10,7 @@ export const TEXTS = {
   MEAN: "Moyen",
 
   PIC_INTERACTIF: "Pic Interactif",
-  INCIDENTS: "Incidents",
+  INCIDENTS: "Re-Facturation",
   INCIDENT: "Incident",
 
   COMPANIES: "Entreprises",
