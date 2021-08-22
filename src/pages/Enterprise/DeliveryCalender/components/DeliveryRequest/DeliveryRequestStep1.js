@@ -183,7 +183,7 @@ export default function AddSiteStep1(props) {
       }
     } catch (error) {}
   };
-  useEffect(() => {
+  useEffect(async () => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
       setDeliveryArea(props.step1Data.deliveryArea);
@@ -213,8 +213,11 @@ export default function AddSiteStep1(props) {
 
       setUpdate((st) => !st);
     } else {
-      setCompany(props?.selectedcompany?._id);
-      setDeliveryArea(props?.selectedDA?._id);
+      const userCompany = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.GET_ADMIN_COMPANY}/${store.user._id}`,
+      });
+      setCompany(userCompany.data);
+      setDeliveryArea(props.selectedDeliverArea._id);
       setDate(props.date);
       setStartTime(moment(props.date).set("hour", props.start));
       setEndTime(moment(props.date).set("hour", props.end));
@@ -234,7 +237,7 @@ export default function AddSiteStep1(props) {
       liftingMeans?.some((o2) => o1.value === o2),
     );
     const values = {
-      company,
+      company: company._id,
       deliveryArea,
       date,
       selectedMeans,
@@ -259,18 +262,15 @@ export default function AddSiteStep1(props) {
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
       <Form.Row>
-        <FormLabel bold primary={`${COMPANY}* :`} />
-        <FormSelect
-          name="company"
-          value={company}
-          disabled={props?.selectedcompany?._id}
-          values={props.companies}
-          placeholder={Please_select_a_company}
-          style={GLOBALS.Styles.inputWidth}
-          onChange={({ target: { value } }) => {
-            setCompany(value);
-          }}
-        />
+        <FormLabel bold primary={`${COMPANY}: `} />
+        <Form.Row noMargin width="48%">
+          <FormInput
+            name="company"
+            disabled={true}
+            value={company.name}
+            style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
+          />
+        </Form.Row>
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary={`${DELIVERYAREA}* :`} />
