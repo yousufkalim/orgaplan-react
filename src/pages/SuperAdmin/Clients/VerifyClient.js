@@ -38,6 +38,7 @@ export default function VerifyClient(props) {
     FIRST_NAME,
     LAST_NAME,
     CONTRACT,
+    NAME_OF_COMPANY,
     CONTRACT_DATE,
     START_DATE,
     END_DATE,
@@ -60,6 +61,11 @@ export default function VerifyClient(props) {
     TYPE_OF_CONTRACT,
     Delivery_Module,
     Please_enter_valid_email,
+    COMPANY_LOGO,
+    COMPANY_RESPONSIBLE,
+    CONTACT_RESPONSIBLE,
+    Per_site,
+    MASTER_CONTRACT,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -122,6 +128,7 @@ export default function VerifyClient(props) {
       formdata.append("additionalInfo", additionalInfo);
       formdata.append("notificationPriorToDays", notificationPriorToDays);
       formdata.append("notificationTo", JSON.stringify(notificationToArray));
+      formdata.append("quoteVerified", true);
 
       await GLOBALS.API({
         method: "PUT",
@@ -177,13 +184,13 @@ export default function VerifyClient(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY_NAME}* :`} />
+            <FormLabel bold primary={`${NAME_OF_COMPANY}* :`} />
             <FormInput
               disabled
               name="name"
               value={name}
               // error={name}
-              placeholder={COMPANY_NAME}
+              placeholder={NAME_OF_COMPANY}
               style={GLOBALS.Styles.inputWidth}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
@@ -191,7 +198,7 @@ export default function VerifyClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY} LOGO* :`} />
+            <FormLabel bold primary={`${COMPANY_LOGO}* :`} />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
@@ -208,7 +215,7 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${RESPONSIBLE} ${COMPANY}`} />
+            <FormLabel bold primary={`${COMPANY_RESPONSIBLE}`} />
             <Form.Row noMargin width="48%">
               <FormInput
                 disabled
@@ -233,7 +240,7 @@ export default function VerifyClient(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${RESPONSIBLE} CONTACT`} />
+            <FormLabel bold primary={CONTACT_RESPONSIBLE} />
             <Form.Row noMargin width="48%">
               <FormInput
                 disabled
@@ -261,7 +268,6 @@ export default function VerifyClient(props) {
           <Form.Row>
             <FormLabel bold primary={`${TYPE_OF_CONTRACT}* : `} />
             <RadioButton
-              disabled
               name="contractType"
               value={contractType}
               style={GLOBALS.Styles.inputWidth}
@@ -269,8 +275,8 @@ export default function VerifyClient(props) {
                 handleChange(name, value)
               }
               items={[
-                { value: "CLIENTPERSITE", label: "Per Site" },
-                { value: "MASTERCLIENT", label: "Master Contract" },
+                { value: "CLIENTPERSITE", label: Per_site },
+                { value: "MASTERCLIENT", label: MASTER_CONTRACT },
               ]}
             />
           </Form.Row>

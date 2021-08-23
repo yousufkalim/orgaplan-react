@@ -304,10 +304,10 @@ export default function Clients(props) {
   }
 
   const rows = [];
-  console.log("items", items);
   items.map((item) => {
     if (item.companyId.quoteVerified) {
       item.contractIds.map((contract) => {
+        console.log("true");
         rows.push([
           item.companyId.name,
           item.companyId.incharge
@@ -354,6 +354,8 @@ export default function Clients(props) {
         return true;
       });
     } else {
+      console.log("false");
+
       rows.push([
         item.companyId.name,
         item.companyId.incharge.firstName +
