@@ -304,6 +304,7 @@ export default function Clients(props) {
   }
 
   const rows = [];
+  console.log("items", items);
   items.map((item) => {
     if (item.companyId.quoteVerified) {
       item.contractIds.map((contract) => {
@@ -324,7 +325,11 @@ export default function Clients(props) {
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractEndDate).format("DD/MM/YY")
             : "-",
-          contract.contractType,
+          contract.contractType === "MASTERCLIENT"
+            ? "Intégral"
+            : contract.contractType === "CLIENTPERSITE"
+            ? "Par chantier"
+            : "Demandé",
           <>
             <IconButton
               disabled={loading}
@@ -358,7 +363,7 @@ export default function Clients(props) {
         item.sites,
         "-",
         "-",
-        "Requested",
+        "Demandé",
         <IconButton
           disabled={loading}
           onClick={(e) => {

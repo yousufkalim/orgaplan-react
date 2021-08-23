@@ -286,7 +286,7 @@ export default function Companies(props) {
                 bold
                 noMargin
                 disableMargin
-                primary={`Total : ${companies.length} Entreprises`}
+                primary={`Total : ${companies.length} Entreprise`}
               />
               <Button
                 fullWidth={false}

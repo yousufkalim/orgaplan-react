@@ -13,7 +13,7 @@ export const TEXTS = {
   INCIDENTS: "Re-Facturation",
   INCIDENT: "Incident",
 
-  COMPANIES: "Entreprises",
+  COMPANIES: "Entreprise",
   ORGANIGRAMME: "Organigramme",
   LOGOUT: "Se Déconnecter",
   DELIVERY: "Livraison",
@@ -90,7 +90,7 @@ export const TEXTS = {
   CLOSE: "Fermé",
   SUBCONTRACTOR: "Sous-traitant",
   RESPONSIBLE: "Responsable",
-  SITE_RESPONSIBLE: "Responsable du chanter",
+  SITE_RESPONSIBLE: "Responsable du chantier",
   COMPANY_RESPONSIBLE: "Nom du responsable",
   CONTACT_RESPONSIBLE: "Contact du responsable",
 
@@ -105,7 +105,7 @@ export const TEXTS = {
   EDIT_A_CONTACT: "Modifier un contact",
 
   SITE_ORGANIGAMME: "Organigramme du chanter",
-  SITE_PICTURE: "Photo du chanter ",
+  SITE_PICTURE: "Photo du chantier",
 
   LOGISTIC_ORGANIGAMME: "Organigramme Logistique",
   POSITION: "Rôle",
@@ -124,7 +124,7 @@ export const TEXTS = {
 
   TYPE_OF_ADMIN: "Type d'admin",
   TYPE_OF_CONTRACT: "Type de contrat",
-  MASTER_CONTRACT: "Contrat Master",
+  MASTER_CONTRACT: "Intégral",
 
   CONTRACT_DATE: "Durée du contrat",
 
@@ -183,7 +183,7 @@ export const TEXTS = {
   CLIENTS: "Clients",
   MORE_INFO: "Plus d'informations",
   COMMENTS: "Commentaires",
-  Delivery_Module: "Livraison De Module",
+  Delivery_Module: "Module de livraison",
   Lockers_module: "Module casiers",
   Per_site: "Par chantier",
   SITE_NAME: "Nom du chantier",
@@ -238,7 +238,7 @@ export const TEXTS = {
   ZAC_NAME: "Nom du la ZAC",
   ZAC_OF_SITE: "ZAC du chantier",
   SELECT_ZAC: "Sélectionner une ZAC",
-  COST_OF_DELIVERY_PENALITIES: "Coût des pénalités du livraison",
+  COST_OF_DELIVERY_PENALITIES: "Coût des pénalités de livraison",
 
   DELAY: "Retard",
   UNEXPECTED_DELIVERY: "Imprévu livraison",

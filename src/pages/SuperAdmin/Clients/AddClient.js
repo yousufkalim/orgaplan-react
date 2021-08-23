@@ -63,6 +63,7 @@ export default function AddClient(props) {
     Per_site,
     MASTER_CONTRACT,
     CONTRACT_DATE,
+    Delivery_Module,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
   const plus = "+";
@@ -342,7 +343,7 @@ export default function AddClient(props) {
               name="functionality"
               value={functionality}
               style={GLOBALS.Styles.inputWidth}
-              items={[{ value: "DELIVERY", label: "Delivery module" }]}
+              items={[{ value: "DELIVERY", label: Delivery_Module }]}
               onChange={({ target: { name, value } }) =>
                 handleChange(name, value)
               }

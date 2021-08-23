@@ -402,7 +402,7 @@ export default function Home(props) {
           path: "/clients",
           text: CLIENTS_LIST,
           items: [
-            { "Livraison De Module": data && data?.clients.delivery },
+            { "Module de livraison": data && data?.clients.delivery },
             { "Module bloqué": data && data?.clients.lockers },
           ],
         },
