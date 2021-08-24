@@ -307,6 +307,7 @@ export default function Clients(props) {
   items.map((item) => {
     if (item.companyId.quoteVerified) {
       item.contractIds.map((contract) => {
+        console.log("true");
         rows.push([
           item.companyId.name,
           item.companyId.incharge
@@ -324,7 +325,11 @@ export default function Clients(props) {
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractEndDate).format("DD/MM/YY")
             : "-",
-          contract.contractType,
+          contract.contractType === "MASTERCLIENT"
+            ? "Intégral"
+            : contract.contractType === "CLIENTPERSITE"
+            ? "Par chantier"
+            : "Demandé",
           <>
             <IconButton
               disabled={loading}
@@ -349,6 +354,8 @@ export default function Clients(props) {
         return true;
       });
     } else {
+      console.log("false");
+
       rows.push([
         item.companyId.name,
         item.companyId.incharge.firstName +
@@ -358,7 +365,7 @@ export default function Clients(props) {
         item.sites,
         "-",
         "-",
-        "Requested",
+        "Demandé",
         <IconButton
           disabled={loading}
           onClick={(e) => {

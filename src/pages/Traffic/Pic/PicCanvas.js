@@ -424,7 +424,6 @@ const PicCanvas = (props) => {
           Actions.notistack.snackbar(err.message, "error"),
         ),
       );
-      console.log("err", err);
     }
   };
 

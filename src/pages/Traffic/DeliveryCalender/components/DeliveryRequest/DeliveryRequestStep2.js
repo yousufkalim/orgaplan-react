@@ -276,7 +276,6 @@ export default function AddSiteStep1(props) {
     let selectedRoutingMeans = means.filter((o1) =>
       routingMeans?.some((o2) => o1.value === o2),
     );
-    console.log("selectedRoutingMeans", selectedRoutingMeans);
 
     const values = {
       building,

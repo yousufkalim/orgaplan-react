@@ -219,6 +219,16 @@ export default function AddSiteStep2(props) {
       );
       formdata.append("notificationTo", JSON.stringify(notificationToArray));
 
+      let updatedStep2Data = {
+        additionalInfo: additionalInfo,
+        start: start,
+        end: end,
+        notificationPriorToDays: Number(notificationPriorToDays),
+        notificationTo: notificationToArray,
+        openingHours: openingHours,
+        unavailabilityDates: unavailabilityDates,
+      };
+
       const data = await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.SITES,
@@ -227,8 +237,10 @@ export default function AddSiteStep2(props) {
         },
         body: formdata,
       });
+      console.log("props.step2Data", props.step2Data);
+      console.log("updatedStep2Data", updatedStep2Data);
 
-      props.setStep2Data(data);
+      props.setStep2Data(updatedStep2Data);
       setLoading(false);
       props.setStep(3);
     } catch (err) {

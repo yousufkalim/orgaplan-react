@@ -201,7 +201,7 @@ export default function LandingPage() {
               <h5>Ajoutez vos équipes</h5>
               <p>
                 Que ce soit votre équipe, vos co-traitants ou vos
-                sous-traitants, tous peuvent être ajoutés à la plateforme
+                sous-traitants, tous peuvent être ajoutés sur la plateforme
               </p>
             </div>
             <div className="col-3 text-center land-card">
@@ -220,7 +220,7 @@ export default function LandingPage() {
             </p>
             <p>
               <img src={Images.checkbox} alt="checkbox Icon" />
-              Créer un nombre illimité de projet
+              Créer un nombre illimité de projets
             </p>
             <p>
               <img src={Images.checkbox} alt="checkbox Icon" />
@@ -233,8 +233,8 @@ export default function LandingPage() {
             </p>
             <p>
               <img src={Images.checkbox} alt="checkbox Icon" />
-              Permettre la gestion des réservations, incidents, refacturation,
-              etc…
+              Permettre la gestion des réservations, incidents, re-facturations,
+              etc...
             </p>
             <CustomButton
               fullWidth={false}
@@ -314,7 +314,7 @@ export default function LandingPage() {
           <footer className="row p-3">
             <p className="col text-left">
               <b>Orgaplan</b> <br />
-              La platefore au servic e de votre organisation de chantier !
+              La plateforme au service de votre organisation de chantier!
             </p>
             <Link
               className="col"

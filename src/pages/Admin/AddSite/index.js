@@ -41,7 +41,7 @@ export default function AddSite(props) {
         steps={[
           `Step 1: ${General_Information}`,
           "Step 2: Dates",
-          "Text 1: PIC",
+          "Step 3: PIC",
         ]}
       />
       <div className={classes.content}>

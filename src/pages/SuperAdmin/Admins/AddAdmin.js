@@ -27,6 +27,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { NavLink } from "react-router-dom";
 import SubHeading from "../../../components/SubHeading";
+import { message } from "antd";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,9 +98,6 @@ export default function AddAdmin(props) {
   const [users, setUsers] = useState([]);
   const [disableUser, setDisableUser] = useState(false);
 
-  // state to open delivery area model
-  const [openDeliveryModal, setOpenDeliveryModal] = useState(false);
-
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
@@ -111,13 +109,21 @@ export default function AddAdmin(props) {
         uri: `${GLOBALS.Constants.COMPANY}`,
       });
 
-      const itemsArray = result.data.items.map((item) => ({
+      const itemsArray = result.data.items.filter((item) => {
+        if (item.quoteVerified === true) {
+          return {
+            value: item._id,
+            label: item.name,
+          };
+        }
+      });
+      const arr = itemsArray.map((item) => ({
         value: item._id,
         label: item.name,
       }));
 
       setAllCompanies(result.data.items);
-      setCompanies(itemsArray);
+      setCompanies(arr);
       setLoading(false);
 
       // Getting users from API
@@ -156,7 +162,8 @@ export default function AddAdmin(props) {
         body: formdata,
       });
       setLoading(false);
-      setOpenDeliveryModal(true);
+      message.success("Consulter la liste des admins");
+      props.history.goBack();
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -395,26 +402,6 @@ export default function AddAdmin(props) {
             />
           </Form.ButtonContainer>
         </Form.Form>
-        <Dialog
-          open={openDeliveryModal}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogContent>
-            <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
-              {ADMIN_CREATED}
-            </h4>
-            <SubHeading primary={VIEW_ADMIN} />
-            <div style={{ textAlign: "center", marginTop: "20px" }}>
-              <Button
-                fullWidth={false}
-                component={NavLink}
-                text="OKAY"
-                to={"/admins"}
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

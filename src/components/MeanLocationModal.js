@@ -5,6 +5,7 @@ import Chip from "@material-ui/core/Chip";
 import GLOBALS from "../globals";
 import FormSelect from "../components/FormSelect";
 import { TEXTS } from "../assets/languages/french";
+import FormMultiSelect from "../components/FormMultiSelect";
 
 import Form from "./Form";
 import Modal from "./Modal";
@@ -72,25 +73,30 @@ export default function CustomInputModal(props) {
   const [update, setUpdate] = useState(false);
 
   const [type, setType] = useState("");
-  const [area, setArea] = useState("");
+  const [area, setArea] = useState([]);
 
   const onAdd = async () => {
     let valuesAr = props.values;
-    let elem =
-      type === "STORAGEAREA"
-        ? props.storageAreas.find((el) => el.value === area)
-        : props.deliveryAreas.find((el) => el.value === area);
-    const val = {
-      key: area,
-      type: type,
-      label: elem.label,
-    };
-    valuesAr.push(val);
-    props.onChange(valuesAr);
+
+    area.map((i) => {
+      let elem =
+        type === "STORAGEAREA"
+          ? props.storageAreas.find((el) => el.value === i)
+          : props.deliveryAreas.find((el) => el.value === i);
+
+      const val = {
+        key: i,
+        type: type,
+        label: elem.label,
+      };
+      valuesAr.push(val);
+      props.onChange(valuesAr);
+    });
+
     setUpdate((st) => !st);
     setModal(false);
     setType("");
-    setArea("");
+    setArea([]);
   };
 
   const handleDelete = (value) => () => {
@@ -147,18 +153,19 @@ export default function CustomInputModal(props) {
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(event) => setType(event.target.value)}
               />
-              <FormSelect
+
+              <FormMultiSelect
                 name="area"
                 value={area}
-                disabled={!type}
                 placeholder="Select Type"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={(event) => setArea(event.target.value)}
                 values={
                   type === "STORAGEAREA"
                     ? props.storageAreas
                     : props.deliveryAreas
                 }
+                condition={true}
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(event) => setArea(event.target.value)}
               />
             </Form.Row>
             <Form.Row justifyContent="center">
