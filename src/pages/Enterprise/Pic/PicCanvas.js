@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pdfstyle: {
     position: "absolute",
+    top: 100,
   },
   pagee: {
     bottom: "-60px",
@@ -652,12 +653,81 @@ const PicCanvas = (props) => {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
+        <div
+          style={{
+            top: "2.8%",
+            left: "46%",
+            position: "absolute",
+            zIndex: "10",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                flexWrap: "wrap",
+                minWidth: 150,
+                height: 50,
+                padding: "10px",
+                color: "white",
+                borderRadius: "30px",
+                textAlign: "center",
+                backgroundColor: "#47A7EE",
+              }}
+            >
+              <h3
+                className="font-weight-bold"
+                style={{ color: "white", marginRight: "10px" }}
+              >
+                {deliveryCount}
+              </h3>
+              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                flexWrap: "wrap",
+                marginLeft: "40px",
+                minWidth: 150,
+                height: 50,
+                padding: "10px",
+                color: "white",
+                borderRadius: "30px",
+                textAlign: "center",
+                backgroundColor: "#E15141",
+              }}
+            >
+              <h3
+                className="font-weight-bold"
+                style={{ color: "white", marginRight: "10px" }}
+              >
+                {alertCount}
+              </h3>
+              <h6 style={{ color: "white" }}>{ALERTS}</h6>
+            </div>
+          </div>
+        </div>
+
         <div className={classes.canvasRow}>
           {loading ? (
             <Loader.Progress />
           ) : (
             <div
               style={{
+                marginTop: 50,
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",
@@ -725,60 +795,6 @@ const PicCanvas = (props) => {
                 <div className={classes.infoDrawer2}>{BuildingComponent()}</div>
               </>
             )}
-            <div
-              style={{
-                backgroundColor: "#47A7EE",
-                textAlign: "center",
-                color: "white",
-                padding: "5px",
-                margin: "5px",
-              }}
-            >
-              <div style={{ textAlign: "left", padding: "5px" }}>
-                {" "}
-                <img
-                  src={deliverIcon}
-                  style={{ width: 25, height: 25 }}
-                  alt="Icon"
-                />
-              </div>
-              <h3 className="font-weight-bold" style={{ color: "white" }}>
-                {deliveryCount}
-              </h3>
-              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
-            </div>
-            <div
-              style={{
-                backgroundColor: "#E15141",
-                textAlign: "center",
-                color: "white",
-                padding: "5px",
-                margin: "5px",
-              }}
-            >
-              <div style={{ textAlign: "left", padding: "5px" }}>
-                {" "}
-                <img
-                  src={alertIcon1}
-                  style={{ width: 25, height: 25 }}
-                  alt="Icon"
-                />
-                <img
-                  src={alertIcon}
-                  style={{
-                    width: "5px",
-                    height: "18px",
-                    position: "relative",
-                    right: "15px",
-                  }}
-                  alt="Icon"
-                />
-              </div>
-              <h3 className="font-weight-bold" style={{ color: "white" }}>
-                {alertCount}
-              </h3>
-              <h6 style={{ color: "white" }}>{ALERTS}</h6>
-            </div>
           </div>
         </div>
       </div>

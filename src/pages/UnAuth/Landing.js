@@ -74,7 +74,7 @@ export default function LandingPage() {
         city: values.city,
         firstName: values.name,
         lastName: "",
-        phone: values.phone,
+        phone: String(values.phone),
         email: values.email,
         contractType: "CLIENTPERSITE",
         description: values.message,

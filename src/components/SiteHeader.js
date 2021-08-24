@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     position: "absolute",
     margin: "10px 14px",
-    top: 0,
+    top: 10,
   },
   imageContainer: {
     display: "flex",
