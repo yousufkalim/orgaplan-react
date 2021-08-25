@@ -282,7 +282,6 @@ export default function EditSiteStep1(props) {
           {" "}
           <FormLabel bold primary={`${ZAC_OF_SITE} : `} />
           <Form.Row width="48%" noMargin>
-            {console.log("zacs:", zacs)}
             <FormSelect
               name="zacId"
               values={zacs}

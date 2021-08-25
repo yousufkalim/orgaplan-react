@@ -213,10 +213,7 @@ export default function AddSiteStep1(props) {
 
       setUpdate((st) => !st);
     } else {
-      const userCompany = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.GET_ADMIN_COMPANY}/${store.user._id}`,
-      });
-      setCompany(userCompany.data);
+      setCompany(props.companies[0]);
       setDeliveryArea(props.selectedDeliverArea._id);
       setDate(props.date);
       setStartTime(moment(props.date).set("hour", props.start));
@@ -237,7 +234,7 @@ export default function AddSiteStep1(props) {
       liftingMeans?.some((o2) => o1.value === o2),
     );
     const values = {
-      company: company._id,
+      company: company,
       deliveryArea,
       date,
       selectedMeans,
@@ -267,7 +264,7 @@ export default function AddSiteStep1(props) {
           <FormInput
             name="company"
             disabled={true}
-            value={company.name}
+            value={company.label}
             style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
           />
         </Form.Row>

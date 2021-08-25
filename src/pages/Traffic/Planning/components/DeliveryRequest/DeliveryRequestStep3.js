@@ -40,7 +40,7 @@ export default function DeliveryRequestStep3(props) {
   const [routingMeans, setRoutingMeans] = useState([]);
   useEffect(() => {
     let comp = props.companies.find(
-      (item) => item.value === props.step1Data.company,
+      (item) => item.value === props.step1Data.company.value,
     );
 
     comp && setCompany(comp.label);
@@ -73,7 +73,7 @@ export default function DeliveryRequestStep3(props) {
       setLoading(true);
       const formdata = {
         siteId: adminStore.site.siteId._id,
-        companyId: props.step1Data.company,
+        companyId: props.step1Data.company.value,
         userId: store.user._id,
         deliveryArea: props.step1Data.deliveryArea,
         storageArea: props.step2Data.storageArea,
@@ -128,7 +128,7 @@ export default function DeliveryRequestStep3(props) {
           parseInt(adminStore?.site?.siteId?.penaltyforUnexpDelivery),
         );
         formdata1.append("isPaid", false);
-        formdata1.append("companyId", props.step1Data?.company);
+        formdata1.append("companyId", props.step1Data?.company.value);
         formdata1.append("siteId", adminStore?.site?.siteId?._id);
         // for (let [key, value] of formdata1) {
         //   console.log(`formdata1 in incident delivery ${key}: ${value}`);

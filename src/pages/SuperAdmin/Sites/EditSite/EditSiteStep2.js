@@ -237,8 +237,6 @@ export default function AddSiteStep2(props) {
         },
         body: formdata,
       });
-      console.log("props.step2Data", props.step2Data);
-      console.log("updatedStep2Data", updatedStep2Data);
 
       props.setStep2Data(updatedStep2Data);
       setLoading(false);

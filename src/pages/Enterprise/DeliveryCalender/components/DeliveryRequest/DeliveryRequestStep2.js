@@ -123,11 +123,11 @@ export default function AddSiteStep1(props) {
         let availability_date = moment(currentValue.availability.end).format(
           "L",
         );
-
         if (moment(availability_date).isAfter(currentDate)) {
+          console.log("asdasdas", props.step1Data.company);
           if (
             currentValue.companies.find(
-              (company) => company && company === props.step1Data.company,
+              (company) => company && company === props.step1Data.company.value,
             ) &&
             currentValue.deliveryArea.find(
               (da) => da && da === props.step1Data.deliveryArea,
@@ -144,6 +144,7 @@ export default function AddSiteStep1(props) {
               routingMeans,
               "storage",
             );
+
             setRoutingMeans(result.mean);
             if (result.msg === "found") {
               if (!delunavaiableMsg.includes(currentValue.name)) {

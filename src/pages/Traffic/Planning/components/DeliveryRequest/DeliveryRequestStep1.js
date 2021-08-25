@@ -213,6 +213,7 @@ export default function AddSiteStep1(props) {
 
       setUpdate((st) => !st);
     } else {
+      setCompany(props.companies[0]);
       setDate(props.date);
       setStartTime(moment(props.date).set("hour", props.start));
       setEndTime(moment(props.date).set("hour", props.end));
@@ -260,7 +261,7 @@ export default function AddSiteStep1(props) {
         <FormLabel bold primary={`${COMPANY}* :`} />
         <FormSelect
           name="company"
-          value={company}
+          value={company.value}
           disabled={props.eventId}
           values={props.companies}
           placeholder={Please_select_a_company}

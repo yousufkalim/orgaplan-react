@@ -127,7 +127,7 @@ export default function AddSiteStep1(props) {
         if (moment(availability_date).isAfter(currentDate)) {
           if (
             currentValue.companies.find(
-              (company) => company && company === props.step1Data.company,
+              (company) => company && company === props.step1Data.company.value,
             ) &&
             currentValue.deliveryArea.find(
               (da) => da && da === props.step1Data.deliveryArea,

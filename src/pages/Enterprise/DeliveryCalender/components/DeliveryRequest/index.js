@@ -57,6 +57,7 @@ export default function DeliveryRequest(props) {
         uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+
       const deliveryAreas = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
         token: store.token,
