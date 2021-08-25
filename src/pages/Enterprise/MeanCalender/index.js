@@ -1162,7 +1162,7 @@ const Calender = (props) => {
             }}
             onClick={handleClose}
           >
-            LIVRE
+            FERMÉ
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1337,7 +1337,7 @@ const Calender = (props) => {
                 timeslots={1}
                 onSelectEvent={handlePopoverShow}
                 // onSelectEvent={bookingSlot}
-                onSelecting={true}
+                // onSelecting={true}
                 onSelectSlot={AddEvent}
                 // onSelectSlot={AddAvailability}
                 startAccessor="start"

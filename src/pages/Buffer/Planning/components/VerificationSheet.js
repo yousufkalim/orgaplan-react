@@ -41,21 +41,21 @@ const VarificationSheet = (props) => {
   const [image, setImage] = useState([]);
 
   const [bufferArea, setBufferArea] = useState(
-    location?.state?.event?.bufferArea,
+    location?.state?.event?.bufferArea
+      ? location?.state?.event?.bufferArea
+      : "false",
   );
   const [eventdata, setEventData] = useState(location.state.event);
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
   const [delayTime, setDelayTime] = useState("00:00");
   const [arrivalTime, setArrivalTime] = useState(
-    eventdata.arrivalTime
-      ? moment(eventdata.arrivalTime).format("HH:mm")
-      : "00:00",
+    eventdata.arrivalTime ? moment(eventdata.arrivalTime).format("HH:mm") : "",
   );
   const [departureTime, setDepartureTime] = useState(
     eventdata.departureTime
       ? moment(eventdata.departureTime).format("HH:mm")
-      : "00:00",
+      : "",
   );
   const [flatRegistration, setFlatRegistration] = useState(
     eventdata.flatRegistration,
@@ -67,9 +67,7 @@ const VarificationSheet = (props) => {
     eventdata?.comment ? eventdata.comment : "",
   );
   const [loading, setLoading] = useState(true);
-  // console.log("data", eventdata);
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  // console.log(eventdata);
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -93,13 +91,17 @@ const VarificationSheet = (props) => {
   useEffect(() => {
     materialData();
   }, []);
-  let arrivelIs = new Date(
-    new Date(eventdata.start).setHours(arrivalTime.split(":")[0]),
-  );
-  let departureIs = new Date(
-    new Date(eventdata.start).setHours(departureTime.split(":")[0]),
-  );
+
   const onSubmit = async () => {
+    let arrivelIs = new Date(
+      new Date(eventdata.start).setHours(arrivalTime.split(":")[0]),
+    );
+    arrivelIs.setMinutes(arrivalTime.split(":")[1]);
+    let departureIs = new Date(
+      new Date(eventdata.start).setHours(departureTime.split(":")[0]),
+    );
+    departureIs.setMinutes(departureTime.split(":")[1]);
+
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {
@@ -114,9 +116,7 @@ const VarificationSheet = (props) => {
       formdata.append("flatRegistration", flatRegistration);
       formdata.append("departureTIme", departureIs);
       // for (let [key, value] of formdata) {
-      //   console.log(`formdata verification sheet buffer${key}: ${value}`);
       // }
-      // console.log("eventid", eventdata?.id);
       await GLOBALS.API({
         method: "PUT",
         uri: `${GLOBALS.Constants.BUFFER_UPDATE_DELIVERY}/${eventdata.id}`,
@@ -128,7 +128,6 @@ const VarificationSheet = (props) => {
       // if (delay === true) {
       //   let locationObj = { deliveryArea: deliveryAreaId };
       //   var formdata = new FormData();
-      //   console.log("JSON.stringify(locationObj)", JSON.stringify(locationObj));
       //   formdata.append("name", "Created by NameOfTrafficAgent");
       //   formdata.append("date", moment(startTime).format("YYYY-MM-DD"));
       //   formdata.append("time", moment(startTime).format("HH:mm"));
@@ -401,12 +400,12 @@ const VarificationSheet = (props) => {
         disabled={
           // status != "PENDING" &&
           bufferArea === "" ||
-          arrivalTime == "00:00" ||
-          arrivalTime == null ||
-          departureTime == "00:00" ||
-          departureTime == null ||
-          flatRegistration == "" ||
-          status == "PENDING"
+          arrivalTime === "" ||
+          arrivalTime === null ||
+          departureTime === "" ||
+          departureTime === null ||
+          flatRegistration === "" ||
+          status === "PENDING"
         }
         onClick={onSubmit}
       >
