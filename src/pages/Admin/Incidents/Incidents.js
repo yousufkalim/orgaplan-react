@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { DatePicker } from "antd";
+import "moment/locale/zh-cn";
+import locale from "antd/es/date-picker/locale/fr_FR";
 // import DatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -88,6 +90,8 @@ const Incidents = (props) => {
     INCIDENT,
     DELAY,
     TYPE,
+    OPEN,
+    CLOSE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -262,10 +266,17 @@ const Incidents = (props) => {
   function getStatus(data) {
     let temp = [];
     data.map((item, index) => {
-      return temp.push({
-        label: item,
-        value: item,
-      });
+      if (item == "OPEN") {
+        return temp.push({
+          label: OPEN,
+          value: item,
+        });
+      } else if (item == "CLOSED") {
+        return temp.push({
+          label: CLOSE,
+          value: item,
+        });
+      }
     });
     setStatus(temp);
   }
@@ -620,6 +631,7 @@ const Incidents = (props) => {
                   />
                 ) : (
                   <DatePicker
+                    locale={locale}
                     size={"large"}
                     onFocus={() => setFlag1(true)}
                     onBlur={() => setFlag1(false)}
@@ -657,6 +669,7 @@ const Incidents = (props) => {
                   />
                 ) : (
                   <DatePicker
+                    locale={locale}
                     size={"large"}
                     onFocus={() => setFlag2(true)}
                     onBlur={() => setFlag2(false)}

@@ -16,7 +16,8 @@ import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
 import TimePicker from "react-time-picker";
 import { addDays } from "date-fns";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import fr from "date-fns/locale/fr"; // the locale you want
 import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
@@ -41,6 +42,7 @@ let view = {
   agenda: true,
 };
 moment.locale("en"); //change calender texts to french
+registerLocale("fr", fr); // register it with the name you want
 const localizer = momentLocalizer(moment);
 let formats = {
   dateFormat: "DD",
@@ -1391,6 +1393,7 @@ const Calender = (props) => {
             <div className="col-md-6 mb-4">
               <div>
                 <DatePicker
+                  locale="fr"
                   showPopperArrow={true}
                   dateFormat="dd-MMMM-yyyy"
                   selected={startDate}
@@ -1658,6 +1661,7 @@ const Calender = (props) => {
               <Form.Row justifyContent="flex-start" noMargin>
                 <div style={{ marginRight: "20px", width: 250 }}>
                   <DatePicker
+                    locale="fr"
                     showPopperArrow={true}
                     dateFormat="dd-MM-yyyy"
                     selected={filterDate}

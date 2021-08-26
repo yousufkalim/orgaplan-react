@@ -82,6 +82,8 @@ const Incidents = (props) => {
     COMPANY,
     START_DATE,
     END_DATE,
+    OPEN,
+    CLOSE,
     DESIGNATION,
     TOTAL,
     TYPE,
@@ -258,10 +260,17 @@ const Incidents = (props) => {
   function getStatus(data) {
     let temp = [];
     data.map((item, index) => {
-      return temp.push({
-        label: item,
-        value: item,
-      });
+      if (item == "OPEN") {
+        return temp.push({
+          label: OPEN,
+          value: item,
+        });
+      } else if (item == "CLOSED") {
+        return temp.push({
+          label: CLOSE,
+          value: item,
+        });
+      }
     });
     setStatus(temp);
   }

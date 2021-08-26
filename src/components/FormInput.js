@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { DatePicker } from "antd";
+import "moment/locale/zh-cn";
+import locale from "antd/es/date-picker/locale/fr_FR";
 import moment from "moment";
 import "./custom.css";
 
@@ -122,6 +124,7 @@ export default function Input(props) {
         />
       ) : props.type === "date" ? (
         <DatePicker
+          locale={locale}
           size={"large"}
           max={props.max}
           min={props.min}

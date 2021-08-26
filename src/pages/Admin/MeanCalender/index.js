@@ -8,12 +8,14 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import moment from "moment";
+import "moment/locale/fr"; //change calender texts to french
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import PopoverModal from "./components/popoverModal";
 import MyWorkWeek from "./components/MyWorkWeek";
 import TimePicker from "react-time-picker";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import fr from "date-fns/locale/fr"; // the locale you want
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
@@ -33,6 +35,8 @@ let view = {
   work_week: MyWorkWeek,
 };
 
+moment.locale("en"); //change calender texts to french
+registerLocale("fr", fr); // register it with the name you want
 const localizer = momentLocalizer(moment);
 
 let formats = {
@@ -44,6 +48,24 @@ let formats = {
     localizer.format(date, "HH:mm", culture),
   eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
     localizer.format(start, "HH:mm") + "-" + localizer.format(end, "HH:mm"),
+};
+
+//change calender texts to french
+
+const messagesFrench = {
+  allDay: "Journée",
+  previous: "<",
+  next: ">",
+  today: "Aujourd'hui",
+  month: "Mois",
+  week: "Semaine",
+  day: "Jour",
+  agenda: "Événements à venir",
+  date: "Date",
+  time: "Heure",
+  event: "Événement", // Or anything you want
+  work_week: "Semaine de travail",
+  showMore: (total) => `+ ${total} événement(s) supplémentaire(s)`,
 };
 
 const Calender = (props) => {
@@ -1358,6 +1380,7 @@ const Calender = (props) => {
           />
           <div style={{ width: "25%", marginLeft: "20px" }}>
             <DatePicker
+              locale="fr"
               showPopperArrow={true}
               dateFormat="dd-MM-yyyy"
               selected={calendarDate}
@@ -1387,6 +1410,8 @@ const Calender = (props) => {
           <div style={{ flexBasis: "100%" }}>
             {events ? (
               <Calendar
+                culture="fr"
+                messages={messagesFrench}
                 popup
                 slotPropGetter={slotPropGetter}
                 selectable
