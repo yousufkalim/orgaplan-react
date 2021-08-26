@@ -52,6 +52,10 @@ const Means = () => {
     START_DATE,
     END_DATE,
     MEAN_NAME,
+    LIFTING,
+    ROUTING,
+    AVAILABLE,
+    Unavailable,
   } = TEXTS;
 
   const classes = useStyles();
@@ -149,10 +153,22 @@ const Means = () => {
         })),
       );
       setTypes(
-        response.data.mean_types.map((item) => ({ label: item, value: item })),
+        response.data.mean_types.map((item) => {
+          if (item == "LIFTING") {
+            return { label: LIFTING, value: item };
+          } else if (item == "ROUTING") {
+            return { label: ROUTING, value: item };
+          }
+        }),
       );
       setStatuses(
-        response.data.mean_status.map((item) => ({ label: item, value: item })),
+        response.data.mean_status.map((item) => {
+          if (item == "AVAILABLE") {
+            return { label: AVAILABLE, value: item };
+          } else if (item == "UNAVAILABLE") {
+            return { label: Unavailable, value: item };
+          }
+        }),
       );
       setLoading(false);
     } catch (err) {

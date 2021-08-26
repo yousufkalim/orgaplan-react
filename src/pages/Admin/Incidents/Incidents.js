@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { DatePicker } from "antd";
-// import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import fr from "date-fns/locale/fr"; // the locale you want
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -66,6 +66,8 @@ let statciincidentsdata = [
 ];
 let siteis = { name: "test site" };
 
+registerLocale("fr", fr); // register it with the name you want
+
 const Incidents = (props) => {
   const {
     LIST_OF_COMPANIES,
@@ -88,6 +90,8 @@ const Incidents = (props) => {
     INCIDENT,
     DELAY,
     TYPE,
+    OPEN,
+    CLOSE,
   } = TEXTS;
 
   const classes = useStyles();
@@ -262,10 +266,17 @@ const Incidents = (props) => {
   function getStatus(data) {
     let temp = [];
     data.map((item, index) => {
-      return temp.push({
-        label: item,
-        value: item,
-      });
+      if (item == "OPEN") {
+        return temp.push({
+          label: OPEN,
+          value: item,
+        });
+      } else if (item == "CLOSED") {
+        return temp.push({
+          label: CLOSE,
+          value: item,
+        });
+      }
     });
     setStatus(temp);
   }
@@ -620,6 +631,7 @@ const Incidents = (props) => {
                   />
                 ) : (
                   <DatePicker
+                    locale="fr"
                     size={"large"}
                     onFocus={() => setFlag1(true)}
                     onBlur={() => setFlag1(false)}
@@ -657,6 +669,7 @@ const Incidents = (props) => {
                   />
                 ) : (
                   <DatePicker
+                    locale="fr"
                     size={"large"}
                     onFocus={() => setFlag2(true)}
                     onBlur={() => setFlag2(false)}
