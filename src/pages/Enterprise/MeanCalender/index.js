@@ -896,7 +896,7 @@ const Calender = (props) => {
           },
         );
 
-        booking = responseMeanBooking.concat(responseDeliveryMean);
+        booking = responseMeanBooking;
         setEvents(booking);
       } else {
       }
