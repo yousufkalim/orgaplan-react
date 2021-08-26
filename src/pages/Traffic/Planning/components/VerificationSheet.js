@@ -49,7 +49,7 @@ const VarificationSheet = (props) => {
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
 
-  const [delayTime, setDelayTime] = useState("00:00");
+  const [delayTime, setDelayTime] = useState("");
   const [delayCheckBox, setDelayCheckBox] = useState(false);
   const [status, setStatus] = useState(eventdata.status);
   const [checkStatus, setCheckStatus] = useState(status);
@@ -79,6 +79,7 @@ const VarificationSheet = (props) => {
   };
 
   useEffect(() => {
+    setDelayTime(moment(eventdata.end).format("hh:mm"));
     materialData();
   }, []);
 
@@ -218,7 +219,7 @@ const VarificationSheet = (props) => {
           <div className="value checkBoxTime">
             <TimePicker
               value={delayTime}
-              disabled={!delayCheckBox || checkStatus != "VALIDATED"}
+              disabled={checkStatus != "VALIDATED"}
               disableClock
               onChange={(e) => {
                 setDelayTime(e);

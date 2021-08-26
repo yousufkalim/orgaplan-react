@@ -127,7 +127,6 @@ export default function AddSiteStep1(props) {
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
   }
-  console.log(clientAdmin);
   async function onSubmit(e) {
     e.preventDefault();
     const values = {
