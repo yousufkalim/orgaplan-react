@@ -15,10 +15,8 @@ import Loader from "../../components/Loader";
 import Button from "../../components/Button";
 import { TEXTS } from "../../assets/languages/french";
 
-
-
 export default function Login(props) {
-  const {LOGIN}=TEXTS;
+  const { LOGIN } = TEXTS;
 
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);

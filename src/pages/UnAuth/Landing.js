@@ -85,11 +85,16 @@ export default function LandingPage() {
         uri: GLOBALS.Constants.QUOTE,
         body: formdata,
       });
-      setQuoteMessageType("success");
-      setQuoteMessage(
-        `${Your_request_has_been_received}. ${You_will_be_contacted_soon}.`,
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(
+            `${Your_request_has_been_received}. ${You_will_be_contacted_soon}.`,
+            "success",
+          ),
+        ),
       );
       setSubmitting(false);
+      setShowQuoteModal(false);
     } catch (err) {
       setQuoteMessageType("error");
       setSubmitting(false);
@@ -355,24 +360,16 @@ export default function LandingPage() {
           >
             {({ errors, values, handleChange, handleSubmit, isSubmitting }) => (
               <form onSubmit={handleSubmit} style={{ padding: "0 20px" }}>
-                {quoteMessage && (
+                {quoteMessage && quoteMessageType === "error" && (
                   <div className="w-100 mx-auto my-2">
                     <div
                       className="login-input"
-                      style={
-                        quoteMessageType === "error"
-                          ? {
-                              backgroundColor: "#f44336",
-                              borderColor: "1px solid #ffccc7",
-                              color: "#fff",
-                              textAlign: "center",
-                            }
-                          : {
-                              backgroundColor: "#f6ffed",
-                              borderColor: "1px solid #b7eb8f",
-                              textAlign: "center",
-                            }
-                      }
+                      style={{
+                        backgroundColor: "#f44336",
+                        borderColor: "1px solid #ffccc7",
+                        color: "#fff",
+                        textAlign: "center",
+                      }}
                     >
                       {quoteMessage}
                     </div>
