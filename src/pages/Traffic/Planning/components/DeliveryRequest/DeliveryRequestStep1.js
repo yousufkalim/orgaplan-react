@@ -123,6 +123,11 @@ export default function AddSiteStep1(props) {
     try {
       let result = [];
       let currentDate = moment(props.date).format("L");
+      const bookings = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.BOOKINGS_BY_SITE}/${adminStore.site.siteId._id}`,
+        token: store.token,
+      });
+
       setMeans(
         props.means.reduce((accumulator, currentValue) => {
           if (
@@ -137,38 +142,90 @@ export default function AddSiteStep1(props) {
               "[]",
             )
           ) {
-            let start = moment(startTime).format("HH:mm").substring(0, 2);
-            let end = moment(endTime).format("HH:mm").substring(0, 2);
+            //////// Setting times to 00 format
+
+            let start = startTime
+              ? moment(startTime).format("HH:mm").substring(0, 2)
+              : "";
+            let end = endTime
+              ? moment(endTime).format("HH:mm").substring(0, 2)
+              : "";
+
+            ///////// filter out booked means
+            let isMeanBooked = false;
+            let bookedMeans = bookings.data.bookings.filter((booking) => {
+              ///////// checking if mean is in meansBooking table
+              if (booking.meanId === currentValue._id) {
+                let bookingDate = moment(booking.startDate).format("L");
+                let formattedDate = moment(currentDate).format("L");
+                let bookingStartTime = booking.startTime.substring(0, 2);
+                let bookingEndTime = booking.endTime.substring(0, 2);
+
+                ///////// check if the mean found are on the same day
+                if (moment(bookingDate).isSame(formattedDate)) {
+                  ///////// if selected date is same as the booking date, we hide the values and show unavailable message
+                  if (
+                    start >= bookingStartTime &&
+                    start <= bookingEndTime &&
+                    end <= bookingEndTime &&
+                    end >= bookingStartTime
+                  ) {
+                    return booking;
+                  }
+                  ///////// if the booking date is in range of the selected date, we show the values and show unavailable message
+                  else if (
+                    (bookingStartTime >= start && bookingStartTime < end) ||
+                    (bookingEndTime <= end && bookingEndTime > start)
+                  ) {
+                    isMeanBooked = true;
+                  }
+                }
+              }
+            });
 
             //////// Checking unavailabilities
+            if (bookedMeans.length === 0) {
+              result = unavailabilityCheck(
+                currentValue,
+                currentDate,
+                start,
+                end,
+                liftingMeans,
+                "mean",
+              );
 
-            result = unavailabilityCheck(
-              currentValue,
-              currentDate,
-              start,
-              end,
-              liftingMeans,
-              "mean",
-            );
+              //////// If mean already booked
+              if (isMeanBooked) {
+                if (!unavailableMsg.includes(currentValue.name)) {
+                  unavailableMsg.push(currentValue.name);
+                }
+              }
+              //////// if mean is unavailable
+              else if (result.msg === "found") {
+                if (!unavailableMsg.includes(currentValue.name)) {
+                  unavailableMsg.push(currentValue.name);
+                }
+              }
+              //////// if mean is available
+              else if (result.msg === "notFound") {
+                if (unavailableMsg.includes(currentValue.name)) {
+                  let i = unavailableMsg.indexOf(currentValue.name);
+                  unavailableMsg.splice(i, 1);
+                }
+              }
 
-            if (result.msg === "found") {
+              if (result.data[0]) {
+                if (
+                  !accumulator.some(
+                    (acc) => acc["value"] === result.data[0].value,
+                  )
+                ) {
+                  accumulator.push(result.data[0]);
+                }
+              }
+            } else {
               if (!unavailableMsg.includes(currentValue.name)) {
                 unavailableMsg.push(currentValue.name);
-              }
-            } else if (result.msg === "notFound") {
-              if (unavailableMsg.includes(currentValue.name)) {
-                let i = unavailableMsg.indexOf(currentValue.name);
-                unavailableMsg.splice(i, 1);
-              }
-            }
-
-            if (result.data[0]) {
-              if (
-                !accumulator.some(
-                  (acc) => acc["value"] === result.data[0].value,
-                )
-              ) {
-                accumulator.push(result.data[0]);
               }
             }
           }

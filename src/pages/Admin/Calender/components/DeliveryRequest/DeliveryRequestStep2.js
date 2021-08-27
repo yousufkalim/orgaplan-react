@@ -175,6 +175,12 @@ export default function AddSiteStep1(props) {
 
   const getMeans = async () => {
     let currentDate = moment(props.step1Data.date).format("L");
+
+    const bookings = await GLOBALS.API({
+      uri: `${GLOBALS.Constants.BOOKINGS_BY_SITE}/${adminStore.site.siteId._id}`,
+      token: store.token,
+    });
+
     setMeans(
       props.means.reduce((accumulator, currentValue) => {
         if (
@@ -191,34 +197,82 @@ export default function AddSiteStep1(props) {
             "[]",
           )
         ) {
+          //////// Setting times to 00 format
           let start = props.step1Data.startTime.substring(0, 2);
           let end = props.step1Data.endTime.substring(0, 2);
+
+          ///////// filter out booked means
+          let isMeanBooked = false;
+          let bookedMeans = bookings.data.bookings.filter((booking) => {
+            ///////// checking if mean is in meansBooking table
+            if (booking.meanId === currentValue._id) {
+              let bookingDate = moment(booking.startDate).format("L");
+              let formattedDate = moment(currentDate).format("L");
+              let bookingStartTime = booking.startTime.substring(0, 2);
+              let bookingEndTime = booking.endTime.substring(0, 2);
+
+              ///////// check if the mean found are on the same day
+              if (moment(bookingDate).isSame(formattedDate)) {
+                ///////// if selected date is same as the booking date, we hide the values and show unavailable message
+                if (
+                  start >= bookingStartTime &&
+                  start <= bookingEndTime &&
+                  end <= bookingEndTime &&
+                  end >= bookingStartTime
+                ) {
+                  return booking;
+                }
+                ///////// if the booking date is in range of the selected date, we show the values and show unavailable message
+                else if (
+                  (bookingStartTime >= start && bookingStartTime < end) ||
+                  (bookingEndTime <= end && bookingEndTime > start)
+                ) {
+                  isMeanBooked = true;
+                }
+              }
+            }
+          });
+
           //////// Checking unavailabilities
-          let result = unavailabilityCheck(
-            currentValue,
-            currentDate,
-            start,
-            end,
-            routingMeans,
-            "mean",
-          );
-          setRoutingMeans(result.mean);
-          if (result.msg === "found") {
+          if (bookedMeans.length === 0) {
+            let result = unavailabilityCheck(
+              currentValue,
+              currentDate,
+              start,
+              end,
+              routingMeans,
+              "mean",
+            );
+            setRoutingMeans(result.mean);
+
+            //////// If mean already booked
+            if (isMeanBooked) {
+              if (!delunavaiableMsg.includes(currentValue.name)) {
+                delunavaiableMsg.push(currentValue.name);
+              }
+            } else if (result.msg === "found") {
+              if (!delunavaiableMsg.includes(currentValue.name)) {
+                delunavaiableMsg.push(currentValue.name);
+              }
+            } else if (result.msg === "notFound") {
+              if (delunavaiableMsg.includes(currentValue.name)) {
+                let i = delunavaiableMsg.indexOf(currentValue.name);
+                delunavaiableMsg.splice(i, 1);
+              }
+            }
+
+            if (result.data[0]) {
+              if (
+                !accumulator.some(
+                  (acc) => acc["value"] === result.data[0].value,
+                )
+              ) {
+                accumulator.push(result.data[0]);
+              }
+            }
+          } else {
             if (!delunavaiableMsg.includes(currentValue.name)) {
               delunavaiableMsg.push(currentValue.name);
-            }
-          } else if (result.msg === "notFound") {
-            if (delunavaiableMsg.includes(currentValue.name)) {
-              let i = delunavaiableMsg.indexOf(currentValue.name);
-              delunavaiableMsg.splice(i, 1);
-            }
-          }
-
-          if (result.data[0]) {
-            if (
-              !accumulator.some((acc) => acc["value"] === result.data[0].value)
-            ) {
-              accumulator.push(result.data[0]);
             }
           }
         }
