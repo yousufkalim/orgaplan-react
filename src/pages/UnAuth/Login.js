@@ -77,38 +77,48 @@ export default function Login(props) {
   }, []);
 
   async function validateToken() {
-    try {
-      const {
-        location: { search },
-      } = props;
-      const query = new URLSearchParams(search);
-      const request = query.get("request");
-      const uid = query.get("uid");
-      const verifyToken = query.get("verifyToken");
+    const {
+      location: { search },
+    } = props;
+    const query = new URLSearchParams(search);
+    const request = query.get("request");
+    const uid = query.get("uid");
+    const verifyToken = query.get("verifyToken");
 
-      setVerifyToken(verifyToken);
+    setVerifyToken(verifyToken);
 
-      if (request === "password") {
-        setValidateLoading(true);
-        setShowResetModal((st) => !st);
-        await GLOBALS.API({
-          uri: `${GLOBALS.Constants.VALIDATE_TOKEN}/${uid}/${verifyToken}`,
+    if (request === "password") {
+      setValidateLoading(true);
+      setShowResetModal((st) => !st);
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.VALIDATE_TOKEN}/${uid}/${verifyToken}`,
+      })
+        .then(() => {
+          setExpired(false);
+          fetchResetData();
+        })
+        .catch((err) => {
+          console.log("password error: ", err.message);
+          props.history.replace("/login");
+          setValidateLoading(false);
+          setExpired(true);
         });
-        setExpired(false);
-        fetchResetData();
-      } else if (request === "profile") {
-        setValidateLoading(true);
-        setShowProfileModal((st) => !st);
-        await GLOBALS.API({
-          uri: `${GLOBALS.Constants.VALIDATE_TOKEN}/${uid}/${verifyToken}`,
+    } else if (request === "profile") {
+      setValidateLoading(true);
+      setShowProfileModal((st) => !st);
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.VALIDATE_TOKEN}/${uid}/${verifyToken}`,
+      })
+        .then(() => {
+          setExpired(false);
+          fetchProfileData();
+        })
+        .catch((err) => {
+          console.log("Profile error: ", err.message);
+          props.history.replace("/login");
+          setValidateLoading(false);
+          setExpired(true);
         });
-        setExpired(false);
-        fetchProfileData();
-      }
-    } catch (err) {
-      props.history.replace("/login");
-      setValidateLoading(false);
-      setExpired(true);
     }
   }
 
