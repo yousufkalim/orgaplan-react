@@ -62,14 +62,17 @@ const PopoverModal = ({
         variant="danger"
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
-        {props.message}&nbsp;&nbsp;&nbsp;
+        <div style={{ textAlign: "center" }}>
+          {props.message}&nbsp;&nbsp;&nbsp;
+        </div>
         {event.objectName === "Deliveries" ? (
-          <>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
             <div
               onClick={() => {
                 handleDeleteDelivery("no");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {NO}
             </div>
@@ -78,10 +81,11 @@ const PopoverModal = ({
                 handleDeleteDelivery("yes");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {YES}
             </div>
-          </>
+          </div>
         ) : (
           <>
             <div
@@ -89,6 +93,7 @@ const PopoverModal = ({
                 handleDeleteEvent("no");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {NO}
             </div>{" "}
@@ -98,6 +103,7 @@ const PopoverModal = ({
                 handleDeleteEvent("yes");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {YES}
             </div>
@@ -330,33 +336,20 @@ const PopoverModal = ({
                 </div>
                 {event.status === "PENDING" ? (
                   <>
-                    {/* <hr />
+                    <hr />
                     <div className="popoverfooter">
-                      <div className="col-lg-2">
-                        <button
-                          className="btn text-primary btn-light px-3 text-center"
-                          onClick={handleValidateDelivery}
-                        >
-                          <i class="fas fa-pencil"></i> <span>validate</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-4">
-                        <button
-                          className="btn text-success btn-light"
-                          onClick={() => onEditDelivery(event)}
-                        >
-                          <i class="fas fa-trash"></i> <span>More Info</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-3">
+                      <div
+                        className="col-lg-3"
+                        style={{ marginLeft: "auto", marginRight: "auto" }}
+                      >
                         <button
                           className="btn text-danger btn-light"
                           onClick={handleDeleteDelivery}
                         >
-                          <i class="fas fa-trash"></i> <span>Refuse</span>
+                          <i class="fas fa-trash"></i> <span>Delete</span>
                         </button>
                       </div>
-                    </div> */}
+                    </div>
                   </>
                 ) : (
                   <></>
