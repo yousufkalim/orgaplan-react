@@ -1246,7 +1246,7 @@ const Calender = (props) => {
             }}
             onClick={handleClose}
           >
-            LIVRE
+            FERMÉ
           </Button>
         </Modal.Footer>
       </Modal>
