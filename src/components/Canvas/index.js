@@ -5,6 +5,7 @@ import Button from "../Button";
 import GLOBALS from "../../globals";
 import _ from "lodash";
 import { TEXTS } from "../../assets/languages/french";
+import { message } from "antd";
 export const width = 960;
 export const height = 680;
 
@@ -314,12 +315,59 @@ class App extends Component {
   };
   handleElementChange = (e) => {
     if (e.target.value === "MEAN") {
-      this.setState({
-        meanCheck: e.target.value,
-        points: [],
-        checkDisable: true,
-        meanDisable: true,
+      let countDA = 0;
+      let countSA = 0;
+      this.props.shapes.filter((shape) => {
+        if (shape.type === "DELIVERYAREA") {
+          countDA++;
+        } else if (shape.type === "STORAGEAREA") {
+          countSA++;
+        }
       });
+      if (countDA > 0 && countSA > 0) {
+        this.setState({
+          meanCheck: e.target.value,
+          points: [],
+          checkDisable: true,
+          meanDisable: true,
+        });
+      } else if (countDA === 0 && countDA === 0) {
+        message.config({
+          duration: 5,
+          maxCount: 1,
+        });
+        message.warning("Please create a Delivery Area and Storage Area first");
+      } else if (countSA === 0) {
+        message.config({
+          duration: 5,
+          maxCount: 1,
+        });
+        message.warning("Please create a Storage Area first");
+      } else if (countDA === 0) {
+        message.config({
+          duration: 5,
+          maxCount: 1,
+        });
+        message.warning("Please create a Delivery Area first");
+      }
+    } else if (e.target.value === "STORAGEAREA") {
+      let del = this.props.shapes.filter((shape) => {
+        return shape.type === "DELIVERYAREA" && shape;
+      });
+      if (del.length > 0) {
+        this.setState({
+          meanCheck: e.target.value,
+          points: [],
+          checkDisable: true,
+          meanDisable: true,
+        });
+      } else {
+        message.config({
+          duration: 5,
+          maxCount: 1,
+        });
+        message.warning("Please create a Delivery Area first");
+      }
     } else {
       this.setState({
         meanCheck: e.target.value,
