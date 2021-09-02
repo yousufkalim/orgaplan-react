@@ -62,14 +62,17 @@ const PopoverModal = ({
         variant="danger"
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
-        {props.message}&nbsp;&nbsp;&nbsp;
+        <div style={{ textAlign: "center" }}>
+          {props.message}&nbsp;&nbsp;&nbsp;
+        </div>
         {event.objectName === "Deliveries" ? (
-          <>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
             <div
               onClick={() => {
                 handleDeleteDelivery("no");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {NO}
             </div>
@@ -78,10 +81,11 @@ const PopoverModal = ({
                 handleDeleteDelivery("yes");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {YES}
             </div>
-          </>
+          </div>
         ) : (
           <>
             <div

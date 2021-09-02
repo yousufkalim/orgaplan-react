@@ -1103,7 +1103,7 @@ const Calender = (props) => {
             } else if (key.status === "COMPLETED") {
               background = "#32CD32";
             } else {
-              background = "red";
+              background = "#00BFFF";
             }
 
             /* start time converstion */

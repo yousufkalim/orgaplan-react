@@ -3,6 +3,7 @@ import moment from "moment";
 import "./sass/custom.scss";
 import { Modal, Alert } from "react-bootstrap";
 import { TEXTS } from "../../../../assets/languages/french";
+import { useSelector } from "react-redux";
 
 const PopoverModal = ({
   popoverShow,
@@ -37,11 +38,13 @@ const PopoverModal = ({
     End_time,
     VALIDATE,
     MORE_INFO,
-    REFUSE,
+    DELETE,
     COMPANY,
     MEAN,
     Are_you_sure_You_want_to_delete_this,
   } = TEXTS;
+
+  const store = useSelector((state) => state.auth);
 
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
@@ -62,14 +65,17 @@ const PopoverModal = ({
         variant="danger"
         onClose={() => setAlertBoxTime(!alertBoxTime)}
       >
-        {props.message}&nbsp;&nbsp;&nbsp;
+        <div style={{ textAlign: "center" }}>
+          {props.message}&nbsp;&nbsp;&nbsp;
+        </div>
         {event.objectName === "Deliveries" ? (
-          <>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
             <div
               onClick={() => {
                 handleDeleteDelivery("no");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {NO}
             </div>
@@ -78,10 +84,11 @@ const PopoverModal = ({
                 handleDeleteDelivery("yes");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {YES}
             </div>
-          </>
+          </div>
         ) : (
           <>
             <div
@@ -89,6 +96,7 @@ const PopoverModal = ({
                 handleDeleteEvent("no");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {NO}
             </div>{" "}
@@ -98,6 +106,7 @@ const PopoverModal = ({
                 handleDeleteEvent("yes");
               }}
               className="alert-link"
+              style={{ cursor: "pointer" }}
             >
               {YES}
             </div>
@@ -328,35 +337,23 @@ const PopoverModal = ({
                   <span>{getStartDate(event.end)}</span> -{" "}
                   {getStartTime(event.end)}
                 </div>
-                {event.status === "PENDING" ? (
+                {event.status === "PENDING" &&
+                store.user._id === event.user._id ? (
                   <>
-                    {/* <hr />
+                    <hr />
                     <div className="popoverfooter">
-                      <div className="col-lg-2">
-                        <button
-                          className="btn text-primary btn-light px-3 text-center"
-                          onClick={handleValidateDelivery}
-                        >
-                          <i class="fas fa-pencil"></i> <span>validate</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-4">
-                        <button
-                          className="btn text-success btn-light"
-                          onClick={() => onEditDelivery(event)}
-                        >
-                          <i class="fas fa-trash"></i> <span>More Info</span>
-                        </button>
-                      </div>
-                      <div className="col-lg-3">
+                      <div
+                        className="col-lg-3"
+                        style={{ marginLeft: "auto", marginRight: "auto" }}
+                      >
                         <button
                           className="btn text-danger btn-light"
                           onClick={handleDeleteDelivery}
                         >
-                          <i class="fas fa-trash"></i> <span>Refuse</span>
+                          <i class="fas fa-trash"></i> <span>{DELETE}</span>
                         </button>
                       </div>
-                    </div> */}
+                    </div>
                   </>
                 ) : (
                   <></>
