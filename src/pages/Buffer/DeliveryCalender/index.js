@@ -1100,7 +1100,7 @@ const Calender = (props) => {
             } else if (key.status === "COMPLETEDWITHISSUE") {
               background = "orange";
             } else if (key.status === "COMPLETED") {
-              background = "#00BFFF";
+              background = "#32CD32";
             } else {
               background = "#00BFFF";
             }
