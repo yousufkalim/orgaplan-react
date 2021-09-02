@@ -72,9 +72,10 @@ export default function AddSiteStep1(props) {
             },
           ]);
         }
+        return null;
       }),
     );
-  }, [clients, adminId]);
+  }, [clients, adminId, store.user._id]);
   async function fetchData() {
     try {
       const zacsResult = await GLOBALS.API({
@@ -242,6 +243,8 @@ export default function AddSiteStep1(props) {
             placeholder={ENTER_TRADES}
             style={GLOBALS.Styles.inputWidth}
             setTradeError={setTradeError}
+            error={TradeError}
+            trades={trades}
             onChange={(values) => handleChange("trades", values)}
           />
         </Form.Row>

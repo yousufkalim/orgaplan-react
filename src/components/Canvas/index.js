@@ -170,15 +170,15 @@ class App extends Component {
       });
       var page = await _PDF_DOC.getPage(1);
       var canvas = document.getElementById("pdf-canvas");
-      var rotate;
-      if (page.view[2] > 612 && page.view[3] > 792) {
-        rotate = (page.rotate + 150) % 360;
-      } else {
-        rotate = (page.rotate + 270) % 360;
-      }
+      // var rotate = 0;
+      // if (page.view[2] > 612 && page.view[3] > 792) {
+      //   rotate = (page.rotate + 150) % 360;
+      // } else {
+      //   rotate = (page.rotate + 270) % 360;
+      // }
 
       // var viewport = page.getViewport(1);
-      var unscaledViewport = page.getViewport(1);
+      // var unscaledViewport = page.getViewport(1);
 
       var scale = 1;
 
@@ -600,7 +600,7 @@ class App extends Component {
     this.handleDisableMean(id);
   };
   handleConvaCircleImageClick = (id) => {
-    const { shapes, meanShapeId, meanColor } = this.state;
+    const { shapes } = this.state;
     this.setState({ meanCheck: "MEAN" });
 
     if (shapes.length > 0) {
@@ -1124,7 +1124,7 @@ class App extends Component {
     const { UPLOAD_PDF, Loading } = TEXTS;
     return (
       <div>
-        {this.props.role == "ADMIN" && (
+        {this.props.role === "ADMIN" && (
           <Header
             meanCheck={meanCheck}
             handleElementChange={handleElementChange}
@@ -1154,7 +1154,7 @@ class App extends Component {
             width={width}
             height={height}
           />
-          {this.props.role == "ADMIN" && (
+          {this.props.role === "ADMIN" && (
             <div className="mt-3">
               <Button
                 fullWidth={false}
