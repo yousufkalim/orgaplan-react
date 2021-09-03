@@ -3,6 +3,7 @@ import moment from "moment";
 import "./sass/custom.scss";
 import { Modal, Alert } from "react-bootstrap";
 import { TEXTS } from "../../../../assets/languages/french";
+import { useSelector } from "react-redux";
 
 const PopoverModal = ({
   popoverShow,
@@ -37,11 +38,13 @@ const PopoverModal = ({
     End_time,
     VALIDATE,
     MORE_INFO,
-    REFUSE,
+    DELETE,
     COMPANY,
     MEAN,
     Are_you_sure_You_want_to_delete_this,
   } = TEXTS;
+
+  const store = useSelector((state) => state.auth);
 
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");
@@ -334,7 +337,8 @@ const PopoverModal = ({
                   <span>{getStartDate(event.end)}</span> -{" "}
                   {getStartTime(event.end)}
                 </div>
-                {event.status === "PENDING" ? (
+                {event.status === "PENDING" &&
+                store.user._id === event.user._id ? (
                   <>
                     <hr />
                     <div className="popoverfooter">
@@ -346,7 +350,7 @@ const PopoverModal = ({
                           className="btn text-danger btn-light"
                           onClick={handleDeleteDelivery}
                         >
-                          <i class="fas fa-trash"></i> <span>Delete</span>
+                          <i class="fas fa-trash"></i> <span>{DELETE}</span>
                         </button>
                       </div>
                     </div>
