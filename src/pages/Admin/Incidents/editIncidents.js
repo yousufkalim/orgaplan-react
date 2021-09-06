@@ -355,6 +355,7 @@ export default function AddIncidents(props) {
                   { value: "DELAY", label: DELAY },
                   { value: "UNEXPRECTED", label: UNEXPECTED_DELIVERY },
                 ]}
+                error={typeError}
               />
             </Form.Row>
           </Form.Row>

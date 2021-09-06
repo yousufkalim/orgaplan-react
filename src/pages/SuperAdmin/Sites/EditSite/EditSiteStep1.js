@@ -36,7 +36,6 @@ export default function EditSiteStep1(props) {
     TRADES,
     ENTER_TRADES,
     COST_OF_DELIVERY_PENALITIES,
-    UNEXPECTED_DELIVERY,
     VALIDATE,
     DELAY,
     UNEXPECTED_DELIVERY_PENALITIES,
@@ -48,7 +47,7 @@ export default function EditSiteStep1(props) {
   const [zacs, setZacs] = useState([]);
   const [clients, setClients] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [clientName, setClientName] = useState("");
+  // const [clientName, setClientName] = useState("");
   const [update, setUpdate] = useState(false);
 
   const [name, setName] = useState("");
@@ -91,16 +90,17 @@ export default function EditSiteStep1(props) {
     addressError,
     trades,
     tradesError,
+    props,
   ]);
 
-  useEffect(() => {
-    clients.map((client) =>
-      client.adminIds.map(
-        (admin) =>
-          admin._id === adminId && setClientName(client.companyId.name),
-      ),
-    );
-  }, [clients, adminId]);
+  // useEffect(() => {
+  //   clients.map((client) =>
+  //     client.adminIds.map(
+  //       (admin) =>
+  //         admin._id === adminId && setClientName(client.companyId.name),
+  //     ),
+  //   );
+  // }, [clients, adminId]);
 
   async function fetchData() {
     try {
@@ -188,25 +188,25 @@ export default function EditSiteStep1(props) {
   }
 
   const validation = (name, value) => {
-    if (name == "name") {
+    if (name === "name") {
       if (!value) {
         setNameError(Please_enter_site_name);
       } else {
         setNameError("");
       }
-    } else if (name == "adminId") {
+    } else if (name === "adminId") {
       if (!value) {
         setAdminError(Please_enter_site_responsible);
       } else {
         setAdminError("");
       }
-    } else if (name == "addresses") {
+    } else if (name === "addresses") {
       if (!value.length > 0) {
         setAddressError(Please_enter_address);
       } else {
         setAddressError("");
       }
-    } else if (name == "trades") {
+    } else if (name === "trades") {
       if (!value || value.length < 1) {
         setTradeError(Please_enter_atleast_one_trade);
       } else {
@@ -227,7 +227,9 @@ export default function EditSiteStep1(props) {
             companyId: array.companyId,
           });
         }
+        return null;
       });
+      return null;
     });
     const values = {
       name,

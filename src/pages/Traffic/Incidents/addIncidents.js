@@ -45,7 +45,6 @@ export default function AddIncidents(props) {
     NAME_OF_COMPANY,
     DATE_AND_TIME,
     GENERAL,
-    SELECT_TIME,
     TYPE_OF_incident,
     LOCATION,
     TYPE_OF_PLACE,
@@ -253,25 +252,25 @@ export default function AddIncidents(props) {
   };
 
   const validation = (name, value) => {
-    if (name == "name") {
+    if (name === "name") {
       if (!value) {
         setNameError(Please_select_a_incident);
       } else {
         setNameError("");
       }
-    } else if (name == "companyId") {
+    } else if (name === "companyId") {
       if (!value) {
         setCompanyError(Please_select_a_company);
       } else {
         setCompanyError("");
       }
-    } else if (name == "date") {
+    } else if (name === "date") {
       if (!value) {
         setDateError(Please_select_Date);
       } else {
         setDateError("");
       }
-    } else if (name == "type") {
+    } else if (name === "type") {
       if (!value) {
         setTypeError(PLEASE_SELECT_TYPE_OF_incident);
       } else {

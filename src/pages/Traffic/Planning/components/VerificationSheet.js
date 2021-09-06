@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./VerificationSheet.css";
 import { useHistory, useLocation } from "react-router-dom";
-import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import TimePicker from "react-time-picker";
 import FormCheckbox from "../../../../components/FormCheckbox";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
-import validate from "../../../../components/Button";
 import ButtonGroup from "./btnGroup";
 import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.svg";
 import IconButton from "@material-ui/core/IconButton";
@@ -45,16 +43,16 @@ const VarificationSheet = (props) => {
   const admin = useSelector((state) => state.admin);
   // console.log(store, admin);
   const [image, setImage] = useState([]);
-  const [eventdata, setEventData] = useState(location.state.event);
+  const eventdata = location.state.event;
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
 
   const [delayTime, setDelayTime] = useState("");
   const [delayCheckBox, setDelayCheckBox] = useState(false);
-  const [status, setStatus] = useState(eventdata.status);
+  const status = eventdata.status;
   const [checkStatus, setCheckStatus] = useState(status);
   const [comments, setComments] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
   // console.log(eventdata);
   const liftingMeans = () => {
@@ -69,19 +67,19 @@ const VarificationSheet = (props) => {
     });
     return data.join(" , ");
   };
-  const materialData = () => {
-    let array = [];
-    const data = eventdata.materials?.map((name, index) => {
-      array.push(name);
-      return;
-    });
-    setMaterials(array);
-  };
 
   useEffect(() => {
     setDelayTime(moment(eventdata.end).format("hh:mm"));
+    const materialData = () => {
+      let array = [];
+      eventdata.materials?.map((name, index) => {
+        array.push(name);
+        return null;
+      });
+      setMaterials(array);
+    };
     materialData();
-  }, []);
+  }, [eventdata.end, eventdata.materials]);
 
   const onSubmit = async () => {
     // console.log(checkStatus);
@@ -93,7 +91,7 @@ const VarificationSheet = (props) => {
     }
 
     try {
-      setLoading(true);
+      // setLoading(true);
 
       var formdata = new FormData();
       formdata.append("delay", delayCheckBox);
@@ -124,7 +122,7 @@ const VarificationSheet = (props) => {
 
       if (delayCheckBox === true) {
         let locationObj = { deliveryArea: eventdata.deliveryArea._id };
-        var formdata = new FormData();
+        formdata = new FormData();
         formdata.append(
           "name",
           store.user.firstName + " " + store.user.lastName,
@@ -150,11 +148,11 @@ const VarificationSheet = (props) => {
           body: formdata,
         });
       }
-      setLoading(false);
+      // setLoading(false);
 
       history.push("/Plannig");
     } catch (err) {
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -219,7 +217,7 @@ const VarificationSheet = (props) => {
           <div className="value checkBoxTime">
             <TimePicker
               value={delayTime}
-              disabled={checkStatus != "VALIDATED"}
+              disabled={checkStatus !== "VALIDATED"}
               disableClock
               onChange={(e) => {
                 setDelayTime(e);
@@ -231,7 +229,7 @@ const VarificationSheet = (props) => {
               name={delayCheckBox}
               label="DELAY ?"
               checked={delayCheckBox}
-              disabled={checkStatus != "VALIDATED"}
+              disabled={checkStatus !== "VALIDATED"}
               onChange={(e) => {
                 setDelayCheckBox(e.target.checked);
               }}
@@ -249,7 +247,7 @@ const VarificationSheet = (props) => {
             array={materials}
             selected={materialsData}
             setSelected={setMaterialsData}
-            disabled={checkStatus != "VALIDATED"}
+            disabled={checkStatus !== "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -262,7 +260,7 @@ const VarificationSheet = (props) => {
               rows={3}
               value={comments}
               placeholder="Ajouter un commentaire"
-              disabled={checkStatus != "VALIDATED"}
+              disabled={checkStatus !== "VALIDATED"}
               onChange={(e) => {
                 setComments(e.target.value);
               }}
@@ -285,7 +283,7 @@ const VarificationSheet = (props) => {
             onChange={(e) => {
               setImage(e);
             }}
-            disabled={checkStatus != "VALIDATED"}
+            disabled={checkStatus !== "VALIDATED"}
           />
         </div>
         <div className="col-sm-6">
@@ -316,7 +314,7 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
+                  disabled={status !== "VALIDATED"}
                   defaultChecked={checkStatus === "COMPLETED"}
                 />
                 <Form.Check
@@ -327,7 +325,7 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
+                  disabled={status !== "VALIDATED"}
                   defaultChecked={checkStatus === "COMPLETEDWITHISSUE"}
                 />
 
@@ -339,7 +337,7 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
+                  disabled={status !== "VALIDATED"}
                   defaultChecked={checkStatus === "VALIDATED"}
                 />
               </>
@@ -351,9 +349,9 @@ const VarificationSheet = (props) => {
         variant="warning"
         className="validate_Btn"
         disabled={
-          status != "VALIDATED" ||
+          status !== "VALIDATED" ||
           checkStatus === "VALIDATED" ||
-          (delayCheckBox == true && delayTime == "00:00")
+          (delayCheckBox === true && delayTime === "00:00")
         }
         onClick={onSubmit}
       >

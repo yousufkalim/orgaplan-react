@@ -323,6 +323,7 @@ class App extends Component {
         } else if (shape.type === "STORAGEAREA") {
           countSA++;
         }
+        return null;
       });
       if (countDA > 0 && countSA > 0) {
         this.setState({

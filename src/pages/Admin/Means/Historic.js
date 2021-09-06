@@ -35,10 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Historic = (props) => {
-  const {DELIVERIES,DELIVERY_REQUESTS,PLANNING,MEANS,STATUS,TYPE_OF_PLACE,PLACE
-  
-  ,LIST_OF_MEANS,HISTORIC,COMPANY,MEAN
-  }=TEXTS;
+  const { LIST_OF_MEANS, HISTORIC, COMPANY, MEAN } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();

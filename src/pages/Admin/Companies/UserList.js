@@ -65,7 +65,7 @@ export default function UserList(props) {
   const [delBoxopen, setDelBoxopen] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
@@ -139,9 +139,9 @@ export default function UserList(props) {
             body: formdata,
           });
 
-          setLoading(false);
+          // setLoading(false);
         } catch (err) {
-          setLoading(false);
+          // setLoading(false);
           dispatch(
             Actions.notistack.enqueueSnackbar(
               Actions.notistack.snackbar(err.message, "error"),
@@ -151,14 +151,14 @@ export default function UserList(props) {
         setUploadFlag(true);
       });
 
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(File_Uploaded_successfully, "success"),
         ),
       );
     } catch (err) {
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),

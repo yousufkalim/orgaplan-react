@@ -35,12 +35,8 @@ const PopoverModal = ({
     Start_time,
     BOOKING_REASON,
     End_time,
-    VALIDATE,
-    MORE_INFO,
-    REFUSE,
     COMPANY,
     MEAN,
-    Are_you_sure_You_want_to_delete_this,
   } = TEXTS;
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");

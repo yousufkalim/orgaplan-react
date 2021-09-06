@@ -122,38 +122,38 @@ export default function AddContact(props) {
   };
 
   const validation = (name, value) => {
-    if (name == "email") {
+    if (name === "email") {
       const emailValidation = /\S+@\S+\.\S+/;
       if (!value.match(emailValidation)) {
         setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
-    } else if (name == "phone") {
+    } else if (name === "phone") {
       if (value.length < 10 || value.length > 25) {
         setPhoneError(Telephone_must_have_10_to_25_digits);
       } else {
         setPhoneError("");
       }
-    } else if (name == "firstName") {
+    } else if (name === "firstName") {
       if (!value) {
         setFirstNameError(FIRST_NAME_REQUIRED);
       } else {
         setFirstNameError("");
       }
-    } else if (name == "lastName") {
+    } else if (name === "lastName") {
       if (!value) {
         setLastNameError(LAST_NAME_REQUIRED);
       } else {
         setLastNameError("");
       }
-    } else if (name == "company") {
+    } else if (name === "company") {
       if (!value) {
         setCompanyError(Please_enter_company_name);
       } else {
         setCompanyError("");
       }
-    } else if (name == "type") {
+    } else if (name === "type") {
       if (!value) {
         setTypeError(Please_enter_type_of_organigramme);
       } else {

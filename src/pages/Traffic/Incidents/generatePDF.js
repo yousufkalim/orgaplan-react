@@ -5,14 +5,14 @@ import SiteImage from "../../../assets/images/Site.png";
 import GLOBALS from "../../../globals";
 import { TEXTS } from "../../../assets/languages/french";
 
-const generatePDF = (tickets, companyName, sitedata, totalPrice) => {
+const generatePDF = (tickets, CompanyName, sitedata, totalPrice) => {
   var today = moment(new Date()).format("DD/MM/YYYY");
   var newdate = "Date: " + today;
   const { Name_Of_Reinvoice, AMOUNT, TYPE_OF_Re_invoice, STATUS } = TEXTS;
 
-  var companyName = "Company : " + companyName;
+  // var companyName = "Company : " + CompanyName;
   var siteName = "Site : " + sitedata?.name;
-  var totalReinvoices = "" + tickets.length;
+  // var totalReinvoices = "" + tickets.length;
 
   var siteLogo = sitedata.logo
     ? GLOBALS.Constants.BASE_URL + sitedata?.logo

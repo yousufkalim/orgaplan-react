@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import GLOBALS from "../../../../../globals";
-import Actions from "../../../../../redux/actions";
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
@@ -26,7 +25,6 @@ export default function AddSiteStep1(props) {
     Exterior,
   } = TEXTS;
 
-  const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [building, setBuilding] = useState("");
@@ -41,7 +39,7 @@ export default function AddSiteStep1(props) {
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
   const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
-  const [delunavaiableMsg, setDelUnavaiableMsg] = useState([]);
+  const delunavaiableMsg = [];
 
   useEffect(() => {
     if (props.step1Data) {
@@ -58,7 +56,7 @@ export default function AddSiteStep1(props) {
             .set("minutes", props.step1Data.endTime.split(":")[1]),
         );
     }
-  }, []);
+  }, [props.step1Data]);
 
   useEffect(() => {
     if (props.step2Data) {
@@ -231,6 +229,7 @@ export default function AddSiteStep1(props) {
                 }
               }
             }
+            return null;
           });
 
           //////// Checking unavailabilities
