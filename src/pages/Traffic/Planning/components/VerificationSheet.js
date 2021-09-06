@@ -393,7 +393,7 @@ const VarificationSheet = (props) => {
 
         <div className="col-sm-6">
           <br />
-          <div className="label">ADD SIGNATURE:</div>
+          <div className="label">MERCI DE SIGNER*:</div>
         </div>
         <div
           className="col-sm-6"
