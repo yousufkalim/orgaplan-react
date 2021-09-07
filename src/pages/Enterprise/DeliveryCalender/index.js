@@ -25,6 +25,7 @@ import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import "moment/locale/fr";
+import { useHistory } from "react-router-dom";
 
 import FullScreenModal from "../../../components/FullScreenModal";
 import {
@@ -130,6 +131,7 @@ const Calender = (props) => {
     },
   });
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -203,29 +205,35 @@ const Calender = (props) => {
   // states to count
 
   useEffect(() => {
-    if (props.location.companyId != null) {
-      setEnterprise(props.location.companyId);
-    }
-    if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.name);
-      if (props.location.selectedShape.type === "DELIVERYAREA") {
-        getDeliveryAreaSiteBySiteId();
-      } else if (props.location.selectedShape.type === "STORAGEAREA") {
-        getStorageSiteBysiteId();
-      } else if (props.location.selectedShape.type === "BUILDING") {
-        getbuildingBysiteId();
+    if (!props.location.selectedShape) {
+      history.push("/");
+    } else {
+      if (props.location.companyId != null) {
+        setEnterprise(props.location.companyId);
       }
+      if (props.location.selectedShape != null) {
+        setTypeOfPlacevalue(props.location.selectedShape.name);
+        if (props.location.selectedShape.type === "DELIVERYAREA") {
+          getDeliveryAreaSiteBySiteId();
+        } else if (props.location.selectedShape.type === "STORAGEAREA") {
+          getStorageSiteBysiteId();
+        } else if (props.location.selectedShape.type === "BUILDING") {
+          getbuildingBysiteId();
+        }
+      }
+      if (props.location.selectedShape != null) {
+        setPlaceId(props.location.selectedShape._id);
+      }
+      getfilterdata();
+      unavailabilityDates();
+      functionDisableDay();
+      // eslint-disable-next-line
     }
-    if (props.location.selectedShape != null) {
-      setPlaceId(props.location.selectedShape._id);
-    }
-    getfilterdata();
-    unavailabilityDates();
-    functionDisableDay();
-    // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    filterBookingCalendar();
+    if (props.location.selectedShape) {
+      filterBookingCalendar();
+    }
     // eslint-disable-next-line
   }, [
     enterprise,
