@@ -997,10 +997,7 @@ const PicCanvas = (props) => {
             {selectedShape?.name}
           </h4>
           <SubHeading primary={`Type : ${selectedShape.type}`} />
-          <div
-            className={classes.infoDrawerContainer}
-            style={{ width: "100%" }}
-          >
+          <div style={{ width: "100%" }}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
                 text={SHOW_EXTERIOR}
