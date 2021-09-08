@@ -36,6 +36,7 @@ const VarificationSheet = (props) => {
     NOT_COMPLETED,
     CREATE_AN_INCIDENT,
     PENDING,
+    MODIFIED_BY_ADMIN,
   } = TEXTS;
 
   const history = useHistory();
@@ -171,7 +172,33 @@ const VarificationSheet = (props) => {
           <IconButton onClick={() => history.goBack()}>
             <BackArrow style={{ width: 30, height: 30 }} />
           </IconButton>
-          <h1 className="heading">{VERIFICATION_SHEET}</h1>
+          <div style={{ display: "flex" }}>
+            <h1
+              style={{
+                marginTop: "auto",
+                marginBottom: "auto",
+              }}
+              className="heading"
+            >
+              {VERIFICATION_SHEET}
+            </h1>
+            {eventdata.status === "MODIFIED" && (
+              <div
+                style={{
+                  backgroundColor: "orange",
+                  color: "white",
+                  fontWeight: "bold",
+                  float: "left",
+                  fontSize: 12,
+                  padding: 10,
+                  borderRadius: 10,
+                  marginLeft: 20,
+                }}
+              >
+                {MODIFIED_BY_ADMIN}
+              </div>
+            )}
+          </div>
           <Button
             variant="danger"
             className="incedentBtn"
@@ -316,7 +343,7 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
+                  disabled={status != "VALIDATED" && status != "MODIFIED"}
                   defaultChecked={checkStatus === "COMPLETED"}
                 />
                 <Form.Check
@@ -327,7 +354,7 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
+                  disabled={status != "VALIDATED" && status != "MODIFIED"}
                   defaultChecked={checkStatus === "COMPLETEDWITHISSUE"}
                 />
 
@@ -339,8 +366,10 @@ const VarificationSheet = (props) => {
                   onChange={(e) => {
                     setCheckStatus(e.target.value);
                   }}
-                  disabled={status != "VALIDATED"}
-                  defaultChecked={checkStatus === "VALIDATED"}
+                  disabled={status != "VALIDATED" && status != "MODIFIED"}
+                  defaultChecked={
+                    checkStatus === "VALIDATED" || checkStatus === "MODIFIED"
+                  }
                 />
               </>
             )}
@@ -351,8 +380,9 @@ const VarificationSheet = (props) => {
         variant="warning"
         className="validate_Btn"
         disabled={
-          status != "VALIDATED" ||
+          (status != "VALIDATED" && status != "MODIFIED") ||
           checkStatus === "VALIDATED" ||
+          checkStatus === "MODIFIED" ||
           (delayCheckBox == true && delayTime == "00:00")
         }
         onClick={onSubmit}
