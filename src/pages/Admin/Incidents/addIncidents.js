@@ -100,6 +100,7 @@ export default function AddIncidents(props) {
   const [companyError, setCompanyError] = useState("");
   const [dateError, setDateError] = useState("");
   const [typeError, setTypeError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -219,35 +220,45 @@ export default function AddIncidents(props) {
     setTime(e?._d);
   };
   const submitHandler = async (e) => {
-    e.preventDefault();
-    var formdata = new FormData();
-    if (image[0]?.file) formdata.append("photos", image[0].file);
+    try {
+      e.preventDefault();
+      setLoading(true);
+      var formdata = new FormData();
+      if (image[0]?.file) formdata.append("photos", image[0].file);
 
-    formdata.append("name", name);
-    formdata.append("date", date);
-    formdata.append("time", time);
-    formdata.append("type", type);
-    formdata.append("description", description);
-    formdata.append("isBillable", isBillable);
-    formdata.append("price", price);
-    formdata.append("isPaid", isPaid);
-    formdata.append("location", JSON.stringify(location));
-    formdata.append("comment", comment);
-    formdata.append("companyId", companyId);
-    formdata.append("siteId", adminStore.site.siteId._id);
-    // for (let [key, value] of formdata) {
-    //   console.log(`formdata in add user ${key}: ${value}`);
-    // }
-    await GLOBALS.API({
-      method: "POST",
-      uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
-      headers: {
-        Authorization: store.token,
-      },
-      body: formdata,
-    });
+      formdata.append("name", name);
+      formdata.append("date", date);
+      formdata.append("time", time);
+      formdata.append("type", type);
+      formdata.append("description", description);
+      formdata.append("isBillable", isBillable);
+      formdata.append("price", price);
+      formdata.append("isPaid", isPaid);
+      formdata.append("location", JSON.stringify(location));
+      formdata.append("comment", comment);
+      formdata.append("companyId", companyId);
+      formdata.append("siteId", adminStore.site.siteId._id);
+      // for (let [key, value] of formdata) {
+      //   console.log(`formdata in add user ${key}: ${value}`);
+      // }
+      await GLOBALS.API({
+        method: "POST",
+        uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
+        headers: {
+          Authorization: store.token,
+        },
+        body: formdata,
+      });
 
-    props.history.push("/incidents");
+      props.history.push("/incidents");
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
   };
 
   const validation = (name, value) => {
@@ -431,7 +442,7 @@ export default function AddIncidents(props) {
                   if (e.target.value === "false") {
                     setPrice("0");
                     setIsBillable(false);
-                    setIsPaid("");
+                    setIsPaid(false);
                   } else if (e.target.value === "true") {
                     setIsBillable(true);
                   }
@@ -500,13 +511,15 @@ export default function AddIncidents(props) {
               type="submit"
               minWidth={200}
               text={VALIDATE}
+              loading={loading}
               fullWidth={false}
               disabled={
                 !name ||
                 !date ||
                 !dropdownCompanies ||
                 (isBillable === "true" && !price) ||
-                !type
+                !type ||
+                loading
               }
             />
           </Form.ButtonContainer>
