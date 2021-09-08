@@ -27,6 +27,7 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import { date } from "yup";
+import Loader from "../../../components/Loader";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -563,7 +564,7 @@ const Incidents = (props) => {
             />
           </Form.Row>
         </Form.Row>
-        {!loading && (
+        {!loading ? (
           <div className={classes.content}>
             <Table
               headers={GLOBALS.Data.incidents.headings}
@@ -575,6 +576,10 @@ const Incidents = (props) => {
                 });
               }}
             />
+          </div>
+        ) : (
+          <div style={{ margin: 200 }}>
+            <Loader.Progress />
           </div>
         )}
       </div>
