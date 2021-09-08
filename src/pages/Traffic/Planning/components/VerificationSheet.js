@@ -109,6 +109,8 @@ const VarificationSheet = (props) => {
   };
 
   useEffect(() => {
+    store.user.sign &&
+      setImageURL(GLOBALS.Constants.BASE_URL + store.user.sign);
     setDelayTime(moment(eventdata.end).format("hh:mm"));
     materialData();
   }, []);
@@ -331,7 +333,7 @@ const VarificationSheet = (props) => {
 
             <FormCheckbox
               name={delayCheckBox}
-              label="DELAY ?"
+              label="RETARD ?"
               checked={delayCheckBox}
               disabled={checkStatus != "VALIDATED"}
               onChange={(e) => {
@@ -498,6 +500,13 @@ const VarificationSheet = (props) => {
           </div>
         </div>
       </div>
+      {console.log(
+        imageURL,
+        !imageURL,
+        status != "VALIDATED",
+        checkStatus === "VALIDATED",
+        delayCheckBox == true && delayTime == "00:00",
+      )}
       <Button
         variant="warning"
         className="validate_Btn"

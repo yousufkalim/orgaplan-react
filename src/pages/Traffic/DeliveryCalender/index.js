@@ -1067,12 +1067,11 @@ const Calender = (props) => {
       };
     }
   };
-  // console.log(userId);
   const filterBookingCalendar = async () => {
-    let count = 0;
     let alerts = 0;
     let completeDeliveryCount = 0;
     let tempEvent;
+    let filteredDeliveries;
     try {
       const response = await GLOBALS.API({
         method: "POST",
@@ -1082,7 +1081,7 @@ const Calender = (props) => {
           siteId: adminStore.site.siteId._id,
           companyId: enterprise,
           typeOfPlaning: typeOfPlaning,
-          status: status,
+          status: "ALERT",
           typeOfPlace: typeOfPlacevalue,
           placeId: placeId,
         }),
@@ -1173,22 +1172,30 @@ const Calender = (props) => {
         tempEvent = tempEvent.filter((event) => {
           return event.deliveryArea._id == props.location.selectedShape._id;
         });
-        count = tempEvent.length;
+
         setEvents(tempEvent);
       }
 
       // checking response and setting count values
       if (response.success) {
-        tempEvent.map((event) => {
+        filteredDeliveries = response.data.Deliveries.filter((e) => {
+          let current = moment(new Date()).format("L");
+          let delDate = moment(e.date).format("L");
+          return e && moment(current).isSame(delDate);
+        });
+        response.data.Deliveries.map((event) => {
           if (event.status == "COMPLETED") {
-            completeDeliveryCount++;
-          }
-          if (event.alert) {
-            alert++;
+            let current = moment(new Date()).format("L");
+            let delDate = moment(event.date).format("L");
+            if (moment(current).isSame(delDate)) completeDeliveryCount++;
           }
         });
+        response.data?.Deliveries.map((item) => {
+          item.alert && alerts++;
+        });
+        console.log(response.data.Deliveries);
 
-        setDeliveryCount(count);
+        setDeliveryCount(filteredDeliveries.length);
         setTotalCompDeliveries(completeDeliveryCount);
         setAlertCount(alerts);
       }

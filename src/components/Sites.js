@@ -189,10 +189,15 @@ function ProfileCard({ user, company, onClick, onPasswordChange, onLogout }) {
         <SmallText bold primary="TELEPHONE :" noMargin />
         <SmallText primary={generatePhone(user.phone)} />
       </Form.Column>
-      <Form.Column>
-        <SmallText bold primary="ENTREPRISE :" noMargin />
-        <SmallText primary={company?.name} />
-      </Form.Column>
+      {user.adminType != "NOADMIN" ? (
+        <Form.Column>
+          <SmallText bold primary="ENTREPRISE :" noMargin />
+          <SmallText primary={company?.name} />
+        </Form.Column>
+      ) : (
+        <></>
+      )}
+
       <Form.Row></Form.Row>
       <Form.Row justifyContent="center">
         <OutlinedCapsuledButton
