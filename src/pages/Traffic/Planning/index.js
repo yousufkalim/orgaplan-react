@@ -195,9 +195,10 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
-  const deliveryCount = 0;
-  const totalCompDeliveries = 0;
-  const alertCount = 0;
+  const [deliveryCount, setDeliveryCount] = useState(0);
+  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
+  
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);

@@ -37,6 +37,7 @@ export default function AddUser(props) {
     Add_USER,
     CONTACT_INFO,
     SITE,
+    COMPANY,
     Telephone_must_have_10_to_25_digits,
   } = TEXTS;
   const classes = useStyles();
