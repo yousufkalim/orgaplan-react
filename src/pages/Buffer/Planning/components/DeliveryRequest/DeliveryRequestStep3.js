@@ -22,7 +22,6 @@ export default function DeliveryRequestStep3(props) {
     MATERIALS_DELIVERED,
     COMMENTS,
     VALIDATE,
-    MEANS,
     Receive_Summary_by_email,
   } = TEXTS;
   const dispatch = useDispatch();

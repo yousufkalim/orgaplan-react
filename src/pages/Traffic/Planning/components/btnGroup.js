@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 
 const Options = (props) => {
@@ -12,8 +12,9 @@ const Options = (props) => {
           [item]: true,
         };
       });
+      return null;
     });
-  }, [props.array]);
+  }, [props.array, setSelected]);
 
   const toggleOption = (e) => {
     if (props.disabled === false) {

@@ -22,7 +22,6 @@ export default function DeliveryRequestStep3(props) {
     MATERIALS_DELIVERED,
     COMMENTS,
     VALIDATE,
-    MEANS,
     Receive_Summary_by_email,
   } = TEXTS;
   const dispatch = useDispatch();
@@ -119,7 +118,7 @@ export default function DeliveryRequestStep3(props) {
                 .format("H");
 
               const mean = response.data.meanList.find(
-                (mean) => mean._id == m.value,
+                (mean) => mean._id === m.value,
               );
               // create invoive
               var formdata1 = new FormData();
@@ -172,7 +171,7 @@ export default function DeliveryRequestStep3(props) {
                 .format("H");
 
               const mean = response.data.meanList.find(
-                (mean) => mean._id == m.value,
+                (mean) => mean._id === m.value,
               );
 
               // create invoive

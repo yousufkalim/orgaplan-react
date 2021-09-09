@@ -18,8 +18,6 @@ import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
-import uploadIcon from "../../../assets/images/upload.png";
-import { isNull } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {

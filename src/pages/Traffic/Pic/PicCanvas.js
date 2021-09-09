@@ -7,7 +7,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import { TEXTS } from "../../../assets/languages/french";
 
-import DialogContentText from "@material-ui/core/DialogContentText";
 import _ from "lodash";
 import moment from "moment";
 import Mean from "./Mean";
@@ -15,20 +14,14 @@ import Mean from "./Mean";
 import GLOBALS from "../../../globals";
 // import StorageArea from "./StorageArea";
 // import DeliveryArea from "./DeliveryArea";
-import Form from "../../../components/Form";
 import Actions from "../../../redux/actions";
 import Canvas from "../../../components/Canvas";
 import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
-import deliverIcon from "../../../assets/icons/delivery.png";
-import alertIcon from "../../../assets/icons/alerticon.png";
-import alertIcon1 from "../../../assets/icons/alerticon1.png";
 
 import FullScreenModal from "../../../components/FullScreenModal";
-import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
-import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 
 import imggg from "./testpdf.pdf";
@@ -107,12 +100,9 @@ const PicCanvas = (props) => {
     ADD,
     EDIT,
     DELIVERYAREA,
-    STORAGEAREA,
     BUILDING,
     MEANS,
-    REQUEST_SENT_SUCCESSFULLY,
     update_shape_error,
-    Are_you_sure_You_want_to_delete_this,
     DELIVERIES,
     COMPLETED,
     ALERTS,
@@ -122,7 +112,6 @@ const PicCanvas = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-  const [userId, setUserId] = useState(store.user._id);
   const SITE_ID = adminStore.site.siteId._id;
 
   const [sitePic, setSitePic] = useState("");
@@ -167,7 +156,7 @@ const PicCanvas = (props) => {
     // eslint-disable-next-line
   }, []);
   const findlevelName = (value) => {
-    let name = levelsDropdown.find((a) => a.value == value);
+    let name = levelsDropdown.find((a) => a.value === value);
     if (name) {
       setLevelName(name.label);
     }
@@ -179,7 +168,7 @@ const PicCanvas = (props) => {
         let isExist = sp?.storageArea?.availability?.end;
         if (isExist) {
           let check = moment(isExist).isBefore(new Date(), "day");
-          if (check == false) {
+          if (check === false) {
             array.push(sp);
           }
         }
@@ -187,7 +176,7 @@ const PicCanvas = (props) => {
         let isExist = sp?.mean?.availability?.end;
         if (isExist) {
           let check = moment(isExist).isBefore(new Date(), "day");
-          if (check == false) {
+          if (check === false) {
             array.push(sp);
           }
         }
@@ -195,13 +184,14 @@ const PicCanvas = (props) => {
         let isExist = sp?.deliveryArea?.availability?.end;
         if (isExist) {
           let check = moment(isExist).isBefore(new Date(), "day");
-          if (check == false) {
+          if (check === false) {
             array.push(sp);
           }
         }
       } else if (sp.building && Object.keys(sp.building).length > 0) {
         array.push(sp);
       }
+      return null;
     });
     return array;
   };
@@ -317,7 +307,7 @@ const PicCanvas = (props) => {
   // for delviry count
   const filterBookingCalendar = async () => {
     const companyResponse = await GLOBALS.API({
-      uri: `${GLOBALS.Constants.GET_COMPANY_USER}/${adminStore.site.siteId._id}/${userId}`,
+      uri: `${GLOBALS.Constants.GET_COMPANY_USER}/${adminStore.site.siteId._id}/${store.user._id}`,
       token: store.token,
     });
     setCompany(companyResponse?.data?.company);
@@ -347,6 +337,7 @@ const PicCanvas = (props) => {
         });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
+          return null;
         });
         response.data?.Deliveries.map((item) => {
           if (item?.status === "COMPLETED") {
@@ -354,6 +345,7 @@ const PicCanvas = (props) => {
             let delDate = moment(item.date).format("L");
             if (moment(current).isSame(delDate)) completeDeliveryCount++;
           }
+          return null;
         });
         setDeliveryCount(filteredDeliveries.length);
         setTotalCompDeliveries(completeDeliveryCount);
@@ -392,39 +384,10 @@ const PicCanvas = (props) => {
         ) {
           setRequestFound(true);
         }
+        return null;
       });
       setStorageArea("");
       setOpenStorageModal(true);
-    }
-  };
-
-  const onStorageClick = async () => {
-    try {
-      await GLOBALS.API({
-        uri: GLOBALS.Constants.GET_SITE_STORAGE_AREA,
-        token: store.token,
-        method: "POST",
-        body: JSON.stringify({
-          siteId: adminStore.site.siteId._id,
-          userId,
-          companyId: company._id,
-          storageAreaId: storageAreaData.storageArea._id,
-        }),
-      });
-      setOpenStorageModal(false);
-      dispatch(
-        Actions.notistack.enqueueSnackbar({
-          visible: true,
-          messageType: "success",
-          message: REQUEST_SENT_SUCCESSFULLY,
-        }),
-      );
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
     }
   };
 
@@ -473,6 +436,7 @@ const PicCanvas = (props) => {
 
   const handleChange = (shapesArray) => {
     let getShape = shapesArray[shapesArray.length - 1];
+    var removeIndex;
     if (
       selectedShape &&
       getShape.type !== "MEAN" &&
@@ -481,7 +445,7 @@ const PicCanvas = (props) => {
     ) {
       let newShape = selectedShape;
 
-      var removeIndex = shapesArray
+      removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
@@ -505,7 +469,7 @@ const PicCanvas = (props) => {
       level
     ) {
       let newShape = selectedShape;
-      var removeIndex = shapesArray
+      removeIndex = shapesArray
         ?.map(function (item) {
           return item._id;
         })
@@ -566,11 +530,11 @@ const PicCanvas = (props) => {
   };
 
   const handleClick = (id, shape) => {
-    if (shape.type == "STORAGEAREA") {
+    if (shape.type === "STORAGEAREA") {
       checkStorageArea(shape);
-    } else if (shape.type == "DELIVERYAREA") {
+    } else if (shape.type === "DELIVERYAREA") {
       setOpenDeliveryModal(true);
-    } else if (shape.type == "MEAN") {
+    } else if (shape.type === "MEAN") {
       setOpenMeanModal(true);
     }
     setSelectedShape(shape);
@@ -626,60 +590,7 @@ const PicCanvas = (props) => {
     }
   };
   // InfoDrawer
-  const onDeleteShape = async () => {
-    try {
-      if (window.confirm(Are_you_sure_You_want_to_delete_this)) {
-        if (level) {
-          let response = await GLOBALS.API({
-            method: "DELETE",
-            uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE}/${levelPic._id}/${selectedShape._id}`,
-            token: store.token,
-          });
-          setlevelPic(response.data);
 
-          let shapes = response.data.shapes;
-          let newShapes = expiredShapes(shapes);
-
-          if (newShapes) {
-            newShapes.map((st) => handleColorAndNameOfShape(st));
-
-            setShapes(newShapes);
-          } else {
-            shapes.map((st) => handleColorAndNameOfShape(st));
-            setShapes(shapes);
-          }
-          setSelectedShape("");
-          setLoading(false);
-        } else {
-          let response = await GLOBALS.API({
-            method: "DELETE",
-            uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${selectedShape._id}`,
-            token: store.token,
-          });
-          setSitePic(response.data);
-          let shapes = response.data.shapes;
-          let newShapes = expiredShapes(shapes);
-
-          if (newShapes) {
-            newShapes.map((st) => handleColorAndNameOfShape(st));
-
-            setShapes(newShapes);
-          } else {
-            shapes.map((st) => handleColorAndNameOfShape(st));
-            setShapes(shapes);
-          }
-          setSelectedShape("");
-          setLoading(false);
-        }
-      }
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
-    }
-  };
   const BuildingComponent = () => {
     return (
       <>

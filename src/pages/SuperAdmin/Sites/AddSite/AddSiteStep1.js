@@ -43,9 +43,9 @@ export default function AddSiteStep1(props) {
 
   const [loading, setLoading] = useState(false);
   const [zacs, setZacs] = useState([]);
-  const [clients, setClients] = useState([]);
+  // const [clients, setClients] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [clientName, setClientName] = useState("");
+  // const [clientName, setClientName] = useState("");
   const [update, setUpdate] = useState(false);
 
   const [name, setName] = useState("");
@@ -73,18 +73,19 @@ export default function AddSiteStep1(props) {
     if (props.step1Data) {
       Object.keys(props.step1Data).map((key) => {
         handleChange(key, props.step1Data[key]);
+        return null;
       });
     }
   };
-  useEffect(() => {
-    clients.map((client) =>
-      client.adminIds.map((admin) =>
-        adminId !== ""
-          ? admin._id === adminId && setClientName(client.companyId.name)
-          : setClientName(""),
-      ),
-    );
-  }, [clients, adminId]);
+  // useEffect(() => {
+  //   clients.map((client) =>
+  //     client.adminIds.map((admin) =>
+  //       adminId !== ""
+  //         ? admin._id === adminId && setClientName(client.companyId.name)
+  //         : setClientName(""),
+  //     ),
+  //   );
+  // }, [clients, adminId]);
 
   async function fetchData() {
     try {
@@ -117,7 +118,7 @@ export default function AddSiteStep1(props) {
 
       setZacs(zacsArray);
       setAdmins(adminsArray);
-      setClients(clientsResult.data.items);
+      // setClients(clientsResult.data.items);
       // setAdminId(adminsArray.length > 0 ? adminsArray[0].value : "");
       setLoading(false);
     } catch (err) {
@@ -154,25 +155,25 @@ export default function AddSiteStep1(props) {
   // Form Validation
 
   const validation = (name, value) => {
-    if (name == "name") {
+    if (name === "name") {
       if (!value) {
         setNameError(Please_enter_site_name);
       } else {
         setNameError("");
       }
-    } else if (name == "adminId") {
+    } else if (name === "adminId") {
       if (!value) {
         setAdminError(Please_enter_site_responsible);
       } else {
         setAdminError("");
       }
-    } else if (name == "addresses") {
+    } else if (name === "addresses") {
       if (!value.length > 0) {
         setAddressError(Please_enter_address);
       } else {
         setAddressError("");
       }
-    } else if (name == "trades") {
+    } else if (name === "trades") {
       if (!value || value.length < 1) {
         setTradeError(Please_enter_atleast_one_trade);
       } else {
@@ -193,7 +194,9 @@ export default function AddSiteStep1(props) {
             companyId: array.companyId,
           });
         }
+        return null;
       });
+      return null;
     });
     const values = {
       name,

@@ -92,7 +92,7 @@ const Privacy = () => {
             <strong>Website</strong> refers to Orgaplan, accessible from{" "}
             <a
               href="https://www.orgaplan.fr"
-              rel="external nofollow noopener"
+              rel="external nofollow noopener noreferrer"
               target="_blank"
             >
               https://www.orgaplan.fr
@@ -184,7 +184,7 @@ const Privacy = () => {
           disabling, or deleting local shared objects?&quot; available at{" "}
           <a
             href="https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_"
-            rel="external nofollow noopener"
+            rel="external nofollow noopener noreferrer"
             target="_blank"
           >
             https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_
@@ -205,7 +205,11 @@ const Privacy = () => {
         Persistent Cookies remain on Your personal computer or mobile device
         when You go offline, while Session Cookies are deleted as soon as You
         close Your web browser. You can learn more about cookies here:{" "}
-        <a href="https://www.termsfeed.com/blog/cookies/" target="_blank">
+        <a
+          href="https://www.termsfeed.com/blog/cookies/"
+          rel="noreferrer"
+          target="_blank"
+        >
           All About Cookies by TermsFeed
         </a>
         .

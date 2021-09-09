@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import moment from "moment";
 import { TEXTS } from "../../assets/languages/french";
 
 import Heading from "../../components/Heading";
@@ -9,7 +8,7 @@ import Pagination from "../../components/Pagination";
 import GLOBALS from "../../globals";
 import Table from "../../components/Table";
 import Actions from "../../redux/actions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,25 +34,24 @@ export default function Logs(props) {
 
   useEffect(() => {
     setLoading(true);
-    fetchData();
-  }, [page]);
-
-  async function fetchData() {
-    try {
-      const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.LOGS}/?page=${page}`,
-      });
-      setItems(result.data.items);
-      setData(result.data);
-      setLoading(false);
-    } catch (err) {
-      dispatch(
-        Actions.notistack.enqueueSnackbar(
-          Actions.notistack.snackbar(err.message, "error"),
-        ),
-      );
+    async function fetchData() {
+      try {
+        const result = await GLOBALS.API({
+          uri: `${GLOBALS.Constants.LOGS}/?page=${page}`,
+        });
+        setItems(result.data.items);
+        setData(result.data);
+        setLoading(false);
+      } catch (err) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(err.message, "error"),
+          ),
+        );
+      }
     }
-  }
+    fetchData();
+  }, [page, dispatch]);
 
   const rows = items.map((item) => [item.date, item.description]);
   return (

@@ -51,15 +51,15 @@ export default function SiteRoutes() {
           <Route exact path="/add-site" component={AddSite} />
           <Redirect from="*" to="/" />
         </Switch>
-      ) : store.site.role == "ADMIN" ? (
+      ) : store.site.role === "ADMIN" ? (
         <SiteHeader>
           <AdminIndex />
         </SiteHeader>
-      ) : store.site.role == "ENTERPRISE" ? (
+      ) : store.site.role === "ENTERPRISE" ? (
         <SiteHeader>
           <EnterpriseIndex />
         </SiteHeader>
-      ) : store.site.role == "TRAFFIC" ? (
+      ) : store.site.role === "TRAFFIC" ? (
         <SiteHeader>
           <TrafficIndex />
         </SiteHeader>

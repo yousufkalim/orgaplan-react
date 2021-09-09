@@ -91,6 +91,7 @@ export default function CustomInputModal(props) {
       };
       valuesAr.push(val);
       props.onChange(valuesAr);
+      return null;
     });
 
     setUpdate((st) => !st);

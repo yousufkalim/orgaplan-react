@@ -36,7 +36,6 @@ export default function AddUser(props) {
     FIRST_NAME,
     Add_USER,
     CONTACT_INFO,
-    COMPANY,
     SITE,
   } = TEXTS;
   const classes = useStyles();

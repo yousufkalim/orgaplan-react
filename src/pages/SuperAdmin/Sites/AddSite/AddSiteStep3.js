@@ -13,7 +13,6 @@ import Table from "../../../../components/Table";
 import Button from "../../../../components/Button";
 import FormLabel from "../../../../components/FormLabel";
 import FormInput from "../../../../components/FormInput";
-import FormSelect from "../../../../components/FormSelect";
 import SmallButton from "../../../../components/SmallButton";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,29 +25,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
 }));
-
-const levelNumberList = [
-  { value: -10, label: -10 },
-  { value: -9, label: -9 },
-  { value: -8, label: -8 },
-  { value: -7, label: -7 },
-  { value: -6, label: -6 },
-  { value: -5, label: -5 },
-  { value: -4, label: -4 },
-  { value: -3, label: -3 },
-  { value: -2, label: -2 },
-  { value: -1, label: -1 },
-  { value: 1, label: 1 },
-  { value: 2, label: 2 },
-  { value: 3, label: 3 },
-  { value: 4, label: 4 },
-  { value: 5, label: 5 },
-  { value: 6, label: 6 },
-  { value: 7, label: 7 },
-  { value: 8, label: 8 },
-  { value: 9, label: 9 },
-  { value: 10, label: 10 },
-];
 
 export default function AddSiteStep3(props) {
   const {
