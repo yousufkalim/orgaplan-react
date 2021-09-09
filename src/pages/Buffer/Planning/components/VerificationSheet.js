@@ -4,9 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import TimePicker from "react-time-picker";
-import FormCheckbox from "../../../../components/FormCheckbox";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
-import validate from "../../../../components/Button";
 import ButtonGroup from "./btnGroup";
 import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.svg";
 import IconButton from "@material-ui/core/IconButton";
@@ -45,10 +43,9 @@ const VarificationSheet = (props) => {
       ? location?.state?.event?.bufferArea
       : "false",
   );
-  const [eventdata, setEventData] = useState(location.state.event);
+  const eventdata = location.state.event;
   const [materials, setMaterials] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
-  const [delayTime, setDelayTime] = useState("00:00");
   const [arrivalTime, setArrivalTime] = useState(
     eventdata.arrivalTime ? moment(eventdata.arrivalTime).format("HH:mm") : "",
   );
@@ -60,13 +57,11 @@ const VarificationSheet = (props) => {
   const [flatRegistration, setFlatRegistration] = useState(
     eventdata.flatRegistration,
   );
-  const [delayCheckBox, setDelayCheckBox] = useState(false);
-  const [status, setStatus] = useState(eventdata.status);
-  const [checkStatus, setCheckStatus] = useState();
+  const status = eventdata.status;
   const [comments, setComments] = useState(
     eventdata?.comment ? eventdata.comment : "",
   );
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   var obj = [{ uri: "uploads/mean/grey.png" }];
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
@@ -82,10 +77,6 @@ const VarificationSheet = (props) => {
   };
   const materialData = () => {
     let array = [];
-    const data = eventdata.materials?.map((name, index) => {
-      array.push(name);
-      return;
-    });
     setMaterials(array);
   };
   useEffect(() => {
@@ -109,7 +100,7 @@ const VarificationSheet = (props) => {
       }
     }
     try {
-      setLoading(true);
+      // setLoading(true);
       var formdata = new FormData();
       formdata.append("bufferArea", bufferArea);
       formdata.append("arrivalTime", arrivelIs);
@@ -150,10 +141,10 @@ const VarificationSheet = (props) => {
       //     body: formdata,
       //   });
       // }
-      setLoading(false);
+      // setLoading(false);
       history.push("/Planing");
     } catch (err) {
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -299,7 +290,7 @@ const VarificationSheet = (props) => {
             disabled={true}
           />
         </div>
-        {status != "PENDING" && (
+        {status !== "PENDING" && (
           <>
             <div className="col-sm-6">
               <br />
@@ -316,7 +307,7 @@ const VarificationSheet = (props) => {
                     className="green"
                     style={{ marginRight: "5px" }}
                     value={true}
-                    defaultChecked={location?.state?.event?.bufferArea == true}
+                    defaultChecked={location?.state?.event?.bufferArea === true}
                     onChange={(e) => {
                       setBufferArea(e.target.value);
                     }}
@@ -325,7 +316,9 @@ const VarificationSheet = (props) => {
                     type="radio"
                     label={NO}
                     name="bufferArea"
-                    defaultChecked={location?.state?.event?.bufferArea == false}
+                    defaultChecked={
+                      location?.state?.event?.bufferArea === false
+                    }
                     value={false}
                     onChange={(e) => {
                       setBufferArea(e.target.value);

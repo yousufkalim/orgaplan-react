@@ -3,8 +3,7 @@ const randomColor = () =>
 
 const email = (value) => {
   // eslint-disable-next-line
-  var regex =
-    /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/g;
+  var regex = /^([a-zA-Z0-9_\.])+\@(([a-zA-Z0-9])+\.)+([a-zA-Z0-9]{2,4})+$/g;
   return !regex.test(value);
 };
 

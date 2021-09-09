@@ -32,8 +32,6 @@ export default function MultiAdderInputModal(props) {
     props;
   const {
     SEE_UNAVAILABILITIES,
-    YES,
-    NO,
     REASON,
     Day_Off,
     This_time_is_not_available,

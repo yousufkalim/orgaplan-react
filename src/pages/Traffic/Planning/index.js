@@ -90,12 +90,10 @@ const Calender = (props) => {
     VALIDATE,
     CLOSE,
     DELAY,
-    MEANS,
     ALERTS,
     BOOKING_REASON,
     Status_Color,
     PENDING_VALIDATION,
-    STATUS,
     BOOKING_DATE,
     INCIDENT,
     MEAN,
@@ -140,7 +138,6 @@ const Calender = (props) => {
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
-  const [userId, setUserId] = useState(store.user._id);
 
   // *****
   const [isLoading, setLoading] = useState(true);
@@ -180,16 +177,10 @@ const Calender = (props) => {
   const [typeOfPlace, setTypeOfPlace] = useState([]);
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
-  const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
-  const [status, setStatus] = useState("");
+  const typeOfPlaning = "Deliveries";
+  const status = "";
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
-  const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: "PENDING" },
-    { value: "VALIDATED", label: "VALIDATED" },
-    { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERT", label: "ALERT" },
-  ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = useState("Enable");
@@ -204,9 +195,9 @@ const Calender = (props) => {
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
-  const [deliveryCount, setDeliveryCount] = useState(0);
-  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
-  const [alertCount, setAlertCount] = useState(0);
+  const deliveryCount = 0;
+  const totalCompDeliveries = 0;
+  const alertCount = 0;
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -989,7 +980,7 @@ const Calender = (props) => {
           siteId: adminStore.site.siteId._id,
           companyId: enterprise,
           typeOfPlaning: typeOfPlaning,
-          status: status,
+          status: "ALERT",
           typeOfPlace: typeOfPlacevalue,
           placeId: placeId,
         }),
@@ -1051,6 +1042,26 @@ const Calender = (props) => {
             };
           });
           setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
+          let alerts = 0;
+          let completeDeliveryCount = 0;
+          let filteredDeliveries = response.data.Deliveries.filter((e) => {
+            let current = moment(new Date()).format("L");
+            let delDate = moment(e.date).format("L");
+            return e && moment(current).isSame(delDate);
+          });
+          response.data?.Deliveries.map((item) => {
+            item.alert && alerts++;
+          });
+          response.data?.Deliveries.map((item) => {
+            if (item?.status === "COMPLETED") {
+              let current = moment(new Date()).format("L");
+              let delDate = moment(item.date).format("L");
+              if (moment(current).isSame(delDate)) completeDeliveryCount++;
+            }
+          });
+          setDeliveryCount(filteredDeliveries.length);
+          setTotalCompDeliveries(completeDeliveryCount);
+          setAlertCount(alerts);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             let background = "";

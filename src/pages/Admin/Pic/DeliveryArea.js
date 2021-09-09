@@ -131,10 +131,6 @@ export default function DeliveryArea(props) {
     }
   }
 
-  const handleFormFilling = () => {
-    setIsmodalFilled(true);
-  };
-
   function handleChange(name, value) {
     if (name === "name") {
       if (!GLOBALS.Functions.empty(value)) {
@@ -174,7 +170,7 @@ export default function DeliveryArea(props) {
         setErrors({ ...errors, name: NAME_REQUIRED });
       } else setErrors({ ...errors, name: "" });
     }
-    if (!handleFormFilling) {
+    if (!ismodalFilled) {
       if (GLOBALS.Functions.empty(value)) {
         setErrors({ ...errors, addresses: ADDRESS_INFO_REQUIRED });
       } else setErrors({ ...errors, addresses: "" });
@@ -347,7 +343,7 @@ export default function DeliveryArea(props) {
             <DeliveryAreaAddressModal
               max={endDate}
               min={startDate}
-              handleFormFilling={handleFormFilling}
+              handleFormFilling={() => setIsmodalFilled(true)}
               error={errors.addresses}
               name="addresses"
               values={addresses}

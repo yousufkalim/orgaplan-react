@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import GLOBALS from "../../../../../globals";
-import Actions from "../../../../../redux/actions";
 import Form from "../../../../../components/Form";
 import Button from "../../../../../components/Button";
 import FormLabel from "../../../../../components/FormLabel";
@@ -25,8 +24,6 @@ export default function AddSiteStep1(props) {
     NONE,
   } = TEXTS;
 
-  const dispatch = useDispatch();
-  const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
   const [building, setBuilding] = useState("");
   const [buildings, setBuildings] = useState([]);
@@ -63,10 +60,12 @@ export default function AddSiteStep1(props) {
             // not matched
           }
         }
+        return null;
       });
       if (flag === 0) {
         return filter;
       }
+      return null;
     });
     setPropsFilterStorageArea(tempArray);
   };
@@ -85,7 +84,7 @@ export default function AddSiteStep1(props) {
             .set("minutes", props.step1Data.endTime.split(":")[1]),
         );
     }
-  }, []);
+  }, [props.step1Data]);
 
   useEffect(() => {
     if (props.step2Data) {
@@ -149,8 +148,11 @@ export default function AddSiteStep1(props) {
               //console.log("mean not matched", mean.label);
               return mean;
             }
+            return null;
           });
+          return null;
         });
+        return null;
       });
       // END checking mean Availabilty in Delivery Request
     }
@@ -178,7 +180,9 @@ export default function AddSiteStep1(props) {
           // return filtered mean
           return dmean;
         }
+        return null;
       });
+      return null;
     });
     // END checking mean Availabilty in Mean Booking
 
@@ -207,10 +211,12 @@ export default function AddSiteStep1(props) {
             // console.log("flag off");
           }
         }
+        return null;
       });
       if (flag === 0) {
         return filter;
       }
+      return null;
     });
     // check mean unavailability  //
     return meanArray;
@@ -300,6 +306,7 @@ export default function AddSiteStep1(props) {
       if (cP === selectedCompanyId) {
         filterStorageAreas.push(val);
       }
+      return null;
     });
   });
 

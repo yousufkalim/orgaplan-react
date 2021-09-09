@@ -123,8 +123,6 @@ const Calender = (props) => {
     ALERT,
     AVAILABLE,
     UNAVAILABLE,
-    DELIVERYAREA,
-    STORAGEAREA,
     BUILDING,
   } = TEXTS;
 

@@ -86,7 +86,7 @@ export default function AddSiteStep2(props) {
     loading || !start || !end
       ? props.setDisabled(true)
       : props.setDisabled(false);
-  }, [loading, start, end]);
+  }, [props, loading, start, end]);
 
   function handleChange(name, value) {
     if (name === "start") {
@@ -229,7 +229,7 @@ export default function AddSiteStep2(props) {
         unavailabilityDates: unavailabilityDates,
       };
 
-      const data = await GLOBALS.API({
+      await GLOBALS.API({
         method: "PUT",
         uri: GLOBALS.Constants.SITES,
         headers: {

@@ -22,7 +22,6 @@ import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import Heading from "../../../components/Heading";
-import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import FullScreenModal from "../../../components/FullScreenModal";
 import alertIcon1 from "../../../assets/icons/alerticon1.png";
@@ -95,13 +94,9 @@ const Calender = (props) => {
     VALIDATE,
     CLOSE,
     DELAY,
-    MEANS,
-    ALERTS,
     BOOKING_REASON,
     Status_Color,
     PENDING_VALIDATION,
-    STATUS,
-    BOOKING_DATE,
     INCIDENT,
     MEAN,
     START_HOUR,
@@ -110,24 +105,16 @@ const Calender = (props) => {
     End_time,
     BOOKING,
     Please_Add_valid_Time_and_Event,
-    PLACE,
     Edit_Delivery_Request,
     Invalid_Time,
     Start_time,
     Edit_Event,
     END_DATE,
     Update_Event,
-    DISABLE_DAY,
-    DISABLE_HOURS,
-    SITE_DATE_OUT_OF_RANGE,
-    Booking_cant_be_in_Previous_day,
     Delivery_Area_Site_By_SiteId_Error,
     TOTAL_MEANS_Booking,
     DELIVERY_DELETED,
-    COMPANY_ConstructBTP,
     UNEXPECTED,
-    DELIVERY_DATE,
-    COMPANY,
     DELIVERYAREA,
     STORAGEAREA,
     BUILDING,
@@ -137,15 +124,10 @@ const Calender = (props) => {
     SELECT_COMPANY,
     LOCATION,
     ALERT,
-
-    PENDING,
-    VALIDATED,
-    MODIFIED,
   } = TEXTS;
 
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
-  const [userId, setUserId] = useState(store.user._id);
   // *****
   const [isLoading, setLoading] = useState(true);
 
@@ -183,26 +165,19 @@ const Calender = (props) => {
   const [typeOfPlace, setTypeOfPlace] = useState([]);
   const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
-  const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
-  const [status, setStatus] = useState("");
+  const typeOfPlaning = "Deliveries";
+  const status = "";
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
-  const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: PENDING },
-    { value: "VALIDATED", label: VALIDATED },
-    { value: "MODIFIED", label: MODIFIED },
-    { value: "ALERT", label: ALERT },
-  ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = useState("Enable");
   const [addDelivery, setAddDelivery] = useState(false);
   const [addVarification, setAddVarification] = useState(false);
   const [disableHours, setDisableHours] = useState([]);
-  const [disableDay, setDisableDay] = useState([]);
-  const [deliverDate, setDeliverDate] = useState("");
-  const [deliverStartHours, setDeliverStartHours] = useState("");
-  const [deliverEndHours, setDeliverEndHours] = useState("");
+  const deliverDate = "";
+  const deliverStartHours = "";
+  const deliverEndHours = "";
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
@@ -440,126 +415,7 @@ const Calender = (props) => {
       }, 1000);
     }
   };
-  const AddDeliveryRequest = ({ start, end }) => {
-    setAddDelivery(false);
-    setDeliverStartHours(start.getHours());
-    setDeliverEndHours(end.getHours());
-    // start.setHours(0);
-    setDeliverDate(start);
-    let flagDate = false;
-    let flagOpeningHoursDay = false;
-    let flagHours = false;
-    let flagOpeningHours = false;
-    let disableDayFlag = false;
-    let pastdayFlag = false;
-    let betweenDay = false;
-    let preDateTime = new Date();
-    let milliseconds = Date.parse(preDateTime);
-    milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds);
-    if (start < preDateTime && start < end) {
-      pastdayFlag = true;
-    }
-    if (
-      !moment(start).isBetween(
-        moment(adminStore.site.siteId.start).set({ hours: 0 }),
-        moment(adminStore.site.siteId.end),
-        null,
-        "()",
-        "days",
-      )
-    ) {
-      betweenDay = true;
-    }
 
-    disableHours.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        flagHours = true;
-      }
-      return {};
-    });
-    disableDay.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        disableDayFlag = true;
-      }
-      return {};
-    });
-
-    let currentDay = moment(start).day();
-    if (currentDay === 0) {
-      // disorder of days of Opening Hours component
-      currentDay = 7;
-    }
-    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
-      if (key.dayOff === true) {
-        if (moment(start).isSame(key.date, "day")) {
-          flagDate = true;
-        }
-      }
-      return {};
-    });
-    openingHours.map((key, index) => {
-      if (key.dayOff === true && currentDay === key.day) {
-        flagOpeningHoursDay = true;
-      }
-      return true;
-    });
-
-    openingHours.map((key, index) => {
-      if (key.dayOff === true && currentDay === key.day) {
-        flagOpeningHours = true;
-      } else if (key.dayOff === false && currentDay === key.day) {
-        if (
-          inRange(start.getHours(), key.startHour, key.endHour) &&
-          inRange(end.getHours(), key.startHour, key.endHour)
-        ) {
-        } else {
-          flagOpeningHours = true;
-        }
-      }
-      return true;
-    });
-    if (
-      flagDate ||
-      flagOpeningHoursDay ||
-      flagOpeningHours ||
-      disableDayFlag ||
-      pastdayFlag ||
-      flagHours ||
-      betweenDay
-    ) {
-      if (flagDate || disableDayFlag || betweenDay) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(DISABLE_DAY, "error"),
-          ),
-        );
-      } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
-          ),
-        );
-      } else if (betweenDay) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
-          ),
-        );
-      } else if (pastdayFlag) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(
-              Booking_cant_be_in_Previous_day,
-              "error",
-            ),
-          ),
-        );
-      }
-    } else {
-      setAddDelivery(true);
-    }
-  };
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -642,8 +498,8 @@ const Calender = (props) => {
     // admin code end
     // setAddVarification(true);
     // console.log("event is", event);
-    if (event.status == "COMPLETED" || event.status == "COMPLETEDWITHISSUE") {
-      return;
+    if (event.status === "COMPLETED" || event.status === "COMPLETEDWITHISSUE") {
+      return null;
     }
     history.push({
       pathname: "/Plannig/varificationSheet",
@@ -931,7 +787,7 @@ const Calender = (props) => {
       }
       return {};
     });
-    setDisableDay(tempDisableDay);
+    // setDisableDay(tempDisableDay);
   };
   const customDayPropGetter = (date) => {
     let flagDate = false;
@@ -1051,7 +907,7 @@ const Calender = (props) => {
                 ? key.flatRegistration
                 : "",
               bufferArea:
-                key?.bufferArea == true || key?.bufferArea == false
+                key?.bufferArea === true || key?.bufferArea === false
                   ? key.bufferArea
                   : "",
               arrivalTime: key?.arrivalTime ? key.arrivalTime : "",
@@ -1096,20 +952,24 @@ const Calender = (props) => {
       let alerts = 0;
       let completeDeliveryCount = 0;
       if (response.success) {
-        // tempEvent = response.data.Deliveries.map((key, index) => {
-        //   // if (key.userId._id === userId) {
-        //   count++;
-        //   // }
-        // });
+        let filteredDeliveries = response.data.Deliveries.filter((e) => {
+          let current = moment(new Date()).format("L");
+          let delDate = moment(e.date).format("L");
+          return e && moment(current).isSame(delDate);
+        });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
+          return null;
         });
         response.data?.Deliveries.map((item) => {
           if (item?.status === "COMPLETED") {
-            completeDeliveryCount++;
+            let current = moment(new Date()).format("L");
+            let delDate = moment(item.date).format("L");
+            if (moment(current).isSame(delDate)) completeDeliveryCount++;
           }
+          return null;
         });
-        setDeliveryCount(count);
+        setDeliveryCount(filteredDeliveries.count);
         setTotalCompDeliveries(completeDeliveryCount);
         setAlertCount(alerts);
       }

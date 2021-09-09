@@ -81,6 +81,7 @@ export default function DeliveryRequest(props) {
               deliveryAreas.data[index].isDisable = true;
             }
           }
+          return null;
         });
       });
 
@@ -91,6 +92,8 @@ export default function DeliveryRequest(props) {
               storageAreas.data[index1].isDisable = true;
             }
           }
+
+          return null;
         });
       });
       means.data.forEach((val1, index1) => {
@@ -100,6 +103,7 @@ export default function DeliveryRequest(props) {
               means.data[index1].isDisable = true;
             }
           }
+          return null;
         });
       });
 
@@ -138,7 +142,7 @@ export default function DeliveryRequest(props) {
                 }
               }
             }
-            return;
+            return null;
           });
           return accumulator;
         }, []),

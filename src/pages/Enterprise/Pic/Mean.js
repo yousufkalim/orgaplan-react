@@ -32,13 +32,7 @@ export default function AddMean(props) {
   const {
     NAME,
     VALIDATE,
-    AVAILABILITY,
-    Enter_site_addresses,
     END_DATE,
-    Vehicles,
-    Days_before_end_of_the_contract,
-    NOTIFY_THE_ADDRESSES,
-    Please_enter_email,
     IDENTITY,
     TYPE,
     ACCESSIBILITY,

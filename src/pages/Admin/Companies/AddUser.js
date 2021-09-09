@@ -36,7 +36,6 @@ export default function AddUser(props) {
     FIRST_NAME,
     Add_USER,
     CONTACT_INFO,
-    COMPANY,
     SITE,
     Telephone_must_have_10_to_25_digits,
   } = TEXTS;

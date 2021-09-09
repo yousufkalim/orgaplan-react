@@ -171,15 +171,15 @@ class App extends Component {
       });
       var page = await _PDF_DOC.getPage(1);
       var canvas = document.getElementById("pdf-canvas");
-      var rotate;
-      if (page.view[2] > 612 && page.view[3] > 792) {
-        rotate = (page.rotate + 150) % 360;
-      } else {
-        rotate = (page.rotate + 270) % 360;
-      }
+      // var rotate = 0;
+      // if (page.view[2] > 612 && page.view[3] > 792) {
+      //   rotate = (page.rotate + 150) % 360;
+      // } else {
+      //   rotate = (page.rotate + 270) % 360;
+      // }
 
       // var viewport = page.getViewport(1);
-      var unscaledViewport = page.getViewport(1);
+      // var unscaledViewport = page.getViewport(1);
 
       var scale = 1;
 
@@ -323,6 +323,7 @@ class App extends Component {
         } else if (shape.type === "STORAGEAREA") {
           countSA++;
         }
+        return null;
       });
       if (countDA > 0 && countSA > 0) {
         this.setState({
@@ -336,19 +337,21 @@ class App extends Component {
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Delivery Area and Storage Area first");
+        message.warning(
+          "Veuillez d'abord créer une zone de livraison et une zone de stockage",
+        );
       } else if (countSA === 0) {
         message.config({
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Storage Area first");
+        message.warning("Veuillez d'abord créer une zone de stockage");
       } else if (countDA === 0) {
         message.config({
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Delivery Area first");
+        message.warning("Veuillez d'abord créer une zone de livraison");
       }
     } else if (e.target.value === "STORAGEAREA") {
       let del = this.props.shapes.filter((shape) => {
@@ -648,7 +651,7 @@ class App extends Component {
     this.handleDisableMean(id);
   };
   handleConvaCircleImageClick = (id) => {
-    const { shapes, meanShapeId, meanColor } = this.state;
+    const { shapes } = this.state;
     this.setState({ meanCheck: "MEAN" });
 
     if (shapes.length > 0) {
@@ -1172,7 +1175,7 @@ class App extends Component {
     const { UPLOAD_PDF, Loading } = TEXTS;
     return (
       <div>
-        {this.props.role == "ADMIN" && (
+        {this.props.role === "ADMIN" && (
           <Header
             meanCheck={meanCheck}
             handleElementChange={handleElementChange}
@@ -1202,7 +1205,7 @@ class App extends Component {
             width={width}
             height={height}
           />
-          {this.props.role == "ADMIN" && (
+          {this.props.role === "ADMIN" && (
             <div className="mt-3">
               <Button
                 fullWidth={false}

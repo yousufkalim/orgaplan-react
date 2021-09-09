@@ -129,7 +129,7 @@ export default function SiteHeader(props) {
   const storeAuth = useSelector((state) => state.auth);
   const storeAdmin = useSelector((state) => state.admin);
   const userItems =
-    storeAdmin?.site?.role == "ENTERPRISE"
+    storeAdmin?.site?.role === "ENTERPRISE"
       ? [
           {
             name: PIC_INTERACTIF,
@@ -147,7 +147,7 @@ export default function SiteHeader(props) {
             icon: <Organigramme />,
           },
         ]
-      : storeAdmin?.site?.role == "ADMIN"
+      : storeAdmin?.site?.role === "ADMIN"
       ? [
           {
             name: CALENDAR,
@@ -180,7 +180,7 @@ export default function SiteHeader(props) {
             icon: <Organigramme />,
           },
         ]
-      : storeAdmin?.site?.role == "TRAFFIC"
+      : storeAdmin?.site?.role === "TRAFFIC"
       ? [
           {
             name: PIC_INTERACTIF,

@@ -17,7 +17,6 @@ import ColorPicker from "../../../components/ColorPcker";
 import MeanLocationModal from "../../../components/MeanLocationModal";
 import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import UnavailabilityTimes from "../../../components/UnavailabilityTimes";
-import { date } from "yup/lib/locale";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,13 +32,7 @@ export default function AddMean(props) {
   const {
     NAME,
     VALIDATE,
-    AVAILABILITY,
-    Enter_site_addresses,
     END_DATE,
-    Vehicles,
-    Days_before_end_of_the_contract,
-    NOTIFY_THE_ADDRESSES,
-    Please_enter_email,
     IDENTITY,
     TYPE,
     ACCESSIBILITY,
@@ -78,7 +71,7 @@ export default function AddMean(props) {
 
   useEffect(() => {
     getData();
-  }, []);
+  });
 
   const getData = async () => {
     try {
@@ -96,6 +89,7 @@ export default function AddMean(props) {
               value: item._id,
             });
           }
+          return null;
         });
 
         setDeliveryAreas(temp);
@@ -109,6 +103,7 @@ export default function AddMean(props) {
               value: item._id,
             });
           }
+          return null;
         });
         setStorageAreas(temp);
       }

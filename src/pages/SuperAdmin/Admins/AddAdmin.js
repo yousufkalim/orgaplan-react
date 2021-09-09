@@ -23,10 +23,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 
 // dialogue box
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import { NavLink } from "react-router-dom";
-import SubHeading from "../../../components/SubHeading";
 import { message } from "antd";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,19 +52,14 @@ export default function AddAdmin(props) {
     IDENTITY,
     PROFILE,
     COMPANIES,
-    Please_enter_email,
     TYPE_OF_ADMIN,
     FIRST_NAME_REQUIRED,
     Telephone_must_have_10_to_25_digits,
     LAST_NAME_REQUIRED,
-    Please_enter_company_name,
-    Please_enter_type_of_organigramme,
     Please_enter_valid_email,
     please_add_profile_image,
     Please_select_a_company,
     Per_site,
-    ADMIN_CREATED,
-    VIEW_ADMIN,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -116,6 +107,7 @@ export default function AddAdmin(props) {
             label: item.name,
           };
         }
+        return null;
       });
       const arr = itemsArray.map((item) => ({
         value: item._id,

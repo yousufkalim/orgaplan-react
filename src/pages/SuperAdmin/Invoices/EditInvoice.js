@@ -18,7 +18,6 @@ import FormSelect from "../../../components/FormSelect";
 import invoiceImg from "../../../assets/images/invoices.png";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
-import { Upload } from "antd";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,23 +33,11 @@ export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const {
-    FIRST_NAME,
-    LAST_NAME,
-    CONTRACT,
-    CONTRACT_DATE,
     START_DATE,
     END_DATE,
-    DESCRIPTION,
-    FUNCTIONALITY_SUBSCRIBED,
     VALIDATE,
-    NOTIFICATION,
-    ADDITIONNAL_INFORMATION,
-    VERIFY_A_QUOTE,
-    CREATE_AN_INVOICE,
-    Are_you_sure_to_Delete,
     INVOICE,
     Please_enter_name,
-    ADD_AN_INVOICE,
     CLIENT_NAME,
     SELECT_CLIENT,
     CONSTRUCTION_SITE,
@@ -154,7 +141,6 @@ export default function AddInvoice(props) {
   const handlePdfChange = (e) => {
     if (e.target.files.length) {
       let file = e.target.files[0];
-      const uri = URL.createObjectURL(file);
       if (file.size > 15000000) {
         return dispatch(
           Actions.notistack.enqueueSnackbar(
@@ -240,8 +226,6 @@ export default function AddInvoice(props) {
       //   amount: amount,
       //   description: description,
       // });
-      for (let [key, value] of formdata) {
-      }
 
       await GLOBALS.API({
         method: "PUT",
@@ -345,7 +329,7 @@ export default function AddInvoice(props) {
           <Form.Row alignItems="flex-start">
             <FormLabel bold primary={`${PDF_FILE}`} />
 
-            {pdf && pdf != "null" ? (
+            {pdf && pdf !== "null" ? (
               <div
                 style={GLOBALS.Styles.pdffile}
                 // style={{

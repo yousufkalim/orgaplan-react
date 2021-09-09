@@ -30,7 +30,6 @@ const PopoverModal = ({
     End_time,
     NO,
     YES,
-    VALIDATE,
   } = TEXTS;
   const getStartDate = (start) => {
     var dd = String(start.getDate()).padStart(2, "0");

@@ -36,24 +36,17 @@ export default function DeliveryArea(props) {
   const {
     NAME,
     VALIDATE,
-    AVAILABILITY,
-    Enter_site_addresses,
     END_DATE,
     DELIVERYAREAS,
     COMPANIES,
     is_Full,
-    Vehicles,
     Days_before_end_of_the_contract,
     NOTIFY_THE_ADDRESSES,
     Please_enter_email,
     MEANS,
     NOTIFICATION,
-    IDENTITY,
-    ACCESSIBILITY,
     AVAILABILITIES,
     UNAVAILABILITIES,
-    HOURLY_RATE,
-    ADDITIONNAL_INFORMATION,
     START_DATE,
     Please_enter_valid_email,
     NAME_REQUIRED,
@@ -113,6 +106,7 @@ export default function DeliveryArea(props) {
             value: item._id,
           });
         }
+        return null;
       });
       setDeliveryAreas(temp);
 
