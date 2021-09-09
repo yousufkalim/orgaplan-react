@@ -23,7 +23,6 @@ import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import Heading from "../../../components/Heading";
-import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import FullScreenModal from "../../../components/FullScreenModal";
 import {
@@ -82,26 +81,22 @@ const Calender = (props) => {
   const {
     DELIVERIES,
     DELIVERY_REQUESTS,
-    PLANNING,
+
     Not_availble,
     VALIDATE,
     CLOSE,
-    MEANS,
     BOOKING_REASON,
     Status_Color,
     PENDING_VALIDATION,
-    STATUS,
     BOOKING_DATE,
     INCIDENT,
     ConstructBTP,
     MEAN,
     START_HOUR,
     END_HOUR,
-    TYPE_OF_PLACE,
     End_time,
     BOOKING,
     Please_Add_valid_Time_and_Event,
-    PLACE,
     Edit_Delivery_Request,
     Invalid_Time,
     Start_time,
@@ -117,16 +112,8 @@ const Calender = (props) => {
     DELIVERY_DATE,
     COMPLETED,
     ALERTS,
-    DISABLE_DAY,
-    DISABLE_HOURS,
-    SITE_DATE_OUT_OF_RANGE,
-    Booking_cant_be_in_Previous_day,
     DELIVERY_DELETED,
     Delivery_Area_Site_By_SiteId_Error,
-    PENDING,
-    VALIDATED,
-    MODIFIED,
-    ALERT,
   } = TEXTS;
 
   moment.locale("es-es", {
@@ -138,7 +125,6 @@ const Calender = (props) => {
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
-  const [userId, setUserId] = useState(store.user._id);
 
   // *****
   const [isLoading, setLoading] = useState(true);
@@ -175,35 +161,29 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [filterDate, setFilterDate] = useState(new Date());
 
-  const [typeOfPlace, setTypeOfPlace] = useState([]);
-  const [dropdownCompany, setDropdownCompany] = useState([]);
+  // const [typeOfPlace, setTypeOfPlace] = useState([]);
+  // const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
-  const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
-  const [status, setStatus] = useState("");
+  const typeOfPlaning = "Deliveries";
+  const status = "";
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
-  const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: PENDING },
-    { value: "VALIDATED", label: VALIDATED },
-    { value: "MODIFIED", label: MODIFIED },
-    { value: "ALERT", label: ALERT },
-  ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = useState("Enable");
   const [addDelivery, setAddDelivery] = useState(false);
   const [disableHours, setDisableHours] = useState([]);
-  const [disableDay, setDisableDay] = useState([]);
-  const [deliverDate, setDeliverDate] = useState("");
-  const [deliverStartHours, setDeliverStartHours] = useState("");
-  const [deliverEndHours, setDeliverEndHours] = useState("");
+  // const [disableDay, setDisableDay] = useState([]);
+  const deliverDate = "";
+  const deliverStartHours = "";
+  const deliverEndHours = "";
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [onEditDeliveryData, setOnEditDeliveryData] = useState("");
   const [editDelivery, setEditDelivery] = useState(false);
-  const [deliveryCount, setDeliveryCount] = useState(0);
-  const [totalCompDeliveries, setTotalCompDeliveries] = useState(0);
-  const [alertCount, setAlertCount] = useState(0);
+  const deliveryCount = useState(0);
+  const totalCompDeliveries = 0;
+  const alertCount = 0;
   useEffect(() => {
     if (props.location.companyId != null) {
       setEnterprise(props.location.companyId);
@@ -438,200 +418,6 @@ const Calender = (props) => {
     }
   };
 
-  const AddDeliveryRequest = ({ start, end }) => {
-    setAddDelivery(false);
-    setDeliverStartHours(start.getHours());
-    setDeliverEndHours(end.getHours());
-    // start.setHours(0);
-    setDeliverDate(start);
-    let flagDate = false;
-    let flagOpeningHoursDay = false;
-    let flagHours = false;
-    let flagOpeningHours = false;
-    let disableDayFlag = false;
-    let pastdayFlag = false;
-    let betweenDay = false;
-    let preDateTime = new Date();
-    let milliseconds = Date.parse(preDateTime);
-    milliseconds = milliseconds - 1 * 60 * 1000;
-    preDateTime = new Date(milliseconds);
-    if (start < preDateTime && start < end) {
-      pastdayFlag = true;
-    }
-    if (
-      !moment(start).isBetween(
-        moment(adminStore.site.siteId.start).set({ hours: 0 }),
-        moment(adminStore.site.siteId.end),
-        null,
-        "()",
-        "days",
-      )
-    ) {
-      betweenDay = true;
-    }
-
-    disableHours.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        flagHours = true;
-      }
-      return {};
-    });
-    disableDay.map((key, index) => {
-      if (moment(start).isSame(key) || moment(end).isSame(key)) {
-        disableDayFlag = true;
-      }
-      return {};
-    });
-
-    let currentDay = moment(start).day();
-    if (currentDay === 0) {
-      // disorder of days of Opening Hours component
-      currentDay = 7;
-    }
-    adminStore.site.siteId.unavailabilityDates.map((key, index) => {
-      if (key.dayOff === true) {
-        if (moment(start).isSame(key.date, "day")) {
-          flagDate = true;
-        }
-      }
-      return {};
-    });
-    openingHours.map((key, index) => {
-      if (key.dayOff === true && currentDay === key.day) {
-        flagOpeningHoursDay = true;
-      }
-      return true;
-    });
-
-    openingHours.map((key, index) => {
-      if (key.dayOff === true && currentDay === key.day) {
-        flagOpeningHours = true;
-      } else if (key.dayOff === false && currentDay === key.day) {
-        if (
-          inRange(start.getHours(), key.startHour, key.endHour) &&
-          inRange(end.getHours(), key.startHour, key.endHour)
-        ) {
-        } else {
-          flagOpeningHours = true;
-        }
-      }
-      return true;
-    });
-    if (
-      flagDate ||
-      flagOpeningHoursDay ||
-      flagOpeningHours ||
-      disableDayFlag ||
-      pastdayFlag ||
-      flagHours ||
-      betweenDay
-    ) {
-      if (flagDate || disableDayFlag || betweenDay) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(DISABLE_DAY, "error"),
-          ),
-        );
-      } else if (flagOpeningHoursDay || flagOpeningHours || flagHours) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(DISABLE_HOURS, "error"),
-          ),
-        );
-      } else if (betweenDay) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(SITE_DATE_OUT_OF_RANGE, "error"),
-          ),
-        );
-      } else if (pastdayFlag) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(
-              Booking_cant_be_in_Previous_day,
-              "error",
-            ),
-          ),
-        );
-      }
-    } else {
-      setAddDelivery(true);
-    }
-  };
-  // const AddEvent = ({ start, end, slots }) => {
-  //   setAlertBoxTime(false);
-  //   let preDateTime = new Date();
-  //   let milliseconds = Date.parse(preDateTime);
-  //   milliseconds = milliseconds - 1 * 60 * 1000;
-  //   preDateTime = new Date(milliseconds);
-
-  //   if (
-  //     start.getDay() === days[0] ||
-  //     start.getDay() === days[1] ||
-  //     start.getDay() === days[2] ||
-  //     start.getDay() === days[3] ||
-  //     start.getDay() === days[4] ||
-  //     start.getDay() === days[5] ||
-  //     start.getDay() === days[6]
-  //   ) {
-  //     console.log("not active day");
-  //   } else {
-  //     // active days
-  //     let beforeTime = moment(start).format("HH:mm");
-  //     let afterTime = moment(end).format("HH:mm");
-  //     let dateCheck = events.filter((item) => {
-  //       return (
-  //         moment(item.start).format("DD/MM/YYYY HH:mm") === beforeTime &&
-  //         moment(item.end).format("DD/MM/YYYY HH:mm") === afterTime
-  //       );
-  //     });
-  //     if (dateCheck.length === 0 && overlap) {
-  //       if (start > preDateTime && start < end) {
-  //         if (slots.length >= 2) {
-  //           var format = "HH:mm";
-  //           let time = moment(start, format);
-  //           let beforeTime = moment(start).format("HH:mm");
-  //           let afterTime = moment(end).format("HH:mm");
-  //           let checkDiff = time.isBetween(beforeTime, afterTime);
-  //           if (
-  //             beforeTime !== "17:00" &&
-  //             beforeTime !== "17:30" &&
-  //             checkDiff === false
-  //           ) {
-  //             setShow(!show);
-  //             setStartTime(start);
-  //             setEndTime(end);
-  //             let getstart = String(start);
-  //             let getend = String(end);
-  //             getstart = getstart.slice(16, 21);
-  //             getend = getend.slice(16, 21);
-  //             setstarttimeslice(getstart);
-  //             setEndtimeslice(getend);
-  //           } else {
-  //             return false;
-  //           }
-  //         } else {
-  //           setShow(!show);
-  //           setStartTime(start);
-  //           setEndTime(end);
-  //           let getstart = String(start);
-  //           let getend = String(end);
-  //           getstart = getstart.slice(16, 21);
-  //           getend = getend.slice(16, 21);
-  //           setstarttimeslice(getstart);
-  //           setEndtimeslice(getend);
-  //         }
-  //       } else {
-  //         setAlertBoxTime(true);
-  //         setTimeout(function () {
-  //           setAlertBoxTime(false);
-  //         }, 2000);
-  //       }
-  //     } else {
-  //       console.log("disable time clicked");
-  //     }
-  //   }
-  // };
   const statusColorChange = (event) => {
     setValue(event.target.value);
   };
@@ -873,7 +659,7 @@ const Calender = (props) => {
               value: item.companyId._id,
             });
           });
-          setDropdownCompany(temp);
+          // setDropdownCompany(temp);
         }
       } else {
       }
@@ -888,18 +674,6 @@ const Calender = (props) => {
       );
     }
   };
-  function handleChangeTypeOfPlace(e) {
-    setTypeOfPlacevalue(e.target.value);
-    if (e.target.value === "DELIVERYAREA") {
-      getDeliveryAreaSiteBySiteId();
-    } else if (e.target.value === "STORAGEAREA") {
-      getStorageSiteBysiteId();
-    } else if (e.target.value === "BUILDING") {
-      getbuildingBysiteId();
-    } else {
-      setTypeOfPlace([]);
-    }
-  }
   const getbuildingBysiteId = async () => {
     try {
       const response = await GLOBALS.API({
@@ -916,7 +690,7 @@ const Calender = (props) => {
             });
           });
 
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
       }
@@ -947,7 +721,7 @@ const Calender = (props) => {
               value: item._id,
             });
           });
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
       }
@@ -979,7 +753,7 @@ const Calender = (props) => {
             });
           });
 
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
         dispatch(
@@ -1021,7 +795,7 @@ const Calender = (props) => {
       }
       return {};
     });
-    setDisableDay(tempDisableDay);
+    // setDisableDay(tempDisableDay);
   };
   const customDayPropGetter = (date) => {
     let flagDate = false;

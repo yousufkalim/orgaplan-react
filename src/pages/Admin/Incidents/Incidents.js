@@ -27,6 +27,8 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import { date } from "yup";
+import Loader from "../../../components/Loader";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,32 +51,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
   },
 }));
-let statciincidentsdata = [
-  { name: "name", price: "2", date: new Date(), status: "true", type: "mean" },
-  {
-    name: "name1",
-    price: "22",
-    date: new Date(),
-    status: "true",
-    type: "delay",
-  },
-  {
-    name: "name2",
-    price: "222",
-    date: new Date(),
-    status: "true",
-    type: "mean",
-  },
-];
-let siteis = { name: "test site" };
 
 const Incidents = (props) => {
   const {
-    LIST_OF_COMPANIES,
-    Add_COMPANY,
-    NAME_OF_COMPANY,
-    ACCESS_REQUEST_TO_ZONES,
-    ACCESS_REQUEST_TO_STROGAEAREA,
     RE_INVOICING,
     CREATE_AN_INCIDENT,
     DELIVERYAREA,
@@ -100,14 +79,11 @@ const Incidents = (props) => {
 
   const [popoverShow, setpopoverShow] = useState(false);
 
-  const [value, onChange] = useState(new Date());
-
   const [incidents, setIncidents] = useState([]);
   const [items, setItems] = useState([]);
   const [incidentsdata, setIncidentsdata] = useState([]);
   const [siteDeliveryArea, setSiteDeliveryArea] = useState([]);
   const [siteComapny, setSiteComapny] = useState([]);
-  const [sitedata, setSiteData] = useState({});
   const [flagforStartdate, setFlag1] = useState(false);
   const [flagforEnddate, setFlag2] = useState(false);
   const [selectedStatus, setselectedStatus] = useState([]);
@@ -161,8 +137,8 @@ const Incidents = (props) => {
       setIncidents(result.data.incidents);
       if (result.data.incidents) {
         seTatalInvoices(result.data.incidents.length);
-
-        getIncidentsfiltered(result.data.incidents);
+        setLoading(false);
+        // getIncidentsfiltered(result.data.incidents);
       }
 
       if (result.data.site_delivery_areas) {
@@ -204,7 +180,6 @@ const Incidents = (props) => {
 
   async function filterIncidents() {
     try {
-      setLoading(true);
       const params = { siteId: adminStore.site.siteId._id };
 
       if (nameText.length !== 0) params["name"] = nameText;
@@ -226,14 +201,8 @@ const Incidents = (props) => {
       });
       if (response.success) {
         getIncidentsfiltered(response.data);
-        // setItems(temp);
-        setLoading(false);
-      } else {
-        setLoading(false);
       }
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -266,17 +235,18 @@ const Incidents = (props) => {
   function getStatus(data) {
     let temp = [];
     data.map((item, index) => {
-      if (item == "OPEN") {
+      if (item === "OPEN") {
         return temp.push({
           label: OPEN,
           value: item,
         });
-      } else if (item == "CLOSED") {
+      } else if (item === "CLOSED") {
         return temp.push({
           label: CLOSE,
           value: item,
         });
       }
+      return null;
     });
     setStatus(temp);
   }
@@ -320,7 +290,7 @@ const Incidents = (props) => {
         item.location?.storageArea?.name ||
         "";
       data[6] = item?.isBillable ? "Yes" : "No";
-      data[7] = item?.price;
+      data[7] = item.price ? item.price : "0";
       data[8] = item?.isPaid ? "Yes" : "No";
       data[9] = item?.meanLocation ? item?.meanLocation : "";
       return temp.push(data);
@@ -570,19 +540,24 @@ const Incidents = (props) => {
             />
           </Form.Row>
         </Form.Row>
-
-        <div className={classes.content}>
-          <Table
-            headers={GLOBALS.Data.incidents.headings}
-            rows={rows}
-            onClick={(e) => {
-              return props.history.push({
-                pathname: "/incidents/edit-incidents",
-                data: incidents[e],
-              });
-            }}
-          />
-        </div>
+        {!loading ? (
+          <div className={classes.content}>
+            <Table
+              headers={GLOBALS.Data.incidents.headings}
+              rows={rows}
+              onClick={(e) => {
+                return props.history.push({
+                  pathname: "/incidents/edit-incidents",
+                  data: incidents[e],
+                });
+              }}
+            />
+          </div>
+        ) : (
+          <div style={{ margin: 200 }}>
+            <Loader.Progress />
+          </div>
+        )}
       </div>
       <Modal
         size="lg"

@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ZACS(props) {
-  const { SITE_LIST, ZACS_LIST, Are_you_sure_to_Delete, Create_a_Zac } = TEXTS;
+  const { ZACS_LIST, Are_you_sure_to_Delete, Create_a_Zac } = TEXTS;
 
   const classes = useStyles();
   const dispatch = useDispatch();

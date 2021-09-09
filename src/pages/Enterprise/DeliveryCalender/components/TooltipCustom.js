@@ -1,14 +1,8 @@
-import React, { Component, useState, useRef } from "react";
-import ReactDOM, { render } from "react-dom";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import { Overlay, Tooltip, Button, Row, Col } from "react-bootstrap";
+import React, { useState, useRef } from "react";
+import ReactDOM from "react-dom";
+import { Overlay, Tooltip } from "react-bootstrap";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { faWindowClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TEXTS } from "../../../../assets/languages/french";
-
-const localizer = momentLocalizer(moment);
 
 export const IconStyle = {
   cursor: "pointer",

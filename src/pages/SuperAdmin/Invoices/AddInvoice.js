@@ -14,7 +14,6 @@ import Heading from "../../../components/Heading";
 import FormInput from "../../../components/FormInput";
 import FormLabel from "../../../components/FormLabel";
 import FormSelect from "../../../components/FormSelect";
-import FormMultipleUpload from "../../../components/FormMultipleUpload";
 import { ReactComponent as BackArrow } from "../../../assets/icons/BackArrow.svg";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,21 +30,10 @@ export default function AddInvoice(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const {
-    FIRST_NAME,
-    LAST_NAME,
-    CONTRACT,
-    CONTRACT_DATE,
     START_DATE,
     END_DATE,
     DESCRIPTION,
-    FUNCTIONALITY_SUBSCRIBED,
     VALIDATE,
-    NOTIFICATION,
-    ADDITIONNAL_INFORMATION,
-    VERIFY_A_QUOTE,
-    CREATE_AN_INVOICE,
-    Are_you_sure_to_Delete,
-    INVOICE,
     Please_enter_name,
     ADD_AN_INVOICE,
     CLIENT_NAME,
@@ -73,11 +61,8 @@ export default function AddInvoice(props) {
   const [endDate, setEndDate] = useState("");
   const [siteId, setSiteId] = useState("");
   const [amount, setAmount] = useState(0);
-  const [pdf, setPdf] = useState(0);
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfFileName, setPdfFileName] = useState(null);
-  const [pdfUri, setPdfUri] = useState(null);
-  const [logo, setLogo] = useState([]);
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -137,7 +122,6 @@ export default function AddInvoice(props) {
   const handlePdfChange = (e) => {
     if (e.target.files.length) {
       let file = e.target.files[0];
-      const uri = URL.createObjectURL(file);
       if (file.size > 15000000) {
         return dispatch(
           Actions.notistack.enqueueSnackbar(
@@ -151,7 +135,6 @@ export default function AddInvoice(props) {
 
       setPdfFile(file);
       setPdfFileName(file.name);
-      setPdfUri(uri);
     }
   };
 

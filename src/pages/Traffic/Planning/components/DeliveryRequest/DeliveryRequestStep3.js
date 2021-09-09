@@ -22,7 +22,6 @@ export default function DeliveryRequestStep3(props) {
     MATERIALS_DELIVERED,
     COMMENTS,
     VALIDATE,
-    MEANS,
     Receive_Summary_by_email,
   } = TEXTS;
   const dispatch = useDispatch();
@@ -39,10 +38,11 @@ export default function DeliveryRequestStep3(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   useEffect(() => {
-    let comp = props.companies.find(
-      (item) => item.value === props.step1Data.company.value,
-    );
-
+    let comp = props.step1Data
+      ? props.companies.find(
+          (item) => item.value === props.step1Data.company.value,
+        )
+      : "";
     comp && setCompany(comp.label);
     let deliv = props.deliveryAreas.find(
       (item) => item._id === props.step1Data.deliveryArea,
@@ -101,14 +101,8 @@ export default function DeliveryRequestStep3(props) {
         // console.log("status pending", props.step1Data.selectedMeans);
       } else {
         const locationObject = {
-          ["deliveryArea"]: props?.step1Data?.deliveryArea,
+          deliveryArea: props?.step1Data?.deliveryArea,
         };
-        let startHour = moment(props.step1Data.date)
-          .set("hours", props.step1Data.startTime.split(":")[0])
-          .format("H");
-        let endHour = moment(props.step1Data.date)
-          .set("hours", props.step1Data.endTime.split(":")[0])
-          .format("H");
         // create invoive
         var formdata1 = new FormData();
         formdata1.append(

@@ -10,12 +10,9 @@ const PopoverModal = ({
   handleDeleteEvent,
   handleDeleteDelivery,
   event,
-  setEvent,
   setEditDelivery,
-  handleValidateMeans,
   setAlertBoxTime,
   alertBoxTime,
-  handleValidateDelivery,
   onEditDelivery,
 }) => {
   const {
@@ -35,9 +32,6 @@ const PopoverModal = ({
     Start_time,
     BOOKING_REASON,
     End_time,
-    VALIDATE,
-    MORE_INFO,
-    REFUSE,
     COMPANY,
     MEAN,
     Are_you_sure_You_want_to_delete_this,

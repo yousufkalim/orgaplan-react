@@ -348,8 +348,9 @@ const Calender = (props) => {
         startTime < endTime
       ) {
         if (overlap === "Enable") {
+          var DbElement;
           if (store.user.adminType !== "NOADMIN") {
-            var DbElement = {
+            DbElement = {
               startDate: startTime,
               endDate: endTime,
               startTime: sTime,
@@ -362,7 +363,7 @@ const Calender = (props) => {
               status: "VALIDATED",
             };
           } else {
-            var DbElement = {
+            DbElement = {
               startDate: startTime,
               endDate: endTime,
               startTime: sTime,
@@ -927,31 +928,6 @@ const Calender = (props) => {
       });
 
       if (meanBooking.success || deliveryMean.success) {
-        const responseDeliveryMean = deliveryMean.data.map((key, index) => {
-          /* start time converstion */
-          let start = new Date(key.date);
-          let startHours = key.startTime.slice(0, 2);
-          start.setHours(startHours);
-          /* start time converstion */
-
-          /* End time converstion */
-          let end = new Date(key.date);
-          let endHours = key.endTime.slice(0, 2);
-          end.setHours(endHours);
-          /* End time converstion */
-
-          return {
-            title: key.comment,
-            companyId: key.companyId,
-            start: start,
-            end: end,
-            siteId: key.siteId,
-            userId: key.userId,
-            _id: key._id,
-            color: "#32CD32",
-            status: key.status,
-          };
-        });
         const responseMeanBooking = meanBooking.data.history.map(
           (key, index) => {
             let colour = "";

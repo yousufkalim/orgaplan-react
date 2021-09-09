@@ -40,26 +40,21 @@ export default function AddIncidents(props) {
     NO,
     OPEN,
     CLOSE,
-    Please_select_a_incident,
-    Please_select_a_company,
     EDIT_AN_INCIDENT,
     DESIGNATION,
     NAME_OF_INCIDENT,
     NAME_OF_COMPANY,
     DATE_AND_TIME,
     GENERAL,
-    TYPE_OF_incident,
     LOCATION,
     TYPE_OF_PLACE,
     BILLABLE,
     PAID,
     AMOUNT,
     COMMENT_INVOICE,
-
     PLEASE_ENTER_NAME_OF_INCIDENT,
     PLEASE_ENTER_NAME_OF_COMPANY,
     Please_select_Date,
-    PLEASE_SELECT_TYPE_OF_incident,
     INCIDENT,
     MEAN,
     DELAY,
@@ -107,7 +102,7 @@ export default function AddIncidents(props) {
   const [nameError, setNameError] = useState("");
   const [companyError, setCompanyError] = useState("");
   const [dateError, setDateError] = useState("");
-  const [typeError, setTypeError] = useState("");
+  // const [typeError, setTypeError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -307,31 +302,32 @@ export default function AddIncidents(props) {
   // console.log("location", location);
 
   const validation = (name, value) => {
-    if (name == "name") {
+    if (name === "name") {
       if (!value) {
         setNameError(PLEASE_ENTER_NAME_OF_INCIDENT);
       } else {
         setNameError("");
       }
-    } else if (name == "companyId") {
+    } else if (name === "companyId") {
       if (!value) {
         setCompanyError(PLEASE_ENTER_NAME_OF_COMPANY);
       } else {
         setCompanyError("");
       }
-    } else if (name == "date") {
+    } else if (name === "date") {
       if (!value) {
         setDateError(Please_select_Date);
       } else {
         setDateError("");
       }
-    } else if (name == "type") {
-      if (!value) {
-        setTypeError(PLEASE_SELECT_TYPE_OF_incident);
-      } else {
-        setTypeError("");
-      }
     }
+    // else if (name === "type") {
+    //   if (!value) {
+    //     setTypeError(PLEASE_SELECT_TYPE_OF_incident);
+    //   } else {
+    //     setTypeError("");
+    //   }
+    // }
   };
 
   return (

@@ -22,9 +22,9 @@ import Form from "../../../components/Form";
 import FormSelect from "../../../components/FormSelect";
 import "react-datepicker/dist/react-datepicker.css";
 import Heading from "../../../components/Heading";
-import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import "moment/locale/fr";
+import { useHistory } from "react-router-dom";
 
 import FullScreenModal from "../../../components/FullScreenModal";
 import {
@@ -83,28 +83,22 @@ const Calender = (props) => {
   const {
     DELIVERIES,
     DELIVERY_REQUESTS,
-    PLANNING,
     Delivery_Calender,
     Not_availble,
     VALIDATE,
     CLOSE,
-    MEANS,
     BOOKING_REASON,
     Status_Color,
     PENDING_VALIDATION,
-    STATUS,
     BOOKING_DATE,
     INCIDENT,
     MEAN,
     START_HOUR,
     END_HOUR,
-    TYPE_OF_PLACE,
     End_time,
     BOOKING,
     Please_Add_valid_Time_and_Event,
-    PLACE,
     Edit_Delivery_Request,
-    Invalid_Time,
     Start_time,
     Edit_Event,
     END_DATE,
@@ -130,10 +124,10 @@ const Calender = (props) => {
     },
   });
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
-  const [userId, setUserId] = useState(store.user._id);
 
   // *****
   const [isLoading, setLoading] = useState(true);
@@ -170,19 +164,12 @@ const Calender = (props) => {
   const [eventID, seteventID] = useState("");
   const [filterDate, setFilterDate] = useState(new Date());
 
-  const [typeOfPlace, setTypeOfPlace] = useState([]);
-  const [dropdownCompany, setDropdownCompany] = useState([]);
+  // const [typeOfPlace, setTypeOfPlace] = useState([]);
+  // const [dropdownCompany, setDropdownCompany] = useState([]);
   const [enterprise, setEnterprise] = useState("");
-  const [typeOfPlaning, setTypeOfPlaning] = useState("Deliveries");
-  const [status, setStatus] = useState("");
+  const typeOfPlaning = "Deliveries";
   const [typeOfPlacevalue, setTypeOfPlacevalue] = useState("");
   const [placeId, setPlaceId] = useState("");
-  const [deliveriesMeansStatus, setDeliveriesMeansStatus] = useState([
-    { value: "PENDING", label: "PENDING" },
-    { value: "VALIDATED", label: "VALIDATED" },
-    { value: "MODIFIED", label: "MODIFIED" },
-    { value: "ALERT", label: "ALERT" },
-  ]);
   const [updateMeanStatus, setUpdateMeanStatus] = useState("");
   const [openingHours] = useState(adminStore.site.siteId.openingHours);
   const [overlap] = useState("Enable");
@@ -203,34 +190,39 @@ const Calender = (props) => {
   // states to count
 
   useEffect(() => {
-    if (props.location.companyId != null) {
-      setEnterprise(props.location.companyId);
-    }
-    if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.name);
-      if (props.location.selectedShape.type === "DELIVERYAREA") {
-        getDeliveryAreaSiteBySiteId();
-      } else if (props.location.selectedShape.type === "STORAGEAREA") {
-        getStorageSiteBysiteId();
-      } else if (props.location.selectedShape.type === "BUILDING") {
-        getbuildingBysiteId();
+    if (!props.location.selectedShape) {
+      history.push("/");
+    } else {
+      if (props.location.companyId != null) {
+        setEnterprise(props.location.companyId);
       }
+      if (props.location.selectedShape != null) {
+        setTypeOfPlacevalue(props.location.selectedShape.name);
+        if (props.location.selectedShape.type === "DELIVERYAREA") {
+          getDeliveryAreaSiteBySiteId();
+        } else if (props.location.selectedShape.type === "STORAGEAREA") {
+          getStorageSiteBysiteId();
+        } else if (props.location.selectedShape.type === "BUILDING") {
+          getbuildingBysiteId();
+        }
+      }
+      if (props.location.selectedShape != null) {
+        setPlaceId(props.location.selectedShape._id);
+      }
+      getfilterdata();
+      unavailabilityDates();
+      functionDisableDay();
+      // eslint-disable-next-line
     }
-    if (props.location.selectedShape != null) {
-      setPlaceId(props.location.selectedShape._id);
-    }
-    getfilterdata();
-    unavailabilityDates();
-    functionDisableDay();
-    // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    filterBookingCalendar();
+    if (props.location.selectedShape) {
+      filterBookingCalendar();
+    }
     // eslint-disable-next-line
   }, [
     enterprise,
     typeOfPlaning,
-    status,
     typeOfPlacevalue,
     placeId,
     siteMeans,
@@ -872,7 +864,7 @@ const Calender = (props) => {
               value: item.companyId._id,
             });
           });
-          setDropdownCompany(temp);
+          // setDropdownCompany(temp);
         }
       } else {
       }
@@ -887,18 +879,6 @@ const Calender = (props) => {
       );
     }
   };
-  function handleChangeTypeOfPlace(e) {
-    setTypeOfPlacevalue(e.target.value);
-    if (e.target.value === "DELIVERYAREA") {
-      getDeliveryAreaSiteBySiteId();
-    } else if (e.target.value === "STORAGEAREA") {
-      getStorageSiteBysiteId();
-    } else if (e.target.value === "BUILDING") {
-      getbuildingBysiteId();
-    } else {
-      setTypeOfPlace([]);
-    }
-  }
   const getbuildingBysiteId = async () => {
     try {
       const response = await GLOBALS.API({
@@ -915,7 +895,7 @@ const Calender = (props) => {
             });
           });
 
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
       }
@@ -946,7 +926,7 @@ const Calender = (props) => {
               value: item._id,
             });
           });
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
       }
@@ -978,7 +958,7 @@ const Calender = (props) => {
             });
           });
 
-          setTypeOfPlace(temp);
+          // setTypeOfPlace(temp);
         }
       } else {
         dispatch(
@@ -1068,8 +1048,6 @@ const Calender = (props) => {
   // console.log(userId);
   const filterBookingCalendar = async () => {
     let count = 0;
-    let alerts = 0;
-    let completeDeliveryCount = 0;
     let tempEvent;
     try {
       const response = await GLOBALS.API({
@@ -1080,7 +1058,7 @@ const Calender = (props) => {
           siteId: adminStore.site.siteId._id,
           companyId: enterprise,
           typeOfPlaning: typeOfPlaning,
-          status: status,
+          status: "",
           typeOfPlace: typeOfPlacevalue,
           placeId: placeId,
         }),
@@ -1176,7 +1154,7 @@ const Calender = (props) => {
         // Filtering events to with delivery area
 
         tempEvent = tempEvent.filter((event) => {
-          return event.deliveryArea._id == props.location.selectedShape._id;
+          return event.deliveryArea._id === props.location.selectedShape._id;
         });
         count = tempEvent.length;
         setEvents(tempEvent);
@@ -1192,11 +1170,13 @@ const Calender = (props) => {
         // });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
+          return null;
         });
         response.data?.Deliveries.map((item) => {
           if (item?.status === "COMPLETED") {
             completeDeliveryCount++;
           }
+          return null;
         });
         setDeliveryCount(count);
         setTotalCompDeliveries(completeDeliveryCount);

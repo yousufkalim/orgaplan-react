@@ -54,23 +54,8 @@ export default function AddCompanies(props) {
   const {
     NAME,
     VALIDATE,
-    AVAILABILITY,
-    Enter_site_addresses,
-    END_DATE,
-    DELIVERYAREAS,
-    COMPANIES,
-    is_Full,
-    Vehicles,
-    Days_before_end_of_the_contract,
-    NOTIFY_THE_ADDRESSES,
     Please_enter_email,
-    MEANS,
-    NOTIFICATION,
     IDENTITY,
-    ACCESSIBILITY,
-    AVAILABILITIES,
-    UNAVAILABILITIES,
-    HOURLY_RATE,
     ADDITIONNAL_INFORMATION,
     EDIT_COMPANY,
     TYPE_OF_COMPANY,
@@ -81,8 +66,6 @@ export default function AddCompanies(props) {
     IDENTITY_OF_RESPONSIBLE,
     LAST_NAME,
     Please_select_a_company,
-    something_went_wrong,
-    Company_already_Exists_With_this_name,
     Please_enter_name,
     Please_provide_image,
     Please_enter_valid_email,
@@ -254,32 +237,32 @@ export default function AddCompanies(props) {
   }
 
   const validation = (name, value) => {
-    if (name == "name") {
+    if (name === "name") {
       if (!value) {
         setNameError(Please_enter_name);
       } else {
         setNameError("");
       }
-    } else if (name == "image") {
+    } else if (name === "image") {
       if (!value.length > 0) {
         setImageError(Please_provide_image);
       } else {
         setImageError("");
       }
-    } else if (name == "parentCompanyId") {
+    } else if (name === "parentCompanyId") {
       if (!value) {
         setParentCompanyError(Please_select_a_company);
       } else {
         setParentCompanyError("");
       }
-    } else if (name == "email") {
+    } else if (name === "email") {
       const emailValidation = /\S+@\S+\.\S+/;
       if (!value.match(emailValidation) && value !== "") {
         setEmailError(Please_enter_valid_email);
       } else {
         setEmailError("");
       }
-    } else if (name == "website") {
+    } else if (name === "website") {
       const websiteValidation =
         /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
       if (!value.match(websiteValidation) && value !== "") {

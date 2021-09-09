@@ -7,7 +7,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Paper from "@material-ui/core/Paper";
 import { TEXTS } from "../../../assets/languages/french";
 
 import GLOBALS from "../../../globals";
@@ -16,7 +15,6 @@ import Actions from "../../../redux/actions";
 import Form from "../../../components/Form";
 import Modal from "../../../components/Modal";
 import SmallButton from "../../../components/SmallButton";
-import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 import { Images } from "../../../assets/Assets";
 import Table from "../../../components/Table";
 import Button from "../../../components/Button";
@@ -27,7 +25,6 @@ import FormSelect from "../../../components/FormSelect";
 import SubHeading from "../../../components/SubHeading";
 import SearchInput from "../../../components/SearchInput";
 import AvatarUpload from "../../../components/AvatarUpload";
-import uploadIcon from "../../../assets/images/upload.png";
 import IconButton from "@material-ui/core/IconButton";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,7 +65,7 @@ export default function UserList(props) {
   const [delBoxopen, setDelBoxopen] = useState(false);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [filterCompanyId, setFilterCompanyId] = useState("");
@@ -142,9 +139,9 @@ export default function UserList(props) {
             body: formdata,
           });
 
-          setLoading(false);
+          // setLoading(false);
         } catch (err) {
-          setLoading(false);
+          // setLoading(false);
           dispatch(
             Actions.notistack.enqueueSnackbar(
               Actions.notistack.snackbar(err.message, "error"),
@@ -154,14 +151,14 @@ export default function UserList(props) {
         setUploadFlag(true);
       });
 
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(File_Uploaded_successfully, "success"),
         ),
       );
     } catch (err) {
-      setLoading(false);
+      // setLoading(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -260,7 +257,7 @@ export default function UserList(props) {
       formdata.append("companyId", companyId);
       formdata.append("userId", userId);
 
-      let res = await GLOBALS.API({
+      await GLOBALS.API({
         method: "DELETE",
         uri: GLOBALS.Constants.DELETE_COMPANY_USER,
         headers: {

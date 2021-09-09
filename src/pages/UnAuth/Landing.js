@@ -322,7 +322,6 @@ export default function LandingPage() {
               La plateforme au service de votre organisation de chantier!
             </p>
             <Link
-              className="col"
               style={{
                 textDecoration: "none",
                 color: "#656461",

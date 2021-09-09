@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddSite(props) {
-  const { Create_a_SITE, VALIDATE, General_Information } = TEXTS;
+  const { Create_a_SITE, General_Information } = TEXTS;
 
   const classes = useStyles();
   const [step, setStep] = useState(1);
@@ -50,6 +50,7 @@ export default function AddSite(props) {
       if (key === "_id") {
         history.push(`/sites/edit-site/${step2Data.data[key]}`);
       }
+      return null;
     });
   }
   return (

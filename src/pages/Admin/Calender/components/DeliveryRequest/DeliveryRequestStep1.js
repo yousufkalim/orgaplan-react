@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 
 import GLOBALS from "../../../../../globals";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { TEXTS } from "../../../../../assets/languages/french";
 
 import Form from "../../../../../components/Form";
@@ -13,16 +13,13 @@ import TimeInput from "../../../../../components/TimeInput";
 import FormSelect from "../../../../../components/FormSelect";
 import FormMultiSelect from "../../../../../components/FormMultiSelect";
 import MultiAdderInput from "../../../../../components/MultiAdderInput";
-import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
-import { getTime } from "date-fns";
 import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
 
 export default function AddSiteStep1(props) {
   const {
     COMPANY,
     DELIVERYAREA,
-    STORAGEAREA,
     VALIDATE,
     Please_select_a_company,
     Please_select_Delivery_Area,
@@ -51,15 +48,11 @@ export default function AddSiteStep1(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
-  const [disableMean, setDisableMean] = useState("");
-  const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
-  const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
-  const [unavailableMsg, setunavailableMsg] = useState([]);
+  let unavailableMsg = [];
 
   let endTimeDisabledHours = [];
   let startTimeDisabledHours = [];
-  var minutes = [];
 
   const getDisabledHoursEndTime = () => {
     let startTimeIs = moment(startTime).toDate().getHours();
@@ -78,10 +71,6 @@ export default function AddSiteStep1(props) {
     return startTimeDisabledHours;
   };
 
-  const checkavailability = (value) => {
-    let customDate = "2021-06-06";
-    return true;
-  };
   // filter delivery area Which are not availbile
   const filterUnavailableDeliveryArea = () => {
     let result = [];
@@ -183,6 +172,7 @@ export default function AddSiteStep1(props) {
                   }
                 }
               }
+              return null;
             });
 
             //////// Checking unavailabilities
@@ -304,13 +294,6 @@ export default function AddSiteStep1(props) {
     props.setStep1Data(values);
     props.setStep(2);
   }
-  function disabledDate2(current) {
-    let customDate = "2021-6-6";
-    return (
-      (current && current < moment(customDate, "YYYY-MM-DD")) ||
-      current > moment(customDate, "YYYY-MM-DD")
-    );
-  }
 
   return (
     <Form.Form onSubmit={onSubmit}>
@@ -355,11 +338,11 @@ export default function AddSiteStep1(props) {
             min={moment().format("YYYY-MM-DD")}
             // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
-              checkavailability(value) && setDate(value);
+              setDate(value);
 
               // Setting current time on current date and previous time
               if (
-                moment(d).format("yyyy-DD-MM") ==
+                moment(d).format("yyyy-DD-MM") ===
                 moment(value).format("yyyy-DD-MM")
               ) {
                 if (
@@ -388,7 +371,7 @@ export default function AddSiteStep1(props) {
             value={startTime}
             // disabling previous time on current date
             disabledHours={
-              moment(d).format("yyyy-DD-MM") ==
+              moment(d).format("yyyy-DD-MM") ===
                 moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
             }
             // disabledMinutes={(a) => getDisabledMinutes(a)}

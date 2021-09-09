@@ -81,6 +81,7 @@ export default function Check(
           }
         }
       }
+      return null;
     });
   } else {
     msg = "notFound";

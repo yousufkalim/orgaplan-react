@@ -47,8 +47,6 @@ export default function Admins(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const {
-    ADD_AN_ADMIN,
-    CONTACT_INFO,
     TELEPHONE,
     FIRST_NAME,
     LAST_NAME,

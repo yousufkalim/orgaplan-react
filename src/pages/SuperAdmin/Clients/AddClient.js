@@ -38,7 +38,6 @@ export default function AddClient(props) {
     TELEPHONE,
     FIRST_NAME,
     LAST_NAME,
-    CONTRACT,
     START_DATE,
     END_DATE,
     FUNCTIONALITY_SUBSCRIBED,
@@ -48,7 +47,6 @@ export default function AddClient(props) {
     NAME_OF_COMPANY,
     COMPANY_RESPONSIBLE,
     COMPANY_LOGO,
-    RESPONSIBLE,
     ADD_A_CLIENT,
     Days_before_end_of_the_site,
     NOTIFY_THE_ADDRESSES,
@@ -309,7 +307,14 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONTRACT_DATE}* :`} />
+            <FormLabel
+              bold
+              primary={
+                contractType === "MASTERCLIENT"
+                  ? `${CONTRACT_DATE}* :`
+                  : `${CONTRACT_DATE} :`
+              }
+            />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Stage, Layer, Circle, Rect, Image } from "react-konva";
+import { Stage, Layer, Rect, Image } from "react-konva";
 import ConvaLine from "./Components/Line";
 import Rectangle from "./Components/Rectangle";
 import { useSelector } from "react-redux";
@@ -94,13 +94,13 @@ export default function Canvas({
       width={width}
       height={height}
       // style={{ backgroundColor: "chocolate" }}
-      onMouseDown={adminStore?.site?.role == "ADMIN" && onClick}
+      onMouseDown={adminStore?.site?.role === "ADMIN" && onClick}
       onMouseMove={onMouseMove}
       onMouseEnter={(e) => {
         // style stage container:
         const container = e.target.getStage().container();
 
-        if (adminStore?.site?.role == "ADMIN") {
+        if (adminStore?.site?.role === "ADMIN") {
           container.style.cursor = "crosshair";
         }
       }}
@@ -160,7 +160,7 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          if (adminStore?.site?.role == "ADMIN") {
+                          if (adminStore?.site?.role === "ADMIN") {
                             container.style.cursor = "crosshair";
                           } else {
                             container.style.cursor = "default";
@@ -184,7 +184,7 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          if (adminStore?.site?.role == "ADMIN") {
+                          if (adminStore?.site?.role === "ADMIN") {
                             container.style.cursor = "crosshair";
                           } else {
                             container.style.cursor = "default";
@@ -218,7 +218,7 @@ export default function Canvas({
                         }}
                         onMouseOut={(e) => {
                           const container = e.target.getStage().container();
-                          if (adminStore?.site?.role == "ADMIN") {
+                          if (adminStore?.site?.role === "ADMIN") {
                             container.style.cursor = "crosshair";
                           } else {
                             container.style.cursor = "default";

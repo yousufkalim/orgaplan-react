@@ -35,16 +35,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Means = () => {
   const {
-    DELIVERIES,
-    DELIVERY_REQUESTS,
     STATUS,
     MEANS,
     TOTAL,
     LEVEL,
     LIST_OF_MEANS,
-    HISTORIC,
     COMPANY,
-    MEAN,
     MEANS_REQUEST,
     Please_select_Delivery_Area,
     LOCATION,
@@ -155,20 +151,22 @@ const Means = () => {
       );
       setTypes(
         response.data.mean_types.map((item) => {
-          if (item == "LIFTING") {
+          if (item === "LIFTING") {
             return { label: LIFTING, value: item };
-          } else if (item == "ROUTING") {
+          } else if (item === "ROUTING") {
             return { label: ROUTING, value: item };
           }
+          return null;
         }),
       );
       setStatuses(
         response.data.mean_status.map((item) => {
-          if (item == "AVAILABLE") {
+          if (item === "AVAILABLE") {
             return { label: AVAILABLE, value: item };
-          } else if (item == "UNAVAILABLE") {
+          } else if (item === "UNAVAILABLE") {
             return { label: Unavailable, value: item };
           }
+          return null;
         }),
       );
       setLoading(false);

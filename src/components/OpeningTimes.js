@@ -74,14 +74,7 @@ const addOpeningTimes = Yup.object().shape({
 
 export default function MultiAdderInputModal(props) {
   const theme = useTheme();
-  const {
-    SEE_OPENING_TIMES,
-    SEE_UNAVAILABILITIES,
-    YES,
-    NO,
-    VALIDATE,
-    Day_Off,
-  } = TEXTS;
+  const { SEE_OPENING_TIMES, YES, NO, VALIDATE, Day_Off } = TEXTS;
 
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
