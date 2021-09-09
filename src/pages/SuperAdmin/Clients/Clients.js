@@ -380,6 +380,14 @@ export default function Clients(props) {
     }
     return true;
   });
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
 
   return (
     <>
@@ -509,16 +517,14 @@ export default function Clients(props) {
               <PhoneBox
                 name="phone"
                 value={phone}
-                type="number"
+                type="text"
                 error={errors.phone}
                 placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 onBlur={({ target: { name, value } }) =>
                   validation(name, value)
                 }
-                onChange={({ target: { name, value } }) =>
-                  handleChange(name, value)
-                }
+                onInput={(value) => handlePhone(value)}
               />
             </Form.Row>
             <Form.Row>

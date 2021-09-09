@@ -238,6 +238,14 @@ export default function EditContact(props) {
       setLoading(false);
     }
   };
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -307,13 +315,11 @@ export default function EditContact(props) {
                 <PhoneBox
                   name="phone"
                   value={phone}
-                  type="number"
+                  type="text"
                   // error={lastName}
                   placeholder="Téléphone"
                   style={{ width: "100%" }}
-                  onChange={({ target: { name, value } }) =>
-                    handleChange(name, value)
-                  }
+                  onInput={(value) => handlePhone(value)}
                   onBlur={({ target: { name, value } }) =>
                     validation(name, value)
                   }
