@@ -130,7 +130,7 @@ export const TEXTS = {
 
   TYPE_OF_ORGANIGRAMME: "Ouvert d'organigramme",
   CONTACT_INFO: "Information du contact",
-  IDENTITY: "Identité*",
+  IDENTITY: "Identité",
   TRADES: "Lots",
   ENTER_TRADES: "Sélectioner les Lots",
 

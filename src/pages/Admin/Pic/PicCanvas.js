@@ -503,6 +503,10 @@ const PicCanvas = (props) => {
             uri: `${GLOBALS.Constants.ADMIN_LEVEL_PIC_SHAPE}/${levelPic._id}/${selectedShape._id}`,
             token: store.token,
           });
+          setOpenStorageModal(false);
+          setOpenDeliveryModal(false);
+          setOpenMeanModal(false);
+          setOpenBuildingModal(false);
           setlevelPic(response.data);
 
           let shapes = response.data.shapes;
@@ -524,6 +528,10 @@ const PicCanvas = (props) => {
             uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${sitePic._id}/${selectedShape._id}`,
             token: store.token,
           });
+          setOpenStorageModal(false);
+          setOpenDeliveryModal(false);
+          setOpenMeanModal(false);
+          setOpenBuildingModal(false);
           setSitePic(response.data);
           let shapes = response.data.shapes;
           let newShapes = expiredShapes(shapes);

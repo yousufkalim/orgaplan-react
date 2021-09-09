@@ -37,6 +37,7 @@ export default function AddUser(props) {
     Add_USER,
     CONTACT_INFO,
     SITE,
+    Telephone_must_have_10_to_25_digits,
   } = TEXTS;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ export default function AddUser(props) {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     getData();
@@ -145,6 +147,9 @@ export default function AddUser(props) {
   function inputChange(name, value) {
     if (name === "phone") {
       setPhone(value);
+      if (GLOBALS.Functions.phone(value))
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      else setPhoneError("");
     }
   }
   return (
@@ -212,8 +217,16 @@ export default function AddUser(props) {
                 value={phone}
                 disabled={disableUser}
                 placeholder="Téléphone"
+                error={phoneError}
                 onChange={({ target: { name, value } }) =>
                   value.length < 26 ? inputChange(name, value) : ""
+                }
+                onBlur={({ target: { name, value } }) =>
+                  value.length < 26
+                    ? GLOBALS.Functions.phone(value)
+                      ? setPhoneError(Telephone_must_have_10_to_25_digits)
+                      : setPhoneError("")
+                    : ""
                 }
               />
             </Form.Row>
@@ -258,7 +271,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONSTRUCTION_SITE}: `} />
+            <FormLabel bold primary={`${COMPANY}: `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="company"

@@ -38,9 +38,11 @@ export default function DeliveryRequestStep3(props) {
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   useEffect(() => {
-    let comp = props.companies.find(
-      (item) => item.value === props.step1Data.company,
-    );
+    let comp = props.step1Data
+      ? props.companies.find(
+          (item) => item.value === props.step1Data.company.value,
+        )
+      : "";
 
     comp && setCompany(comp.label);
     let deliv = props.deliveryAreas.find(
