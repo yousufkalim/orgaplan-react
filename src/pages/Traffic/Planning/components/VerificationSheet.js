@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./VerificationSheet.css";
 import { useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,10 +8,17 @@ import FormCheckbox from "../../../../components/FormCheckbox";
 import FormMultipleUpload from "../../../../components/FormMultipleUpload";
 import ButtonGroup from "./btnGroup";
 import { ReactComponent as BackArrow } from "../../../../assets/icons/BackArrow.svg";
+import { ReactComponent as Plus } from "../../../../assets/icons/Plus.svg";
 import IconButton from "@material-ui/core/IconButton";
 import GLOBALS from "../../../../globals";
 import Actions from "../../../../redux/actions";
 import moment from "moment";
+import { Modal } from "antd";
+import Avatar from "@material-ui/core/Avatar";
+import _ from "lodash";
+
+// import Popup from "reactjs-popup";
+import SignaturePad from "react-signature-canvas";
 
 import { TEXTS } from "../../../../assets/languages/french";
 
@@ -41,7 +48,6 @@ const VarificationSheet = (props) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const admin = useSelector((state) => state.admin);
-  // console.log(store, admin);
   const [image, setImage] = useState([]);
   const eventdata = location.state.event;
   const [materials, setMaterials] = useState([]);
@@ -52,9 +58,35 @@ const VarificationSheet = (props) => {
   const status = eventdata.status;
   const [checkStatus, setCheckStatus] = useState(status);
   const [comments, setComments] = useState("");
-  // const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(true);
+  const [imageURL, setImageURL] = useState(null); // create a state that will contain our image url
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showImgModal, setShowImgModal] = useState(false);
+
+  const sigCanvas = useRef({});
+
   var obj = [{ uri: "uploads/mean/grey.png" }];
-  // console.log(eventdata);
+
+  const clear = () => sigCanvas.current.clear();
+
+  /* a function that uses the canvas ref to trim the canvas 
+  from white spaces via a method given by react-signature-canvas
+  then saves it in our state */
+  const save = () => {
+    setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
+    setIsModalVisible(false);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setShowImgModal(false);
+  };
+
   const liftingMeans = () => {
     var data = eventdata.liftingMeans?.map((name, index) => {
       return name.name;
@@ -69,6 +101,8 @@ const VarificationSheet = (props) => {
   };
 
   useEffect(() => {
+    store.user.sign &&
+      setImageURL(GLOBALS.Constants.BASE_URL + store.user.sign);
     setDelayTime(moment(eventdata.end).format("hh:mm"));
     const materialData = () => {
       let array = [];
@@ -82,7 +116,6 @@ const VarificationSheet = (props) => {
   }, [eventdata.end, eventdata.materials]);
 
   const onSubmit = async () => {
-    // console.log(checkStatus);
     let materialsArray = [];
     for (const [key, value] of Object.entries(materialsData)) {
       if (value) {
@@ -90,8 +123,25 @@ const VarificationSheet = (props) => {
       }
     }
 
+    var base64Data = imageURL.replace(/^data:image\/png;base64,/, "");
+
     try {
       // setLoading(true);
+
+      var form = new FormData();
+      form.append("sign", base64Data);
+      const res = await GLOBALS.API({
+        method: "PUT",
+        uri: `${GLOBALS.Constants.ADD_SIGN}/${store.user._id}`,
+        body: form,
+        headers: {
+          Authorization: store.token,
+        },
+      });
+      const user = _.cloneDeep(store.user);
+      user.sign = res.data;
+
+      dispatch(Actions.auth.set_user(user));
 
       var formdata = new FormData();
       formdata.append("delay", delayCheckBox);
@@ -104,6 +154,7 @@ const VarificationSheet = (props) => {
       //     type: images.type,
       //   });
       // }
+      formdata.append("verifiedBy", store.user._id);
       formdata.append("time", delayTime);
       formdata.append("materialsDelivered", JSON.stringify(materialsArray));
       formdata.append(
@@ -162,7 +213,62 @@ const VarificationSheet = (props) => {
   };
   return (
     <>
-      {/* {console.log(materialsData)} */}
+      <Modal
+        title="Merci de signer"
+        visible={isModalVisible}
+        onOk={save}
+        okText="Add"
+        onCancel={handleCancel}
+        destroyOnClose={true}
+        footer={null}
+      >
+        <>
+          <SignaturePad
+            ref={sigCanvas}
+            canvasProps={{
+              className: "signatureCanvas",
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Button variant="warning" className="validate_Btn" onClick={clear}>
+              CLEAR
+            </Button>
+            <Button variant="warning" className="validate_Btn" onClick={save}>
+              ADD
+            </Button>
+          </div>
+        </>
+      </Modal>
+
+      <Modal
+        title="Signer"
+        visible={showImgModal}
+        onCancel={handleCancel}
+        destroyOnClose={true}
+        footer={null}
+      >
+        <img
+          src={
+            imageURL
+              ? imageURL
+              : store.user.sign
+              ? GLOBALS.Constants.BASE_URL + store.user.sign
+              : GLOBALS.Constants.BASE_URL + obj[0].uri
+          }
+          alt={"my signature"}
+          style={{
+            width: "100%",
+            height: 200,
+            border: "1px solid black",
+          }}
+        />
+      </Modal>
+
       <div className="row">
         <div className="col-sm-12">
           <br />
@@ -227,7 +333,7 @@ const VarificationSheet = (props) => {
 
             <FormCheckbox
               name={delayCheckBox}
-              label="DELAY ?"
+              label="RETARD ?"
               checked={delayCheckBox}
               disabled={checkStatus !== "VALIDATED"}
               onChange={(e) => {
@@ -286,6 +392,55 @@ const VarificationSheet = (props) => {
             disabled={checkStatus !== "VALIDATED"}
           />
         </div>
+
+        <div className="col-sm-6">
+          <br />
+          <div className="label">MERCI DE SIGNER*:</div>
+        </div>
+        <div
+          className="col-sm-6"
+          style={{
+            display: "flex",
+            flexDirection: "center",
+            alignItems: "center",
+            marginTop: "10px",
+          }}
+        >
+          <br />
+          <div
+            style={{
+              width: 45,
+              height: 45,
+              outline: 0,
+              borderWidth: 1,
+              display: "grid",
+              cursor: "pointer",
+              borderStyle: "solid",
+              placeItems: "center",
+              backgroundColor: "white",
+              borderColor: "#707070",
+            }}
+            onClick={checkStatus === "VALIDATED" && showModal}
+          >
+            <Plus style={{ width: 20, height: 20 }} />
+          </div>
+          <div
+            onClick={() => checkStatus === "VALIDATED" && setShowImgModal(true)}
+          >
+            <img
+              src={
+                imageURL
+                  ? imageURL
+                  : store.user.sign
+                  ? GLOBALS.Constants.BASE_URL + store.user.sign
+                  : GLOBALS.Constants.BASE_URL + obj[0].uri
+              }
+              alt={"my signature"}
+              style={{ width: 45, height: 45, marginLeft: "15px" }}
+            />
+          </div>
+        </div>
+
         <div className="col-sm-6">
           <br />
           <div className="label">{DELIVERY_STATUS} : </div>
@@ -345,11 +500,19 @@ const VarificationSheet = (props) => {
           </div>
         </div>
       </div>
+      {console.log(
+        imageURL,
+        !imageURL,
+        status != "VALIDATED",
+        checkStatus === "VALIDATED",
+        delayCheckBox == true && delayTime == "00:00",
+      )}
       <Button
         variant="warning"
         className="validate_Btn"
         disabled={
-          status !== "VALIDATED" ||
+          !imageURL ||
+          status != "VALIDATED" ||
           checkStatus === "VALIDATED" ||
           (delayCheckBox === true && delayTime === "00:00")
         }

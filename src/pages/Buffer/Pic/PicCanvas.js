@@ -308,7 +308,6 @@ const PicCanvas = (props) => {
     });
     setCompany(companyResponse?.data?.company);
 
-    let count = 0;
     let alerts = 0;
     try {
       const response = await GLOBALS.API({
@@ -326,17 +325,16 @@ const PicCanvas = (props) => {
       });
 
       if (response.success) {
-        response.data.Deliveries.map((key, index) => {
-          // if (key.userId._id === userId) {
-          count++;
-          // }
-          return null;
+        let filteredDeliveries = response.data.Deliveries.filter((e) => {
+          let current = moment(new Date()).format("L");
+          let delDate = moment(e.date).format("L");
+          return e && moment(current).isSame(delDate);
         });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
           return null;
         });
-        setDeliveryCount(count);
+        setDeliveryCount(filteredDeliveries.length);
         setAlertCount(alerts);
       }
       setLoading(false);

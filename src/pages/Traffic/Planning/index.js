@@ -980,7 +980,7 @@ const Calender = (props) => {
           siteId: adminStore.site.siteId._id,
           companyId: enterprise,
           typeOfPlaning: typeOfPlaning,
-          status: status,
+          status: "ALERT",
           typeOfPlace: typeOfPlacevalue,
           placeId: placeId,
         }),
@@ -1042,6 +1042,26 @@ const Calender = (props) => {
             };
           });
           setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
+          let alerts = 0;
+          let completeDeliveryCount = 0;
+          let filteredDeliveries = response.data.Deliveries.filter((e) => {
+            let current = moment(new Date()).format("L");
+            let delDate = moment(e.date).format("L");
+            return e && moment(current).isSame(delDate);
+          });
+          response.data?.Deliveries.map((item) => {
+            item.alert && alerts++;
+          });
+          response.data?.Deliveries.map((item) => {
+            if (item?.status === "COMPLETED") {
+              let current = moment(new Date()).format("L");
+              let delDate = moment(item.date).format("L");
+              if (moment(current).isSame(delDate)) completeDeliveryCount++;
+            }
+          });
+          setDeliveryCount(filteredDeliveries.length);
+          setTotalCompDeliveries(completeDeliveryCount);
+          setAlertCount(alerts);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             let background = "";

@@ -337,19 +337,21 @@ class App extends Component {
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Delivery Area and Storage Area first");
+        message.warning(
+          "Veuillez d'abord créer une zone de livraison et une zone de stockage",
+        );
       } else if (countSA === 0) {
         message.config({
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Storage Area first");
+        message.warning("Veuillez d'abord créer une zone de stockage");
       } else if (countDA === 0) {
         message.config({
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Delivery Area first");
+        message.warning("Veuillez d'abord créer une zone de livraison");
       }
     } else if (e.target.value === "STORAGEAREA") {
       let del = this.props.shapes.filter((shape) => {

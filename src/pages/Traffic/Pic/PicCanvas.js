@@ -312,7 +312,6 @@ const PicCanvas = (props) => {
     });
     setCompany(companyResponse?.data?.company);
 
-    let count = 0;
     let alerts = 0;
     let completeDeliveryCount = 0;
     try {
@@ -331,18 +330,24 @@ const PicCanvas = (props) => {
       });
 
       if (response.success) {
-        count = response.data.Deliveries.length;
+        let filteredDeliveries = response.data.Deliveries.filter((e) => {
+          let current = moment(new Date()).format("L");
+          let delDate = moment(e.date).format("L");
+          return e && moment(current).isSame(delDate);
+        });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
           return null;
         });
         response.data?.Deliveries.map((item) => {
           if (item?.status === "COMPLETED") {
-            completeDeliveryCount++;
+            let current = moment(new Date()).format("L");
+            let delDate = moment(item.date).format("L");
+            if (moment(current).isSame(delDate)) completeDeliveryCount++;
           }
           return null;
         });
-        setDeliveryCount(count);
+        setDeliveryCount(filteredDeliveries.length);
         setTotalCompDeliveries(completeDeliveryCount);
         setAlertCount(alerts);
       }
