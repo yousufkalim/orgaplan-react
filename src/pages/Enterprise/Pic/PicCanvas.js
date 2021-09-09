@@ -327,9 +327,7 @@ const PicCanvas = (props) => {
 
     // alert count api end
 
-    let count = 0;
     let alerts = 0;
-    let tempEvent;
     try {
       const response = await GLOBALS.API({
         method: "POST",
@@ -346,16 +344,17 @@ const PicCanvas = (props) => {
       });
 
       if (response.success) {
-        tempEvent = response.data.Deliveries.map((key, index) => {
-          // if (key.userId._id === userId) {
-          count++;
-          // }
+        let filteredDeliveries = response.data.Deliveries.filter((e) => {
+          let current = moment(new Date()).format("L");
+          let delDate = moment(e.date).format("L");
+          return e && moment(current).isSame(delDate);
         });
         response.data?.Deliveries.map((item) => {
           item.alert && alerts++;
         });
-        setDeliveryCount(count);
-        // setAlertCount(alerts);
+
+        setDeliveryCount(filteredDeliveries.length);
+        setAlertCount(alerts);
       }
       setLoading(false);
     } catch (err) {
