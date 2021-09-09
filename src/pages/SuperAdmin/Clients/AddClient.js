@@ -188,6 +188,14 @@ export default function AddClient(props) {
     }
   }
 
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -276,12 +284,10 @@ export default function AddClient(props) {
               <PhoneBox
                 name="phone"
                 value={phone}
-                type="number"
+                type="text"
                 placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
-                onChange={({ target: { name, value } }) =>
-                  value.length < 26 ? handleChange(name, value) : ""
-                }
+                onInput={(value) => handlePhone(value)}
               />
             </Form.Row>
           </Form.Row>

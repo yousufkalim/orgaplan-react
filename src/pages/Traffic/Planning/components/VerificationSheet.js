@@ -529,13 +529,6 @@ const VarificationSheet = (props) => {
           </div>
         </div>
       </div>
-      {console.log(
-        imageURL,
-        !imageURL,
-        status != "VALIDATED",
-        checkStatus === "VALIDATED",
-        delayCheckBox == true && delayTime == "00:00",
-      )}
       <Button
         variant="warning"
         className="validate_Btn"

@@ -353,6 +353,15 @@ export default function Sites(props) {
     }
   }
 
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
+
   function handleChange(name, value) {
     if (name === "oldPassword") setOldPassword(value);
     else if (name === "newPassword") setNewPassword(value);
@@ -549,13 +558,11 @@ export default function Sites(props) {
               <FormLabel bold primary="Téléphone *: " />
               <Form.Row noMargin width="48%">
                 <PhoneBox
-                  type="number"
+                  type="text"
                   name="phone"
                   value={phone}
                   placeholder="Téléphone"
-                  onChange={({ target: { name, value } }) =>
-                    value.length < 26 ? handleChange(name, value) : ""
-                  }
+                  onInput={(value) => handlePhone(value)}
                 />
               </Form.Row>
             </Form.Row>

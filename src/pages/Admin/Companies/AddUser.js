@@ -106,6 +106,14 @@ export default function AddUser(props) {
       );
     }
   };
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
 
   const onSubmit = async () => {
     try {
@@ -211,16 +219,14 @@ export default function AddUser(props) {
               />
               <PhoneBox
                 name="phone"
-                type="number"
+                type="text"
                 style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
                 maxLength="25"
                 value={phone}
                 disabled={disableUser}
                 placeholder="Téléphone"
+                onInput={(value) => handlePhone(value)}
                 error={phoneError}
-                onChange={({ target: { name, value } }) =>
-                  value.length < 26 ? inputChange(name, value) : ""
-                }
                 onBlur={({ target: { name, value } }) =>
                   value.length < 26
                     ? GLOBALS.Functions.phone(value)

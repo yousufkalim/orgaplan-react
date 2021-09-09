@@ -383,6 +383,16 @@ export default function UserList(props) {
       }
     }
   }
+
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
+
   return (
     <>
       <div className={classes.root}>
@@ -505,13 +515,11 @@ export default function UserList(props) {
             <Form.Row justifyContent="center">
               <PhoneBox
                 name="phone"
-                type="number"
+                type="text"
                 value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
                 placeholder="Phone"
                 style={GLOBALS.Styles.inputWidth}
+                onInput={(value) => handlePhone(value)}
               />
             </Form.Row>
 

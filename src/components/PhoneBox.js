@@ -73,6 +73,7 @@ export default function PhoneBox(props) {
         }}
       />
       <input
+        pattern="[0-9]*"
         name={props.name}
         type={props.type}
         accept={props.accept}
@@ -82,6 +83,7 @@ export default function PhoneBox(props) {
         onFocus={props.onFocus}
         className={classes.input}
         onChange={props.onChange}
+        onInput={props.onInput}
         required={props.required}
         disabled={props.disabled}
         maxLength={props.maxLength}
