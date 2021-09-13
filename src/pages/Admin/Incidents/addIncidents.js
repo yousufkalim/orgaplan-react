@@ -215,6 +215,18 @@ export default function AddIncidents(props) {
   const locationTypeChange = (e) => {
     setselectedLocationType(e.target.value);
   };
+
+  const billChange = (e) => {
+    setPriceDisable(e.target.value);
+    if (e.target.value === "false") {
+      setPrice("0");
+      setIsBillable(false);
+      setIsPaid("");
+    } else if (e.target.value === "true") {
+      setIsBillable(true);
+    }
+  };
+
   const timeChange = (e) => {
     setTime(e?._d);
   };
@@ -422,49 +434,34 @@ export default function AddIncidents(props) {
           <Form.Row>
             <FormLabel bold primary={`${BILLABLE}* : `} />
             <Form.Row width="48%">
-              <select
+              <FormSelect
                 name="bill"
-                id="bill"
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  setPriceDisable(e.target.value);
-                  if (e.target.value === "false") {
-                    setPrice("0");
-                    setIsBillable(false);
-                    setIsPaid("");
-                  } else if (e.target.value === "true") {
-                    setIsBillable(true);
-                  }
-                }}
-              >
-                <option selected value={true}>
-                  {YES}
-                </option>
-                <option value={false}>{NO}</option>
-              </select>
+                style={GLOBALS.Styles.inputWidth}
+                onChange={billChange}
+                value={isBillable}
+                values={[
+                  { label: YES, value: "true" },
+                  { label: NO, value: "false" },
+                ]}
+              />
             </Form.Row>
           </Form.Row>
 
           <Form.Row>
             <FormLabel bold primary={`${PAID}: `} />
             <Form.Row width="48%">
-              <select
+              <FormSelect
+                placeholder={PAID}
                 name="paid"
+                style={GLOBALS.Styles.inputWidth}
+                onChange={(e) => setIsPaid(e.target.value)}
+                value={isPaid}
+                values={[
+                  { label: YES, value: true },
+                  { label: NO, value: false },
+                ]}
                 disabled={priceDisable === "false"}
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  if (e.target.value === "false") {
-                    setIsPaid(false);
-                  } else if (e.target.value === "true") {
-                    setIsPaid(true);
-                  }
-                }}
-              >
-                <option value={true}>{YES}</option>
-                <option selected value={false}>
-                  {NO}
-                </option>
-              </select>
+              />
             </Form.Row>
           </Form.Row>
 
@@ -505,7 +502,7 @@ export default function AddIncidents(props) {
                 !name ||
                 !date ||
                 !dropdownCompanies ||
-                (isBillable === "true" && !price) ||
+                (isBillable && !price) ||
                 !type
               }
             />
