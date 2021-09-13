@@ -195,6 +195,7 @@ export const TEXTS = {
   CLIENTS_LIST: "Liste des clients ",
   MEAN_NAME: "Nom du moyen",
   NAME_OF_CLIENT: "Nom du client",
+  NAME_OF_ADMIN: "Nom du Admin",
 
   Per_client: "Par client",
   INVOICE: "Facture",

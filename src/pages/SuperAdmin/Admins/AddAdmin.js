@@ -174,6 +174,15 @@ export default function AddAdmin(props) {
     }
   }
 
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
+
   function handleChange(name, value) {
     if (name === "email") setEmail(value);
     else if (name === "phone") setPhone(value);
@@ -287,20 +296,16 @@ export default function AddAdmin(props) {
               />
               <PhoneBox
                 name="phone"
-                type="number"
+                type="text"
                 value={phone}
                 error={phoneError}
                 placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={disableUser}
                 onBlur={({ target: { name, value } }) =>
-                  value.length < 26 ? validation(name, value) : ""
+                  validation(name, value)
                 }
-                onChange={({ target: { name, value } }) => {
-                  if (value.length < 26) {
-                    handleChange(name, value);
-                  }
-                }}
+                onInput={(value) => handlePhone(value)}
               />
             </Form.Row>
           </Form.Row>

@@ -203,6 +203,15 @@ export default function AddContact(props) {
     }
   };
 
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -259,12 +268,10 @@ export default function AddContact(props) {
                 <PhoneBox
                   name="phone"
                   value={phone}
-                  type="number"
+                  type="text"
                   placeholder={TELEPHONE}
                   style={{ width: "100%" }}
-                  onChange={({ target: { name, value } }) =>
-                    value.length < 26 ? handleChange(name, value) : ""
-                  }
+                  onInput={(value) => handlePhone(value)}
                 />
                 {phoneError !== "" && (
                   <div className={classes.error}>{phoneError}</div>

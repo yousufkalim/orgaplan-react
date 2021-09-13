@@ -290,6 +290,15 @@ export default function AddCompanies(props) {
     }
   };
 
+  function handlePhone(evt) {
+    if (evt.currentTarget.value.length < 26) {
+      const value = evt.currentTarget.validity.valid
+        ? evt.currentTarget.value
+        : phone;
+      setPhone(value);
+    }
+  }
+
   return (
     <div className={classes.root}>
       <IconButton onClick={() => props.history.goBack()}>
@@ -419,13 +428,11 @@ export default function AddCompanies(props) {
               <Form.Column noMargin style={GLOBALS.Styles.inputWidth}>
                 <PhoneBox
                   name="phone"
-                  type="number"
+                  type="text"
                   value={phone}
                   disabled={true}
                   placeholder="Téléphone"
-                  onChange={({ target: { name, value } }) =>
-                    inputChange(name, value)
-                  }
+                  onInput={(value) => handlePhone(value)}
                 />
               </Form.Column>
             </Form.Row>
