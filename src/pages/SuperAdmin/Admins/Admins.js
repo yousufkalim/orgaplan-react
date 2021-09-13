@@ -63,7 +63,7 @@ export default function Admins(props) {
     Are_you_sure_to_Delete,
     EDIT_ADMIN,
     Admins_list,
-    NAME_OF_CLIENT,
+    NAME_OF_ADMIN,
   } = TEXTS;
 
   const store = useSelector((state) => state.auth);
@@ -309,7 +309,7 @@ export default function Admins(props) {
         <Form.Row noMargin>
           <SearchInput
             value={query}
-            placeholder={NAME_OF_CLIENT}
+            placeholder={NAME_OF_ADMIN}
             onClick={fetchData}
             onChange={({ target: { value } }) => setQuery(value)}
           />

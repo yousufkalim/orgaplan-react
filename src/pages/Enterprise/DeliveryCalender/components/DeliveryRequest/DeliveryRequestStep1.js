@@ -322,7 +322,7 @@ export default function AddSiteStep1(props) {
             name="company"
             disabled={true}
             value={company.label}
-            style={{ ...GLOBALS.Styles.inputWidth, marginRight: "10px" }}
+            style={{ width: "100%" }}
           />
         </Form.Row>
       </Form.Row>
