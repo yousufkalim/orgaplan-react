@@ -383,7 +383,7 @@ export default function AddMean(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${TECHNICAL_SHEET} * : `} />
+          <FormLabel bold primary={`${TECHNICAL_SHEET} : `} />
 
           <Form.Row noMargin width="65%">
             <FormMultipleUpload

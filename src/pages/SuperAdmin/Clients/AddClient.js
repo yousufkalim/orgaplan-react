@@ -309,7 +309,14 @@ export default function AddClient(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONTRACT_DATE}* :`} />
+            <FormLabel
+              bold
+              primary={
+                contractType === "MASTERCLIENT"
+                  ? `${CONTRACT_DATE}* :`
+                  : `${CONTRACT_DATE} :`
+              }
+            />
             <Form.Row noMargin width="48%">
               <FormInput
                 type="date"

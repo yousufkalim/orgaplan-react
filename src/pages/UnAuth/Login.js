@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import "./Login.css";
 import GLOBALS from "../../globals";
@@ -62,6 +64,7 @@ export default function Login(props) {
   const [validateLoading, setValidateLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
+  const [passwordToggle, setpasswordToggle] = useState(false);
   // Complete Profile
   const [admin, setAdmin] = useState("");
 
@@ -284,17 +287,40 @@ export default function Login(props) {
                   onChange={handleChange}
                   placeholder={GLOBALS.I18n.t("emailPlaceholder")}
                 />
-                <input
-                  required
-                  name="password"
-                  type="password"
-                  onBlur={handleBlur}
-                  value={values.password}
-                  onChange={handleChange}
-                  error={errors.password}
-                  className="login-input my-2"
-                  placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
-                />
+                <div style={{ display: "flex" }}>
+                  <input
+                    required
+                    name="password"
+                    type={passwordToggle ? "text" : "password"}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    onChange={handleChange}
+                    error={errors.password}
+                    className="login-input my-2"
+                    placeholder={GLOBALS.I18n.t("passwordPlaceholder")}
+                  />
+                  {passwordToggle ? (
+                    <VisibilityOffIcon
+                      style={{
+                        width: 20,
+                        height: 20,
+                        margin: "auto",
+                        marginLeft: -25,
+                      }}
+                      onClick={() => setpasswordToggle(!passwordToggle)}
+                    />
+                  ) : (
+                    <VisibilityIcon
+                      style={{
+                        width: 20,
+                        height: 20,
+                        margin: "auto",
+                        marginLeft: -25,
+                      }}
+                      onClick={() => setpasswordToggle(!passwordToggle)}
+                    />
+                  )}
+                </div>
               </div>
               <div className="text-center mg-top-20">
                 <Button

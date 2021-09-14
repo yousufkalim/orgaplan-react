@@ -25,6 +25,7 @@ import Heading from "../../../components/Heading";
 import SubHeading from "../../../components/SubHeading";
 import Loader from "../../../components/Loader";
 import "moment/locale/fr";
+import { useHistory } from "react-router-dom";
 
 import FullScreenModal from "../../../components/FullScreenModal";
 import {
@@ -130,6 +131,7 @@ const Calender = (props) => {
     },
   });
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const adminStore = useSelector((state) => state.admin);
   const store = useSelector((state) => state.auth);
@@ -203,29 +205,35 @@ const Calender = (props) => {
   // states to count
 
   useEffect(() => {
-    if (props.location.companyId != null) {
-      setEnterprise(props.location.companyId);
-    }
-    if (props.location.selectedShape != null) {
-      setTypeOfPlacevalue(props.location.selectedShape.name);
-      if (props.location.selectedShape.type === "DELIVERYAREA") {
-        getDeliveryAreaSiteBySiteId();
-      } else if (props.location.selectedShape.type === "STORAGEAREA") {
-        getStorageSiteBysiteId();
-      } else if (props.location.selectedShape.type === "BUILDING") {
-        getbuildingBysiteId();
+    if (!props.location.selectedShape) {
+      history.push("/");
+    } else {
+      if (props.location.companyId != null) {
+        setEnterprise(props.location.companyId);
       }
+      if (props.location.selectedShape != null) {
+        setTypeOfPlacevalue(props.location.selectedShape.name);
+        if (props.location.selectedShape.type === "DELIVERYAREA") {
+          getDeliveryAreaSiteBySiteId();
+        } else if (props.location.selectedShape.type === "STORAGEAREA") {
+          getStorageSiteBysiteId();
+        } else if (props.location.selectedShape.type === "BUILDING") {
+          getbuildingBysiteId();
+        }
+      }
+      if (props.location.selectedShape != null) {
+        setPlaceId(props.location.selectedShape._id);
+      }
+      getfilterdata();
+      unavailabilityDates();
+      functionDisableDay();
+      // eslint-disable-next-line
     }
-    if (props.location.selectedShape != null) {
-      setPlaceId(props.location.selectedShape._id);
-    }
-    getfilterdata();
-    unavailabilityDates();
-    functionDisableDay();
-    // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    filterBookingCalendar();
+    if (props.location.selectedShape) {
+      filterBookingCalendar();
+    }
     // eslint-disable-next-line
   }, [
     enterprise,
@@ -1752,83 +1760,6 @@ const Calender = (props) => {
           ) : (
             <Loader.Progress />
           )}
-        </div>
-        <div
-          style={{
-            width: "140px",
-            height: "100%",
-            marginRight: "12px",
-            position: "absolute",
-            right: "15px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#47A7EE",
-              textAlign: "center",
-              color: "white",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <div style={{ textAlign: "left", padding: "5px" }}>
-              <img
-                src={deliverIcon}
-                style={{ width: 25, height: 25 }}
-                alt="Icon"
-              />
-            </div>
-            <h3 className="font-weight-bold" style={{ color: "white" }}>
-              {deliveryCount}
-            </h3>
-            <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#0EB227",
-              textAlign: "center",
-              color: "white",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <div style={{ textAlign: "left", padding: "5px" }}></div>
-            <h3 className="font-weight-bold" style={{ color: "white" }}>
-              {totalCompDeliveries}
-            </h3>
-            <h6 style={{ color: "white" }}>{COMPLETED}</h6>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#E15141",
-              textAlign: "center",
-              color: "white",
-              padding: "5px",
-              margin: "5px",
-            }}
-          >
-            <div style={{ textAlign: "left", padding: "5px" }}>
-              <img
-                src={alertIcon1}
-                style={{ width: 25, height: 25 }}
-                alt="Icon"
-              />
-              <img
-                src={alertIcon}
-                style={{
-                  width: "5px",
-                  height: "18px",
-                  position: "relative",
-                  right: "15px",
-                }}
-                alt="Icon"
-              />
-            </div>
-            <h3 className="font-weight-bold" style={{ color: "white" }}>
-              {alertCount}
-            </h3>
-            <h6 style={{ color: "white" }}>{ALERTS}</h6>
-          </div>
         </div>
       </div>
     </>
