@@ -911,15 +911,12 @@ const PicCanvas = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogContent style={{ margin: "30px" }}>
+        <DialogContent style={{ margin: "30px", overflow: "hidden" }}>
           <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
             {selectedShape?.name}
           </h4>
           <SubHeading primary={`Type : ${selectedShape.type}`} />
-          <div
-            className={classes.infoDrawerContainer}
-            style={{ width: "100%" }}
-          >
+          <div style={{ width: "100%" }}>
             {selectedShape && selectedShape.type === "BUILDING" && level && (
               <Button
                 text={SHOW_EXTERIOR}
