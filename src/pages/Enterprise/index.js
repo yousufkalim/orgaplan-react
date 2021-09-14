@@ -4,17 +4,24 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 // Pages
 import eOrganigramme from "./Organigramme";
-import ePic from "./Pic";
+import Pic from "./Pic";
 import eMeans from "./Means";
 
 // Component
-export default function EnterpriseIndex() {
+export default function EnterpriseIndex(props) {
   return (
     <Switch>
-      <Route exact path="/" component={ePic} />
+      <Route
+        exact
+        path="/"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Route path="/means" component={eMeans} />
       <Route path="/organigramme" component={eOrganigramme} />
-      <Route path="/pic-interactive" component={ePic} />
+      <Route
+        path="/pic-interactive"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Redirect from="*" to="/" />
     </Switch>
   );

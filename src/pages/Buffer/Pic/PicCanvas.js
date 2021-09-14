@@ -32,6 +32,8 @@ import { ReactComponent as Calendar } from "../../../assets/icons/Calendar.svg";
 
 import imggg from "./testpdf.pdf";
 import { Document, Page, pdfjs } from "react-pdf";
+import Legend from "../../../components/Legend";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf",
@@ -135,6 +137,7 @@ const PicCanvas = (props) => {
   const [openStorageModal, setOpenStorageModal] = useState(false);
   const [openshapeModal, setOpenShapeModal] = useState(false);
   const [openBuildingModal, setOpenBuildingModal] = useState(false);
+  const [legendData, setLegendData] = useState([]);
 
   const [shapes, setShapes] = useState([]);
   const [pdf, setPdf] = useState(undefined);
@@ -232,6 +235,7 @@ const PicCanvas = (props) => {
         uri: `${GLOBALS.Constants.ADMIN_PIC_BY_SITE}/${adminStore.site.siteId._id}`,
         token: store.token,
       });
+      setLegendData(response.data.shapes);
 
       let shapes = response.data.shapes;
       let newShapes = expiredShapes(shapes);
@@ -576,6 +580,32 @@ const PicCanvas = (props) => {
       setLevelsDropdown(levs);
     }
   };
+
+  const handleLegendClick = (id) => {
+    let shape = shapes.find((sp) => sp._id === id);
+    setSelectedShape(shape);
+    if (shape.type == "STORAGEAREA") {
+      setOpenStorageModal(true);
+    } else if (shape.type == "MEAN") {
+      setOpenMeanModal(true);
+    } else if (shape.type == "DELIVERYAREA") {
+      setOpenShapeModal(true);
+    } else if (shape.type === "BUILDING") {
+      setselectedBuilding(shape);
+      setOpenBuildingModal(true);
+      setAllLevels(shape.building.levels);
+      let levs = [];
+      shape.building.levels.map((le) =>
+        levs.push({
+          label: le.number === 0 ? "RDC" : le.number,
+          value: le._id,
+        }),
+      );
+
+      setLevelsDropdown(levs);
+    }
+  };
+
   const checkShape = () => {
     level && setSelectedShape(selectedShapeReserver);
     if (shape && modal) {
@@ -693,160 +723,175 @@ const PicCanvas = (props) => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.content}>
-        <div
-          style={{
-            top: "2.8%",
-            left: "40%",
-            position: "absolute",
-            zIndex: "10",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
+        <div>
+          <div className={classes.content}>
             <div
               style={{
-                backgroundColor: "#47A7EE",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-                minWidth: 150,
-                height: 50,
-                padding: "10px",
-                color: "white",
-                borderRadius: "30px",
-                textAlign: "center",
-                marginRight: "20px",
+                top: "2.8%",
+                left: "40%",
+                position: "absolute",
+                zIndex: "10",
               }}
             >
-              <div style={{ textAlign: "left", padding: "5px" }}></div>
-              <h3
-                className="font-weight-bold"
-                style={{ color: "white", marginRight: "10px" }}
-              >
-                {deliveryCount}
-              </h3>
-              <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
-            </div>
-            <div
-              style={{
-                backgroundColor: "#E15141",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-                minWidth: 150,
-                height: 50,
-                padding: "10px",
-                color: "white",
-                borderRadius: "30px",
-                textAlign: "center",
-                marginRight: "20px",
-              }}
-            >
-              <h3
-                className="font-weight-bold"
-                style={{ color: "white", marginRight: "10px" }}
-              >
-                {alertCount}
-              </h3>
-              <h6 style={{ color: "white" }}>{ALERT}</h6>
-            </div>
-          </div>
-        </div>
-
-        <div className={classes.canvasRow}>
-          {loading ? (
-            <Loader.Progress />
-          ) : (
-            <div
-              style={{
-                marginTop: 50,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <Document className={classes.pdfstyle} file={pdf ? pdf : imggg}>
-                <Page className={classes.pagee} pageNumber={1} height="680" />
-              </Document>
-              <Canvas
-                shapes={shapes}
-                role={adminStore?.site?.role}
-                onClick={handleClick}
-                onChange={handleChange}
-                setSelectedShape={setSelectedShape}
-                selectedShape={selectedShape}
-                onClear={onClear}
-                pdf={pdf}
-                setRendering={setRendering}
-                onPdfChange={handlePdfChange}
-                level={level ? true : false}
-              />
-            </div>
-          )}
-          <div className={classes.infoDrawerContainer}>
-            {selectedShape && selectedShape.type === "BUILDING" && level && (
-              <Button
-                text={SHOW_EXTERIOR}
-                className="mt-2"
-                onClick={() => {
-                  setPdf(
-                    adminStore.site.siteId?.plan
-                      ? GLOBALS.Constants.BASE_URL +
-                          adminStore.site.siteId?.plan
-                      : undefined,
-                  );
-
-                  setShapes(sitePic.shapes);
-                  setLevel("");
-                  setSelectedShape("");
-                  setselectedBuilding("");
-                  selectedShapeReserver = null;
-                }}
-              />
-            )}
-            {selectedBuilding && selectedShape.type !== "BUILDING" && level && (
-              <>
-                <Button
-                  text={SHOW_EXTERIOR}
-                  className="mt-2"
-                  onClick={() => {
-                    setPdf(
-                      adminStore.site.siteId?.plan
-                        ? GLOBALS.Constants.BASE_URL +
-                            adminStore.site.siteId?.plan
-                        : undefined,
-                    );
-
-                    setShapes(sitePic.shapes);
-                    setLevel("");
-                    setSelectedShape("");
-                    setselectedBuilding("");
-                    selectedShapeReserver = null;
-                  }}
-                />
-                <div className={classes.infoDrawer2}>{BuildingComponent()}</div>
-              </>
-            )}
-            {selectedShape && (
               <div
-                className={
-                  selectedShape && selectedShape.type !== "BUILDING" && level
-                    ? classes.infoDrawer3
-                    : classes.infoDrawer
-                }
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
               >
-                <Form.Row>
-                  {/* {level === "" ? (
+                <div
+                  style={{
+                    backgroundColor: "#47A7EE",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    minWidth: 150,
+                    height: 50,
+                    padding: "10px",
+                    color: "white",
+                    borderRadius: "30px",
+                    textAlign: "center",
+                    marginRight: "20px",
+                  }}
+                >
+                  <div style={{ textAlign: "left", padding: "5px" }}></div>
+                  <h3
+                    className="font-weight-bold"
+                    style={{ color: "white", marginRight: "10px" }}
+                  >
+                    {deliveryCount}
+                  </h3>
+                  <h6 style={{ color: "white" }}>{DELIVERIES}</h6>
+                </div>
+                <div
+                  style={{
+                    backgroundColor: "#E15141",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    minWidth: 150,
+                    height: 50,
+                    padding: "10px",
+                    color: "white",
+                    borderRadius: "30px",
+                    textAlign: "center",
+                    marginRight: "20px",
+                  }}
+                >
+                  <h3
+                    className="font-weight-bold"
+                    style={{ color: "white", marginRight: "10px" }}
+                  >
+                    {alertCount}
+                  </h3>
+                  <h6 style={{ color: "white" }}>{ALERT}</h6>
+                </div>
+              </div>
+            </div>
+
+            <div className={classes.canvasRow}>
+              {loading ? (
+                <Loader.Progress />
+              ) : (
+                <div
+                  style={{
+                    marginTop: 50,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Document
+                    className={classes.pdfstyle}
+                    file={pdf ? pdf : imggg}
+                  >
+                    <Page
+                      className={classes.pagee}
+                      pageNumber={1}
+                      height="680"
+                    />
+                  </Document>
+                  <Canvas
+                    shapes={shapes}
+                    role={adminStore?.site?.role}
+                    onClick={handleClick}
+                    onChange={handleChange}
+                    setSelectedShape={setSelectedShape}
+                    selectedShape={selectedShape}
+                    onClear={onClear}
+                    pdf={pdf}
+                    setRendering={setRendering}
+                    onPdfChange={handlePdfChange}
+                    level={level ? true : false}
+                  />
+                </div>
+              )}
+              <div className={classes.infoDrawerContainer}>
+                {selectedShape && selectedShape.type === "BUILDING" && level && (
+                  <Button
+                    text={SHOW_EXTERIOR}
+                    className="mt-2"
+                    onClick={() => {
+                      setPdf(
+                        adminStore.site.siteId?.plan
+                          ? GLOBALS.Constants.BASE_URL +
+                              adminStore.site.siteId?.plan
+                          : undefined,
+                      );
+
+                      setShapes(sitePic.shapes);
+                      setLevel("");
+                      setSelectedShape("");
+                      setselectedBuilding("");
+                      selectedShapeReserver = null;
+                    }}
+                  />
+                )}
+                {selectedBuilding &&
+                  selectedShape.type !== "BUILDING" &&
+                  level && (
+                    <>
+                      <Button
+                        text={SHOW_EXTERIOR}
+                        className="mt-2"
+                        onClick={() => {
+                          setPdf(
+                            adminStore.site.siteId?.plan
+                              ? GLOBALS.Constants.BASE_URL +
+                                  adminStore.site.siteId?.plan
+                              : undefined,
+                          );
+
+                          setShapes(sitePic.shapes);
+                          setLevel("");
+                          setSelectedShape("");
+                          setselectedBuilding("");
+                          selectedShapeReserver = null;
+                        }}
+                      />
+                      <div className={classes.infoDrawer2}>
+                        {BuildingComponent()}
+                      </div>
+                    </>
+                  )}
+                {selectedShape && (
+                  <div
+                    className={
+                      selectedShape &&
+                      selectedShape.type !== "BUILDING" &&
+                      level
+                        ? classes.infoDrawer3
+                        : classes.infoDrawer
+                    }
+                  >
+                    <Form.Row>
+                      {/* {level === "" ? (
                     <IconButton
                       disabled={loading}
                       onClick={(e) => {
@@ -870,23 +915,23 @@ const PicCanvas = (props) => {
                     </IconButton>
                   )} */}
 
-                  {selectedShape.type === "MEAN" ? (
-                    <>
-                      <NavLink
-                        disabled={loading}
-                        to={{
-                          pathname: "/means/calendar",
-                          selectedShape: selectedShape,
-                        }}
-                      >
-                        {/* <IconButton>
+                      {selectedShape.type === "MEAN" ? (
+                        <>
+                          <NavLink
+                            disabled={loading}
+                            to={{
+                              pathname: "/means/calendar",
+                              selectedShape: selectedShape,
+                            }}
+                          >
+                            {/* <IconButton>
                           <Calendar className={classes.infoIcon} />
                         </IconButton> */}
-                      </NavLink>
-                    </>
-                  ) : selectedShape.type === "DELIVERYAREA" ? (
-                    <>
-                      {/* <NavLink
+                          </NavLink>
+                        </>
+                      ) : selectedShape.type === "DELIVERYAREA" ? (
+                        <>
+                          {/* <NavLink
                         disabled={loading}
                         to={{
                           pathname: "/pic-interactive/calendar",
@@ -897,20 +942,20 @@ const PicCanvas = (props) => {
                           <Calendar className={classes.infoIcon} />
                         </IconButton>
                       </NavLink> */}
-                    </>
-                  ) : (
-                    <>
-                      <NavLink
-                        disabled={loading}
-                        to={{
-                          pathname: "/pic-interactive/calendar",
-                          selectedShape: selectedShape,
-                        }}
-                      ></NavLink>
-                    </>
-                  )}
+                        </>
+                      ) : (
+                        <>
+                          <NavLink
+                            disabled={loading}
+                            to={{
+                              pathname: "/pic-interactive/calendar",
+                              selectedShape: selectedShape,
+                            }}
+                          ></NavLink>
+                        </>
+                      )}
 
-                  {/* <IconButton
+                      {/* <IconButton
                     disabled={loading}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -919,198 +964,198 @@ const PicCanvas = (props) => {
                   >
                     <Cross className={classes.infoIcon} />
                   </IconButton> */}
-                </Form.Row>
+                    </Form.Row>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </div>
-      <>
-        {modal &&
-          (shape || selectedShape) &&
-          ((
-            shape
-              ? shape.type === "DELIVERYAREA"
-              : selectedShape.type === "DELIVERYAREA"
-          ) ? (
-            <FullScreenModal
-              title={`${shape ? ADD : EDIT} ${DELIVERYAREA}`}
-              open={modal}
-              onClose={() => {
-                checkShape();
-                setModal((st) => !st);
-                setSelectedShape("");
-              }}
-              // body={
-              //   <DeliveryArea
-              //     shape={shape}
-              //     pic={level ? levelPic : sitePic}
-              //     level={level}
-              //     shapes={shapes}
-              //     setShapes={setShapesFn}
-              //     selectedShape={selectedShape}
-              //     setSelectedShape={setSelectedShape}
-              //   />
-              // }
-            />
-          ) : (
-              shape
-                ? shape.type === "STORAGEAREA"
-                : selectedShape.type === "STORAGEAREA"
-            ) ? (
-            <FullScreenModal
-              title={`${shape ? ADD : EDIT} ${STORAGEAREA}`}
-              open={modal}
-              onClose={() => {
-                checkShape();
-                setModal((st) => !st);
-                setSelectedShape("");
-              }}
-              // body={
-              //   <StorageArea
-              //     shape={shape}
-              //     pic={level ? levelPic : sitePic}
-              //     level={level}
-              //     shapes={shapes}
-              //     setShapes={setShapesFn}
-              //     selectedShape={selectedShape}
-              //     setSelectedShape={setSelectedShape}
-              //   />
-              // }
-            />
-          ) : (
-              shape
-                ? shape.type === "BUILDING"
-                : selectedShape.type === "BUILDING"
-            ) ? (
-            <FullScreenModal
-              title={`${shape ? ADD : EDIT} ${BUILDING}`}
-              open={modal}
-              onClose={() => {
-                checkShape();
-                setModal((st) => !st);
-                setSelectedShape("");
-              }}
-              // body={
-              //   <Building
-              //     shape={shape}
-              //     pic={level ? levelPic : sitePic}
-              //     level={level}
-              //     shapes={shapes}
-              //     setShapes={setShapesFn}
-              //     selectedShape={selectedShape}
-              //     setSelectedShape={setSelectedShape}
-              //   />
-              // }
-            />
-          ) : (
-              shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
-            ) ? (
-            <FullScreenModal
-              title={`${shape ? ADD : EDIT} ${MEANS}`}
-              open={modal}
-              onClose={() => {
-                checkShape();
-                setModal((st) => !st);
-                setSelectedShape("");
-              }}
-              body={
-                <Mean
-                  shape={shape}
-                  pic={level ? levelPic : sitePic}
-                  level={level}
-                  levelName={levelName}
-                  selectedBuilding={selectedBuilding}
-                  shapes={shapes}
-                  setShapes={setShapesFn}
-                  selectedShape={selectedShape}
-                  setSelectedShape={setSelectedShape}
-                />
-              }
-            />
-          ) : (
-            ""
-          ))}
-      </>
-      {/* --------------------Building modal-------------------- */}
-      <Dialog
-        open={openBuildingModal}
-        onClose={() => setOpenBuildingModal(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent style={{ margin: "30px" }}>
-          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
-            {selectedShape?.name}
-          </h4>
-          <SubHeading primary={`Type : ${selectedShape.type}`} />
-          <div
-            className={classes.infoDrawerContainer}
-            style={{ width: "100%" }}
-          >
-            {selectedShape && selectedShape.type === "BUILDING" && level && (
-              <Button
-                text={SHOW_EXTERIOR}
-                className="mt-2"
-                style={{ marginBottom: "5px" }}
-                onClick={() => {
-                  setOpenBuildingModal(false);
-                  setTimeout(function () {
-                    setPdf(
-                      adminStore.site.siteId?.plan
-                        ? GLOBALS.Constants.BASE_URL +
-                            adminStore.site.siteId?.plan
-                        : undefined,
-                    );
-                    setShapes(sitePic.shapes);
-                    setLevel("");
+          <>
+            {modal &&
+              (shape || selectedShape) &&
+              ((
+                shape
+                  ? shape.type === "DELIVERYAREA"
+                  : selectedShape.type === "DELIVERYAREA"
+              ) ? (
+                <FullScreenModal
+                  title={`${shape ? ADD : EDIT} ${DELIVERYAREA}`}
+                  open={modal}
+                  onClose={() => {
+                    checkShape();
+                    setModal((st) => !st);
                     setSelectedShape("");
-                    setselectedBuilding("");
-                    selectedShapeReserver = null;
-                  }, 4);
-                }}
-              />
-            )}
-
-            {selectedShape.type === "BUILDING" && (
-              <FormSelect
-                name="level"
-                value={level}
-                values={levelsDropdown}
-                placeholder={SELECT_LEVEL}
-                onChange={({ target: { value } }) => {
-                  setLevel(value);
-                  findlevelName(value);
-                  if (value) {
-                    fetchLevelPic(value);
-                    const leve = allLeves.find((lev) => lev._id === value);
-                    setPdf(
-                      leve?.plan
-                        ? GLOBALS.Constants.BASE_URL + leve.plan
-                        : undefined,
-                    );
+                  }}
+                  // body={
+                  //   <DeliveryArea
+                  //     shape={shape}
+                  //     pic={level ? levelPic : sitePic}
+                  //     level={level}
+                  //     shapes={shapes}
+                  //     setShapes={setShapesFn}
+                  //     selectedShape={selectedShape}
+                  //     setSelectedShape={setSelectedShape}
+                  //   />
+                  // }
+                />
+              ) : (
+                  shape
+                    ? shape.type === "STORAGEAREA"
+                    : selectedShape.type === "STORAGEAREA"
+                ) ? (
+                <FullScreenModal
+                  title={`${shape ? ADD : EDIT} ${STORAGEAREA}`}
+                  open={modal}
+                  onClose={() => {
+                    checkShape();
+                    setModal((st) => !st);
+                    setSelectedShape("");
+                  }}
+                  // body={
+                  //   <StorageArea
+                  //     shape={shape}
+                  //     pic={level ? levelPic : sitePic}
+                  //     level={level}
+                  //     shapes={shapes}
+                  //     setShapes={setShapesFn}
+                  //     selectedShape={selectedShape}
+                  //     setSelectedShape={setSelectedShape}
+                  //   />
+                  // }
+                />
+              ) : (
+                  shape
+                    ? shape.type === "BUILDING"
+                    : selectedShape.type === "BUILDING"
+                ) ? (
+                <FullScreenModal
+                  title={`${shape ? ADD : EDIT} ${BUILDING}`}
+                  open={modal}
+                  onClose={() => {
+                    checkShape();
+                    setModal((st) => !st);
+                    setSelectedShape("");
+                  }}
+                  // body={
+                  //   <Building
+                  //     shape={shape}
+                  //     pic={level ? levelPic : sitePic}
+                  //     level={level}
+                  //     shapes={shapes}
+                  //     setShapes={setShapesFn}
+                  //     selectedShape={selectedShape}
+                  //     setSelectedShape={setSelectedShape}
+                  //   />
+                  // }
+                />
+              ) : (
+                  shape ? shape.type === "MEAN" : selectedShape.type === "MEAN"
+                ) ? (
+                <FullScreenModal
+                  title={`${shape ? ADD : EDIT} ${MEANS}`}
+                  open={modal}
+                  onClose={() => {
+                    checkShape();
+                    setModal((st) => !st);
+                    setSelectedShape("");
+                  }}
+                  body={
+                    <Mean
+                      shape={shape}
+                      pic={level ? levelPic : sitePic}
+                      level={level}
+                      levelName={levelName}
+                      selectedBuilding={selectedBuilding}
+                      shapes={shapes}
+                      setShapes={setShapesFn}
+                      selectedShape={selectedShape}
+                      setSelectedShape={setSelectedShape}
+                    />
                   }
-                }}
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+                />
+              ) : (
+                ""
+              ))}
+          </>
+          {/* --------------------Building modal-------------------- */}
+          <Dialog
+            open={openBuildingModal}
+            onClose={() => setOpenBuildingModal(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent style={{ margin: "30px" }}>
+              <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+                {selectedShape?.name}
+              </h4>
+              <SubHeading primary={`Type : ${selectedShape.type}`} />
+              <div
+                className={classes.infoDrawerContainer}
+                style={{ width: "100%" }}
+              >
+                {selectedShape && selectedShape.type === "BUILDING" && level && (
+                  <Button
+                    text={SHOW_EXTERIOR}
+                    className="mt-2"
+                    style={{ marginBottom: "5px" }}
+                    onClick={() => {
+                      setOpenBuildingModal(false);
+                      setTimeout(function () {
+                        setPdf(
+                          adminStore.site.siteId?.plan
+                            ? GLOBALS.Constants.BASE_URL +
+                                adminStore.site.siteId?.plan
+                            : undefined,
+                        );
+                        setShapes(sitePic.shapes);
+                        setLevel("");
+                        setSelectedShape("");
+                        setselectedBuilding("");
+                        selectedShapeReserver = null;
+                      }, 4);
+                    }}
+                  />
+                )}
 
-      {/*--------------------------------- Mean modal-------------------------------- */}
-      <Dialog
-        open={openMeanModal}
-        onClose={() => setOpenMeanModal(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent style={{ margin: "30px" }}>
-          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
-            {selectedShape?.name}
-          </h4>
-          <SubHeading primary={`Type : ${selectedShape.type}`} />
+                {selectedShape.type === "BUILDING" && (
+                  <FormSelect
+                    name="level"
+                    value={level}
+                    values={levelsDropdown}
+                    placeholder={SELECT_LEVEL}
+                    onChange={({ target: { value } }) => {
+                      setLevel(value);
+                      findlevelName(value);
+                      if (value) {
+                        fetchLevelPic(value);
+                        const leve = allLeves.find((lev) => lev._id === value);
+                        setPdf(
+                          leve?.plan
+                            ? GLOBALS.Constants.BASE_URL + leve.plan
+                            : undefined,
+                        );
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
 
-          {/* <div style={{ textAlign: "center" }}>
+          {/*--------------------------------- Mean modal-------------------------------- */}
+          <Dialog
+            open={openMeanModal}
+            onClose={() => setOpenMeanModal(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent style={{ margin: "30px" }}>
+              <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+                {selectedShape?.name}
+              </h4>
+              <SubHeading primary={`Type : ${selectedShape.type}`} />
+
+              {/* <div style={{ textAlign: "center" }}>
             <NavLink
               disabled={loading}
               to={{
@@ -1123,45 +1168,45 @@ const PicCanvas = (props) => {
               </IconButton>
             </NavLink>
           </div> */}
-        </DialogContent>
-      </Dialog>
+            </DialogContent>
+          </Dialog>
 
-      <Dialog
-        open={openStorageModal}
-        onClose={() => setOpenStorageModal(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <h5 style={{ color: "#DBB20A" }}>{selectedShape?.name}</h5>
-          {storageArea ? (
-            <>
-              <p
-                style={{
-                  fontSize: 15,
-                }}
-              >
-                Vous avez accès à cette zone de stockage.
-              </p>
-            </>
-          ) : requestFound ? (
-            <p
-              style={{
-                fontSize: 15,
-              }}
-            >
-              Your Previous Request is Still Pending
-            </p>
-          ) : (
-            <>
-              <p
-                style={{
-                  fontSize: 15,
-                }}
-              >
-                Vous n'avez pas accès à cette zone de stockage.
-              </p>
-              {/* <Button
+          <Dialog
+            open={openStorageModal}
+            onClose={() => setOpenStorageModal(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <h5 style={{ color: "#DBB20A" }}>{selectedShape?.name}</h5>
+              {storageArea ? (
+                <>
+                  <p
+                    style={{
+                      fontSize: 15,
+                    }}
+                  >
+                    Vous avez accès à cette zone de stockage.
+                  </p>
+                </>
+              ) : requestFound ? (
+                <p
+                  style={{
+                    fontSize: 15,
+                  }}
+                >
+                  Your Previous Request is Still Pending
+                </p>
+              ) : (
+                <>
+                  <p
+                    style={{
+                      fontSize: 15,
+                    }}
+                  >
+                    Vous n'avez pas accès à cette zone de stockage.
+                  </p>
+                  {/* <Button
                 // text="Demander Accès"
                 className="mt-2 "
                 disabled={requestFound}
@@ -1170,40 +1215,51 @@ const PicCanvas = (props) => {
               > 
                 Demander Accès
               </Button> */}
-            </>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={openshapeModal}
+            onClose={() => setOpenShapeModal(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
+                {selectedShape?.name}
+              </h4>
+
+              <>
+                <SubHeading primary={`Type : ${selectedShape.type}`} />
+                <div style={{ textAlign: "center" }}>
+                  <NavLink
+                    disabled={loading}
+                    to={{
+                      pathname: "/pic-interactive/calendar",
+                      selectedShape: selectedShape,
+                    }}
+                  >
+                    <IconButton>
+                      <Calendar className={classes.infoIcon} />
+                    </IconButton>
+                  </NavLink>
+                </div>
+              </>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div style={{ paddingLeft: 10 }}>
+          {!props.drawerOpen && (
+            <Legend
+              shapes={legendData}
+              onClick={handleLegendClick}
+              selectedShape={selectedShape}
+            />
           )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={openshapeModal}
-        onClose={() => setOpenShapeModal(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
-            {selectedShape?.name}
-          </h4>
-
-          <>
-            <SubHeading primary={`Type : ${selectedShape.type}`} />
-            <div style={{ textAlign: "center" }}>
-              <NavLink
-                disabled={loading}
-                to={{
-                  pathname: "/pic-interactive/calendar",
-                  selectedShape: selectedShape,
-                }}
-              >
-                <IconButton>
-                  <Calendar className={classes.infoIcon} />
-                </IconButton>
-              </NavLink>
-            </div>
-          </>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     </div>
   );
 };

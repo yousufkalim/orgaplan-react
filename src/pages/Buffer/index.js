@@ -3,12 +3,12 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 // Pages
-import bPic from "./Pic";
+import Pic from "./Pic";
 import bPlanning from "./Planning";
 import bvarificationSheet from "./Planning/components/VerificationSheet";
 
 // Component
-export default function BufferIndex() {
+export default function BufferIndex(props) {
   return (
     <Switch>
       <Route
@@ -16,9 +16,16 @@ export default function BufferIndex() {
         path="/Plannig/varificationSheet"
         component={bvarificationSheet}
       />
-      <Route exact path="/" component={bPic} />
+      <Route
+        exact
+        path="/"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Route exact path="/Planing" component={bPlanning} />
-      <Route path="/pic-interactive" component={bPic} />
+      <Route
+        path="/pic-interactive"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Redirect from="*" to="/" />
     </Switch>
   );

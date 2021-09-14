@@ -11,14 +11,17 @@ import Incidents from "./Incidents";
 import Organigramme from "./Organigramme";
 
 // Component
-export default function AdminIndex() {
+export default function AdminIndex(props) {
   return (
     <Switch>
       <Route exact path="/" component={Calender} />
       <Route path="/companies" component={Companies} />
       <Route path="/incidents" component={Incidents} />
       <Route path="/means" component={Means} />
-      <Route path="/pic-interactive" component={Pic} />
+      <Route
+        path="/pic-interactive"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Route path="/organigramme" component={Organigramme} />
       <Redirect from="*" to="/" />
     </Switch>

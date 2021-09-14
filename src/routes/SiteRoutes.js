@@ -26,6 +26,7 @@ export default function SiteRoutes() {
   const location = useLocation();
   let history = useHistory();
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(true);
   useEffect(() => {
     if (
       location.pathname === "/means/calendar" ||
@@ -52,20 +53,20 @@ export default function SiteRoutes() {
           <Redirect from="*" to="/" />
         </Switch>
       ) : store.site.role == "ADMIN" ? (
-        <SiteHeader>
-          <AdminIndex />
+        <SiteHeader setOpen={setOpen} open={open}>
+          <AdminIndex drawerOpen={open} />
         </SiteHeader>
       ) : store.site.role == "ENTERPRISE" ? (
-        <SiteHeader>
-          <EnterpriseIndex />
+        <SiteHeader setOpen={setOpen} open={open}>
+          <EnterpriseIndex drawerOpen={open} />
         </SiteHeader>
       ) : store.site.role == "TRAFFIC" ? (
-        <SiteHeader>
-          <TrafficIndex />
+        <SiteHeader setOpen={setOpen} open={open}>
+          <TrafficIndex drawerOpen={open} />
         </SiteHeader>
       ) : (
-        <SiteHeader>
-          <BufferIndex />
+        <SiteHeader setOpen={setOpen} open={open}>
+          <BufferIndex drawerOpen={open} />
         </SiteHeader>
       )}
     </>
