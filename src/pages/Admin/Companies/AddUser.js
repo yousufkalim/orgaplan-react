@@ -226,21 +226,7 @@ export default function AddUser(props) {
                 value={phone}
                 disabled={disableUser}
                 placeholder="Téléphone"
-<<<<<<< HEAD
                 onInput={(value) => handlePhone(value)}
-=======
-                error={phoneError}
-                onChange={({ target: { name, value } }) =>
-                  value.length < 26 ? inputChange(name, value) : ""
-                }
-                onBlur={({ target: { name, value } }) =>
-                  value.length < 26
-                    ? GLOBALS.Functions.phone(value)
-                      ? setPhoneError(Telephone_must_have_10_to_25_digits)
-                      : setPhoneError("")
-                    : ""
-                }
->>>>>>> b3da3439276ddcded534ebd235732c9587b0b278
               />
             </Form.Row>
           </Form.Row>

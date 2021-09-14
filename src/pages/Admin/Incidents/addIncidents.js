@@ -447,7 +447,6 @@ export default function AddIncidents(props) {
             <Form.Row width="48%">
               <FormSelect
                 name="bill"
-<<<<<<< HEAD
                 style={GLOBALS.Styles.inputWidth}
                 onChange={billChange}
                 value={isBillable}
@@ -456,26 +455,6 @@ export default function AddIncidents(props) {
                   { label: NO, value: "false" },
                 ]}
               />
-=======
-                id="bill"
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  setPriceDisable(e.target.value);
-                  if (e.target.value === "false") {
-                    setPrice("0");
-                    setIsBillable(false);
-                    setIsPaid(false);
-                  } else if (e.target.value === "true") {
-                    setIsBillable(true);
-                  }
-                }}
-              >
-                <option selected value={true}>
-                  {YES}
-                </option>
-                <option value={false}>{NO}</option>
-              </select>
->>>>>>> b3da3439276ddcded534ebd235732c9587b0b278
             </Form.Row>
           </Form.Row>
 
@@ -535,14 +514,8 @@ export default function AddIncidents(props) {
                 !name ||
                 !date ||
                 !dropdownCompanies ||
-<<<<<<< HEAD
                 (isBillable && !price) ||
                 !type
-=======
-                (isBillable === "true" && !price) ||
-                !type ||
-                loading
->>>>>>> b3da3439276ddcded534ebd235732c9587b0b278
               }
             />
           </Form.ButtonContainer>
