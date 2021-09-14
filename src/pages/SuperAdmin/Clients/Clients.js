@@ -228,7 +228,7 @@ export default function Clients(props) {
 
   async function onDelete(itemId) {
     try {
-      if (window.confirm({ Are_you_sure_to_Delete })) {
+      if (window.confirm(Are_you_sure_to_Delete)) {
         setLoading(true);
         await GLOBALS.API({
           method: "DELETE",
