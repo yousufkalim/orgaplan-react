@@ -1011,7 +1011,7 @@ const Calender = (props) => {
             } else if (key.status === "COMPLETED") {
               background = "#32CD32";
             } else {
-              background = "#00BFFF";
+              background = "#47A7EE";
             }
             /* start time converstion */
             let start = new Date(key.date);
