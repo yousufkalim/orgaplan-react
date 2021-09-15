@@ -86,6 +86,12 @@ export default function DeliveryRequestStep3(props) {
         routingMeans: props.step2Data.routingMeans,
         materials: props.step1Data.materials,
         date: props.step1Data.date,
+        sDate: moment(props.step1Data.date)
+          .set("hours", props.step1Data.startTime.split(":")[0])
+          .set("minutes", props.step1Data.startTime.split(":")[1]),
+        eDate: moment(props.step1Data.date)
+          .set("hours", props.step1Data.endTime.split(":")[0])
+          .set("minutes", props.step1Data.endTime.split(":")[1]),
         startTime: props.step1Data.startTime,
         endTime: props.step1Data.endTime,
         type: "SCHEDULED",

@@ -1,4 +1,4 @@
-// const BASE_URL = "http://160.153.249.64:2002/";
+// const BASE_URL = "https://orgaplan.falconconsulting.fr/";
 const BASE_URL = process.env.REACT_APP_SERVER_URL;
 
 const BASE_URL_V1 = BASE_URL + "api/v1/";
