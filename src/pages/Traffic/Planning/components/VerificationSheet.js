@@ -18,6 +18,7 @@ import moment from "moment";
 import { Modal } from "antd";
 import Avatar from "@material-ui/core/Avatar";
 import _ from "lodash";
+import { Checkbox } from "antd";
 
 // import Popup from "reactjs-popup";
 import SignaturePad from "react-signature-canvas";
@@ -65,6 +66,7 @@ const VarificationSheet = (props) => {
   const [imageURL, setImageURL] = useState(null); // create a state that will contain our image url
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showImgModal, setShowImgModal] = useState(false);
+  const [count, setCount] = useState(0);
 
   const sigCanvas = useRef({});
   var obj = [{ uri: "uploads/mean/grey.png" }];
@@ -212,6 +214,15 @@ const VarificationSheet = (props) => {
       );
     }
   };
+
+  const onCheckChange = (e) => {
+    if (e.target.checked) {
+      setCount(count + 1);
+    } else {
+      setCount(count - 1);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -317,13 +328,41 @@ const VarificationSheet = (props) => {
       {/* <Form.Form> */}
       <div className="row box">
         <div className="col-sm-6">
-          <div className="label">{COMPANY} : </div>
-          <div className="label">{DATE_AND_TIME} :</div>
-          <div className="label">
-            {DELIVERYAREA} / {MEAN} :{" "}
+          <div>
+            <Checkbox
+              onChange={onCheckChange}
+              disabled={checkStatus != "VALIDATED"}
+            >
+              <div className="label">{COMPANY} : </div>
+            </Checkbox>
           </div>
-          <div className="label">
-            {STORAGEAREA} / {MEAN} :{" "}
+          <div>
+            <Checkbox
+              onChange={onCheckChange}
+              disabled={checkStatus != "VALIDATED"}
+            >
+              <div className="label">{DATE_AND_TIME} :</div>
+            </Checkbox>
+          </div>
+          <div>
+            <Checkbox
+              onChange={onCheckChange}
+              disabled={checkStatus != "VALIDATED"}
+            >
+              <div className="label">
+                {DELIVERYAREA} / {MEAN} :{" "}
+              </div>
+            </Checkbox>
+          </div>
+          <div>
+            <Checkbox
+              onChange={onCheckChange}
+              disabled={checkStatus != "VALIDATED"}
+            >
+              <div className="label">
+                {STORAGEAREA} / {MEAN} :{" "}
+              </div>
+            </Checkbox>
           </div>
         </div>
         <div className="col-sm-6">
@@ -344,7 +383,12 @@ const VarificationSheet = (props) => {
           </div>
         </div>
         <div className="col-sm-6">
-          <div className="label">{DELIVERY_REALTIME} : </div>
+          <Checkbox
+            onChange={onCheckChange}
+            disabled={checkStatus != "VALIDATED"}
+          >
+            <div className="label">{DELIVERY_REALTIME} : </div>
+          </Checkbox>
         </div>
         <div className="col-sm-6">
           <div className="value checkBoxTime">
@@ -371,9 +415,14 @@ const VarificationSheet = (props) => {
         </div>
 
         <div className="col-sm-6">
-          <div className="label" style={{ padding: "25px 0px" }}>
-            {MATERIALS_DELIVERED} :<br />({NOT_RECEIVED})
-          </div>
+          <Checkbox
+            onChange={onCheckChange}
+            disabled={checkStatus != "VALIDATED"}
+          >
+            <div className="label" style={{ padding: "25px 0px" }}>
+              {MATERIALS_DELIVERED} :<br />({NOT_RECEIVED})
+            </div>
+          </Checkbox>
         </div>
         <div className="col-sm-6">
           <ButtonGroup
@@ -384,7 +433,12 @@ const VarificationSheet = (props) => {
           />
         </div>
         <div className="col-sm-6">
-          <div className="label">{COMMENT_TRAFFIC} :</div>
+          <Checkbox
+            onChange={onCheckChange}
+            disabled={checkStatus != "VALIDATED"}
+          >
+            <div className="label">{COMMENT_TRAFFIC} :</div>
+          </Checkbox>
         </div>
         <div className="col-sm-6">
           <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -401,7 +455,12 @@ const VarificationSheet = (props) => {
           </Form.Group>
         </div>
         <div className="col-sm-6">
-          <div className="label">{ADD_PHOTO} :</div>
+          <Checkbox
+            onChange={onCheckChange}
+            disabled={checkStatus != "VALIDATED"}
+          >
+            <div className="label">{ADD_PHOTO} :</div>
+          </Checkbox>
         </div>
         <div className="col-sm-6">
           <FormMultipleUpload
@@ -422,7 +481,12 @@ const VarificationSheet = (props) => {
 
         <div className="col-sm-6">
           <br />
-          <div className="label">MERCI DE SIGNER*:</div>
+          <Checkbox
+            onChange={onCheckChange}
+            disabled={checkStatus != "VALIDATED"}
+          >
+            <div className="label">MERCI DE SIGNER*:</div>
+          </Checkbox>
         </div>
         <div
           className="col-sm-6"
@@ -537,7 +601,8 @@ const VarificationSheet = (props) => {
           (status != "VALIDATED" && status != "MODIFIED") ||
           checkStatus === "VALIDATED" ||
           checkStatus === "MODIFIED" ||
-          (delayCheckBox == true && delayTime == "00:00")
+          (delayCheckBox == true && delayTime == "00:00") ||
+          count !== 9
         }
         onClick={onSubmit}
       >
