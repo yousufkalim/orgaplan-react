@@ -494,7 +494,8 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            materials.length === 0
+            materials.length === 0 ||
+            (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />
       </Form.ButtonContainer>
