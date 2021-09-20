@@ -53,14 +53,18 @@ export default function DeliveryRequestStep3(props) {
       (item) => item._id === props.step2Data.storageArea,
     );
     stor && setStorageArea(stor.name);
-    let liftMea = props.means.filter((item) =>
-      props.step1Data.liftingMeans.includes(item._id),
-    );
-    liftMea && setLiftingMeans(liftMea.map((item) => item.name));
-    let routMeans = props.means.filter((item) =>
-      props.step2Data.routingMeans.includes(item._id),
-    );
-    routMeans && setRoutingMeans(routMeans.map((item) => item.name));
+    if (props.step1Data.liftingMeans) {
+      let liftMea = props.means.filter((item) =>
+        props.step1Data.liftingMeans.includes(item._id),
+      );
+      liftMea && setLiftingMeans(liftMea.map((item) => item.name));
+    }
+    if (props.step1Data.routingMeans) {
+      let routMeans = props.means.filter((item) =>
+        props.step2Data.routingMeans.includes(item._id),
+      );
+      routMeans && setRoutingMeans(routMeans.map((item) => item.name));
+    }
     if (props.step3Data) {
       setComments(props.step3Data.comment);
       setReceiveSummary(props.step3Data.sendDeliverySummary);

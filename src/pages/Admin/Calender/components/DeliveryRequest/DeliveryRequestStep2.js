@@ -84,6 +84,7 @@ export default function AddSiteStep1(props) {
   useEffect(() => {
     getMeans();
     filterUnavailableStorageArea();
+
     // eslint-disable-next-line
   }, [props, storageArea, startTime, endTime]);
 
@@ -407,7 +408,10 @@ export default function AddSiteStep1(props) {
           text={VALIDATE}
           fullWidth={false}
           disabled={
-            !building || (building !== "Exterior" && !level) || !storageArea
+            !building ||
+            (building !== "Exterior" && !level) ||
+            !storageArea ||
+            (disableRoutingMeans ? false : routingMeans.length === 0)
           }
         />
       </Form.ButtonContainer>

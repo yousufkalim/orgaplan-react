@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 
 import store from "./redux/store";
 import Routes from "./routes";
@@ -14,7 +14,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 // React Bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
