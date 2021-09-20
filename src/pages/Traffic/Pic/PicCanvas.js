@@ -1134,7 +1134,7 @@ const PicCanvas = (props) => {
           <h4 style={{ color: "#DBB20A", textAlign: "center" }}>
             {selectedShape?.name}
           </h4>
-          <SubHeading primary={`Type1 : ${selectedShape.type}`} />
+          <SubHeading primary={`Type : ${selectedShape.type}`} />
           <div style={{ textAlign: "center" }}>
             <NavLink
               disabled={loading}

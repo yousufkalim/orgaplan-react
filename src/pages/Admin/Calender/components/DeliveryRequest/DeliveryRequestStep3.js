@@ -52,14 +52,18 @@ export default function DeliveryRequestStep3(props) {
       (item) => item._id === props.step2Data.storageArea,
     );
     stor && setStorageArea(stor.name);
-    let liftMea = props.means.filter((item) =>
-      props.step1Data.liftingMeans.includes(item._id),
-    );
-    liftMea && setLiftingMeans(liftMea.map((item) => item.name));
-    let routMeans = props.means.filter((item) =>
-      props.step2Data.routingMeans.includes(item._id),
-    );
-    routMeans && setRoutingMeans(routMeans.map((item) => item.name));
+    if (props.step1Data.liftingMeans) {
+      let liftMea = props.means.filter((item) =>
+        props.step1Data.liftingMeans.includes(item._id),
+      );
+      liftMea && setLiftingMeans(liftMea.map((item) => item.name));
+    }
+    if (props.step2Data.routingMeans) {
+      let routMeans = props.means.filter((item) =>
+        props.step2Data.routingMeans.includes(item._id),
+      );
+      routMeans && setRoutingMeans(routMeans.map((item) => item.name));
+    }
     if (props.step3Data) {
       setComments(props.step3Data.comment);
       setReceiveSummary(props.step3Data.sendDeliverySummary);
@@ -71,6 +75,7 @@ export default function DeliveryRequestStep3(props) {
     try {
       e.preventDefault();
       setLoading(true);
+
       const formdata = {
         siteId: adminStore.site.siteId._id,
         companyId: props.step1Data.company,
@@ -102,9 +107,6 @@ export default function DeliveryRequestStep3(props) {
             : "VALIDATED",
       };
       if (props.event) {
-        // console.log(props.event.status);
-        // console.log("formdata status", formdata.status);
-        // console.log("status pending", props.step1Data.selectedMeans);
       } else {
         if (props.step1Data.selectedMeans.length >= 1) {
           const response = await GLOBALS.API({
@@ -112,10 +114,6 @@ export default function DeliveryRequestStep3(props) {
             token: store.token,
           });
           if (props.step2Data.selectedRoutingMeans.length >= 1) {
-            // console.log(
-            //   "here is routing means",
-            //   props.step2Data.selectedRoutingMeans,
-            // );
             props.step2Data.selectedRoutingMeans.map(async (m) => {
               let startHour = moment(props.step1Data.date)
                 .set("hours", props.step1Data.startTime.split(":")[0])

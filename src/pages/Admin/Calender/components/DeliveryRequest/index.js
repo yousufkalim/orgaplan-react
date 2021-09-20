@@ -193,6 +193,7 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
       setStep1Data({
+        id: response.data._id,
         company: response.data.companyId._id,
         deliveryArea: response.data.deliveryArea._id,
         date: response.data.date,
@@ -201,12 +202,15 @@ export default function DeliveryRequest(props) {
         trades: response.data.trades,
         liftingMeans: response.data.liftingMeans?.map((item) => item._id),
         materials: response.data.materials,
+        meanBookings: response.data.meanBookings,
       });
       setStep2Data({
+        id: response.data._id,
         building: response.data.building,
         level: response.data.level,
         storageArea: response.data.storageArea._id,
         routingMeans: response.data.routingMeans?.map((item) => item._id),
+        meanBookings: response.data.meanBookings,
       });
       setStep3Data({
         comment: response.data.comment,
