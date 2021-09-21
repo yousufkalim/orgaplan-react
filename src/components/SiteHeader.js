@@ -212,10 +212,8 @@ export default function SiteHeader(props) {
           },
         ];
 
-  const [open, setOpen] = useState(true);
-
   const handleDrawer = () => {
-    setOpen((st) => !st);
+    props.setOpen((st) => !st);
   };
 
   return (
@@ -224,7 +222,7 @@ export default function SiteHeader(props) {
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={props.open}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -312,7 +310,7 @@ export default function SiteHeader(props) {
 
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: open,
+          [classes.contentShift]: props.open,
         })}
       >
         <div className="d-flex">

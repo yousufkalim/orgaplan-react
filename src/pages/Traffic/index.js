@@ -3,16 +3,20 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 // Pages
-import tPic from "./Pic";
+import Pic from "./Pic";
 import tIncidents from "./Incidents";
 import tPlanning from "./Planning";
 import varificationSheet from "./Planning/components/VerificationSheet";
 
 // Component
-export default function TrafficIndex() {
+export default function TrafficIndex(props) {
   return (
     <Switch>
-      <Route exact path="/" component={tPic} />
+      <Route
+        exact
+        path="/"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Route
         exact
         path="/Plannig/varificationSheet"
@@ -20,7 +24,10 @@ export default function TrafficIndex() {
       />
       <Route path="/incidents" component={tIncidents} />
       <Route path="/Plannig" component={tPlanning} />
-      <Route path="/pic-interactive" component={tPic} />
+      <Route
+        path="/pic-interactive"
+        render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
+      />
       <Redirect from="*" to="/" />
     </Switch>
   );
