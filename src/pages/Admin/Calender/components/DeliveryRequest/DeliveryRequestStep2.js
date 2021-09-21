@@ -221,7 +221,7 @@ export default function AddSiteStep1(props) {
                   end <= bookingEndTime &&
                   end >= bookingStartTime
                 ) {
-                  return booking;
+                  if (props.step2Data.id != booking.deliveryId) return booking;
                 }
                 ///////// if the booking date is in range of the selected date, we show the values and show unavailable message
                 else if (
@@ -295,6 +295,7 @@ export default function AddSiteStep1(props) {
       storageArea,
       selectedRoutingMeans,
       routingMeans,
+      id: props.step2Data.id,
     };
     props.setStep2Data(values);
     props.setStep(3);

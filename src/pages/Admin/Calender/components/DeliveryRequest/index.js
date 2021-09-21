@@ -203,6 +203,7 @@ export default function DeliveryRequest(props) {
         liftingMeans: response.data.liftingMeans?.map((item) => item._id),
         materials: response.data.materials,
         meanBookings: response.data.meanBookings,
+        modified: true,
       });
       setStep2Data({
         id: response.data._id,
@@ -211,6 +212,7 @@ export default function DeliveryRequest(props) {
         storageArea: response.data.storageArea._id,
         routingMeans: response.data.routingMeans?.map((item) => item._id),
         meanBookings: response.data.meanBookings,
+        modified: true,
       });
       setStep3Data({
         comment: response.data.comment,

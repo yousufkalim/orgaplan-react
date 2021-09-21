@@ -172,7 +172,8 @@ export default function AddSiteStep1(props) {
                     end <= bookingEndTime &&
                     end >= bookingStartTime
                   ) {
-                    return booking;
+                    if (props.step1Data.id != booking.deliveryId)
+                      return booking;
                   }
                   ///////// if the booking date is in range of the selected date, we show the values and show unavailable message
                   else if (
@@ -300,6 +301,7 @@ export default function AddSiteStep1(props) {
       trades,
       liftingMeans,
       materials: materials.map((item) => item.label),
+      id: props.step1Data.id,
     };
     props.setStep1Data(values);
     props.setStep(2);
@@ -497,7 +499,8 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            materials.length === 0
+            materials.length === 0 ||
+            (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />
       </Form.ButtonContainer>
