@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
     placeItems: "center",
   },
   logo: {
-    width: "126px",
-    height: "121px",
+    width: "70",
+    height: "70%",
   },
   listItemSelected: {
     color: theme.palette.primary.main,
@@ -266,6 +266,7 @@ export default function SiteHeader(props) {
           <List>
             {userItems.map((item, i) => (
               <ListItem
+                style={{ marginTop: 16, marginLeft: 8 }}
                 button
                 key={i}
                 component={NavLink}
@@ -285,10 +286,14 @@ export default function SiteHeader(props) {
                 >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.name} />
+                <ListItemText
+                  primaryTypographyProps={{ style: { fontWeight: "lighter" } }}
+                  primary={item.name}
+                />
               </ListItem>
             ))}
             <ListItem
+              style={{ marginTop: 16, marginLeft: 8 }}
               button
               key={"logout"}
               onClick={() => dispatch(Actions.auth.do_logout())}
@@ -296,7 +301,10 @@ export default function SiteHeader(props) {
               <ListItemIcon className={classes.listItemIcon}>
                 {<ExitToAppIcon />}
               </ListItemIcon>
-              <ListItemText primary={LOGOUT} />
+              <ListItemText
+                primaryTypographyProps={{ style: { fontWeight: "lighter" } }}
+                primary={LOGOUT}
+              />
             </ListItem>
           </List>
         </div>
