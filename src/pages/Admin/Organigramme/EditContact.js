@@ -244,6 +244,10 @@ export default function EditContact(props) {
         ? evt.currentTarget.value
         : phone;
       setPhone(value);
+      setPhoneError("");
+      if (evt.currentTarget.value.length < 9) {
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      }
     }
   }
 
@@ -316,13 +320,9 @@ export default function EditContact(props) {
                   name="phone"
                   value={phone}
                   type="text"
-                  // error={lastName}
                   placeholder="Téléphone"
                   style={{ width: "100%" }}
                   onInput={(value) => handlePhone(value)}
-                  onBlur={({ target: { name, value } }) =>
-                    validation(name, value)
-                  }
                   error={phoneError}
                 />
               </div>
@@ -425,7 +425,13 @@ export default function EditContact(props) {
               fullWidth={false}
               loading={loading}
               disabled={
-                loading || !type || !email || !phone || !firstName || !lastName
+                loading ||
+                !type ||
+                !email ||
+                !phone ||
+                !firstName ||
+                !lastName ||
+                phoneError
               }
             />
           </Form.ButtonContainer>

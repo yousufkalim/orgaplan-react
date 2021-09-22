@@ -180,6 +180,10 @@ export default function AddAdmin(props) {
         ? evt.currentTarget.value
         : phone;
       setPhone(value);
+      setPhoneError("");
+      if (evt.currentTarget.value.length < 9) {
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      }
     }
   }
 
@@ -302,10 +306,9 @@ export default function AddAdmin(props) {
                 placeholder={TELEPHONE}
                 style={GLOBALS.Styles.inputWidth}
                 disabled={disableUser}
-                onBlur={({ target: { name, value } }) =>
-                  validation(name, value)
-                }
-                onInput={(value) => handlePhone(value)}
+                onInput={(value) => {
+                  handlePhone(value);
+                }}
               />
             </Form.Row>
           </Form.Row>
