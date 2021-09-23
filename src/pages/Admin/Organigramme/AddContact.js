@@ -212,6 +212,10 @@ export default function AddContact(props) {
         ? evt.currentTarget.value
         : phone;
       setPhone(value);
+      setPhoneError("");
+      if (evt.currentTarget.value.length < 9) {
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      }
     }
   }
 
@@ -274,14 +278,11 @@ export default function AddContact(props) {
                 <PhoneBox
                   name="phone"
                   value={phone}
+                  error={phoneError}
                   type="text"
                   placeholder="Téléphone"
                   style={{ width: "100%" }}
                   onInput={(value) => handlePhone(value)}
-                  onBlur={({ target: { name, value } }) =>
-                    validation(name, value)
-                  }
-                  error={phoneError}
                 />
               </div>
             </Form.Row>
@@ -385,7 +386,8 @@ export default function AddContact(props) {
                 !phone ||
                 !firstName ||
                 !lastName ||
-                !company
+                !company ||
+                phoneError
               }
             />
           </Form.ButtonContainer>

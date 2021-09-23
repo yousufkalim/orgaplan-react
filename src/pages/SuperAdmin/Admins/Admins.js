@@ -282,6 +282,10 @@ export default function Admins(props) {
         ? evt.currentTarget.value
         : phone;
       setPhone(value);
+      setPhoneError("");
+      if (evt.currentTarget.value.length < 9) {
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      }
     }
   }
   return (
@@ -409,13 +413,7 @@ export default function Admins(props) {
                   error={phoneError}
                   placeholder={TELEPHONE}
                   onInput={(value) => handlePhone(value)}
-                  onBlur={({ target: { name, value } }) =>
-                    validation(name, value)
-                  }
                 />
-                {phoneError && (
-                  <div className={classes.error}>{phoneError}</div>
-                )}
               </div>
             </Form.Row>
             <Form.Row justifyContent="center">
@@ -452,7 +450,7 @@ export default function Admins(props) {
               <Form.Row justifyContent="center">
                 <Button
                   type="submit"
-                  minWidth={200}
+                  minWidth="30%"
                   text={VALIDATE}
                   fullWidth={false}
                   loading={loading}
@@ -461,9 +459,9 @@ export default function Admins(props) {
                     !firstName ||
                     !lastName ||
                     !phone ||
-                    !/^[+]?\d{10,25}$/g.test(phone) ||
                     image === "" ||
-                    !companyId
+                    !companyId ||
+                    phoneError
                   }
                 />
               </Form.Row>

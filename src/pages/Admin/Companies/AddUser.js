@@ -113,6 +113,10 @@ export default function AddUser(props) {
         ? evt.currentTarget.value
         : phone;
       setPhone(value);
+      setPhoneError("");
+      if (evt.currentTarget.value.length < 9) {
+        setPhoneError(Telephone_must_have_10_to_25_digits);
+      }
     }
   }
 
@@ -225,6 +229,7 @@ export default function AddUser(props) {
                 maxLength="25"
                 value={phone}
                 disabled={disableUser}
+                error={phoneError}
                 placeholder="Téléphone"
                 onInput={(value) => handlePhone(value)}
               />
@@ -327,7 +332,8 @@ export default function AddUser(props) {
                 !lastName ||
                 !email ||
                 !phone ||
-                !selectedRole
+                !selectedRole ||
+                phoneError
               }
             />
           </Form.ButtonContainer>
