@@ -311,7 +311,7 @@
   "invoices": {
     "headings": [
       "Client",
-     "Date De Demarrage",
+      "Date De Demarrage",
       "Date De Fin",
       "Chantier",
       "Montant",
@@ -347,7 +347,14 @@
     "headings": ["Date/Heure", "Description"]
   },
   "sites": {
-    "headings": ["Image", "Nom De Chantier", "Nom de la ZAC", "Admin", "Statut", "Actions"],
+    "headings": [
+      "Image",
+      "Nom De Chantier",
+      "Nom de la ZAC",
+      "Admin",
+      "Statut",
+      "Actions"
+    ],
     "items": [
       [
         "Marché couvert des ULYSSES",
@@ -589,10 +596,7 @@
       "Designation",
       "Entreprise",
       "Statut",
-      "Localisation",
-      "Facturable ?",
-      "Montant",
-      "Payé ?"
+      "Localisation"
     ],
     "items": [
       [

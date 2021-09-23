@@ -318,7 +318,7 @@ const VarificationSheet = (props) => {
             variant="danger"
             className="incedentBtn"
             onClick={() => {
-              history.push("/incidents");
+              history.push("/incidents/add-incidents");
             }}
           >
             {CREATE_AN_INCIDENT}
