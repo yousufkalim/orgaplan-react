@@ -368,7 +368,7 @@ class App extends Component {
           duration: 5,
           maxCount: 1,
         });
-        message.warning("Please create a Delivery Area first");
+        message.warning("Veuillez d'abord créer une zone de livraison");
       }
     } else {
       this.setState({

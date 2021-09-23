@@ -246,8 +246,19 @@ export default function DeliveryArea(props) {
             ...propShape,
           }),
         });
+      } else {
+        propShape.deliveryArea = response.data._id;
+        await GLOBALS.API({
+          method: "PUT",
+          uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${props.pic._id}/${props.selectedShape._id}`,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            deliveryArea: response.data._id,
+            ...propShape,
+          }),
+        });
       }
-
       setLoading(false);
       props.setShapes(propShapes, propShape);
       setSelectedShape("");
@@ -428,9 +439,7 @@ export default function DeliveryArea(props) {
               minWidth={200}
               text={VALIDATE}
               fullWidth={false}
-              disabled={
-                loading || !name || !color || !startDate || addresses.length < 1
-              }
+              disabled={loading || !name || !color || !startDate}
               onClick={props.onClose}
             />
           </Form.ButtonContainer>
