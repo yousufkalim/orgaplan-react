@@ -277,9 +277,10 @@ export default function DeliveryArea(props) {
             }),
           });
         } else {
+          propShape.deliveryArea = response.data._id;
           await GLOBALS.API({
-            method: "POST",
-            uri: GLOBALS.Constants.ADMIN_PIC_SHAPE,
+            method: "PUT",
+            uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${props.pic._id}/${props.selectedShape._id}`,
             token: store.token,
             body: JSON.stringify({
               picId: props.pic._id,
