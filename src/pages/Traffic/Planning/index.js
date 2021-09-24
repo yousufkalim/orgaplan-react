@@ -91,7 +91,7 @@ const Calender = (props) => {
     CLOSE,
     DELAY,
     MEANS,
-    ALERTS,
+    INCOMPLETE_DELIVERIES,
     BOOKING_REASON,
     Status_Color,
     PENDING_VALIDATION,
@@ -126,7 +126,7 @@ const Calender = (props) => {
     DELIVERYAREA,
     STORAGEAREA,
     BUILDING,
-    COMPLETE,
+    COMPLETED_DELIVERIES,
     ConstructBTP,
     BOOK,
   } = TEXTS;
@@ -1053,6 +1053,7 @@ const Calender = (props) => {
           setSiteMeans(`${DELIVERY_REQUESTS} : ${count} ${DELIVERIES}`);
           let alerts = 0;
           let completeDeliveryCount = 0;
+          let inCompleteDeliveryCount = 0;
           let filteredDeliveries = response.data.Deliveries.filter((e) => {
             let current = moment(new Date()).format("L");
             let delDate = moment(e.date).format("L");
@@ -1062,15 +1063,22 @@ const Calender = (props) => {
             item.alert && alerts++;
           });
           response.data?.Deliveries.map((item) => {
-            if (item?.status === "COMPLETED") {
+            if (
+              item?.status === "COMPLETED" ||
+              item?.status === "COMPLETEDWITHISSUE"
+            ) {
               let current = moment(new Date()).format("L");
               let delDate = moment(item.date).format("L");
               if (moment(current).isSame(delDate)) completeDeliveryCount++;
+            } else if (item?.status === "VALIDATED") {
+              let current = moment(new Date()).format("L");
+              let delDate = moment(item.date).format("L");
+              if (moment(current).isSame(delDate)) inCompleteDeliveryCount++;
             }
           });
           setDeliveryCount(filteredDeliveries.length);
           setTotalCompDeliveries(completeDeliveryCount);
-          setAlertCount(alerts);
+          setAlertCount(inCompleteDeliveryCount);
         } else if (typeOfPlaning === "Means") {
           tempEvent = response.data.Means.map((key, index) => {
             let background = "";
@@ -1549,7 +1557,14 @@ const Calender = (props) => {
             </Form.Row>
             <Form.Row alignItems="center" noMargin>
               <Form.Row justifyContent="flex-start" noMargin>
-                <div style={{ marginRight: "20px", width: "100%" }}>
+                <div
+                  style={{
+                    marginRight: "20px",
+                    width: "100%",
+                    minWidth: 100,
+                    maxWidth: 250,
+                  }}
+                >
                   <DatePicker
                     locale="fr"
                     showPopperArrow={true}
@@ -1738,6 +1753,7 @@ const Calender = (props) => {
             marginRight: "12px",
             position: "absolute",
             right: "15px",
+            top: "40%",
           }}
         >
           <div
@@ -1774,7 +1790,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {totalCompDeliveries}
             </h3>
-            <h6 style={{ color: "white" }}>{COMPLETE}</h6>
+            <h6 style={{ color: "white" }}>{COMPLETED_DELIVERIES}</h6>
           </div>
           <div
             style={{
@@ -1805,7 +1821,7 @@ const Calender = (props) => {
             <h3 className="font-weight-bold" style={{ color: "white" }}>
               {alertCount}
             </h3>
-            <h6 style={{ color: "white" }}>{ALERTS}</h6>
+            <h6 style={{ color: "white" }}>{INCOMPLETE_DELIVERIES}</h6>
           </div>
         </div>
       </div>

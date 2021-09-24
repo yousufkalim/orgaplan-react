@@ -1640,7 +1640,7 @@ const Calender = (props) => {
             setAddDelivery(true);
           }}
         />
-        <div style={{ width: "80%" }}>
+        <div style={{ width: "100%" }}>
           <div className="px-2">
             <Form.Row alignItems="center">
               <Form.Row noMargin>

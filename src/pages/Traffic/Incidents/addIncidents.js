@@ -233,11 +233,11 @@ export default function AddIncidents(props) {
       formdata.append("time", time);
       formdata.append("type", type);
       formdata.append("description", description);
-      formdata.append("isBillable", isBillable);
-      formdata.append("price", price);
-      formdata.append("isPaid", isPaid);
+      formdata.append("isBillable", "false");
+      formdata.append("price", 0);
+      formdata.append("isPaid", false);
       formdata.append("location", JSON.stringify(location));
-      formdata.append("comment", comment);
+      formdata.append("comment", "");
       formdata.append("companyId", companyId);
       formdata.append("siteId", adminStore.site.siteId._id);
       // for (let [key, value] of formdata) {
@@ -449,72 +449,6 @@ export default function AddIncidents(props) {
               />
             </Form.Row>
           </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${BILLABLE}* : `} />
-
-            <Form.Row width="48%">
-              <FormSelect
-                name="bill"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={billChange}
-                value={isBillable}
-                values={[
-                  { label: YES, value: "true" },
-                  { label: NO, value: "false" },
-                ]}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${PAID}: `} />
-
-            <Form.Row width="48%">
-              <FormSelect
-                placeholder={PAID}
-                name="paid"
-                style={GLOBALS.Styles.inputWidth}
-                onChange={(e) => setIsPaid(e.target.value)}
-                value={isPaid}
-                values={[
-                  { label: YES, value: true },
-                  { label: NO, value: false },
-                ]}
-                disabled={priceDisable === "false"}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${AMOUNT} :`} />
-
-            <Form.Row width="48%" noMargin alignItems="center">
-              <Form.Row width="24%" noMargin alignItems="center">
-                <FormInput
-                  type="number"
-                  name="price"
-                  value={price}
-                  onChange={nameChange}
-                  disabled={priceDisable === "false"}
-                />
-                <SmallText style={{ marginLeft: 10 }} primary="€" />
-              </Form.Row>
-            </Form.Row>
-          </Form.Row>
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary={`${COMMENT_INVOICE} : `} />
-
-            <FormInput
-              textArea
-              rows={3}
-              name="comment"
-              maxLength="300"
-              onChange={nameChange}
-              style={GLOBALS.Styles.inputWidth}
-              placeholder={ADD_COMMENT}
-            />
-          </Form.Row>
           <Form.ButtonContainer>
             <Button
               type="submit"
@@ -522,13 +456,7 @@ export default function AddIncidents(props) {
               text={VALIDATE}
               fullWidth={false}
               loading={loading}
-              disabled={
-                !name ||
-                !date ||
-                !dropdownCompanies ||
-                (isBillable && !price) ||
-                !type
-              }
+              disabled={!name || !date || !dropdownCompanies || !type}
             />
           </Form.ButtonContainer>
         </Form.Form>

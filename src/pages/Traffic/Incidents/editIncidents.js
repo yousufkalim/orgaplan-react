@@ -266,12 +266,12 @@ export default function AddIncidents(props) {
       formdata.append("time", time);
       formdata.append("status", status);
       formdata.append("description", description);
-      formdata.append("isBillable", isBillable);
-      formdata.append("price", price);
+      formdata.append("isBillable", "false");
+      formdata.append("price", 0);
+      formdata.append("isPaid", false);
       formdata.append("type", type);
-      formdata.append("comment", comment);
+      formdata.append("comment", "");
       formdata.append("companyId", companyId);
-      formdata.append("isPaid", isPaid);
       formdata.append("location", JSON.stringify(location));
 
       if (image[0]?.file) formdata.append("photos", image[0].file);
@@ -474,110 +474,6 @@ export default function AddIncidents(props) {
                 }}
               />
             </Form.Row>
-          </Form.Row>
-          <Form.Row>
-            <FormLabel bold primary={`${BILLABLE}* : `} />
-
-            <Form.Row width="48%">
-              <FormSelect
-                key="1abc"
-                name="comapnyId"
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  setPriceDisable(e.target.value);
-                  if (e.target.value === "false") {
-                    setPrice("0");
-                    setIsBillable(false);
-                  } else if (e.target.value === "true") {
-                    setIsBillable(true);
-                  }
-                }}
-                value={isBillable}
-                values={[
-                  { value: true, label: YES },
-                  { value: false, label: NO },
-                ]}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${PAID}: `} />
-
-            <Form.Row width="48%">
-              <FormSelect
-                disabled={priceDisable === "false" || priceDisable === false}
-                name="paid"
-                style={{ width: "40%", height: "45px", color: "#8B8989" }}
-                onChange={(e) => {
-                  if (e.target.value === "false") {
-                    setIsPaid(false);
-                  } else if (e.target.value === "true") {
-                    setIsPaid(true);
-                  }
-                }}
-                value={isPaid}
-                values={[
-                  { value: true, label: YES },
-                  { value: false, label: NO },
-                ]}
-              />
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${STATUS}: `} />
-
-            <Form.Row width="48%" noMargin>
-              <Form.Column noMargin>
-                <RadioButton
-                  name="status"
-                  value={status}
-                  // onChange={({ target: { name, value } }) =>
-                  //   nameChange(name, value)
-                  // }
-
-                  onChange={nameChange}
-                  items={[
-                    {
-                      value: "OPEN",
-                      label: OPEN,
-                    },
-                    { value: "CLOSED", label: CLOSE },
-                  ]}
-                />
-              </Form.Column>
-            </Form.Row>
-          </Form.Row>
-
-          <Form.Row>
-            <FormLabel bold primary={`${AMOUNT} :`} />
-
-            <Form.Row width="48%" noMargin alignItems="center">
-              <Form.Row width="24%" noMargin alignItems="center">
-                <FormInput
-                  type="number"
-                  name="price"
-                  onChange={nameChange}
-                  value={price}
-                  disabled={priceDisable === "false" || priceDisable === false}
-                />
-                <SmallText style={{ marginLeft: 10 }} primary="€" />
-              </Form.Row>
-            </Form.Row>
-          </Form.Row>
-          <Form.Row alignItems="flex-start">
-            <FormLabel bold primary={`${COMMENT_INVOICE} : `} />
-
-            <FormInput
-              textArea
-              rows={3}
-              style={GLOBALS.Styles.inputWidth}
-              onChange={nameChange}
-              value={comment}
-              placeholder={ADD_COMMENT}
-              name="comment"
-            />
           </Form.Row>
           <Form.ButtonContainer>
             <Button
