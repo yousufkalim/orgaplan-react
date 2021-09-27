@@ -93,4 +93,5 @@
   border: 1px solid black;
   width: 100%;
   min-height: 500px;
+  cursor: url("../../../../assets/icons/pen.ico"), auto;
 }

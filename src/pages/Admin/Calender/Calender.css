@@ -46,15 +46,27 @@ input[type="number"] {
 }
 .tooltip-inner {
   max-width: 200px;
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
   color: black !important;
   font-weight: bold;
   text-align: center;
-  background-color: rgba(255,255,255,1) !important;
-  border-radius: .25rem;
+  background-color: rgba(255, 255, 255, 1) !important;
+  border-radius: 0.25rem;
 }
-.bs-tooltip-auto[x-placement^=top] .arrow::before, .bs-tooltip-top .arrow::before {
+.bs-tooltip-auto[x-placement^="top"] .arrow::before,
+.bs-tooltip-top .arrow::before {
   top: 0;
-  border-width: .4rem .4rem 0;
+  border-width: 0.4rem 0.4rem 0;
   border-top-color: white !important;
+}
+
+.rbc-day-slot .rbc-events-container {
+  width: 100% !important;
+}
+
+.rbc-day-slot .rbc-event,
+.rbc-day-slot .rbc-background-event {
+  width: 100% !important;
+  left: 0px !important;
+  right: 0px !important;
 }
