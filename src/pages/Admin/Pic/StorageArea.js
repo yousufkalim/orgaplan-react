@@ -263,6 +263,7 @@ export default function DeliveryArea(props) {
       propShape.color = response.data.color;
       propShapes[inde].storageArea = response.data;
       propShape.storageArea = response.data;
+      console.log("else", propShape);
 
       if (!props.selectedShape) {
         if (props.level) {
@@ -276,19 +277,19 @@ export default function DeliveryArea(props) {
               ...propShape,
             }),
           });
-        } else {
-          propShape.deliveryArea = response.data._id;
-          await GLOBALS.API({
-            method: "PUT",
-            uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${props.pic._id}/${props.selectedShape._id}`,
-            token: store.token,
-            body: JSON.stringify({
-              picId: props.pic._id,
-              deliveryArea: response.data._id,
-              ...propShape,
-            }),
-          });
         }
+      } else {
+        propShape.deliveryArea = response.data._id;
+        await GLOBALS.API({
+          method: "PUT",
+          uri: `${GLOBALS.Constants.ADMIN_PIC_SHAPE}/${props.pic._id}/${props.selectedShape._id}`,
+          token: store.token,
+          body: JSON.stringify({
+            picId: props.pic._id,
+            deliveryArea: response.data._id,
+            ...propShape,
+          }),
+        });
       }
 
       setLoading(false);
