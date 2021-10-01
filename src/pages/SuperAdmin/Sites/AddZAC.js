@@ -74,7 +74,7 @@ export default function AddZac(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary={`${ZAC_NAME}: `} />
+            <FormLabel bold primary={`${ZAC_NAME}* : `} />
             <FormInput
               name="name"
               value={name}

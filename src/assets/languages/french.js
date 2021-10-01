@@ -70,7 +70,7 @@ export const TEXTS = {
   Vehicles: "Véhicules",
   Enter_vehicles: "Entrer un véhicules",
   Enter_site_addresses: "Entrer une adresse du chantier",
-  Site_address: "Adresse du chantier ",
+  Site_address: "Adresse du chantier",
   MEANS_ALLOWED: "Moyens autorisés",
   START_DATE: "Date du démarrage",
   END_DATE: "Date du fin",
