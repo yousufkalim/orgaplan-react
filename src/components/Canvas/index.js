@@ -314,7 +314,7 @@ class App extends Component {
     this.setState({ shapeName: e.target.value });
   };
   handleElementChange = (e) => {
-    if (e.target.value === "MEAN") {
+    if (e.target.value === "MEAN" && !this.props.level) {
       let countDA = 0;
       let countSA = 0;
       this.props.shapes.filter((shape) => {
@@ -331,7 +331,7 @@ class App extends Component {
           checkDisable: true,
           meanDisable: true,
         });
-      } else if (countDA === 0 && countDA === 0) {
+      } else if (countDA === 0 && countSA === 0) {
         message.config({
           duration: 5,
           maxCount: 1,
@@ -356,7 +356,7 @@ class App extends Component {
       let del = this.props.shapes.filter((shape) => {
         return shape.type === "DELIVERYAREA" && shape;
       });
-      if (del.length > 0) {
+      if (del.length > 0 || this.props.level) {
         this.setState({
           meanCheck: e.target.value,
           points: [],
