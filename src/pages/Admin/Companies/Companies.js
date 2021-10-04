@@ -201,15 +201,19 @@ export default function Companies(props) {
       item.companyId.name,
       item.parentCompanyId ? item.parentCompanyId.name : "N/A",
       item.companyId.incharge !== undefined
-        ? item.companyId.incharge.firstName +
-          " " +
-          item.companyId.incharge.lastName
+        ? item.companyId.incharge.firstName && item.companyId.incharge.lastName
+          ? item.companyId.incharge.firstName +
+            " " +
+            item.companyId.incharge.lastName
+          : "-"
         : "N/A",
       item.companyId.incharge !== undefined
         ? item.companyId.incharge.phone
         : "N/A",
       item.companyId.incharge !== undefined
         ? item.companyId.incharge.email
+          ? item.companyId.incharge.email
+          : "-"
         : "N/A",
 
       <div>

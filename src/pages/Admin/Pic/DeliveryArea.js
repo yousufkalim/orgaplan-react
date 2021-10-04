@@ -336,7 +336,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${UNAVAILABILITIES}: `} />
+          <FormLabel bold primary={`${UNAVAILABILITIES} : `} />
 
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
@@ -370,7 +370,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${Vehicles}: `} />
+          <FormLabel bold primary={`${Vehicles} : `} />
           <Form.Row noMargin width="65%">
             <MultiAdderInput
               name="vehicles"
@@ -382,7 +382,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${MEANS_ALLOWED}:`} />
+          <FormLabel bold primary={`${MEANS_ALLOWED} :`} />
 
           <Form.Row noMargin width="65%" justifyContent="flex-start">
             {means.map((mean, index) => (

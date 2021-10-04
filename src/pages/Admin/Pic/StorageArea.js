@@ -411,7 +411,7 @@ export default function DeliveryArea(props) {
           </Form.Row>
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${UNAVAILABILITIES}* :`} />
+          <FormLabel bold primary={`${UNAVAILABILITIES} :`} />
           <Form.Row noMargin width="65%">
             <UnavailabilityTimes
               name="unavailabilityDates"
