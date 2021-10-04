@@ -310,13 +310,16 @@ export default function Clients(props) {
         rows.push([
           item.companyId.name,
           item.companyId.incharge
-            ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
-            : "",
+            ? item.companyId.incharge.firstName &&
+              item.companyId.incharge.lastName
+              ? `${item.companyId.incharge.firstName} ${item.companyId.incharge.lastName}`
+              : "-"
+            : "-",
           item.companyId.incharge
             ? item.companyId.incharge.phone
               ? item.companyId.incharge.phone
-              : ""
-            : "",
+              : "-"
+            : "-",
           item.sites,
           contract.contractType === "MASTERCLIENT"
             ? moment(contract.contractStartDate).format("DD/MM/YY")

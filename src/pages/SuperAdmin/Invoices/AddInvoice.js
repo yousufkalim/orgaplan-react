@@ -330,7 +330,8 @@ export default function AddInvoice(props) {
             <FormInput
               type="number"
               name="amount"
-              value={amount}
+              value={amount !== 0 && amount}
+              placeholder={AMOUNT}
               error={errors.amount}
               style={GLOBALS.Styles.inputWidth}
               onBlur={({ target: { name, value } }) => validation(name, value)}

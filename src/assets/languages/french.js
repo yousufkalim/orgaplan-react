@@ -53,7 +53,7 @@ export const TEXTS = {
   NAME_OF_COMPANY: "Nom de I'enterprise",
 
   PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un nom d'enterprise",
-  COMPANY_LOGO: "Logo de I'enterprise ",
+  COMPANY_LOGO: "Logo de I'enterprise",
   NAME_OF_USER: "Nom de l'utilisateur",
   NAME_OF_INCIDENT: "Nom du la incident",
   PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom du incident ",
