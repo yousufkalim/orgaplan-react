@@ -104,7 +104,7 @@ export const TEXTS = {
   ADD_A_CONTACT: "Ajouter un contact",
   EDIT_A_CONTACT: "Modifier un contact",
 
-  SITE_ORGANIGAMME: "Organigramme du chanter",
+  SITE_ORGANIGAMME: "Organigramme du chantier",
   SITE_PICTURE: "Photo du chantier",
 
   LOGISTIC_ORGANIGAMME: "Organigramme Logistique",
