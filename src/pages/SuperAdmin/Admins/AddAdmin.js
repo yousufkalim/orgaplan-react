@@ -242,7 +242,7 @@ export default function AddAdmin(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
+            <FormLabel bold primary={`${CONTACT_INFO}* : `} />
             <Form.Row noMargin width="48%">
               <Autocomplete
                 id="free-solo-demo"
@@ -314,7 +314,7 @@ export default function AddAdmin(props) {
           </Form.Row>
           {update && ""}
           <Form.Row>
-            <FormLabel bold primary={IDENTITY} />
+            <FormLabel bold primary={`${IDENTITY}* : `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="firstName"
@@ -347,7 +347,7 @@ export default function AddAdmin(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${PROFILE} *:`} />
+            <FormLabel bold primary={`${PROFILE}* :`} />
             <FormMultipleUpload
               name="image"
               values={image}
@@ -358,7 +358,7 @@ export default function AddAdmin(props) {
             />
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANIES}*: `} />
+            <FormLabel bold primary={`${COMPANIES}* : `} />
             <FormSelect
               name="companyId"
               value={companyId}

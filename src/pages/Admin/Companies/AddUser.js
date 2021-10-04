@@ -264,7 +264,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="IMAGE " />
+            <FormLabel bold primary="IMAGE :" />
             <Form.Row noMargin width="48%">
               <FormMultipleUpload
                 name="logo"
@@ -275,7 +275,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${COMPANY}: `} />
+            <FormLabel bold primary={`${COMPANY} : `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="company"
@@ -286,7 +286,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="RÔLE*: " />
+            <FormLabel bold primary="RÔLE* : " />
             <Form.Row noMargin width="48%">
               <FormSelect
                 name="color"
@@ -308,7 +308,7 @@ export default function AddUser(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONSTRUCTION_SITE}: `} />
+            <FormLabel bold primary={`${CONSTRUCTION_SITE} : `} />
             <Form.Row noMargin width="48%">
               <FormInput
                 name="site"

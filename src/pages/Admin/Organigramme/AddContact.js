@@ -228,7 +228,7 @@ export default function AddContact(props) {
       <div className={classes.content}>
         <Form.Form onSubmit={onSubmit}>
           <Form.Row>
-            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}*: `} />
+            <FormLabel bold primary={`${TYPE_OF_ORGANIGRAMME}* : `} />
             <Form.Row noMargin width="55%">
               <FormSelect
                 name="type"
@@ -252,7 +252,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${CONTACT_INFO}*: `} />
+            <FormLabel bold primary={`${CONTACT_INFO}* : `} />
             <Form.Row
               noMargin
               width="55%"
@@ -288,7 +288,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${IDENTITY}: `} />
+            <FormLabel bold primary={`${IDENTITY} : `} />
             <Form.Row
               noMargin
               width="55%"
@@ -336,7 +336,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Entreprise*: " />
+            <FormLabel bold primary="Entreprise* : " />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput
@@ -356,7 +356,7 @@ export default function AddContact(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary="Rôle: " />
+            <FormLabel bold primary="Rôle : " />
             <Form.Row noMargin width="55%">
               <div style={{ width: "50%" }}>
                 <FormInput

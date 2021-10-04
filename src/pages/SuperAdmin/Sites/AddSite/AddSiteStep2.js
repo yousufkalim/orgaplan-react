@@ -233,7 +233,7 @@ export default function AddSiteStep2(props) {
       </Form.Row>
       {update && ""}
       <Form.Row>
-        <FormLabel bold primary={`${OPENING_TIME}: `} />
+        <FormLabel bold primary={`${OPENING_TIME} : `} />
         <Form.Row
           noMargin
           width="48%"

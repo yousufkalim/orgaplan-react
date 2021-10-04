@@ -121,7 +121,7 @@ export default function Invoices(props) {
     moment(item.endDate).format("DD/MM/YYYY"),
     item.siteId?.name,
     item.amount,
-    item.description,
+    item.description ? item.description : "-",
     <>
       <IconButton component={NavLink} to={`/invoices/edit-invoice/${item._id}`}>
         <Pencil style={{ width: 15, height: 15 }} />
