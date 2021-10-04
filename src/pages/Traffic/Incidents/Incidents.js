@@ -562,7 +562,7 @@ const Incidents = (props) => {
         {!loading ? (
           <div className={classes.content}>
             <Table
-              headers={GLOBALS.Data.incidents.headings}
+              headers={GLOBALS.Data.incidents.trafficHeadings}
               rows={rows}
               onClick={(e) => {
                 return props.history.push({
