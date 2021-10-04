@@ -596,6 +596,17 @@
       "Designation",
       "Entreprise",
       "Statut",
+      "Localisation",
+      "Facturable ?",
+      "Montant",
+      "Payé ?"
+    ],
+    "trafficHeadings": [
+      "Date",
+      "Ouvert",
+      "Designation",
+      "Entreprise",
+      "Statut",
       "Localisation"
     ],
     "items": [

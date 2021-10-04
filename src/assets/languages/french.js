@@ -70,7 +70,7 @@ export const TEXTS = {
   Vehicles: "Véhicules",
   Enter_vehicles: "Entrer un véhicules",
   Enter_site_addresses: "Entrer une adresse du chantier",
-  Site_address: "Adresse du chantier ",
+  Site_address: "Adresse du chantier",
   MEANS_ALLOWED: "Moyens autorisés",
   START_DATE: "Date du démarrage",
   END_DATE: "Date du fin",
@@ -104,7 +104,7 @@ export const TEXTS = {
   ADD_A_CONTACT: "Ajouter un contact",
   EDIT_A_CONTACT: "Modifier un contact",
 
-  SITE_ORGANIGAMME: "Organigramme du chanter",
+  SITE_ORGANIGAMME: "Organigramme du chantier",
   SITE_PICTURE: "Photo du chantier",
 
   LOGISTIC_ORGANIGAMME: "Organigramme Logistique",

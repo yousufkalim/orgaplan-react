@@ -115,7 +115,7 @@ export default function LandingPage() {
                 <img src={Images.logo} className="hero-logo" alt="logo" />
               </Link>
 
-              <Link
+              <span
                 onClick={() => {
                   window.scroll({
                     top: document.body.offsetHeight,
@@ -123,17 +123,19 @@ export default function LandingPage() {
                     behavior: "smooth",
                   });
                 }}
+                style={{ cursor: "pointer" }}
                 className="text-white"
               >
                 Fonctionnalites
-              </Link>
-              <Link
+              </span>
+              <span
                 onClick={() => setShowQuoteModal((st) => !st)}
+                style={{ cursor: "pointer" }}
                 className="text-white"
               >
                 S'inscrire
-              </Link>
-              <Link
+              </span>
+              <span
                 onClick={() => {
                   window.scroll({
                     top: 2100,
@@ -141,10 +143,11 @@ export default function LandingPage() {
                     behavior: "smooth",
                   });
                 }}
+                style={{ cursor: "pointer" }}
                 className="text-white"
               >
                 Nous contacter
-              </Link>
+              </span>
             </nav>
             <div className="text-center text-black-50">
               {store.auth && (

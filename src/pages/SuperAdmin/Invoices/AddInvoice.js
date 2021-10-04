@@ -340,7 +340,7 @@ export default function AddInvoice(props) {
             />
           </Form.Row>
           <Form.Row alignItems="flex-start">
-            <FormLabel bold primary={`${PDF_FILE}* :`} />
+            <FormLabel bold primary={`${PDF_FILE} :`} />
             <div style={GLOBALS.Styles.pdffile}>
               <Button
                 fullWidth={false}
