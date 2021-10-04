@@ -726,7 +726,10 @@ const Incidents = (props) => {
             </Form.Row>
           </div>
           <div className={classes.content}>
-            <Table headers={GLOBALS.Data.incidents.headings} rows={rows} />
+            <Table
+              headers={GLOBALS.Data.incidents.trafficHeadings}
+              rows={rows}
+            />
           </div>
           {incidentsdata.length >= 1 && companyId && selectedType && (
             <div style={{ textAlign: "right", margin: "5px" }}>
