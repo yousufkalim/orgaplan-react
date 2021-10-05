@@ -338,7 +338,7 @@ export default function AddSiteStep1(props) {
         />
       </Form.Row>
       <Form.Row>
-        <FormLabel bold primary={`${STORAGEAREA}*:`} />
+        <FormLabel bold primary={`${STORAGEAREA}* :`} />
         <Form.Row noMargin width="48%">
           <FormSelect
             name="storageArea"

@@ -316,7 +316,7 @@ export default function AddSiteStep1(props) {
     <Form.Form onSubmit={onSubmit}>
       {update && ""}
       <Form.Row>
-        <FormLabel bold primary={`${COMPANY}: `} />
+        <FormLabel bold primary={`${COMPANY} : `} />
         <Form.Row noMargin width="48%">
           <FormInput
             name="company"
