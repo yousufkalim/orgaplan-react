@@ -306,7 +306,7 @@ export default function DeliveryRequestStep3(props) {
         />
       </Form.Row>
       <Form.Row alignItems="flex-start">
-        <FormLabel bold primary={`${COMMENTS}:`} />
+        <FormLabel bold primary={`${COMMENTS} :`} />
         <FormInput
           textArea
           rows={3}

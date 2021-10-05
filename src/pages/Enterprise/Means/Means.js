@@ -261,7 +261,7 @@ const Means = () => {
               loca.locationType !== undefined &&
               loca.locationType === "STORAGEAREA"
                 ? loca.storageArea.name
-                : "",
+                : "-",
             )
             .join(" "),
           item.location
@@ -270,7 +270,7 @@ const Means = () => {
               loca.locationType !== undefined &&
               loca.locationType === "DELIVERYAREA"
                 ? loca.deliveryArea.name
-                : "",
+                : "-",
             )
             .join(" "),
           <div>
@@ -300,7 +300,7 @@ const Means = () => {
             loca.locationType !== undefined &&
             loca.locationType === "STORAGEAREA"
               ? loca.storageArea.name
-              : "",
+              : "-",
           )
           .join(" "),
         item.location
@@ -309,7 +309,7 @@ const Means = () => {
             loca.locationType !== undefined &&
             loca.locationType === "DELIVERYAREA"
               ? loca.deliveryArea.name
-              : "",
+              : "-",
           )
           .join(" "),
         <div>
