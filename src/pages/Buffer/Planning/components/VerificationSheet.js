@@ -179,7 +179,7 @@ const VarificationSheet = (props) => {
       <div className="row box">
         <div className="col-sm-6">
           <div className="label">{COMPANY} : </div>
-          <div className="label">{DATE_AND_TIME}:</div>
+          <div className="label">{DATE_AND_TIME} :</div>
           <div className="label">
             {DELIVERYAREA} / {MEAN} :{" "}
           </div>
@@ -264,7 +264,7 @@ const VarificationSheet = (props) => {
           </>
         )}
         <div className="col-sm-6">
-          <div className="label">{ADDITIONNAL_INFORMATION}:</div>
+          <div className="label">{ADDITIONNAL_INFORMATION} :</div>
         </div>
         <div className="col-sm-6">
           <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -303,7 +303,7 @@ const VarificationSheet = (props) => {
           <>
             <div className="col-sm-6">
               <br />
-              <div className="label">{RETURN_BUFFER_AREA}: </div>
+              <div className="label">{RETURN_BUFFER_AREA} :</div>
             </div>
             <div className="col-sm-6">
               <br />
@@ -336,7 +336,7 @@ const VarificationSheet = (props) => {
             </div>
             <div className="col-sm-6">
               <br />
-              <div className="label">{TIME_OF_ARRIVAL}: </div>
+              <div className="label">{TIME_OF_ARRIVAL} :</div>
             </div>
             <div className="col-sm-6">
               <br />
@@ -355,7 +355,7 @@ const VarificationSheet = (props) => {
             </div>
             <div className="col-sm-6">
               <br />
-              <div className="label">IMMATRICULATION PLATE : </div>
+              <div className="label">IMMATRICULATION PLATE :</div>
             </div>
             <div className="col-sm-6">
               <br />
@@ -374,7 +374,7 @@ const VarificationSheet = (props) => {
             </div>
             <div className="col-sm-6">
               <br />
-              <div className="label">{TIME_OF_DEPARTURE}: </div>
+              <div className="label">{TIME_OF_DEPARTURE} :</div>
             </div>
             <div className="col-sm-6">
               <br />

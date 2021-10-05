@@ -482,7 +482,7 @@ const VarificationSheet = (props) => {
             onChange={onCheckChange}
             disabled={checkStatus != "VALIDATED"}
           >
-            <div className="label">MERCI DE SIGNER*:</div>
+            <div className="label">MERCI DE SIGNER* :</div>
           </Checkbox>
         </div>
         <div
