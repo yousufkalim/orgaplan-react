@@ -376,7 +376,7 @@ export default function AddIncidents(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${GENERAL}*: `} />
+            <FormLabel bold primary={`${GENERAL}* : `} />
 
             <Form.Row width="48%">
               <FormSelect
