@@ -165,10 +165,9 @@ export default function MultiAdderInputModal(props) {
                 maxLength="30"
                 textAlign="center"
                 placeholder={`${CITY} ${text_only}`}
-                onChange={({ target: { name, value } }) => {
-                  (/^[A-Za-z]+$/.test(value) || value === "") &&
-                    handleChange(name, value);
-                }}
+                onChange={({ target: { name, value } }) =>
+                  handleChange(name, value)
+                }
               />
             </Form.Row>
             <Form.Row>
@@ -190,13 +189,7 @@ export default function MultiAdderInputModal(props) {
                 text={VALIDATE}
                 fullWidth={false}
                 onClick={onSubmit}
-                disabled={
-                  !street ||
-                  !postal ||
-                  postal.length !== 5 ||
-                  !city ||
-                  !/^[a-zA-Z]+$/.test(city)
-                }
+                disabled={!street || !postal || postal.length !== 5 || !city}
               />
             </Form.Row>
           </Form.Form>
