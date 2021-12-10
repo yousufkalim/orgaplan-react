@@ -31,7 +31,7 @@ export default i18n.use(initReactI18next).init({
         dateOfBirthPlaceholder: "Date de naissance",
         passwordPlaceholder: "Mot de passe",
         phonePlaceholder: "Téléphone",
-        confirmPasswordPlaceholder: "Confirmer nouveau mot de p asse",
+        confirmPasswordPlaceholder: "Confirmez le mot de pass",
         // Errors
         emailInvalid: "L'adresse e-mail est incorrecte!",
         passwordInvalid: "Le mot de passe est incorrect!",

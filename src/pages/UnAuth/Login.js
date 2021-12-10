@@ -18,7 +18,7 @@ import Button from "../../components/Button";
 import { TEXTS } from "../../assets/languages/french";
 
 export default function Login(props) {
-  const { LOGIN } = TEXTS;
+  const { LOGIN, REGISTRATION, Complete_your_profile } = TEXTS;
 
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -401,7 +401,10 @@ export default function Login(props) {
           validateLoading ? (
             <Loader.Progress />
           ) : expired ? (
-            <p>Invalid or expired verification token</p>
+            <p>
+              Votre invitation est inactive, merci de contacter
+              l’administrateur.
+            </p>
           ) : (
             <Formik
               initialValues={{
@@ -480,18 +483,21 @@ export default function Login(props) {
         }
       />
       <Modal
-        title="REGISTRATION"
+        title={REGISTRATION}
         open={showProfileModal}
         onClose={() => {
           setShowProfileModal(false);
         }}
         body={
           <>
-            {!expired && <p>Complete your profile</p>}
+            {!expired && <p>{Complete_your_profile}</p>}
             {validateLoading ? (
               <Loader.Progress />
             ) : expired ? (
-              <p>Invalid or expired verification token</p>
+              <p>
+                Votre invitation est inactive, merci de contacter
+                l’administrateur.
+              </p>
             ) : (
               <Formik
                 initialValues={{

@@ -41,7 +41,7 @@ export default function AddMean(props) {
     NOTIFY_THE_ADDRESSES,
     Please_enter_email,
     IDENTITY,
-    TYPE,
+    TYPE2,
     ACCESSIBILITY,
     AVAILABILITIES,
     UNAVAILABILITIES,
@@ -52,6 +52,7 @@ export default function AddMean(props) {
     ROUTING,
     START_DATE,
     NAME_REQUIRED,
+    NAME_OF_MEAN,
   } = TEXTS;
 
   const classes = useStyles();
@@ -332,7 +333,7 @@ export default function AddMean(props) {
               name="name"
               error={errors.name}
               value={name}
-              placeholder={NAME}
+              placeholder={NAME_OF_MEAN}
               style={{ width: "32%" }}
               onBlur={({ target: { name, value } }) => validation(name, value)}
               onChange={({ target: { name, value } }) =>
@@ -342,7 +343,7 @@ export default function AddMean(props) {
             <FormSelect
               name="type"
               value={meanType}
-              placeholder={TYPE}
+              placeholder={TYPE2}
               values={[
                 {
                   label: LIFTING,
