@@ -48,7 +48,7 @@ export const TEXTS = {
   LIST_OF_USERS: "Liste des utilisateurs",
 
   TOTAL: "Total",
-  MEANS_REQUEST: "Demandu du moyen",
+  MEANS_REQUEST: "Demande de moyen",
   NAME: "Nom",
   NAME_OF_COMPANY: "Nom de I'enterprise",
 
@@ -60,6 +60,7 @@ export const TEXTS = {
 
   STATUS: "Statut",
   TYPE: "Ouvert",
+  TYPE2: "Utilisation",
   AREA: "Aire",
   ZONE: "Zone",
   ACTION: "Action",
@@ -230,7 +231,7 @@ export const TEXTS = {
   ADD_ZAC: "Ajouter des ZAC",
 
   NOTIFICATION: "Notification",
-  NOTIFY_THE_ADDRESSES: "Notifier les adresses",
+  NOTIFY_THE_ADDRESSES: "Notifier les adresses e-mail",
   ZACS_LIST: "List des ZAC",
   See_archived_sites: "Voir les chantiers archivés",
   archived_sites: "Chantiers archivés",
@@ -365,7 +366,7 @@ export const TEXTS = {
 
   Please_enter_amount: "Entrez un montant",
 
-  Please_enter_email: "Entrez une adresse ",
+  Please_enter_email: "Entrez une adresse e-mail et appuyez sur +",
   RE_SEND: "Renvoyer",
 
   Please_enter_valid_URL: "Entrez une adresse URL correcte",
@@ -489,9 +490,9 @@ export const TEXTS = {
   STREET: "RUE",
   CITY: "VILLE",
   text_only: "Texte uniquement",
-  POSTAL: "POSTAL",
+  POSTAL: "CODE POSTAL",
   FIVE_digits_only: "Uniquement 5 chiffres",
-  Day_Off: "JOUR OFF",
+  Day_Off: "TOUTE LA JOURNEE",
   CREATE_PROJECT: "CRÉER UN PROJET",
   This_time_is_not_available: "Cette heure n'est pas disponible",
   Please_select_a_Vaild_time: "Merci du sélectionner une heure valide",
@@ -565,4 +566,13 @@ export const TEXTS = {
   ADDITIONAL_INFORMATION: "INFORMATION ADDITIONEL",
   ADMIN_CREATED: "Admin Établie",
   VIEW_ADMIN: "Consulter la liste des admins",
+
+  // New
+  REGISTRATION: "ENREGISTREMENT",
+  Complete_your_profile: "Remplissez les informations",
+  NAME_OF_MEAN: "Nom du moyen",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
 };

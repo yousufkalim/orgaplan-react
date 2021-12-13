@@ -11,7 +11,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink, useLocation } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import Actions from "../../redux/actions";
 import Logo from "../../assets/icons/Logo.svg";
 import { TEXTS } from "../../assets/languages/french";
@@ -141,7 +141,9 @@ export default function Header(props) {
       >
         <div className={classes.drawerContainer}>
           <div className={classes.logoContainer}>
-            <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
+            <Link to="/">
+              <img src={Logo} alt="Orgaplan-Logo" className={classes.logo} />
+            </Link>
           </div>
           <List>
             {userItems.map((item) => (

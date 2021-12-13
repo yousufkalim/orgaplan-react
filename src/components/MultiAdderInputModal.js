@@ -164,7 +164,7 @@ export default function MultiAdderInputModal(props) {
                 value={city}
                 maxLength="30"
                 textAlign="center"
-                placeholder={`${CITY} ${text_only}`}
+                placeholder={`${CITY}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
@@ -177,7 +177,7 @@ export default function MultiAdderInputModal(props) {
                 maxLength={5}
                 value={postal}
                 textAlign="center"
-                placeholder={`${POSTAL} ${FIVE_digits_only}`}
+                placeholder={`${POSTAL}`}
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }
