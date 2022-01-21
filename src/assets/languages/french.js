@@ -231,7 +231,7 @@ export const TEXTS = {
   ADD_ZAC: "Ajouter des ZAC",
 
   NOTIFICATION: "Notification",
-  NOTIFY_THE_ADDRESSES: "Notifier les adresses e-mail",
+  NOTIFY_THE_ADDRESSES: "Autres contacts à notifier e-mail",
   ZACS_LIST: "List des ZAC",
   See_archived_sites: "Voir les chantiers archivés",
   archived_sites: "Chantiers archivés",
@@ -315,6 +315,7 @@ export const TEXTS = {
   Invalid_Time: "Heure incorrect",
   Please_Add_valid_Time_and_Event: "Merci d'ajouter une heure correct",
   Please_Add_logo: "Merci d'ajouter logo",
+  Please_Add_Email: "Veuillez ajouter un e-mail",
   ACTIVITY_LOGS: "Journal d'Activité",
   LOGS: "Journal",
 
@@ -366,7 +367,7 @@ export const TEXTS = {
 
   Please_enter_amount: "Entrez un montant",
 
-  Please_enter_email: "Entrez une adresse e-mail et appuyez sur +",
+  Please_enter_email: "Entrez les adresses mail des autres contacts",
   RE_SEND: "Renvoyer",
 
   Please_enter_valid_URL: "Entrez une adresse URL correcte",
