@@ -5,7 +5,7 @@ export const TEXTS = {
   SUBMIT: "Envoyer",
   PASSWORD: "Mot du passe",
   GO_TO_HOME_PAGE: "Aller à la page d'accueil",
-  CALENDAR: "Calendrier",
+  CALENDAR: "Planning",
   MEANS: "Moyens",
   MEAN: "Moyen",
 
