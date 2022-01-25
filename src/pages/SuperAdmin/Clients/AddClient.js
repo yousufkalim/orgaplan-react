@@ -54,6 +54,7 @@ export default function AddClient(props) {
     NOTIFY_THE_ADDRESSES,
     Please_enter_company_name,
     Please_Add_logo,
+    Please_Add_Email,
     Please_select_start_date,
     Please_select_end_date,
     Please_enter_valid_email,
@@ -91,6 +92,7 @@ export default function AddClient(props) {
   const [logoError, setLogoError] = useState("");
   const [contractEndDateError, setContractEndDateError] = useState("");
   const [contractStartDateError, setContractStartDateError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   function handleChange(name, value) {
     if (name === "logo") setLogo(value);
@@ -133,6 +135,16 @@ export default function AddClient(props) {
         setLogoError("");
       }
     }
+    if (name === "email") {
+      const re = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
+
+      if (re.test(String(email).toLowerCase()) === false) {
+        setEmailError(Please_enter_valid_email);
+      } else {
+        setEmailError("");
+      }
+    }
+
     if (name === "contractStartDate") {
       if (GLOBALS.Functions.empty(value)) {
         setContractStartDateError(Please_select_start_date);
@@ -276,9 +288,14 @@ export default function AddClient(props) {
             <Form.Row noMargin width="48%">
               <FormInput
                 name="email"
+                type="email"
+                error={emailError}
                 value={email}
                 placeholder={Please_enter_email}
                 style={GLOBALS.Styles.inputWidth}
+                onBlur={({ target: { name, value } }) =>
+                  validation(name, value)
+                }
                 onChange={({ target: { name, value } }) =>
                   handleChange(name, value)
                 }

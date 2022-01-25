@@ -55,7 +55,8 @@ export default function Logs(props) {
     }
   }
 
-  const rows = items.map((item) => [item.date, item.description]);
+  // console.log(items, "itemmmm");
+  const rows = items.map((item) => [item.name, item.date, item.description]);
   return (
     <>
       <div className={classes.root}>
