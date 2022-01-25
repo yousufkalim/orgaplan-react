@@ -56,6 +56,7 @@ let propsShapeCon = "";
 export default function AddSiteStep3(props) {
   const {
     LEVEL_NAME,
+    ADD_LEVEL,
     VALIDATE,
     BUILDING,
     Are_you_sure,
@@ -601,13 +602,13 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary={LEVEL_NAME} />
+                <FormLabel noMargin bold primary={ADD_LEVEL} />
               </Form.Row>
               {activeBuilding && (
                 <FormInput
                   name="levelNumber"
                   value={levelNumber}
-                  placeholder={LEVEL_NAME}
+                  placeholder={ADD_LEVEL}
                   style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)

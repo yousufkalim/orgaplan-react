@@ -1,5 +1,5 @@
-@import './variables';
-@import './time-column';
+@import "./variables";
+@import "./time-column";
 
 .rbc-slot-selection {
   z-index: 10;
@@ -95,9 +95,9 @@
     border-right: 1px solid $cell-border;
   }
 
-  >.rbc-row.rbc-row-resource {
-      border-bottom: 1px solid $cell-border;
-      flex-shrink: 0;
+  > .rbc-row.rbc-row-resource {
+    border-bottom: 1px solid $cell-border;
+    flex-shrink: 0;
   }
 }
 
@@ -106,7 +106,7 @@
   flex: 1 0 0%;
   align-items: flex-start;
   width: 100%;
-  border-top: 2px solid $calendar-border;
+  border-top: 2px solid $-border;
   overflow-y: auto;
   position: relative;
 
