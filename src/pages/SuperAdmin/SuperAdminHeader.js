@@ -95,7 +95,7 @@ const userItems = [
     icon: <Clients />,
   },
   {
-    name: "Administratrices",
+    name: "Admins",
     path: "/admins",
     icon: <Admins />,
   },
