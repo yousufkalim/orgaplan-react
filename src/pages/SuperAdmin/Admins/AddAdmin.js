@@ -156,10 +156,10 @@ export default function AddAdmin(props) {
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.ADMINS,
-        headers: {
-          Authorization: store.token,
-        },
         body: formdata,
+        headers: {
+          Authorization: `Bearer ${store.token}`,
+        },
       });
       setLoading(false);
       message.success("Consulter la liste des admins");
@@ -220,13 +220,15 @@ export default function AddAdmin(props) {
     } else if (name === "lastName") {
       if (GLOBALS.Functions.empty(value)) setLastNameError(LAST_NAME_REQUIRED);
       else setLastNameError("");
-    } else if (name === "image") {
-      if (GLOBALS.Functions.empty(value.length)) {
-        setImageError(please_add_profile_image);
-      } else {
-        setImageError("");
-      }
-    } else if (name === "companyId") {
+    }
+    // else if (name === "image") {
+    //   if (GLOBALS.Functions.empty(value.length)) {
+    //     setImageError(please_add_profile_image);
+    //   } else {
+    //     setImageError("");
+    //   }
+    // }
+    else if (name === "companyId") {
       if (GLOBALS.Functions.empty(value))
         setCompanyIdError(Please_select_a_company);
       else setCompanyIdError("");
@@ -353,7 +355,7 @@ export default function AddAdmin(props) {
               values={image}
               style={GLOBALS.Styles.inputWidth}
               disabled={disableUser}
-              error={imageError}
+              // error={imageError}
               onChange={(values) => handleChange("image", values)}
             />
           </Form.Row>

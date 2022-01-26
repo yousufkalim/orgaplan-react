@@ -324,34 +324,35 @@ class App extends Component {
           countSA++;
         }
       });
-      if (countDA > 0 && countSA > 0) {
+      if (countDA >= 0 && countSA >= 0) {
         this.setState({
           meanCheck: e.target.value,
           points: [],
           checkDisable: true,
           meanDisable: true,
         });
-      } else if (countDA === 0 && countSA === 0) {
-        message.config({
-          duration: 5,
-          maxCount: 1,
-        });
-        message.warning(
-          "Veuillez d'abord créer une zone de livraison et une zone de stockage",
-        );
-      } else if (countSA === 0) {
-        message.config({
-          duration: 5,
-          maxCount: 1,
-        });
-        message.warning("Veuillez d'abord créer une zone de stockage");
-      } else if (countDA === 0) {
-        message.config({
-          duration: 5,
-          maxCount: 1,
-        });
-        message.warning("Veuillez d'abord créer une zone de livraison");
       }
+      // else if (countDA === 0 && countSA === 0) {
+      //   message.config({
+      //     duration: 5,
+      //     maxCount: 1,
+      //   });
+      //   message.warning(
+      //     "Veuillez d'abord créer une zone de livraison et une zone de stockage",
+      //   );
+      // } else if (countSA === 0) {
+      //   message.config({
+      //     duration: 5,
+      //     maxCount: 1,
+      //   });
+      //   message.warning("Veuillez d'abord créer une zone de stockage");
+      // } else if (countDA === 0) {
+      //   message.config({
+      //     duration: 5,
+      //     maxCount: 1,
+      //   });
+      //   message.warning("Veuillez d'abord créer une zone de livraison");
+      // }
     } else if (e.target.value === "STORAGEAREA") {
       let del = this.props.shapes.filter((shape) => {
         return shape.type === "DELIVERYAREA" && shape;

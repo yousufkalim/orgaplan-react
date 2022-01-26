@@ -629,6 +629,30 @@ const PicCanvas = (props) => {
                     justifyContent: "center",
                   }}
                 >
+                  {/* Go back button */}
+                  {selectedShape && selectedShape.type === "BUILDING" && level && (
+                    <Button
+                      // temp coment
+                      text={SHOW_EXTERIOR}
+                      className="mt-2"
+                      onClick={() => {
+                        setOpenBuildingModal(false);
+                        setTimeout(function () {
+                          setPdf(
+                            adminStore.site.siteId?.plan
+                              ? GLOBALS.Constants.BASE_URL +
+                                  adminStore.site.siteId?.plan
+                              : undefined,
+                          );
+                          setShapes(sitePic.shapes);
+                          setLevel("");
+                          setSelectedShape("");
+                          setselectedBuilding("");
+                          selectedShapeReserver = null;
+                        }, 4);
+                      }}
+                    />
+                  )}
                   <Document
                     className={classes.pdfstyle}
                     file={pdf ? pdf : imggg}
@@ -846,29 +870,6 @@ const PicCanvas = (props) => {
           >
             <DialogContent>
               <div className={classes.infoDrawerContainer}>
-                {selectedShape && selectedShape.type === "BUILDING" && level && (
-                  <Button
-                    text={SHOW_EXTERIOR}
-                    className="mt-2"
-                    onClick={() => {
-                      setOpenBuildingModal(false);
-                      setTimeout(function () {
-                        setPdf(
-                          adminStore.site.siteId?.plan
-                            ? GLOBALS.Constants.BASE_URL +
-                                adminStore.site.siteId?.plan
-                            : undefined,
-                        );
-                        setShapes(sitePic.shapes);
-                        setLevel("");
-                        setSelectedShape("");
-                        setselectedBuilding("");
-                        selectedShapeReserver = null;
-                      }, 4);
-                    }}
-                  />
-                )}
-
                 <SubHeading primary={selectedShape.name} bold fontSize={22} />
                 <SubHeading primary={`Type: ${selectedShape.type}`} />
                 {selectedShape.type === "BUILDING" && (
