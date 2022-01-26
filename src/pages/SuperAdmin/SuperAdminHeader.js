@@ -90,12 +90,12 @@ const userItems = [
     icon: <HomeIcon />,
   },
   {
-    name: "Clients",
+    name: "Clientes",
     path: "/clients",
     icon: <Clients />,
   },
   {
-    name: "Admins",
+    name: "Administratrices",
     path: "/admins",
     icon: <Admins />,
   },
