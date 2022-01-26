@@ -315,68 +315,27 @@ class App extends Component {
   };
   handleElementChange = (e) => {
     if (e.target.value === "MEAN" && !this.props.level) {
-      let countDA = 0;
-      let countSA = 0;
-      this.props.shapes.filter((shape) => {
-        if (shape.type === "DELIVERYAREA") {
-          countDA++;
-        } else if (shape.type === "STORAGEAREA") {
-          countSA++;
-        }
+      this.setState({
+        meanCheck: e.target.value,
+        points: [],
+        checkDisable: true,
+        meanDisable: true,
       });
-      if (countDA >= 0 && countSA >= 0) {
-        this.setState({
-          meanCheck: e.target.value,
-          points: [],
-          checkDisable: true,
-          meanDisable: true,
-        });
-      }
-      // else if (countDA === 0 && countSA === 0) {
-      //   message.config({
-      //     duration: 5,
-      //     maxCount: 1,
-      //   });
-      //   message.warning(
-      //     "Veuillez d'abord créer une zone de livraison et une zone de stockage",
-      //   );
-      // } else if (countSA === 0) {
-      //   message.config({
-      //     duration: 5,
-      //     maxCount: 1,
-      //   });
-      //   message.warning("Veuillez d'abord créer une zone de stockage");
-      // } else if (countDA === 0) {
-      //   message.config({
-      //     duration: 5,
-      //     maxCount: 1,
-      //   });
-      //   message.warning("Veuillez d'abord créer une zone de livraison");
-      // }
     } else if (e.target.value === "STORAGEAREA") {
       let del = this.props.shapes.filter((shape) => {
         return shape.type === "DELIVERYAREA" && shape;
       });
-      if (del.length > 0 || this.props.level) {
-        this.setState({
-          meanCheck: e.target.value,
-          points: [],
-          checkDisable: true,
-          meanDisable: true,
-        });
-      } else {
-        message.config({
-          duration: 5,
-          maxCount: 1,
-        });
-        message.warning("Veuillez d'abord créer une zone de livraison");
-      }
+      this.setState({
+        meanCheck: e.target.value,
+        points: [],
+        checkDisable: true,
+        meanDisable: true,
+      });
     } else {
       this.setState({
         meanCheck: e.target.value,
         checkDisable: true,
         points: [],
-
         meanDisable: true,
       });
     }
