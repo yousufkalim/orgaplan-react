@@ -139,10 +139,10 @@ export default function AddUser(props) {
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.ADD_COMPANY_USER,
-        headers: {
-          Authorization: store.token,
-        },
         body: formdata,
+        headers: {
+          Authorization: `Bearer ${store.token}`,
+        },
       });
 
       setLoading(false);
