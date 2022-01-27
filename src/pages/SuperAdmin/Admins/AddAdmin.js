@@ -349,7 +349,7 @@ export default function AddAdmin(props) {
             </Form.Row>
           </Form.Row>
           <Form.Row>
-            <FormLabel bold primary={`${PROFILE}* :`} />
+            <FormLabel bold primary={`${PROFILE} :`} />
             <FormMultipleUpload
               name="image"
               values={image}

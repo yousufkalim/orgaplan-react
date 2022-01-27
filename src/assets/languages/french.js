@@ -67,7 +67,7 @@ export const TEXTS = {
   SELECT: "Séléctionner",
   LOCATION: "Localisation",
   LEVEL: "Niveau",
-  ADD_LEVEL: "Ajouter un niveau",
+  ADD_LEVEL: "Nom du niveau",
   LEVEL_NAME: "Nom du niveau",
   Vehicles: "Véhicules",
   Enter_vehicles: "Entrer un véhicules",
