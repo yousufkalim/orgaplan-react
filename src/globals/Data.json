@@ -344,7 +344,7 @@
     ]
   },
   "logs": {
-    "headings": ["UserName","Date/Heure",  "Description"]
+    "headings": ["Nom d'utilisateur","Date/Heure",  "Description"]
   },
   "sites": {
     "headings": [
