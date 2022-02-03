@@ -69,7 +69,7 @@ export default function Logs(props) {
           <Table
             headers={GLOBALS.Data.logs.headings}
             rows={rows}
-            align="left"
+            // align="left"
           />
         )}
         {/* This pagination block is temporary disabled and will enabled after backend pagination */}
