@@ -185,10 +185,10 @@ export default function AddClient(props) {
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.CLIENTS,
-        headers: {
-          Authorization: store.token,
-        },
         body: formdata,
+        headers: {
+          Authorization: `Bearer ${store.token}`,
+        },
       });
       setLoading(false);
       props.history.push("/clients");
