@@ -217,7 +217,7 @@ export const TEXTS = {
 
   LOGO: "Logo",
   TYPE_OF_COMPANY: "Ouvert d'entreprise",
-  TYPE_OF_incident: "Ouvert de rincident",
+  TYPE_OF_incident: "Ouverture de l'incident",
   PLEASE_SELECT_TYPE_OF_incident: "Ouvert du incident",
 
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité souscrite",
