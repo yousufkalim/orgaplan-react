@@ -181,10 +181,10 @@ export default function AddSiteStep2(props) {
       const data = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.SITES,
-        headers: {
-          Authorization: store.token,
-        },
         body: formdata,
+        headers: {
+          Authorization: `Bearer ${store.token}`,
+        },
       });
       props.setStep2Data(data);
       setLoading(false);
