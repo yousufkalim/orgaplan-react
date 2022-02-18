@@ -367,6 +367,7 @@ export default function AddIncidents(props) {
                 format="HH:mm"
                 style={{ width: "48%", height: "45px", color: "#8B8989" }}
                 onChange={timeChange}
+                placeholder="Horaire"
               />
             </Form.Row>
           </Form.Row>
@@ -462,7 +463,6 @@ export default function AddIncidents(props) {
             <FormLabel bold primary={`${PAID}: `} />
             <Form.Row width="48%">
               <FormSelect
-                placeholder={PAID}
                 name="paid"
                 style={GLOBALS.Styles.inputWidth}
                 onChange={(e) => setIsPaid(e.target.value)}
