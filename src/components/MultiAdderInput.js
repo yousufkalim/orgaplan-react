@@ -122,43 +122,43 @@ export default function MultiAdderInput(props) {
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <div className={classes.container}>
+        <input
+          value={text}
+          name={props.name}
+          type={props.type}
+          onBlur={props.onBlur}
+          onFocus={props.onFocus}
+          className={classes.input}
+          disabled={props.disabled}
+          placeholder={props.placeholder}
+          onChange={(e) => {
+            setText(e.target.value);
+            if (props.name === "trades") {
+              if (!e.target.value && props.trades.length < 1) {
+                props?.setTradeError(Please_enter_atleast_one_trade);
+              } else {
+                props?.setTradeError("");
+              }
+            }
+          }}
+        />
         <Tooltip
-          title="Appuyez sur l'icône + pour ajouter"
+          title="Cliquer ici pour ajouter l'adresse"
           placement="top"
           arrow
         >
-          <input
-            value={text}
-            name={props.name}
-            type={props.type}
-            onBlur={props.onBlur}
-            onFocus={props.onFocus}
-            className={classes.input}
-            disabled={props.disabled}
-            placeholder={props.placeholder}
-            onChange={(e) => {
-              setText(e.target.value);
-              if (props.name === "trades") {
-                if (!e.target.value && props.trades.length < 1) {
-                  props?.setTradeError(Please_enter_atleast_one_trade);
-                } else {
-                  props?.setTradeError("");
-                }
-              }
-            }}
-          />
+          <div className={classes.endAdornment}>
+            <IconButton
+              onClick={onAdd}
+              disabled={props.disabled || !text}
+              style={{ margin: 10 }}
+            >
+              <Plus
+                style={{ width: 20, height: 20, color: !text || "#dbb20a" }}
+              />
+            </IconButton>
+          </div>
         </Tooltip>
-        <div className={classes.endAdornment}>
-          <IconButton
-            onClick={onAdd}
-            disabled={props.disabled || !text}
-            style={{ margin: 10 }}
-          >
-            <Plus
-              style={{ width: 20, height: 20, color: !text || "#dbb20a" }}
-            />
-          </IconButton>
-        </div>
       </div>
       <ul className={classes.chips}>
         {props.values ? (

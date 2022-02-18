@@ -633,7 +633,7 @@ const PicCanvas = (props) => {
                   {selectedShape && selectedShape.type === "BUILDING" && level && (
                     <Button
                       // temp coment
-                      text={SHOW_EXTERIOR}
+                      text={"Retour"}
                       className="mt-2"
                       onClick={() => {
                         setOpenBuildingModal(false);
