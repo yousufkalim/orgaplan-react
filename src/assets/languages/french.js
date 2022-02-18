@@ -55,7 +55,7 @@ export const TEXTS = {
   PLEASE_ENTER_NAME_OF_COMPANY: "Entrer un nom d'enterprise",
   COMPANY_LOGO: "Logo de I'enterprise",
   NAME_OF_USER: "Nom de l'utilisateur",
-  NAME_OF_INCIDENT: "Nom du la incident",
+  NAME_OF_INCIDENT: "Nom de l'incident",
   PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom du incident ",
 
   STATUS: "Statut",
@@ -74,8 +74,8 @@ export const TEXTS = {
   Enter_site_addresses: "Entrer une adresse du chantier",
   Site_address: "Adresse du chantier",
   MEANS_ALLOWED: "Moyens autorisés",
-  START_DATE: "Date du démarrage",
-  END_DATE: "Date du fin",
+  START_DATE: "Date de début",
+  END_DATE: "Date de fin",
   UPLOAD_PDF: "Charger un PDF",
   UPLOAD_PICTURE: "Charger une photo",
 
@@ -217,7 +217,7 @@ export const TEXTS = {
 
   LOGO: "Logo",
   TYPE_OF_COMPANY: "Ouvert d'entreprise",
-  TYPE_OF_incident: "Ouvert du rincident",
+  TYPE_OF_incident: "Ouvert de rincident",
   PLEASE_SELECT_TYPE_OF_incident: "Ouvert du incident",
 
   FUNCTIONALITY_SUBSCRIBED: "Fonctionnalité souscrite",
