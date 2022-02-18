@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 import Chip from "@material-ui/core/Chip";
 import IconButton from "@material-ui/core/IconButton";
 import { TEXTS } from "../assets/languages/french";
@@ -121,31 +122,37 @@ export default function MultiAdderInput(props) {
   return (
     <div className={`${classes.root} ${props.className}`} style={props.style}>
       <div className={classes.container}>
-        <input
-          value={text}
-          name={props.name}
-          type={props.type}
-          onBlur={props.onBlur}
-          onFocus={props.onFocus}
-          className={classes.input}
-          disabled={props.disabled}
-          placeholder={props.placeholder}
-          onChange={(e) => {
-            setText(e.target.value);
-            if (props.name === "trades") {
-              if (!e.target.value && props.trades.length < 1) {
-                props?.setTradeError(Please_enter_atleast_one_trade);
-              } else {
-                props?.setTradeError("");
+        <Tooltip
+          title="Appuyez sur l'icône + pour ajouter"
+          placement="top"
+          arrow
+        >
+          <input
+            value={text}
+            name={props.name}
+            type={props.type}
+            onBlur={props.onBlur}
+            onFocus={props.onFocus}
+            className={classes.input}
+            disabled={props.disabled}
+            placeholder={props.placeholder}
+            onChange={(e) => {
+              setText(e.target.value);
+              if (props.name === "trades") {
+                if (!e.target.value && props.trades.length < 1) {
+                  props?.setTradeError(Please_enter_atleast_one_trade);
+                } else {
+                  props?.setTradeError("");
+                }
               }
-            }
-          }}
-        />
+            }}
+          />
+        </Tooltip>
         <div className={classes.endAdornment}>
           <IconButton
             onClick={onAdd}
             disabled={props.disabled || !text}
-            style={{}}
+            style={{ margin: 10 }}
           >
             <Plus
               style={{ width: 20, height: 20, color: !text || "#dbb20a" }}
