@@ -122,7 +122,7 @@ const VarificationSheet = (props) => {
         uri: `${GLOBALS.Constants.BUFFER_UPDATE_DELIVERY}/${eventdata.id}`,
         body: formdata,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
       });
       // if (delay === true) {

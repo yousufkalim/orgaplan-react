@@ -177,7 +177,7 @@ export default function AddSiteStep2(props) {
         method: "POST",
         uri: GLOBALS.Constants.SITES,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

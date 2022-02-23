@@ -152,7 +152,7 @@ export default function Admins(props) {
         method: "PUT",
         uri: GLOBALS.Constants.ADMINS,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });
