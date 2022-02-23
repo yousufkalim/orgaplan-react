@@ -66,14 +66,13 @@ export default function MultiAdderInputModal(props) {
   const classes = useStyles();
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState(false);
-
-  // const [street, setStreet] = useState("");
+  const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postal, setPostal] = useState("");
 
   const handleChange = (name, value) => {
-    // if (name === "street") setStreet(value);
-    if (name === "city") setCity(value);
+    if (name === "street") setStreet(value);
+    else if (name === "city") setCity(value);
     else if (name === "postal") {
       if (value.length <= 5) {
         setPostal(value);
@@ -86,17 +85,17 @@ export default function MultiAdderInputModal(props) {
 
     const values = {
       _id: newValues.length,
-      // street: street,
+      street: street,
       city: city,
       postal: postal,
-      label: ` ${city} ${postal}`,
+      label: `${street} ${city} ${postal}`,
     };
     newValues.push(values);
     props.onChange(newValues);
 
     setUpdate((st) => !st);
     setModal(false);
-    // setStreet("");
+    setStreet("");
     setCity("");
     setPostal("");
   }
@@ -146,7 +145,7 @@ export default function MultiAdderInputModal(props) {
         onClose={() => setModal((st) => !st)}
         body={
           <Form.Form>
-            {/* <Form.Row>
+            <Form.Row>
               <FormInput
                 name="street"
                 value={street}
@@ -157,7 +156,7 @@ export default function MultiAdderInputModal(props) {
                   handleChange(name, value)
                 }
               />
-            </Form.Row> */}
+            </Form.Row>
             <Form.Row>
               <FormInput
                 name="city"
