@@ -453,7 +453,7 @@ const Calender = (props) => {
               method: "POST",
               uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
               headers: {
-                Authorization: store.token,
+                Authorization: `Bearer ${store.token}`,
               },
               body: formdata,
             });
@@ -726,7 +726,7 @@ const Calender = (props) => {
       method: "POST",
       uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
       headers: {
-        Authorization: store.token,
+        Authorization: `Bearer ${store.token}`,
       },
       body: formdata1,
     });
