@@ -214,7 +214,7 @@ export default function AddMean(props) {
           ? `${GLOBALS.Constants.MEAN}/${props.selectedShape._id}`
           : GLOBALS.Constants.MEAN,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

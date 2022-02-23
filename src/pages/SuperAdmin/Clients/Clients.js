@@ -205,7 +205,7 @@ export default function Clients(props) {
         method: "PUT",
         uri: GLOBALS.Constants.CLIENTS,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

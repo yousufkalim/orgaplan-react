@@ -123,6 +123,9 @@ export default function AddIncidents(props) {
     try {
       const response = await GLOBALS.API({
         uri: `${GLOBALS.Constants.GET_SITE_INCIDENT}/${adminStore.site.siteId._id}`,
+        // headers: {
+        //   Authorization: `Bearer ${store.token}`,
+        // },
         token: store.token,
       });
 
@@ -201,6 +204,9 @@ export default function AddIncidents(props) {
         const response = await GLOBALS.API({
           uri: `${GLOBALS.Constants.GET_DELIVERY_AREA_BY_SITE_ID}/${adminStore.site.siteId._id}`,
           token: store.token,
+          // headers: {
+          //   Authorization: `Bearer ${store.token}`,
+          // },
         });
         if (response.data) {
           setDropdownLocation(
@@ -253,11 +259,12 @@ export default function AddIncidents(props) {
       // for (let [key, value] of formdata) {
       //   console.log(`formdata in add user ${key}: ${value}`);
       // }
+      console.log("token ", store.token);
       await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.POST_ADD_SITE_INCIDENTS,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

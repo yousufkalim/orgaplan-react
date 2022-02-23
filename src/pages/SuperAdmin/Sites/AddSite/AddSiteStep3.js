@@ -123,7 +123,7 @@ export default function AddSiteStep3(props) {
         method: "PUT",
         uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });
@@ -219,7 +219,7 @@ export default function AddSiteStep3(props) {
         method: "PUT",
         uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

@@ -231,7 +231,7 @@ export default function AddCompanies(props) {
           method: "POST",
           uri: GLOBALS.Constants.ADMIN_COMPANY,
           headers: {
-            Authorization: store.token,
+            Authorization: `Bearer ${store.token}`,
           },
           body: formdata,
         });

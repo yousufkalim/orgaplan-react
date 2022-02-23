@@ -286,7 +286,7 @@ export default function AddIncidents(props) {
           "/" +
           props.location.data._id,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

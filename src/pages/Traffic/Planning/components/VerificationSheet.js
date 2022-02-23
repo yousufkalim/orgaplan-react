@@ -135,7 +135,7 @@ const VarificationSheet = (props) => {
         uri: `${GLOBALS.Constants.ADD_SIGN}/${store.user._id}`,
         body: form,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
       });
       const user = _.cloneDeep(store.user);
@@ -167,7 +167,7 @@ const VarificationSheet = (props) => {
         uri: `${GLOBALS.Constants.COMPLETE_DELIVERY}/${eventdata.id}`,
         body: formdata,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
       });
 

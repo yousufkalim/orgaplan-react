@@ -296,7 +296,7 @@ const PicCanvas = (props) => {
         method: "PUT",
         uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });
@@ -427,7 +427,7 @@ const PicCanvas = (props) => {
         method: "PUT",
         uri: GLOBALS.Constants.ADMIN_PIC_PDF,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

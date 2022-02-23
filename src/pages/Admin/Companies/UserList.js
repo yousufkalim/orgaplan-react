@@ -116,7 +116,7 @@ export default function UserList(props) {
         method: "POST",
         uri: `${GLOBALS.Constants.ADDCOMPANYDATA}/${filterCompanyId}`,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formData,
       });
@@ -264,7 +264,7 @@ export default function UserList(props) {
         method: "DELETE",
         uri: GLOBALS.Constants.DELETE_COMPANY_USER,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });
@@ -297,7 +297,7 @@ export default function UserList(props) {
         method: "PUT",
         uri: GLOBALS.Constants.UPDATE_COMPANY_USER,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });

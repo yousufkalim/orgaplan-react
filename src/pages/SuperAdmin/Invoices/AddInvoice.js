@@ -235,7 +235,7 @@ export default function AddInvoice(props) {
         method: "POST",
         uri: GLOBALS.Constants.INVOICES,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         token: store.token,
         body: formdata,

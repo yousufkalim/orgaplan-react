@@ -134,7 +134,7 @@ export default function VerifyClient(props) {
         method: "PUT",
         uri: `${GLOBALS.Constants.QUOTE_VERIFY}`,
         headers: {
-          Authorization: store.token,
+          Authorization: `Bearer ${store.token}`,
         },
         body: formdata,
       });
