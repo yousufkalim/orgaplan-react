@@ -137,7 +137,7 @@ export default function UserList(props) {
             method: "POST",
             uri: GLOBALS.Constants.ADD_COMPANY_USER,
             headers: {
-              Authorization: store.token,
+              Authorization: `Bearer ${store.token}`,
             },
             body: formdata,
           });

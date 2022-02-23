@@ -191,7 +191,7 @@ export default function AddContact(props) {
           method: "POST",
           uri: GLOBALS.Constants.POST_SITE_ORGANIGRAMMES,
           headers: {
-            Authorization: store.token,
+            Authorization: `Bearer ${store.token}`,
           },
           body: formdata,
         });
