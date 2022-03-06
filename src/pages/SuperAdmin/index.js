@@ -5,6 +5,7 @@ import Home from "./Home";
 import Logs from "./Logs";
 import Sites from "./Sites";
 import Admins from "./Admins";
+import Questions from "./Questions";
 import Clients from "./Clients";
 import Invoices from "./Invoices";
 import Header from "./SuperAdminHeader";
@@ -19,6 +20,7 @@ export default function UnAuth() {
         <Route path="/logs" component={Logs} />
         <Route path="/sites" component={Sites} />
         <Route path="/admins" component={Admins} />
+        <Route path="/questions" component={Questions} />
         <Redirect from="*" to="/" />
       </Switch>
     </Header>

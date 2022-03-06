@@ -9,6 +9,7 @@ import Calender from "./Calender";
 import Companies from "./Companies";
 import Incidents from "./Incidents";
 import Organigramme from "./Organigramme";
+import Faq from "../CommonAuth/Faq";
 
 // Component
 export default function AdminIndex(props) {
@@ -23,6 +24,7 @@ export default function AdminIndex(props) {
         render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
       />
       <Route path="/organigramme" component={Organigramme} />
+      <Route path="/faq" component={Faq} />
       <Redirect from="*" to="/" />
     </Switch>
   );

@@ -7,6 +7,7 @@ import Pic from "./Pic";
 import tIncidents from "./Incidents";
 import tPlanning from "./Planning";
 import varificationSheet from "./Planning/components/VerificationSheet";
+import Faq from "../CommonAuth/Faq";
 
 // Component
 export default function TrafficIndex(props) {
@@ -28,6 +29,7 @@ export default function TrafficIndex(props) {
         path="/pic-interactive"
         render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
       />
+      <Route path="/faq" component={Faq} />
       <Redirect from="*" to="/" />
     </Switch>
   );
