@@ -195,6 +195,7 @@ export default function AddCompanies(props) {
           email: email,
           description: addInfo,
           siteId: adminStore.site.siteId._id,
+          trades: trades,
           parentCompanyId:
             companyType === "generalcontractor" ? undefined : parentCompanyId,
         };
@@ -398,7 +399,7 @@ export default function AddCompanies(props) {
               <FormMultiSelect
                 name="trades"
                 value={trades}
-                disabled={true}
+                // disabled={true}
                 values={allTrades}
                 placeholder={TRADES}
                 style={GLOBALS.Styles.inputWidth}
