@@ -363,6 +363,25 @@ const PopoverModal = ({
                 ) : (
                   <></>
                 )}
+                {event.status != "PENDING" ||
+                event.user.adminType === "MASTERADMIN" ||
+                event.user.adminType === "ADMINPERSITE" ? (
+                  <>
+                    <hr />
+                    <div className="popoverfooter">
+                      <div className="col-lg-3">
+                        <button
+                          className="btn text-danger btn-light"
+                          onClick={handleDeleteDelivery}
+                        >
+                          <i class="fas fa-trash"></i> <span>{REFUSE}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </>
             ) : (
               <>
