@@ -74,6 +74,20 @@ export default function DeliveryRequest(props) {
         token: store.token,
       });
 
+      const res = await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY_FILTER}`,
+        token: store.token,
+        method: "POST",
+        body: JSON.stringify({ siteId: adminStore.site.siteId._id }),
+      });
+      let siteCompanies = res.data;
+      let userCompany = "";
+      siteCompanies.users.map((user) => {
+        if (user.userId._id === store.user._id) {
+          userCompany = user.companyId;
+        }
+      });
+
       deliveryAreas.data.forEach((val, index) => {
         val.unavailabilityDates?.map((key) => {
           if (key.dayOff === true) {
@@ -160,18 +174,28 @@ export default function DeliveryRequest(props) {
           return accumulator;
         }, []),
       );
-      setCompanies(
-        response.data?.map((company) => ({
-          label: company.companyId.name,
-          value: company.companyId._id,
-        })),
-      );
-      setTrades(
-        adminStore.site.siteId.trades?.map((trade) => ({
-          label: trade,
-          value: trade,
-        })),
-      );
+      let filteredTrades = [];
+      let companyName = "";
+      response.data?.map((company) => {
+        if (company.companyId._id === userCompany) {
+          companyName = company.companyId.name;
+          company.trades.map((trade) => {
+            filteredTrades.push({
+              label: trade,
+              value: trade,
+            });
+          });
+        }
+      });
+
+      setCompanies([
+        {
+          label: companyName,
+          value: userCompany,
+        },
+      ]);
+
+      setTrades(filteredTrades);
 
       setBuildings(buildings.data.items);
       props.eventId && fetchEvent();
