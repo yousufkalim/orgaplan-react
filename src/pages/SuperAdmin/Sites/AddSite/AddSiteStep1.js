@@ -93,7 +93,7 @@ export default function AddSiteStep1(props) {
       });
 
       const clientsResult = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.CLIENTS}`,
+        uri: `${GLOBALS.Constants.CLIENTS_GET_ALL}`,
       });
 
       const zacsArray = zacsResult.data.items.map((zac) => ({

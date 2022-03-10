@@ -35,6 +35,7 @@ const endpoints = {
   COMPANY_GET: BASE_URL_V1 + "superadmin/companies/get",
   // CLIENT
   CLIENTS: BASE_URL_V1 + "superadmin/clients",
+  CLIENTS_GET_ALL: BASE_URL_V1 + "superadmin/clients/get_all",
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
   // DASHBOARD
   DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",

@@ -167,12 +167,18 @@ export default function DeliveryRequest(props) {
           value: company.companyId._id,
         })),
       );
-      setTrades(
-        adminStore.site.siteId.trades?.map((trade) => ({
-          label: trade,
-          value: trade,
-        })),
-      );
+
+      let filteredTrades = [];
+      response.data?.map((company) => {
+        company.trades.map((trade) => {
+          filteredTrades.push({
+            label: trade,
+            value: trade,
+          });
+        });
+      });
+
+      setTrades(filteredTrades);
 
       setBuildings(buildings.data.items);
       props.eventId && fetchEvent();

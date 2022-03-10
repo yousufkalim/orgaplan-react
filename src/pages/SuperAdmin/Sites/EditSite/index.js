@@ -68,7 +68,7 @@ export default function EditSite(props) {
         uri: `${GLOBALS.Constants.ZACS}`,
       });
       const clientsResult = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.CLIENTS}`,
+        uri: `${GLOBALS.Constants.CLIENTS_GET_ALL}`,
       });
       const zacsArray = zacsResult.data.items.map((zac) => ({
         value: zac._id,
