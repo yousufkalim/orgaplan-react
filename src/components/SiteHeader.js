@@ -147,6 +147,11 @@ export default function SiteHeader(props) {
             path: "/organigramme",
             icon: <Organigramme />,
           },
+          {
+            name: "Faq",
+            path: "/faq",
+            icon: <Faq />,
+          },
         ]
       : storeAdmin?.site?.role == "ADMIN"
       ? [
