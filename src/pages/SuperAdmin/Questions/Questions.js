@@ -48,7 +48,6 @@ export default function Questions(props) {
   const [data, setData] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  
 
   useEffect(() => {
     fetchData();
@@ -58,7 +57,7 @@ export default function Questions(props) {
   async function fetchData() {
     try {
       const result = await GLOBALS.API({
-        uri: `${GLOBALS.Constants.FAQ}/?page=${page}&question=${query}`,
+        uri: `${GLOBALS.Constants.FAQ}?page=${page}&question=${query}`,
       });
       setItems(result.data.items);
       setData(result.data);
@@ -81,9 +80,9 @@ export default function Questions(props) {
           token: store.token,
           uri: GLOBALS.Constants.FAQ + "/" + id,
         });
-        
+
         const itemsArray = items.filter((item) => item._id !== id);
-        
+
         setItems(itemsArray);
         setLoading(false);
 
@@ -155,12 +154,10 @@ export default function Questions(props) {
         {loading ? (
           <Loader.Progress />
         ) : (
-          <Table headers={[
-            "Question",
-            "Réponse",
-            "Date De Création",
-            "Actions"
-          ]} rows={rows} />
+          <Table
+            headers={["Question", "Réponse", "Date De Création", "Actions"]}
+            rows={rows}
+          />
         )}
         {!loading && data.totalItems > 10 && (
           <Pagination
