@@ -602,13 +602,13 @@ export default function AddSiteStep3(props) {
           <Form.Form>
             <Form.Row alignItems="center">
               <Form.Row noMargin>
-                <FormLabel noMargin bold primary={ADD_LEVEL} />
+                <FormLabel noMargin bold primary={"Ajouter un niveau"} />
               </Form.Row>
               {activeBuilding && (
                 <FormInput
                   name="levelNumber"
                   value={levelNumber}
-                  placeholder={ADD_LEVEL}
+                  placeholder={"Ajouter un niveau"}
                   style={GLOBALS.Styles.inputWidth}
                   onChange={({ target: { name, value } }) =>
                     handleChange(name, value)

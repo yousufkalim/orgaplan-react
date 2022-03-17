@@ -151,10 +151,14 @@ export default function MultiAdderInput(props) {
             <IconButton
               onClick={onAdd}
               disabled={props.disabled || !text}
-              style={{ margin: 10 }}
+              style={{ margin: 10, backgroundColor: !text || "#ebd065" }}
             >
               <Plus
-                style={{ width: 20, height: 20, color: !text || "#dbb20a" }}
+                style={{
+                  width: 18,
+                  height: 18,
+                  color: !text || "#707070",
+                }}
               />
             </IconButton>
           </div>
