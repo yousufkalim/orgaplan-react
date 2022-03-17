@@ -6,6 +6,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import eOrganigramme from "./Organigramme";
 import Pic from "./Pic";
 import eMeans from "./Means";
+import Faq from "../CommonAuth/Faq";
 
 // Component
 export default function EnterpriseIndex(props) {
@@ -22,6 +23,7 @@ export default function EnterpriseIndex(props) {
         path="/pic-interactive"
         render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
       />
+      <Route path="/faq" component={Faq} />
       <Redirect from="*" to="/" />
     </Switch>
   );

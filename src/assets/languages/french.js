@@ -199,6 +199,8 @@ export const TEXTS = {
   NAME_OF_CLIENT: "Nom du client",
   NAME_OF_ADMIN: "Nom du Admin",
 
+  FAQ: "Foire aux questions",
+
   Per_client: "Par client",
   INVOICE: "Facture",
   INVOICES: "Factures",
@@ -271,6 +273,11 @@ export const TEXTS = {
   MODIFIED: "Modifié",
   ALERT: "Alerte",
   ALERTS: "Alertes",
+
+  CREATE_A_FAQ_QUESTION: "Créer une question",
+  FAQ_QUESTION_TITLE: "Question",
+  FAQ_ANSWER_TITLE: "Réponse/Solution",
+  FAQ_ITEM_DESCRIPTION: "Detail",
 
   ADD_AN_INVOICE: "Ajouter une facture",
   CREATE_AN_INVOICE: "Créer une facture",
@@ -387,6 +394,7 @@ export const TEXTS = {
   EDIT_COMPANY: "Modifier une entreprise",
   EDIT_CLIENT: "Modifier un client",
   EDIT_SITE: " Modifier un chantier",
+  EDIT_FAQ_QUESTION: "Modifier une question",
 
   ACCEPT: "Accepter",
   REJECT: "Rejeter",

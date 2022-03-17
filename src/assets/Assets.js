@@ -4,6 +4,7 @@ import Invoices from "./images/invoices.png";
 import Incidents from "./images/incidents.png";
 import Means from "./images/means.png";
 import Organigramme from "./images/organigramme.png";
+import Faq from "./images/faq.png"
 import pic from "./images/pic.png";
 import uploadIcon from "./icons/uploadIcon.png";
 import downloadIcon from "./images/download.png";
@@ -35,6 +36,7 @@ export const Images = {
   incidents: Incidents,
   means: Means,
   organigramme: Organigramme,
+  faq: Faq,
   uploadIcon: uploadIcon,
   downloadIcon: downloadIcon,
   csvIcon: csvIcon,

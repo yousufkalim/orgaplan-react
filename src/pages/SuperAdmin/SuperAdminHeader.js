@@ -21,6 +21,7 @@ import { ReactComponent as Companies } from "../../assets/icons/companies.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/Home.svg";
 import { ReactComponent as Admins } from "../../assets/icons/Admins.svg";
 import { ReactComponent as Clients } from "../../assets/icons/Clients.svg";
+import { ReactComponent as Faq } from "../../assets/icons/faq.svg";
 import { ReactComponent as Invoices } from "../../assets/icons/invoices.svg";
 
 const drawerWidth = 240;
@@ -114,6 +115,11 @@ const userItems = [
     path: "/logs",
     icon: <Companies />,
   },
+  {
+    name: "FAQ",
+    path: "/questions",
+    icon: <Faq />,
+  }
 ];
 
 export default function Header(props) {

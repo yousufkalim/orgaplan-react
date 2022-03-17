@@ -39,6 +39,8 @@ const endpoints = {
   CLIENT_DELETE: BASE_URL_V1 + "superadmin/clients/delete",
   // DASHBOARD
   DASHBOARD: BASE_URL_V1 + "superadmin/dashboard",
+  // FAQ
+  FAQ: BASE_URL_V1 + "superadmin/faq",
   // INVOICE
   INVOICE: BASE_URL_V1 + "superadmin/invoices/get",
   INVOICES: BASE_URL_V1 + "superadmin/invoices",

@@ -1,6 +1,7 @@
 // Init
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import Faq from "../CommonAuth/Faq";
 
 // Pages
 import Pic from "./Pic";
@@ -26,6 +27,7 @@ export default function BufferIndex(props) {
         path="/pic-interactive"
         render={(e) => <Pic event={e} drawerOpen={props.drawerOpen} />}
       />
+      <Route path="/faq" component={Faq} />
       <Redirect from="*" to="/" />
     </Switch>
   );

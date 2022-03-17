@@ -23,6 +23,7 @@ import { ReactComponent as Calender } from "../assets/icons/calender.svg";
 import { ReactComponent as Incidents } from "../assets/icons/incidents.svg";
 import { ReactComponent as Companies } from "../assets/icons/companies.svg";
 import { ReactComponent as Organigramme } from "../assets/icons/organigramme.svg";
+import { ReactComponent as Faq } from "../assets/icons/faq.svg";
 import { TEXTS } from "../assets/languages/french";
 
 const drawerWidth = 240;
@@ -146,6 +147,11 @@ export default function SiteHeader(props) {
             path: "/organigramme",
             icon: <Organigramme />,
           },
+          {
+            name: "Faq",
+            path: "/faq",
+            icon: <Faq />,
+          },
         ]
       : storeAdmin?.site?.role == "ADMIN"
       ? [
@@ -179,6 +185,11 @@ export default function SiteHeader(props) {
             path: "/organigramme",
             icon: <Organigramme />,
           },
+          {
+            name: "Faq",
+            path: "/faq",
+            icon: <Faq />,
+          },
         ]
       : storeAdmin?.site?.role == "TRAFFIC"
       ? [
@@ -198,6 +209,11 @@ export default function SiteHeader(props) {
             path: "/incidents",
             icon: <Incidents />,
           },
+          {
+            name: "Faq",
+            path: "/faq",
+            icon: <Faq />,
+          },
         ]
       : [
           {
@@ -209,6 +225,11 @@ export default function SiteHeader(props) {
             name: "Planning",
             path: "/Planing",
             icon: <Calender />,
+          },
+          {
+            name: "Faq",
+            path: "/faq",
+            icon: <Faq />,
           },
         ];
 
