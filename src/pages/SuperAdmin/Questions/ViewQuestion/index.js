@@ -85,7 +85,7 @@ export default function ViewQuestion(props) {
                         return (
                             <div key={index}>
                                 <Form.Row alignItems="flex-start">
-                                    <Heading primary={`Etape ${index + 1} de la solution`} />
+                                    <Heading primary={`Etape ${index + 1}`} />
                                 </Form.Row>
                                 { step.picture ? (
                                     <Form.Row>

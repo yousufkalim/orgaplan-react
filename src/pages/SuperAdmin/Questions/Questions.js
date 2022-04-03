@@ -14,7 +14,7 @@ import Loader from "../../../components/Loader";
 import Button from "../../../components/Button";
 import Heading from "../../../components/Heading";
 import Pagination from "../../../components/Pagination";
-import { ReactComponent as Details } from "../../../assets/icons/invoices.svg";
+import { ReactComponent as Details } from "../../../assets/icons/more.svg";
 import { ReactComponent as Pencil } from "../../../assets/icons/Pencil.svg";
 import { ReactComponent as Cross } from "../../../assets/icons/Cross.svg";
 
@@ -107,7 +107,6 @@ export default function Questions(props) {
   const rows = items.map((item) => [
     item.question,
     item.answer?.replace(/(.{50})..+/, "$1..."),
-    moment(item.createdAt).format("DD/MM/YYYY"),
     <>
       <IconButton component={NavLink} to={`/questions/view/${item._id}`}>
         <Details style={{ width: 15, height: 15 }} />
@@ -155,7 +154,7 @@ export default function Questions(props) {
           <Loader.Progress />
         ) : (
           <Table
-            headers={["Question", "Réponse", "Date De Création", "Actions"]}
+            headers={["Question", "Réponse", ""]}
             rows={rows}
           />
         )}

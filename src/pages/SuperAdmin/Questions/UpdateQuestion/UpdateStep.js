@@ -94,7 +94,7 @@ export default function UpdateStep(props) {
     <>
         <div>
             <Form.Row alignItems="flex-start" justifyContent="space-between">
-                <Heading primary={`Etape ${props.number} de la solution`} />
+                <Heading primary={`Etape ${props.number}`} />
             </Form.Row>
             <Form.Row>
             { picture ? (
