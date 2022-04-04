@@ -14,7 +14,7 @@ import Loader from "../../../../components/Loader";
 import Heading from "../../../../components/Heading";
 import Pagination from "../../../../components/Pagination";
 
-import { ReactComponent as Details } from "../../../../assets/icons/invoices.svg";
+import { ReactComponent as Details } from "../../../../assets/icons/more.svg";
 
 import SearchInput from "../../../../components/SearchInput";
 import { TEXTS } from "../../../../assets/languages/french";
@@ -71,7 +71,6 @@ export default function Faq(props) {
   const rows = items.map((item) => [
     item.question,
     item.answer?.replace(/(.{50})..+/, "$1..."),
-    moment(item.createdAt).format("DD/MM/YYYY"),
     <>
       <IconButton component={NavLink} to={`/faq/view/${item._id}`}>
         <Details style={{ width: 15, height: 15 }} />
@@ -106,7 +105,7 @@ export default function Faq(props) {
           <Loader.Progress />
         ) : (
           <Table
-            headers={["Question", "Réponse", "Date De Création", "Actions"]}
+            headers={["Question", "Réponse", ""]}
             rows={rows}
           />
         )}
