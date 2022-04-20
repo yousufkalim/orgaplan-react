@@ -294,16 +294,18 @@ export default function Companies(props) {
                 />
               </NavLink>
             </IconButton>
-            <IconButton
-              style={{ padding: "6px", opacity: "0.7" }}
-              onClick={() => handleDelete(item.companyId._id)}
-            >
-              <img
-                src={Images.trash}
-                style={{ width: 18, height: 17 }}
-                alt="Icon"
-              />
-            </IconButton>
+            {item.companyId?.type === "NOCLIENTS" && (
+              <IconButton
+                style={{ padding: "6px", opacity: "0.7" }}
+                onClick={() => handleDelete(item.companyId._id)}
+              >
+                <img
+                  src={Images.trash}
+                  style={{ width: 18, height: 17 }}
+                  alt="Icon"
+                />
+              </IconButton>
+            )}
           </div>
         </>
       </div>,
