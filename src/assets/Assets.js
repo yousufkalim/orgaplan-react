@@ -4,7 +4,7 @@ import Invoices from "./images/invoices.png";
 import Incidents from "./images/incidents.png";
 import Means from "./images/means.png";
 import Organigramme from "./images/organigramme.png";
-import Faq from "./images/faq.png"
+import Faq from "./images/faq.png";
 import pic from "./images/pic.png";
 import uploadIcon from "./icons/uploadIcon.png";
 import downloadIcon from "./images/download.png";
@@ -20,6 +20,7 @@ import site1 from "./images/Image 3.png";
 import site2 from "./images/Image 4.png";
 import site3 from "./images/Image 5.png";
 import pencil from "./images/pencil.png";
+import trash from "./images/trash.png";
 import hero from "./images/land hero.png";
 import landBuilding from "./images/land building.png";
 import landCalender from "./images/land-calender.png";
@@ -53,6 +54,7 @@ export const Images = {
   site2: site2,
   site3: site3,
   pencil: pencil,
+  trash: trash,
   hero: hero,
   landBuilding: landBuilding,
   landCalender: landCalender,

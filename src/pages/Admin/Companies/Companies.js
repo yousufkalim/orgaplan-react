@@ -172,6 +172,27 @@ export default function Companies(props) {
     }
   };
 
+  //   Delete company
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      await GLOBALS.API({
+        uri: `${GLOBALS.Constants.ADMIN_SITE_COMPANY_DELETE}/${adminStore.site.siteId._id}/${id}`,
+        token: store.token,
+        method: "DELETE",
+      });
+      getData();
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      dispatch(
+        Actions.notistack.enqueueSnackbar(
+          Actions.notistack.snackbar(err.message, "error"),
+        ),
+      );
+    }
+  };
+
   const requestRows = storageAreaRequest.map((item) => {
     return [
       item.companyId.name,
@@ -272,6 +293,16 @@ export default function Companies(props) {
                   alt="Icon"
                 />
               </NavLink>
+            </IconButton>
+            <IconButton
+              style={{ padding: "6px", opacity: "0.7" }}
+              onClick={() => handleDelete(item.companyId._id)}
+            >
+              <img
+                src={Images.trash}
+                style={{ width: 18, height: 17 }}
+                alt="Icon"
+              />
             </IconButton>
           </div>
         </>

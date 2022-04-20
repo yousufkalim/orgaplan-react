@@ -127,6 +127,7 @@ const endpoints = {
   ADMIN_COMPANY: BASE_URL_V1 + "company",
   GET_COMPANY_USER: BASE_URL_V1 + "company/user",
   GET_ADMIN_COMPANY: BASE_URL_V1 + "company/admin",
+  ADMIN_SITE_COMPANY_DELETE: BASE_URL_V1 + "company/site-delete",
   ADMIN_SITE_COMPANY: BASE_URL_V1 + "company/site",
   GET_COMPANY_USERS: BASE_URL_V1 + "company/users",
   ADMIN_SITE_COMPANY_FILTER: BASE_URL_V1 + "company/filter",
