@@ -184,10 +184,10 @@ export default function Companies(props) {
         token: store.token,
         method: "DELETE",
       });
-      getData();
       setLoading(false);
-      setCompanyId("");
       setDeleteModal(false);
+      setCompanyId("");
+      getData();
     } catch (err) {
       setLoading(false);
       setCompanyId("");
