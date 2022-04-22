@@ -75,7 +75,6 @@ export default function DeliveryRequestStep3(props) {
     try {
       e.preventDefault();
       setLoading(true);
-
       const formdata = {
         siteId: adminStore.site.siteId._id,
         companyId: props.step1Data.company,
@@ -335,7 +334,7 @@ export default function DeliveryRequestStep3(props) {
           name="comments"
           value={comments}
           placeholder={COMMENTS}
-          disabled={props.eventId}
+          // disabled={props.eventId}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setComments(value)}
         />

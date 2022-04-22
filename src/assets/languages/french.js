@@ -59,7 +59,7 @@ export const TEXTS = {
   PLEASE_ENTER_NAME_OF_INCIDENT: "Entrer un Nom du incident ",
 
   STATUS: "Statut",
-  TYPE: "Ouvert",
+  TYPE: "Type",
   TYPE2: "Utilisation",
   AREA: "Aire",
   ZONE: "Zone",
@@ -368,8 +368,8 @@ export const TEXTS = {
 
   Please_select_Delivery_Area: "Sélectionner une aire du livraison",
   Please_select_Date: "Sélectionner une date",
-  LIFTING: "Levage",
-  ROUTING: "Acheminement",
+  LIFTING: " LEVAGE",
+  ROUTING: "ACHEMINEMENT",
   TECHNICAL_SHEET: "Fiche Technique",
   Please_enter_valid_email: "Entrez une adresse correcte",
 

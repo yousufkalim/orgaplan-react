@@ -408,7 +408,6 @@ export default function Companies(props) {
   );
 }
 const Modalis = (props) => {
-  console.log("idisss", props.id);
   return (
     <Dialog
       maxWidth={"md"}
