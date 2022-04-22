@@ -51,14 +51,15 @@ export default function Companies(props) {
   const adminStore = useSelector((state) => state.admin);
 
   const [companies, setCompanies] = useState([]);
-  const [deletemodal, setDeleteModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const [nameOfResponsible, setNameOfResponsible] = useState("");
   const [nameOfCompany, setNameOfCompany] = useState("");
-  const [idis, setidis] = useState("");
+  const [companyId, setCompanyId] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storageAreaRequest, setStorageAreaRequest] = useState([]);
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line
@@ -185,10 +186,12 @@ export default function Companies(props) {
       });
       getData();
       setLoading(false);
-      setidis("");
+      setCompanyId("");
       setDeleteModal(false);
     } catch (err) {
       setLoading(false);
+      setCompanyId("");
+      setDeleteModal(false);
       dispatch(
         Actions.notistack.enqueueSnackbar(
           Actions.notistack.snackbar(err.message, "error"),
@@ -301,8 +304,7 @@ export default function Companies(props) {
             {item.companyId?.type === "NOCLIENTS" && (
               <IconButton
                 style={{ padding: "6px", opacity: "0.7" }}
-                // onClick={() => handleDelete(item.companyId._id)}
-                onClick={() => handleDeleteModal(item.companyId._id)}
+                onClick={() => handleDeleteModal({ id: item.companyId._id })}
               >
                 <img
                   src={Images.trash}
@@ -316,21 +318,20 @@ export default function Companies(props) {
       </div>,
     ];
   });
-  const handlecloseDeleteModal = () => {
-    setDeleteModal(false);
-    setidis("");
-  };
-  const handleDeleteModal = (id) => {
-    setidis(id);
-    setDeleteModal(true);
+
+  //   This function will open and close confirmation popup to delete a company
+  const handleDeleteModal = ({ id }) => {
+    setDeleteModal(id ? true : false);
+    setCompanyId(id || "");
   };
 
   return (
     <>
-      <Modalis
-        open={deletemodal}
-        handlecloseDeleteModal={handlecloseDeleteModal}
-        id={idis}
+      {/* Confirmation popup component to delete company */}
+      <DeleteModal
+        open={deleteModal}
+        handleDeleteModal={handleDeleteModal}
+        id={companyId}
         handleDelete={handleDelete}
       />
       <div className={classes.root}>
@@ -407,18 +408,16 @@ export default function Companies(props) {
     </>
   );
 }
-const Modalis = (props) => {
+
+// Confirmation popup to delete company
+const DeleteModal = (props) => {
   return (
-    <Dialog
-      maxWidth={"md"}
-      open={props.open}
-      onClose={props.handlecloseDeleteModal}
-    >
+    <Dialog maxWidth={"md"} open={props.open} onClose={props.handleDeleteModal}>
       <div className="" style={{ padding: "15px 20px" }}>
         <h3>Etes-vous sûr que vous voulez supprimer?</h3>
         <div style={{ padding: "20px", textAlign: "right" }}>
           <button
-            onClick={props.handlecloseDeleteModal}
+            onClick={props.handleDeleteModal}
             style={{
               border: "none",
               borderRadius: "10px",
