@@ -5,7 +5,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import moment from "moment";
 import { TEXTS } from "../../../assets/languages/french";
-
+import Dialog from "@material-ui/core/Dialog";
 import GLOBALS from "../../../globals";
 import Actions from "../../../redux/actions";
 
@@ -51,9 +51,11 @@ export default function Companies(props) {
   const adminStore = useSelector((state) => state.admin);
 
   const [companies, setCompanies] = useState([]);
+  const [deletemodal, setDeleteModal] = useState(false);
 
   const [nameOfResponsible, setNameOfResponsible] = useState("");
   const [nameOfCompany, setNameOfCompany] = useState("");
+  const [idis, setidis] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storageAreaRequest, setStorageAreaRequest] = useState([]);
@@ -183,6 +185,8 @@ export default function Companies(props) {
       });
       getData();
       setLoading(false);
+      setidis("");
+      setDeleteModal(false);
     } catch (err) {
       setLoading(false);
       dispatch(
@@ -297,7 +301,8 @@ export default function Companies(props) {
             {item.companyId?.type === "NOCLIENTS" && (
               <IconButton
                 style={{ padding: "6px", opacity: "0.7" }}
-                onClick={() => handleDelete(item.companyId._id)}
+                // onClick={() => handleDelete(item.companyId._id)}
+                onClick={() => handleDeleteModal(item.companyId._id)}
               >
                 <img
                   src={Images.trash}
@@ -311,9 +316,23 @@ export default function Companies(props) {
       </div>,
     ];
   });
+  const handlecloseDeleteModal = () => {
+    setDeleteModal(false);
+    setidis("");
+  };
+  const handleDeleteModal = (id) => {
+    setidis(id);
+    setDeleteModal(true);
+  };
 
   return (
     <>
+      <Modalis
+        open={deletemodal}
+        handlecloseDeleteModal={handlecloseDeleteModal}
+        id={idis}
+        handleDelete={handleDelete}
+      />
       <div className={classes.root}>
         <Form.Row alignItems="center" className="pr-3">
           <Heading primary={LIST_OF_COMPANIES} noWrap noMargin />
@@ -388,3 +407,44 @@ export default function Companies(props) {
     </>
   );
 }
+const Modalis = (props) => {
+  return (
+    <Dialog
+      maxWidth={"md"}
+      open={props.open}
+      onClose={props.handlecloseDeleteModal}
+    >
+      <div className="" style={{ padding: "15px 20px" }}>
+        <h3>Etes-vous sûr que vous voulez supprimer?</h3>
+        <div style={{ padding: "20px", textAlign: "right" }}>
+          <button
+            onClick={props.handlecloseDeleteModal}
+            style={{
+              border: "none",
+              borderRadius: "10px",
+              padding: "10px 25px",
+              marginRight: "15px",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={() => props.handleDelete(props.id)}
+            style={{
+              backgroundColor: "#DBB20A",
+              border: "none",
+              borderRadius: "10px",
+              padding: "10px 25px",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </Dialog>
+  );
+};

@@ -95,7 +95,16 @@ export default function AddUser(props) {
       if (response.data.roles != null) {
         const rolesTemp = [];
         response.data.roles.map((item, index) => {
-          return rolesTemp.push({ label: item, value: item });
+          if (item == "BUFFER") {
+            return rolesTemp.push({
+              label: "Agent de traffic tampon",
+              value: item,
+            });
+          } else if (item == "TRAFFIC") {
+            return rolesTemp.push({ label: "Agent de traffic", value: item });
+          } else {
+            return rolesTemp.push({ label: "Entreprise", value: item });
+          }
         });
         setDropdownRoles(rolesTemp);
       }
