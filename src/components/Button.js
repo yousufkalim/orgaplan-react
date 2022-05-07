@@ -30,6 +30,7 @@ export default function ButtonComponent(props) {
 
   return (
     <Button
+      className="btn"
       to={props.to}
       onClick={props.onClick}
       endIcon={props.endIcon}

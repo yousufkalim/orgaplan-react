@@ -105,8 +105,8 @@ export default function LandingPage() {
     <>
       <div className="land-container">
         <div className="hero">
-          <div className="d-flex justify-content-between p-1">
-            <nav className="d-flex justify-content-between align-self-start pt-3 w-50">
+          <div className=" d-flex justify-content-between p-1">
+            <nav className=" d-flex justify-content-between align-self-start pt-3 w-50">
               <Link
                 onClick={() => {
                   window.location.reload();
@@ -195,8 +195,8 @@ export default function LandingPage() {
         </div>
         <div className="section-2">
           <h2>Votre Plan d’Installation de Chantier collaboratif !</h2>
-          <div className="row justify-content-around">
-            <div className=" col-3 text-center land-card">
+          <div className="row  sec-2 justify-content-around">
+            <div className=" col-12 col-md-3 text-center land-card">
               <img src={Images.landNote} alt="Creez Votre PIC" />
               <h5>Créez votre PIC</h5>
               <p>
@@ -204,7 +204,7 @@ export default function LandingPage() {
                 aires de stockage
               </p>
             </div>
-            <div className="col-3 text-center land-card">
+            <div className="col-12 col-md-3 text-center land-card">
               <img src={Images.landGroup} alt="Creez Votre PIC" />
               <h5>Ajoutez vos équipes</h5>
               <p>
@@ -212,7 +212,7 @@ export default function LandingPage() {
                 sous-traitants, tous peuvent être ajoutés sur la plateforme
               </p>
             </div>
-            <div className="col-3 text-center land-card">
+            <div className="col-12 col-md-3 text-center land-card" id="endcard">
               <img src={Images.landCalender} alt="Creez Votre PIC" />
               <h5>Réservez sur le PIC</h5>
               <p>
@@ -223,40 +223,44 @@ export default function LandingPage() {
           </div>
           <div className="section-3 mt-5">
             <h2>Inscrivez-vous dès maintenant !</h2>
-            <p>
-              Notre offre <b>Premium</b> vous permettra de :
-            </p>
-            <p>
-              <img src={Images.checkbox} alt="checkbox Icon" />
-              Créer un nombre illimité de projets
-            </p>
-            <p>
-              <img src={Images.checkbox} alt="checkbox Icon" />
-              Ajouter un nombre illimité de collaborateurs
-            </p>
-            <p>
-              <img src={Images.checkbox} alt="checkbox Icon" />
-              Avoir accès à toutes les fonctionnalités de gestion de vos
-              chantiers
-            </p>
-            <p>
-              <img src={Images.checkbox} alt="checkbox Icon" />
-              Permettre la gestion des réservations, incidents, re-facturations,
-              etc...
-            </p>
-            <CustomButton
-              fullWidth={false}
-              text="S’inscrire"
-              onClick={() => setShowQuoteModal((st) => !st)}
-            />
+            <div className="contentS3">
+              <p>
+                Notre offre <b>Premium</b> vous permettra de :
+              </p>
+              <p>
+                <img src={Images.checkbox} alt="checkbox Icon" />
+                Créer un nombre illimité de projets
+              </p>
+              <p>
+                <img src={Images.checkbox} alt="checkbox Icon" />
+                Ajouter un nombre illimité de collaborateurs
+              </p>
+              <p>
+                <img src={Images.checkbox} alt="checkbox Icon" />
+                Avoir accès à toutes les fonctionnalités de gestion de vos
+                chantiers
+              </p>
+
+              <p>
+                <img src={Images.checkbox} alt="checkbox Icon" />
+                Permettre la gestion des réservations, incidents,
+                re-facturations, etc...
+              </p>
+              <CustomButton
+                className="btn"
+                fullWidth={false}
+                text="S’inscrire"
+                onClick={() => setShowQuoteModal((st) => !st)}
+              />
+            </div>
           </div>
           <div className="section-4">
             <h2>CONTACTEZ-NOUS </h2>
             <div className="row">
-              <div className="col-6">
+              <div className="col-6 people">
                 <img src={Images.landPeople} alt="People Contacting Us" />
               </div>
-              <div className="col-6">
+              <div className="col-6 contactForm">
                 <form onSubmit={onSubmit}>
                   <FormInput
                     type="text"

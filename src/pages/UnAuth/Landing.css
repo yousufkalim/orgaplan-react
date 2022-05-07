@@ -158,3 +158,121 @@ footer {
   color: #656461;
   margin-top: 5rem;
 }
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (max-width: 667px) {
+  .hero {
+    height: fit-content;
+    /* width: fit-content;
+    position: relative;
+    right: 10%; */
+  }
+
+  .hero-title h1 {
+    margin-top: 2rem;
+    font-size: 18px;
+    font-weight: bolder;
+    line-height: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .hero-title p {
+    font-size: 13px;
+    margin-bottom: 1rem;
+  }
+  .hero-btn {
+    margin-top: 13px;
+    margin-bottom: 4rem;
+    width: 50%;
+    font-size: 13px;
+  }
+
+  .section-2 h2 {
+    font-size: 1rem;
+    /* margin-top: 2rem; */
+    font-size: 20px;
+    text-align: center;
+    font-weight: 1500;
+    line-height: 1.9rem;
+    margin-bottom: 3rem;
+    margin-top: -3rem;
+  }
+  div h5 {
+    font-size: 18px;
+    line-height: 1rem;
+  }
+  .sec-2 p {
+    padding-top: 2px;
+    font-size: 15px;
+    justify-self: center;
+    margin: 7px;
+  }
+  .sec-2 img {
+    height: 60%;
+    width: 30%;
+    margin-top: 30px;
+  }
+  /* #endcard {
+    margin-top: -6px;
+  } */
+  .section-3 {
+    height: fit-content;
+  }
+  .contentS3 {
+    margin-left: -25%;
+    margin-right: 30%;
+  }
+  .people {
+    display: none;
+  }
+  .contactForm {
+    margin-left: 24%;
+    text-align: center;
+  }
+  .section-4 input,
+  textarea {
+    display: block;
+    width: 100%;
+    /* margin: 1rem; */
+    height: 3rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    outline: none;
+  }
+  .section-4 button {
+    margin-left: 0rem;
+    margin-top: 2rem;
+  }
+  /* .land-card {
+    width: 100% !important;
+    /* height: 100%; */
+  /* display: wrap !important;
+
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  } */
+  /* .sec-2 {
+    display: wrap;
+  } */
+  .sec-2 {
+    display: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  /* footer {
+    justify-content: space-between;
+    background-color: #ffebbe;
+    color: #656461;
+    margin-top: 3rem;
+    margin-bottom: -1rem;
+  } */
+}
+
+/* Large devices (laptops/desktops, 992px and up)*/
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
