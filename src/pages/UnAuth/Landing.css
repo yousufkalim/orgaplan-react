@@ -238,13 +238,13 @@ footer {
     display: none;
   }
   .contactForm {
-    margin-left: 24%;
+    margin-left: 20%;
     text-align: center;
   }
   .section-4 input,
   textarea {
     display: block;
-    width: 100%;
+    width: 120%;
     /* margin: 1rem; */
     height: 3rem;
     padding: 1rem;
