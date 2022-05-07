@@ -105,8 +105,8 @@ export default function LandingPage() {
     <>
       <div className="land-container">
         <div className="hero">
-          <div className=" d-flex justify-content-between p-1">
-            <nav className=" d-flex justify-content-between align-self-start pt-3 w-50">
+          <div className="d-flex justify-content-between p-1">
+            <nav className="d-flex justify-content-between align-self-start pt-3 w-50">
               <Link
                 onClick={() => {
                   window.location.reload();
@@ -124,14 +124,14 @@ export default function LandingPage() {
                   });
                 }}
                 style={{ cursor: "pointer" }}
-                className="text-white"
+                className="text-white m1"
               >
                 Fonctionnalites
               </span>
               <span
                 onClick={() => setShowQuoteModal((st) => !st)}
                 style={{ cursor: "pointer" }}
-                className="text-white"
+                className="text-white m2"
               >
                 S'inscrire
               </span>
@@ -144,12 +144,12 @@ export default function LandingPage() {
                   });
                 }}
                 style={{ cursor: "pointer" }}
-                className="text-white"
+                className="text-white m1"
               >
                 Nous contacter
               </span>
             </nav>
-            <div className="text-center text-black-50">
+            <div className="text-center text-black-50 b1">
               {store.auth && (
                 <img
                   src={Images.avatar}

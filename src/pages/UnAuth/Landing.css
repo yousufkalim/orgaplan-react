@@ -206,6 +206,19 @@ footer {
     justify-self: center;
     margin: 7px;
   }
+  .m1 {
+    display: none;
+  }
+  .m2 {
+    font-size: 17px;
+    margin-left: 35px;
+    /* margin-top: 23px; */
+    margin-top: 52px;
+  }
+  .b1 {
+    /* margin-top: 34px; */
+    margin-top: 62px;
+  }
   .sec-2 img {
     height: 60%;
     width: 30%;
