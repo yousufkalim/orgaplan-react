@@ -342,6 +342,7 @@ export default function Login(props) {
         </Formik>
       </div>
       <Modal
+        className="mod1"
         maxWidth="sm"
         title="MOT DE PASSE OUBLIÉ ?"
         open={showForgetModal}
