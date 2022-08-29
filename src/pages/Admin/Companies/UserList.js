@@ -591,7 +591,9 @@ export default function UserList(props) {
         <DialogContent>
           <DialogContentText>{Are_you_sure_to_Delete}</DialogContentText>
         </DialogContent>
-        <DialogActions style={{ width: "50%", marginLeft: "auto" }}>
+        <DialogActions
+          style={{ width: "100%", marginLeft: "auto", padding: "30px" }}
+        >
           <Button
             autoFocus
             style={{ height: "4vh" }}
