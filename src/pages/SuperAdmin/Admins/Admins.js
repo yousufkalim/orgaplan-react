@@ -242,7 +242,7 @@ export default function Admins(props) {
       else setLastNameError("");
     }
   }
-
+  console.log("items", items);
   const rows = items.map((item) => {
     const sendTo = [
       item.company.name,
@@ -429,7 +429,8 @@ export default function Admins(props) {
                 />
               </div>
             </Form.Row>
-            {company.type === "MASTERCLIENT" && (
+            {console.log("company", company)}
+            {company?.type === "MASTERCLIENT" && (
               <Form.Row justifyContent="center">
                 <div style={{ width: "50%" }}>
                   <RadioButton

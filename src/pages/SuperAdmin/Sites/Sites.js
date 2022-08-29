@@ -94,7 +94,7 @@ export default function Sites(props) {
         : setItems(
             result.data.items.filter((item) => {
               let filteredItems = item.clientAdmin.filter((cli) => {
-                return cli.clientId._id === client;
+                return cli.clientId?._id === client;
               });
 
               return filteredItems.length > 0 && filteredItems;
