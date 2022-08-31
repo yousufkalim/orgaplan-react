@@ -53,7 +53,7 @@ export const do_login = (email, password) => async (dispatch) => {
       method: "POST",
       uri: GLOBALS.Constants.LOGIN,
       body: JSON.stringify({
-        email: email,
+        email: email.toLowerCase(),
         password: password,
       }),
     });
