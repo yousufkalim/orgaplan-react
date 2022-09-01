@@ -91,7 +91,7 @@ const userItems = [
     icon: <HomeIcon />,
   },
   {
-    name: "Clientes",
+    name: "Clients",
     path: "/clients",
     icon: <Clients />,
   },
@@ -119,7 +119,7 @@ const userItems = [
     name: "FAQ",
     path: "/questions",
     icon: <Faq />,
-  }
+  },
 ];
 
 export default function Header(props) {

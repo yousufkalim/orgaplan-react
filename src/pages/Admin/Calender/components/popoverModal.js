@@ -60,7 +60,10 @@ const PopoverModal = ({
       <Alert
         show={alertBoxTime}
         variant="danger"
-        onClose={() => setAlertBoxTime(!alertBoxTime)}
+        onClose={() => {
+          window.scrollTo(0, 0);
+          setAlertBoxTime(!alertBoxTime);
+        }}
       >
         <div style={{ textAlign: "center" }}>
           {props.message}&nbsp;&nbsp;&nbsp;
@@ -120,17 +123,21 @@ const PopoverModal = ({
         <Modal.Body>
           <Alertbox message={Are_you_sure_You_want_to_delete_this} />
           <div className="showPopover">
-            <div style={{ textAlign: "right" }}>
-              <button
-                className="btn btn-light"
-                onClick={() => {
-                  setEditDelivery(true);
-                  onEditDelivery(event);
-                }}
-              >
-                <i class="fas fa-trash"></i> <span>{EDIT}</span>
-              </button>
-            </div>
+            {event.status === "VALIDATED" ? (
+              <div style={{ textAlign: "right" }}>
+                <button
+                  className="btn btn-light"
+                  onClick={() => {
+                    setEditDelivery(true);
+                    onEditDelivery(event);
+                  }}
+                >
+                  <i class="fas fa-trash"></i> <span>{EDIT}</span>
+                </button>
+              </div>
+            ) : (
+              ""
+            )}
             {event.objectName === "Deliveries" ? (
               <>
                 {event.status === "MODIFIED" ? (
@@ -245,7 +252,7 @@ const PopoverModal = ({
                         margin: "10px 0px",
                       }}
                     >
-                      {" Name:  " + event.deliveryArea.name} <br />{" "}
+                      {" Nom:  " + event.deliveryArea.name} <br />{" "}
                       {event.deliveryArea.alert
                         ? " Reason:  " + event.deliveryArea.alert.reason
                         : null}
