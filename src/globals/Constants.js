@@ -1,5 +1,7 @@
 // const BASE_URL = "https://orgaplan.falconconsulting.fr/";
-const BASE_URL = process.env.REACT_APP_SERVER_URL;
+import { baseUrl } from "../config";
+
+const BASE_URL = baseUrl;
 
 const BASE_URL_V1 = BASE_URL + "api/v1/";
 
