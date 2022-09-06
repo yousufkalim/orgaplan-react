@@ -401,7 +401,7 @@ export default function Clients(props) {
             <Form.Row alignItems="center" noMargin>
               <SubHeading
                 noMargin
-                primary={data && `Total : ${count} Clients`}
+                primary={data && `Total : ${data.totalItems} Clients`}
                 bold
               />
               <Button

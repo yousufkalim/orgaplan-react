@@ -196,7 +196,7 @@ export default function Sites(props) {
           <Form.Row alignItems="center" noMargin>
             <SubHeading
               noMargin
-              primary={data && `Total : ${items.length} Chantiers`}
+              primary={data && `Total : ${data.totalItems} Chantiers`}
               bold
             />
             <Button
