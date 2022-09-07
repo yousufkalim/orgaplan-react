@@ -67,7 +67,6 @@ export default function AddClient(props) {
     Delivery_Module,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
-  const plus = "+";
 
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -173,7 +172,7 @@ export default function AddClient(props) {
       formdata.append("firstName", firstName);
       formdata.append("lastName", lastName);
       formdata.append("email", email);
-      formdata.append("phone", plus + phone);
+      formdata.append("phone", phone);
       formdata.append("contractType", contractType);
       formdata.append("contractStartDate", contractStartDate);
       formdata.append("contractEndDate", contractEndDate);
