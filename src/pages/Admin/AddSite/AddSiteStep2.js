@@ -28,6 +28,10 @@ export default function AddSiteStep2(props) {
     NOTIFY_THE_ADDRESSES,
     Please_enter_email,
     VALIDATE,
+    FILE_TOO_LARGE,
+    Max_size_can_be_15MB,
+    UPLOAD_PDF,
+    PDF_FILE,
   } = TEXTS;
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
@@ -64,6 +68,8 @@ export default function AddSiteStep2(props) {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [notificationPriorToDays, setNotificationPriorToDays] = useState("0");
   const [notificationTo, setNotificationTo] = useState([]);
+  const [pdf, setPdf] = useState(null);
+  const [pdfFileName, setPdfFileName] = useState(null);
 
   function handleChange(name, value) {
     if (name === "start") {
@@ -151,6 +157,7 @@ export default function AddSiteStep2(props) {
       formdata.append("functionality", step1.functionality);
       formdata.append("addresses", JSON.stringify(addresses));
       formdata.append("trades", JSON.stringify(trades));
+
       formdata.append(
         "penaltyforLateDelivery",
         Number(step1.penaltyforLateDelivery),
@@ -173,6 +180,8 @@ export default function AddSiteStep2(props) {
         Number(notificationPriorToDays),
       );
       formdata.append("notificationTo", JSON.stringify(notificationToArray));
+      pdf && formdata.append("pdf", pdf);
+
       const data = await GLOBALS.API({
         method: "POST",
         uri: GLOBALS.Constants.SITES,
@@ -193,7 +202,34 @@ export default function AddSiteStep2(props) {
       );
     }
   }
+  const handlePdfChange = async (e) => {
+    if (e.target.files.length > 0) {
+      let file = e.target.files[0];
+      setPdfFileName(file.name);
 
+      let formData = new FormData();
+      formData.append("pdf", file);
+
+      try {
+        const data = await GLOBALS.API({
+          method: "POST",
+          uri: GLOBALS.Constants.SITES + "/pdf",
+          headers: {
+            Authorization: `Bearer ${store.token}`,
+          },
+          body: formData,
+        });
+
+        setPdf(data.url);
+      } catch (err) {
+        dispatch(
+          Actions.notistack.enqueueSnackbar(
+            Actions.notistack.snackbar(err.message, "error"),
+          ),
+        );
+      }
+    }
+  };
   return (
     <Form.Form onSubmit={onSubmit}>
       <Form.Row>
@@ -241,7 +277,6 @@ export default function AddSiteStep2(props) {
           />
         </Form.Row>
       </Form.Row>
-
       {start !== "" && end !== "" ? (
         <>
           <Form.Row>
@@ -270,7 +305,6 @@ export default function AddSiteStep2(props) {
       ) : (
         ""
       )}
-
       <Form.Row>
         <FormLabel bold primary={`${ADDITIONNAL_INFORMATION}:`} />
         <FormInput
@@ -321,6 +355,28 @@ export default function AddSiteStep2(props) {
             return !re.test(String(text).toLowerCase());
           }}
         />
+      </Form.Row>
+
+      <Form.Row alignItems="flex-start">
+        <FormLabel bold primary={`${PDF_FILE} :`} />
+        <div style={GLOBALS.Styles.pdffile}>
+          <Button
+            fullWidth={false}
+            // disabled={isLoading}
+            text={UPLOAD_PDF}
+            onClick={() =>
+              document.getElementById("upload-canvas-pdf-button").click()
+            }
+          />
+          <input
+            hidden
+            type="file"
+            accept="application/pdf"
+            id="upload-canvas-pdf-button"
+            onChange={(e) => handlePdfChange(e)}
+          />
+          <p className="m-2">{pdfFileName && pdfFileName}</p>
+        </div>
       </Form.Row>
       <Form.ButtonContainer>
         <Button
