@@ -32,6 +32,8 @@ export default function AddSiteStep1(props) {
     UNEXPECTED_DELIVERY,
     VALIDATE,
     Delivery_Module,
+    MATERIALS,
+    ENTER_MATERIALS,
   } = TEXTS;
   const store = useSelector((state) => state.auth);
 
@@ -51,6 +53,8 @@ export default function AddSiteStep1(props) {
   const [functionality, setFunctionality] = useState("DELIVERY");
   const [addresses, setAddresses] = useState([]);
   const [trades, setTrades] = useState([]);
+  const [materials, setMaterials] = useState([]);
+
   const [penaltyforLateDelivery, setPenaltyforLateDelivery] = useState("");
   const [penaltyforUnexpDelivery, setPenaltyforUnexpDelivery] = useState("");
 
@@ -122,6 +126,7 @@ export default function AddSiteStep1(props) {
       setUpdate((st) => !st);
       setAddresses(value);
     } else if (name === "trades") setTrades(value);
+    else if (name === "materials") setMaterials(value);
     else if (name === "penaltyforLateDelivery")
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
@@ -137,6 +142,7 @@ export default function AddSiteStep1(props) {
       functionality,
       addresses,
       trades,
+      materials,
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
     };
@@ -161,6 +167,7 @@ export default function AddSiteStep1(props) {
             }
           />
         </Form.Row>
+
         {update && ""}
         <Form.Row>
           <FormLabel bold primary={`${SITE_PICTURE} : `} />
@@ -244,6 +251,23 @@ export default function AddSiteStep1(props) {
             setTradeError={setTradeError}
             onChange={(values) => handleChange("trades", values)}
           />
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary={`${MATERIALS}* :`} />
+          <MultiAdderInput
+            name="materials"
+            values={materials}
+            disabled={props.eventId}
+            placeholder={ENTER_MATERIALS}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => {
+              handleChange("materials", values);
+            }}
+          />
+          {/* {
+              !props.eventId && setMaterials(values);
+              !props.eventId && setUpdate((st) => !st);
+            } */}
         </Form.Row>
         <Form.Row>
           <FormLabel bold primary={`${COST_OF_DELIVERY_PENALITIES}: `} />

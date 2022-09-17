@@ -28,7 +28,6 @@ export default function DeliveryRequest(props) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.auth);
   const adminStore = useSelector((state) => state.admin);
-
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [step1Data, setStep1Data] = useState("");
@@ -279,6 +278,7 @@ export default function DeliveryRequest(props) {
             selectedDeliverArea={
               props.history.location.selectedShape.deliveryArea
             }
+            adminStore={adminStore}
           />
         ) : step === 2 ? (
           <DeliveryRequestStep2

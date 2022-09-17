@@ -49,6 +49,7 @@ export default function AddSiteStep1(props) {
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
+  const [siteMaterials, setSiteMaterials] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
@@ -76,7 +77,6 @@ export default function AddSiteStep1(props) {
     }
     return startTimeDisabledHours;
   };
-
   const checkavailability = (value) => {
     let customDate = "2021-06-06";
     return true;
@@ -258,7 +258,7 @@ export default function AddSiteStep1(props) {
             .set("minutes", props.step1Data.endTime.split(":")[1]),
         );
       setTrades(props.step1Data.trades);
-      setMaterials(
+      setSiteMaterials(
         props.step1Data.materials &&
           props.step1Data.materials.map((item, i) => ({ key: i, label: item })),
       );
@@ -280,6 +280,16 @@ export default function AddSiteStep1(props) {
   }, [props.step1Data]);
 
   useEffect(() => {
+    if (!update && props.adminStore?.site?.siteId?.materials) {
+      let materials = props.adminStore?.site?.siteId?.materials?.map((a) => ({
+        label: a,
+        value: a,
+      }));
+      setSiteMaterials(materials);
+    }
+  }, [props.adminStore?.site?.siteId]);
+
+  useEffect(() => {
     getMeans();
     filterUnavailableDeliveryArea();
     // eslint-disable-next-line
@@ -299,7 +309,7 @@ export default function AddSiteStep1(props) {
       endTime: moment(endTime).format("HH:mm"),
       trades,
       liftingMeans,
-      materials: materials.map((item) => item.label),
+      materials,
     };
     props.setStep1Data(values);
     props.setStep(2);
@@ -326,6 +336,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
       </Form.Row>
+
       <Form.Row>
         <FormLabel bold primary={`${DELIVERYAREA}* :`} />
         <FormSelect
@@ -431,7 +442,6 @@ export default function AddSiteStep1(props) {
           onChange={({ target: { value } }) => setTrades(value)}
         />
       </Form.Row>
-
       <Form.Row>
         <FormLabel bold primary={`${UNLOADING_MEANS}* :`} />
         <FormMultiSelect
@@ -463,17 +473,31 @@ export default function AddSiteStep1(props) {
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
-        <MultiAdderInput
-          name="materials"
-          values={materials}
-          disabled={props.eventId}
-          placeholder={ENTER_MATERIALS}
-          style={GLOBALS.Styles.inputWidth}
-          onChange={(values) => {
-            setMaterials(values);
-            setUpdate((st) => !st);
-          }}
-        />
+        {!siteMaterials.length > 0 ? (
+          <FormMultiSelect
+            name="materials"
+            value={materials}
+            placeholder={ENTER_MATERIALS}
+            values={siteMaterials}
+            disabled=""
+            style={GLOBALS.Styles.inputWidth}
+            onChange={({ target: { value } }) => setMaterials(value)}
+          />
+        ) : (
+          <MultiAdderInput
+            name="materials"
+            values={siteMaterials}
+            disabled={props.eventId}
+            placeholder={ENTER_MATERIALS}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => {
+              setSiteMaterials(values);
+              setMaterials((prev) => [...prev, values.label]);
+              setUpdate((st) => !st);
+            }}
+          />
+        )}
+        }
         {/* {
               !props.eventId && setMaterials(values);
               !props.eventId && setUpdate((st) => !st);
