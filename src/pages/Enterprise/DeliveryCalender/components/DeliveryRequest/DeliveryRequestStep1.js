@@ -240,7 +240,7 @@ export default function AddSiteStep1(props) {
       }
     } catch (error) {}
   };
-  useEffect(async () => {
+  useEffect(() => {
     if (props.step1Data) {
       setCompany(props.step1Data.company);
       setDeliveryArea(props.step1Data.deliveryArea);
@@ -311,6 +311,7 @@ export default function AddSiteStep1(props) {
       liftingMeans,
       materials,
     };
+    console.log(values);
     props.setStep1Data(values);
     props.setStep(2);
   }
@@ -473,7 +474,9 @@ export default function AddSiteStep1(props) {
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
-        {!siteMaterials.length > 0 ? (
+        {!update &&
+        props.adminStore?.site?.siteId?.materials &&
+        siteMaterials.length > 0 ? (
           <FormMultiSelect
             name="materials"
             value={materials}
@@ -491,13 +494,14 @@ export default function AddSiteStep1(props) {
             placeholder={ENTER_MATERIALS}
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => {
+              console.log({ values });
               setSiteMaterials(values);
-              setMaterials((prev) => [...prev, values.label]);
-              setUpdate((st) => !st);
+              setMaterials(values.map((_) => _.label));
+              //   setUpdate((st) => !st);
             }}
           />
         )}
-        }
+
         {/* {
               !props.eventId && setMaterials(values);
               !props.eventId && setUpdate((st) => !st);
