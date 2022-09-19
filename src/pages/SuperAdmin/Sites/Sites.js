@@ -164,7 +164,9 @@ export default function Sites(props) {
     item.clientAdmin.map((adminId, index) => {
       return (
         <>
-          <li>{adminId.adminId.firstName + " " + adminId.adminId.lastName}</li>
+          <li>
+            {adminId?.adminId?.firstName + " " + adminId?.adminId?.lastName}
+          </li>
         </>
       );
     }),
