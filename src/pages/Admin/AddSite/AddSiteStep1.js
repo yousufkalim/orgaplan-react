@@ -28,6 +28,7 @@ export default function AddSiteStep1(props) {
     TRADES,
     ENTER_TRADES,
     COST_OF_DELIVERY_PENALITIES,
+    Please_enter_atleast_one_trade,
     DELAY,
     UNEXPECTED_DELIVERY,
     VALIDATE,
@@ -125,8 +126,10 @@ export default function AddSiteStep1(props) {
     else if (name === "addresses") {
       setUpdate((st) => !st);
       setAddresses(value);
-    } else if (name === "trades") setTrades(value);
-    else if (name === "materials") setMaterials(value);
+    } else if (name === "trades") {
+      setUpdate((st) => !st);
+      setTrades(value);
+    } else if (name === "materials") setMaterials(value);
     else if (name === "penaltyforLateDelivery")
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
@@ -242,7 +245,7 @@ export default function AddSiteStep1(props) {
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${TRADES} : `} />
+          <FormLabel bold primary={`${TRADES}* : `} />
           <MultiAdderInput
             name="trades"
             values={trades}
@@ -250,10 +253,11 @@ export default function AddSiteStep1(props) {
             style={GLOBALS.Styles.inputWidth}
             setTradeError={setTradeError}
             onChange={(values) => handleChange("trades", values)}
+            trades={trades}
           />
         </Form.Row>
         <Form.Row>
-          <FormLabel bold primary={`${MATERIALS}* :`} />
+          <FormLabel bold primary={`${MATERIALS} :`} />
           <MultiAdderInput
             name="materials"
             values={materials}
@@ -305,7 +309,13 @@ export default function AddSiteStep1(props) {
             text={VALIDATE}
             fullWidth={false}
             loading={loading}
-            disabled={loading || !name || !adminId || addresses.length === 0}
+            disabled={
+              loading ||
+              !name ||
+              !adminId ||
+              addresses.length === 0 ||
+              trades.length < 1
+            }
           />
         </Form.ButtonContainer>
       </Form.Form>

@@ -208,28 +208,32 @@ export default function AddSiteStep2(props) {
   const handlePdfChange = async (e) => {
     if (e.target.files.length > 0) {
       let file = e.target.files[0];
-      setPdfFileName(file.name);
+      if (file.size <= 15 * 1024 * 1024) {
+        setPdfFileName(file.name);
 
-      let formData = new FormData();
-      formData.append("pdf", file);
+        let formData = new FormData();
+        formData.append("pdf", file);
 
-      try {
-        const data = await GLOBALS.API({
-          method: "POST",
-          uri: GLOBALS.Constants.SITES + "/pdf",
-          headers: {
-            Authorization: `Bearer ${store.token}`,
-          },
-          body: formData,
-        });
+        try {
+          const data = await GLOBALS.API({
+            method: "POST",
+            uri: GLOBALS.Constants.SITES + "/pdf",
+            headers: {
+              Authorization: `Bearer ${store.token}`,
+            },
+            body: formData,
+          });
 
-        setPdf(data.url);
-      } catch (err) {
-        dispatch(
-          Actions.notistack.enqueueSnackbar(
-            Actions.notistack.snackbar(err.message, "error"),
-          ),
-        );
+          setPdf(data.url);
+        } catch (err) {
+          dispatch(
+            Actions.notistack.enqueueSnackbar(
+              Actions.notistack.snackbar(err.message, "error"),
+            ),
+          );
+        }
+      } else {
+        alert(FILE_TOO_LARGE);
       }
     }
   };
