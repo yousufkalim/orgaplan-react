@@ -121,12 +121,9 @@ const PopoverModal = ({
           <Modal.Title className="text-center">{BOOKING}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alertbox message={Are_you_sure_You_want_to_delete_this} />
           <div className="showPopover">
-
             {event.status === "VALIDATED" &&
             event.user.adminType !== "NOADMIN" ? (
-
               <div style={{ textAlign: "right" }}>
                 <button
                   className="btn btn-light"
@@ -510,6 +507,8 @@ const PopoverModal = ({
               </>
             )}
           </div>
+          <br />
+          <Alertbox message={Are_you_sure_You_want_to_delete_this} />
         </Modal.Body>
       </Modal>
     );
