@@ -66,7 +66,6 @@ export default function DeliveryRequestStep3(props) {
       setReceiveSummary(props.step3Data.sendDeliverySummary);
     }
 
-    console.log("step 1 data", props.step1Data);
     // eslint-disable-next-line
   }, [props]);
 

@@ -474,9 +474,7 @@ export default function AddSiteStep1(props) {
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
-        {!update &&
-        props.adminStore?.site?.siteId?.materials &&
-        siteMaterials.length > 0 ? (
+        {!update && props.adminStore?.site?.siteId?.materials?.length > 0 ? (
           <FormMultiSelect
             name="materials"
             value={materials}
@@ -494,7 +492,6 @@ export default function AddSiteStep1(props) {
             placeholder={ENTER_MATERIALS}
             style={GLOBALS.Styles.inputWidth}
             onChange={(values) => {
-              console.log({ values });
               setSiteMaterials(values);
               setMaterials(values.map((_) => _.label));
               //   setUpdate((st) => !st);
