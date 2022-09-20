@@ -187,7 +187,7 @@ export default function AddSiteStep2(props) {
 
       const data = await GLOBALS.API({
         method: "POST",
-        uri: GLOBALS.Constants.SITES,
+        uri: GLOBALS.Constants.SITES_MA,
         headers: {
           Authorization: `Bearer ${store.token}`,
         },
