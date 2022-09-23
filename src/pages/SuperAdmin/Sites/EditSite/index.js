@@ -138,6 +138,8 @@ export default function EditSite(props) {
         start: moment(response.start).format("YYYY-MM-DD"),
         end: moment(response.end).format("YYYY-MM-DD"),
         openingHours: openingHours,
+        pdf: response.pdf,
+        pdfFileName: response.pdfFileName,
         unavailabilityDates: unavailabilityDates,
         additionalInfo: response.additionalInfo,
         notificationPriorToDays: response.notificationPriorToDays,
