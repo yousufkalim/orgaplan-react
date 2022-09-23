@@ -50,8 +50,11 @@ export default function AddSiteStep1(props) {
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
   const [materials, setMaterials] = useState([]);
+  const [siteMaterials, setSiteMaterials] = useState([]);
+
   const [update, setUpdate] = useState(false);
   const [disableMean, setDisableMean] = useState("");
+
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
   const [disableLiftingMeans, setDisableLiftingMeans] = useState(false);
@@ -261,10 +264,15 @@ export default function AddSiteStep1(props) {
             .set("minutes", props.step1Data.endTime.split(":")[1]),
         );
       setTrades(props.step1Data.trades);
-      setMaterials(
-        props.step1Data.materials &&
+
+      if (props.step1Data?.materials?.length > 0) {
+        setSiteMaterials(
           props.step1Data.materials.map((item, i) => ({ key: i, label: item })),
-      );
+        );
+      }
+
+      console.log(props.step1Data);
+
       if (props.step1Data.liftingMeans.length === 0) {
         setDisableLiftingMeans(true);
       } else {
@@ -279,6 +287,16 @@ export default function AddSiteStep1(props) {
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
+
+  useEffect(() => {
+    if (!update && props.adminStore?.site?.siteId?.materials) {
+      let materials = props.adminStore?.site?.siteId?.materials?.map((a) => ({
+        label: a,
+        value: a,
+      }));
+      setSiteMaterials(materials);
+    }
+  }, [props.adminStore?.site?.siteId]);
 
   useEffect(() => {
     getMeans();
@@ -300,7 +318,8 @@ export default function AddSiteStep1(props) {
       endTime: moment(endTime).format("HH:mm"),
       trades,
       liftingMeans,
-      materials: materials.map((item) => item.label),
+      // materials: materials.map((item) => item.label),
+      materials,
       id: props.step1Data.id,
     };
     props.setStep1Data(values);
@@ -468,23 +487,36 @@ export default function AddSiteStep1(props) {
           />
         </div>
       </Form.Row>
+
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
-        <MultiAdderInput
-          name="materials"
-          values={materials}
-          disabled={props.eventId}
-          placeholder={ENTER_MATERIALS}
-          style={GLOBALS.Styles.inputWidth}
-          onChange={(values) => {
-            setMaterials(values);
-            setUpdate((st) => !st);
-          }}
-        />
-        {/* {
-              !props.eventId && setMaterials(values);
-              !props.eventId && setUpdate((st) => !st);
-            } */}
+        {!props.eventId &&
+        !update &&
+        props.adminStore?.site?.siteId?.materials?.length > 0 &&
+        siteMaterials.length > 0 ? (
+          <FormMultiSelect
+            name="materials"
+            value={materials}
+            placeholder={ENTER_MATERIALS}
+            values={siteMaterials}
+            disabled=""
+            style={GLOBALS.Styles.inputWidth}
+            onChange={({ target: { value } }) => setMaterials(value)}
+          />
+        ) : (
+          <MultiAdderInput
+            name="materials"
+            values={siteMaterials}
+            disabled={props.eventId}
+            placeholder={ENTER_MATERIALS}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => {
+              setSiteMaterials(values);
+              setMaterials(values.map((_) => _.label));
+            }}
+          />
+        )}
+        {console.log("siteMaterials======", siteMaterials)}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -499,7 +531,7 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            materials.length === 0 ||
+            (props.eventId ? materials.length !== 0 : materials.length === 0) ||
             (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />

@@ -34,6 +34,8 @@ export default function EditSiteStep1(props) {
     Site_address,
     Enter_site_addresses,
     TRADES,
+    MATERIALS,
+    ENTER_MATERIALS,
     ENTER_TRADES,
     COST_OF_DELIVERY_PENALITIES,
     UNEXPECTED_DELIVERY,
@@ -50,6 +52,7 @@ export default function EditSiteStep1(props) {
   const [admins, setAdmins] = useState([]);
   const [clientName, setClientName] = useState("");
   const [update, setUpdate] = useState(false);
+  const [materials, setMaterials] = useState([]);
 
   const [name, setName] = useState("");
   const [logo, setLogo] = useState([]);
@@ -151,6 +154,7 @@ export default function EditSiteStep1(props) {
       propData.functionality && setFunctionality(propData.functionality);
       propData.addresses && setAddresses(propData.addresses);
       propData.trades && setTrades(propData.trades);
+      propData.materials && setMaterials(propData.materials);
       propData.penaltyforLateDelivery &&
         setPenaltyforLateDelivery(propData.penaltyforLateDelivery);
       propData.penaltyforUnexpDelivery &&
@@ -179,6 +183,7 @@ export default function EditSiteStep1(props) {
       setUpdate((st) => !st);
       setAddresses(value);
     } else if (name === "trades") setTrades(value);
+    else if (name === "materials") setMaterials(value);
     else if (name === "penaltyforLateDelivery")
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
@@ -237,6 +242,7 @@ export default function EditSiteStep1(props) {
       functionality,
       addresses,
       trades,
+      materials,
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
       zacsArray: zacs,
@@ -350,6 +356,20 @@ export default function EditSiteStep1(props) {
             setTradeError={setTradeError}
             trades={trades}
             error={tradesError}
+          />
+        </Form.Row>
+
+        <Form.Row>
+          <FormLabel bold primary={`${MATERIALS} :`} />
+          <MultiAdderInput
+            name="materials"
+            values={materials}
+            disabled={props.eventId}
+            placeholder={ENTER_MATERIALS}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => {
+              handleChange("materials", values);
+            }}
           />
         </Form.Row>
         <Form.Row>
