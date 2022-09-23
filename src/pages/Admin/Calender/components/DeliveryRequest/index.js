@@ -242,6 +242,7 @@ export default function DeliveryRequest(props) {
         ) : step === 1 ? (
           <DeliveryRequestStep1
             {...props}
+            adminStore={adminStore}
             step={step}
             setStep={setStep}
             step1Data={step1Data}
