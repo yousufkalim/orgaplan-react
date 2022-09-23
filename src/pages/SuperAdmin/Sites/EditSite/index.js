@@ -52,6 +52,11 @@ export default function EditSite(props) {
       });
       response = response.data;
 
+      const materials = response.materials.map((trade, index) => ({
+        key: index,
+        label: trade,
+      }));
+
       const trades = response.trades.map((trade, index) => ({
         key: index,
         label: trade,
@@ -95,6 +100,8 @@ export default function EditSite(props) {
         functionality: response.functionality,
         addresses: addresses,
         trades: trades,
+        materials: materials,
+
         penaltyforLateDelivery: response.penaltyforLateDelivery,
         penaltyforUnexpDelivery: response.penaltyforUnexpDelivery,
         zacsArray: zacsArray,

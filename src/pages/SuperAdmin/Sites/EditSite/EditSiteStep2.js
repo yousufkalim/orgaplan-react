@@ -118,6 +118,10 @@ export default function AddSiteStep2(props) {
 
       const trades =
         step1.trades.length > 0 ? step1.trades.map((item) => item.label) : [];
+      const materials =
+        step1.materials.length > 0
+          ? step1.materials.map((item) => item.label)
+          : [];
       const addresses =
         step1.addresses.length > 0
           ? step1.addresses.map((item) => ({
@@ -190,6 +194,7 @@ export default function AddSiteStep2(props) {
       );
       formdata.append("addresses", JSON.stringify(addresses));
       formdata.append("trades", JSON.stringify(trades));
+      formdata.append("materials", JSON.stringify(materials));
       formdata.append(
         "penaltyforLateDelivery",
         Number(
