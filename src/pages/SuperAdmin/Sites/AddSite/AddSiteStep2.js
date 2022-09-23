@@ -95,6 +95,7 @@ export default function AddSiteStep2(props) {
       const notificationToArray = notificationTo.map((item) => item.label);
       let step1 = props.step1Data;
       const trades = step1.trades.map((item) => item.label);
+      const materials = step1.materials.map((item) => item.label);
       const addresses = step1.addresses.map((item) => ({
         street: item.street,
         city: item.city,
@@ -152,6 +153,8 @@ export default function AddSiteStep2(props) {
       formdata.append("functionality", step1.functionality);
       formdata.append("addresses", JSON.stringify(addresses));
       formdata.append("trades", JSON.stringify(trades));
+      formdata.append("materials", JSON.stringify(materials));
+
       formdata.append(
         "penaltyforLateDelivery",
         Number(step1.penaltyforLateDelivery),

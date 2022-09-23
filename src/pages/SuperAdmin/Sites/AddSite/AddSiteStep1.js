@@ -35,6 +35,8 @@ export default function AddSiteStep1(props) {
     Enter_site_addresses,
     TRADES,
     ENTER_TRADES,
+    MATERIALS,
+    ENTER_MATERIALS,
     COST_OF_DELIVERY_PENALITIES,
     UNEXPECTED_DELIVERY,
     VALIDATE,
@@ -47,6 +49,7 @@ export default function AddSiteStep1(props) {
   const [admins, setAdmins] = useState([]);
   const [clientName, setClientName] = useState("");
   const [update, setUpdate] = useState(false);
+  const [materials, setMaterials] = useState([]);
 
   const [name, setName] = useState("");
   const [logo, setLogo] = useState([]);
@@ -143,7 +146,8 @@ export default function AddSiteStep1(props) {
     } else if (name === "trades") {
       setUpdate((st) => !st);
       setTrades(value);
-    } else if (name === "penaltyforLateDelivery")
+    } else if (name === "materials") setMaterials(value);
+    else if (name === "penaltyforLateDelivery")
       setPenaltyforLateDelivery(value);
     else if (name === "penaltyforUnexpDelivery")
       setPenaltyforUnexpDelivery(value);
@@ -203,6 +207,7 @@ export default function AddSiteStep1(props) {
       functionality,
       addresses,
       trades,
+      materials,
       penaltyforLateDelivery,
       penaltyforUnexpDelivery,
     };
@@ -308,6 +313,19 @@ export default function AddSiteStep1(props) {
             setTradeError={setTradeError}
             trades={trades}
             error={tradesError}
+          />
+        </Form.Row>
+        <Form.Row>
+          <FormLabel bold primary={`${MATERIALS} :`} />
+          <MultiAdderInput
+            name="materials"
+            values={materials}
+            disabled={props.eventId}
+            placeholder={ENTER_MATERIALS}
+            style={GLOBALS.Styles.inputWidth}
+            onChange={(values) => {
+              handleChange("materials", values);
+            }}
           />
         </Form.Row>
         <Form.Row>
