@@ -205,6 +205,7 @@ export default function DeliveryRequest(props) {
         meanBookings: response.data.meanBookings,
         modified: true,
       });
+
       setStep2Data({
         id: response.data._id,
         building: response.data.building,
@@ -227,7 +228,6 @@ export default function DeliveryRequest(props) {
       );
     }
   };
-
   return (
     <div className={classes.root}>
       <Stepper
@@ -252,6 +252,7 @@ export default function DeliveryRequest(props) {
             companies={companies}
             deliveryAreas={deliveryAreas}
             editDelivery={props.editDelivery}
+            materials={step1Data.materials}
             trades={trades}
             means={means}
             eventId={props.eventId}

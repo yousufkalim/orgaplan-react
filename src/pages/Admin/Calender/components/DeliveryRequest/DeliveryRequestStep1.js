@@ -271,8 +271,6 @@ export default function AddSiteStep1(props) {
         );
       }
 
-      console.log(props.step1Data);
-
       if (props.step1Data.liftingMeans.length === 0) {
         setDisableLiftingMeans(true);
       } else {
@@ -491,7 +489,6 @@ export default function AddSiteStep1(props) {
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
         {!props.eventId &&
-        !update &&
         props.adminStore?.site?.siteId?.materials?.length > 0 &&
         siteMaterials.length > 0 ? (
           <FormMultiSelect
@@ -516,7 +513,6 @@ export default function AddSiteStep1(props) {
             }}
           />
         )}
-        {console.log("siteMaterials======", siteMaterials)}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -531,7 +527,7 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            (props.eventId ? materials.length !== 0 : materials.length === 0) ||
+            materials.length === 0 ||
             (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />
