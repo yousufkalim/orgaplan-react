@@ -309,9 +309,10 @@ export default function AddSiteStep1(props) {
       endTime: moment(endTime).format("HH:mm"),
       trades,
       liftingMeans,
-      materials,
+      materials:
+        materials.length > 0 ? materials : props.step1Data?.materials || [],
     };
-    console.log(values);
+
     props.setStep1Data(values);
     props.setStep(2);
   }
@@ -474,10 +475,12 @@ export default function AddSiteStep1(props) {
       </Form.Row>
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
-        {!update && props.adminStore?.site?.siteId?.materials?.length > 0 ? (
+        {props.adminStore?.site?.siteId?.materials?.length > 0 ? (
           <FormMultiSelect
             name="materials"
-            value={materials}
+            value={
+              materials.length > 0 ? materials : props.step1Data.materials || []
+            }
             placeholder={ENTER_MATERIALS}
             values={siteMaterials}
             disabled=""
@@ -517,7 +520,7 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            materials.length === 0 ||
+            // materials.length === 0 ||
             (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />

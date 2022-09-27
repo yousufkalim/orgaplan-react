@@ -225,7 +225,7 @@ export default function DeliveryRequest(props) {
         endTime: response.data.endTime,
         trades: response.data.trades,
         liftingMeans: response.data.liftingMeans?.map((item) => item._id),
-        // materials: response.data.materials,
+        materials: response.data.materials,
       });
       setStep2Data({
         building: response.data.building,
@@ -271,6 +271,7 @@ export default function DeliveryRequest(props) {
             deliveryAreas={deliveryAreas}
             editDelivery={props.editDelivery}
             trades={trades}
+            materials={step1Data.materials}
             means={means}
             eventId={props.eventId}
             deliveryArea={deliveryArea}

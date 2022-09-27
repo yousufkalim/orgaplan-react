@@ -17,6 +17,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormCheckbox from "../../../../../components/FormCheckbox";
 import { getTime } from "date-fns";
 import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
+import { Toast } from "react-bootstrap";
 
 export default function AddSiteStep1(props) {
   const {
@@ -271,8 +272,6 @@ export default function AddSiteStep1(props) {
         );
       }
 
-      console.log(props.step1Data);
-
       if (props.step1Data.liftingMeans.length === 0) {
         setDisableLiftingMeans(true);
       } else {
@@ -306,6 +305,7 @@ export default function AddSiteStep1(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
+
     let selectedMeans = means.filter((o1) =>
       liftingMeans?.some((o2) => o1.value === o2),
     );
@@ -319,9 +319,11 @@ export default function AddSiteStep1(props) {
       trades,
       liftingMeans,
       // materials: materials.map((item) => item.label),
-      materials,
+      materials:
+        materials.length > 0 ? materials : props.step1Data?.materials || [],
       id: props.step1Data.id,
     };
+
     props.setStep1Data(values);
     props.setStep(2);
   }
@@ -491,12 +493,13 @@ export default function AddSiteStep1(props) {
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
         {!props.eventId &&
-        !update &&
         props.adminStore?.site?.siteId?.materials?.length > 0 &&
         siteMaterials.length > 0 ? (
           <FormMultiSelect
             name="materials"
-            value={materials}
+            value={
+              materials.length > 0 ? materials : props.step1Data.materials || []
+            }
             placeholder={ENTER_MATERIALS}
             values={siteMaterials}
             disabled=""
@@ -516,7 +519,6 @@ export default function AddSiteStep1(props) {
             }}
           />
         )}
-        {console.log("siteMaterials======", siteMaterials)}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -531,7 +533,9 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            (props.eventId ? materials.length !== 0 : materials.length === 0) ||
+            // materials.length === 0 ||
+            // (!update && materials.length === 0) ||
+            // (update && props.step1Data.materials.length === 0) ||
             (disableLiftingMeans ? false : liftingMeans.length === 0)
           }
         />

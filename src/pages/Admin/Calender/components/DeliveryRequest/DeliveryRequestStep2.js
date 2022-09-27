@@ -337,6 +337,7 @@ export default function AddSiteStep1(props) {
           disabled={!building || building === "Exterior" || props.eventId}
         />
       </Form.Row>
+      {console.log("STEP!", props.step1Data)}
       <Form.Row>
         <FormLabel bold primary={`${STORAGEAREA}* :`} />
         <Form.Row noMargin width="48%">
