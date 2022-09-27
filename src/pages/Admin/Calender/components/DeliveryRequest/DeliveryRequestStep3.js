@@ -74,6 +74,7 @@ export default function DeliveryRequestStep3(props) {
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
+
       setLoading(true);
       const formdata = {
         siteId: adminStore.site.siteId._id,
@@ -105,6 +106,7 @@ export default function DeliveryRequestStep3(props) {
             ? props.event.status
             : "VALIDATED",
       };
+
       if (props.event) {
       } else {
         if (props.step1Data.selectedMeans.length >= 1) {
