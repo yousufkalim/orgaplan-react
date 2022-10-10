@@ -6,7 +6,7 @@ if (window.location.host === "orgaplan-dev.falconweb.app") {
   baseUrl = "https://orgaplan-api-qa.falconweb.app/";
 } else if (window.location.host === "orgaplan-staging.falconweb.app") {
   baseUrl = "https://orgaplan-api-staging.falconweb.app/";
-} else if (window.location.host === "orgaplansa.com") {
+} else if (window.location.host === "orgaplansa.com" || window.location.host === "www.orgaplansa.com") {
   baseUrl = "https://api.orgaplansa.com/";
 }
 
