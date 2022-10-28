@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import GLOBALS from "../../../../../globals";
-import Actions from "../../../../../redux/actions";
-import Form from "../../../../../components/Form";
-import Button from "../../../../../components/Button";
-import FormLabel from "../../../../../components/FormLabel";
-import FormSelect from "../../../../../components/FormSelect";
-import FormMultiSelect from "../../../../../components/FormMultiSelect";
-import FormCheckbox from "../../../../../components/FormCheckbox";
-import { TEXTS } from "../../../../../assets/languages/french";
-import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import GLOBALS from '../../../../../globals';
+import Actions from '../../../../../redux/actions';
+import Form from '../../../../../components/Form';
+import Button from '../../../../../components/Button';
+import FormLabel from '../../../../../components/FormLabel';
+import FormSelect from '../../../../../components/FormSelect';
+import FormMultiSelect from '../../../../../components/FormMultiSelect';
+import FormCheckbox from '../../../../../components/FormCheckbox';
+import { TEXTS } from '../../../../../assets/languages/french';
+import unavailabilityCheck from '../../../../../utils/unavailabilityCheck';
 
 export default function AddSiteStep1(props) {
   const {
@@ -23,39 +23,53 @@ export default function AddSiteStep1(props) {
     TRANSPORTING_MEANS,
     VALIDATE,
     MEANS,
-    NONE,
+    NONE
   } = TEXTS;
 
   const dispatch = useDispatch();
-  const adminStore = useSelector((state) => state.admin);
-  const store = useSelector((state) => state.auth);
-  const [building, setBuilding] = useState("");
+  const adminStore = useSelector(state => state.admin);
+  const store = useSelector(state => state.auth);
+  const [building, setBuilding] = useState('');
   const [buildings, setBuildings] = useState([]);
-  const [level, setLevel] = useState("");
+  const [level, setLevel] = useState('');
   const [levels, setLevels] = useState([]);
-  const [storageArea, setStorageArea] = useState("");
+  const [storageArea, setStorageArea] = useState('');
   const [propsFilterStorageArea, setPropsFilterStorageArea] = useState([]);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [means, setMeans] = useState([]);
   const [routingMeans, setRoutingMeans] = useState([]);
   const [rendered, setRendered] = useState(false);
-  const [disableRoutingMeans, setDisableRoutingMeans] = useState("");
+  const [disableRoutingMeans, setDisableRoutingMeans] = useState('');
   const [delunavaiableMsg, setDelUnavaiableMsg] = useState([]);
+
+  useEffect(() => {
+    setBuilding('Exterior');
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // console.log('selected routingMeans', routingMeans);
+    // console.log(' storageArea', storageArea);
+    // console.log('means', means);
+    means?.length != 0 ? setRoutingMeans([means[0].value]) : setRoutingMeans([]);
+    // eslint-disable-next-line
+  }, [means, storageArea]);
+  console.log('selected routingMeans', routingMeans);
 
   useEffect(() => {
     if (props.step1Data) {
       props.step1Data.startTime &&
         setStartTime(
           moment(props.step1Data.date)
-            .set("hours", props.step1Data.startTime.split(":")[0])
-            .set("minutes", props.step1Data.startTime.split(":")[1]),
+            .set('hours', props.step1Data.startTime.split(':')[0])
+            .set('minutes', props.step1Data.startTime.split(':')[1])
         );
       props.step1Data.endTime &&
         setEndTime(
           moment(props.step1Data.date)
-            .set("hours", props.step1Data.endTime.split(":")[0])
-            .set("minutes", props.step1Data.endTime.split(":")[1]),
+            .set('hours', props.step1Data.endTime.split(':')[0])
+            .set('minutes', props.step1Data.endTime.split(':')[1])
         );
     }
   }, []);
@@ -65,7 +79,7 @@ export default function AddSiteStep1(props) {
       if (props.step2Data.building) {
         setBuilding(props.step2Data.building);
       } else if (props.eventId) {
-        setBuilding("Exterior");
+        setBuilding('Exterior');
       }
     }
     // eslint-disable-next-line
@@ -73,10 +87,10 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     setBuildings(
-      props.buildings.map((item) => ({
+      props.buildings.map(item => ({
         value: item._id,
-        label: item.name,
-      })),
+        label: item.name
+      }))
     );
     // eslint-disable-next-line
   }, []);
@@ -90,15 +104,15 @@ export default function AddSiteStep1(props) {
 
   useEffect(() => {
     if (building) {
-      setLevel("");
-      setStorageArea("");
-      let buil = props.buildings.find((item) => item._id === building);
+      setLevel('');
+      setStorageArea('');
+      let buil = props.buildings.find(item => item._id === building);
       if (buil) {
         setLevels(
-          buil.levels.map((item) => ({
+          buil.levels.map(item => ({
             value: item._id,
-            label: item.number,
-          })),
+            label: item.number
+          }))
         );
       }
       if (props.step2Data && !rendered) {
@@ -118,21 +132,17 @@ export default function AddSiteStep1(props) {
   }, [building]);
 
   const filterUnavailableStorageArea = () => {
-    let currentDate = moment(props.step1Data.date).format("L");
+    let currentDate = moment(props.step1Data.date).format('L');
     setPropsFilterStorageArea(
       props.storageAreas.reduce((accumulator, currentValue) => {
-        let availability_date = moment(currentValue.availability.end).format(
-          "L",
-        );
+        let availability_date = moment(currentValue.availability.end).format('L');
 
         if (moment(availability_date).isAfter(currentDate)) {
           if (
             currentValue.companies.find(
-              (company) => company && company === props.step1Data.company,
+              company => company && company === props.step1Data.company
             ) &&
-            currentValue.deliveryArea.find(
-              (da) => da && da === props.step1Data.deliveryArea,
-            )
+            currentValue.deliveryArea.find(da => da && da === props.step1Data.deliveryArea)
           ) {
             let start = props.step1Data.startTime.substring(0, 2);
             let end = props.step1Data.endTime.substring(0, 2);
@@ -143,14 +153,14 @@ export default function AddSiteStep1(props) {
               start,
               end,
               routingMeans,
-              "storage",
+              'storage'
             );
             setRoutingMeans(result.mean);
-            if (result.msg === "found") {
+            if (result.msg === 'found') {
               if (!delunavaiableMsg.includes(currentValue.name)) {
                 delunavaiableMsg.push(currentValue.name);
               }
-            } else if (result.msg === "notFound") {
+            } else if (result.msg === 'notFound') {
               if (delunavaiableMsg.includes(currentValue.name)) {
                 let i = delunavaiableMsg.indexOf(currentValue.name);
                 delunavaiableMsg.splice(i, 1);
@@ -158,11 +168,7 @@ export default function AddSiteStep1(props) {
             }
 
             if (result.data[0]) {
-              if (
-                !accumulator.some(
-                  (acc) => acc["value"] === result.data[0].value,
-                )
-              ) {
+              if (!accumulator.some(acc => acc['value'] === result.data[0].value)) {
                 accumulator.push(result.data[0]);
               }
             }
@@ -170,32 +176,32 @@ export default function AddSiteStep1(props) {
         }
 
         return accumulator;
-      }, []),
+      }, [])
     );
   };
 
   const getMeans = async () => {
-    let currentDate = moment(props.step1Data.date).format("L");
+    let currentDate = moment(props.step1Data.date).format('L');
 
     const bookings = await GLOBALS.API({
       uri: `${GLOBALS.Constants.BOOKINGS_BY_SITE}/${adminStore.site.siteId._id}`,
-      token: store.token,
+      token: store.token
     });
 
     setMeans(
       props.means.reduce((accumulator, currentValue) => {
         if (
-          currentValue.meanType === "ROUTING" &&
-          currentValue.location.find((loc) =>
+          currentValue.meanType === 'ROUTING' &&
+          currentValue.location.find(loc =>
             loc.storageArea && loc.storageArea === storageArea
               ? storageArea
-              : props.step2Data.storageArea,
+              : props.step2Data.storageArea
           ) &&
           moment(props.date).isBetween(
             currentValue.availability.start,
             currentValue.availability.end,
-            "day",
-            "[]",
+            'day',
+            '[]'
           )
         ) {
           //////// Setting times to 00 format
@@ -204,11 +210,11 @@ export default function AddSiteStep1(props) {
 
           ///////// filter out booked means
           let isMeanBooked = false;
-          let bookedMeans = bookings.data.bookings.filter((booking) => {
+          let bookedMeans = bookings.data.bookings.filter(booking => {
             ///////// checking if mean is in meansBooking table
             if (booking.meanId === currentValue._id) {
-              let bookingDate = moment(booking.startDate).format("L");
-              let formattedDate = moment(currentDate).format("L");
+              let bookingDate = moment(booking.startDate).format('L');
+              let formattedDate = moment(currentDate).format('L');
               let bookingStartTime = booking.startTime.substring(0, 2);
               let bookingEndTime = booking.endTime.substring(0, 2);
 
@@ -242,7 +248,7 @@ export default function AddSiteStep1(props) {
               start,
               end,
               routingMeans,
-              "mean",
+              'mean'
             );
             setRoutingMeans(result.mean);
 
@@ -251,11 +257,11 @@ export default function AddSiteStep1(props) {
               if (!delunavaiableMsg.includes(currentValue.name)) {
                 delunavaiableMsg.push(currentValue.name);
               }
-            } else if (result.msg === "found") {
+            } else if (result.msg === 'found') {
               if (!delunavaiableMsg.includes(currentValue.name)) {
                 delunavaiableMsg.push(currentValue.name);
               }
-            } else if (result.msg === "notFound") {
+            } else if (result.msg === 'notFound') {
               if (delunavaiableMsg.includes(currentValue.name)) {
                 let i = delunavaiableMsg.indexOf(currentValue.name);
                 delunavaiableMsg.splice(i, 1);
@@ -263,11 +269,7 @@ export default function AddSiteStep1(props) {
             }
 
             if (result.data[0]) {
-              if (
-                !accumulator.some(
-                  (acc) => acc["value"] === result.data[0].value,
-                )
-              ) {
+              if (!accumulator.some(acc => acc['value'] === result.data[0].value)) {
                 accumulator.push(result.data[0]);
               }
             }
@@ -278,15 +280,13 @@ export default function AddSiteStep1(props) {
           }
         }
         return accumulator;
-      }, []),
+      }, [])
     );
   };
 
   async function onSubmit(e) {
     e.preventDefault();
-    let selectedRoutingMeans = means.filter((o1) =>
-      routingMeans?.some((o2) => o1.value === o2),
-    );
+    let selectedRoutingMeans = means.filter(o1 => routingMeans?.some(o2 => o1.value === o2));
     // console.log("selectedRoutingMeans", selectedRoutingMeans);
 
     const values = {
@@ -295,7 +295,7 @@ export default function AddSiteStep1(props) {
       storageArea,
       selectedRoutingMeans,
       routingMeans,
-      id: props.step2Data.id,
+      id: props.step2Data.id
     };
     props.setStep2Data(values);
     props.setStep(3);
@@ -322,7 +322,7 @@ export default function AddSiteStep1(props) {
           placeholder={SELECT_LOCATION}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setBuilding(value)}
-          values={[...[{ label: "Exterior", value: "Exterior" }], ...buildings]}
+          values={[...[{ label: 'Exterior', value: 'Exterior' }], ...buildings]}
         />
       </Form.Row>
       <Form.Row>
@@ -334,10 +334,10 @@ export default function AddSiteStep1(props) {
           placeholder={SELECT_LEVEL}
           style={GLOBALS.Styles.inputWidth}
           onChange={({ target: { value } }) => setLevel(value)}
-          disabled={!building || building === "Exterior" || props.eventId}
+          disabled={!building || building === 'Exterior' || props.eventId}
         />
       </Form.Row>
-      {console.log("STEP!", props.step1Data)}
+      {console.log('STEP!', props.step1Data)}
       <Form.Row>
         <FormLabel bold primary={`${STORAGEAREA}* :`} />
         <Form.Row noMargin width="48%">
@@ -354,19 +354,16 @@ export default function AddSiteStep1(props) {
               // )
             }
             onChange={({ target: { value } }) => setStorageArea(value)}
-            disabled={
-              !building || (building !== "Exterior" && !level) || props.eventId
-            }
+            disabled={!building || (building !== 'Exterior' && !level) || props.eventId}
           />
         </Form.Row>
       </Form.Row>
       {delunavaiableMsg.length > 0 ? (
         <Form.Row>
-          <FormLabel bold primary={""} />
+          <FormLabel bold primary={''} />
           <Form.Row width="48%" noMargin label=" " zIndex={5}>
-            <div style={{ color: "red" }}>
-              {delunavaiableMsg.join(", ")} is/are unavailable in the selected
-              timeslot.
+            <div style={{ color: 'red' }}>
+              {delunavaiableMsg.join(', ')} is/are unavailable in the selected timeslot.
             </div>
           </Form.Row>
         </Form.Row>
@@ -387,21 +384,21 @@ export default function AddSiteStep1(props) {
         </Form.Row>
       </Form.Row>
       <Form.Row>
-        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+        <div class="col-sm-6" style={{ paddingLeft: '0px' }}>
           <FormLabel bold primary="" />
         </div>
-        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+        {/* <div class="col-sm-6" style={{ paddingLeft: '30px' }}>
           <FormCheckbox
             name={disableRoutingMeans}
             checked={disableRoutingMeans}
-            onChange={(event) => {
+            onChange={event => {
               setDisableRoutingMeans(event.target.checked);
               setRoutingMeans([]);
             }}
-            style={{ color: "#DBB20A" }}
+            style={{ color: '#DBB20A' }}
             label={NONE}
           />
-        </div>
+        </div> */}
       </Form.Row>
       <Form.ButtonContainer>
         <Button
@@ -411,9 +408,10 @@ export default function AddSiteStep1(props) {
           fullWidth={false}
           disabled={
             !building ||
-            (building !== "Exterior" && !level) ||
+            (building !== 'Exterior' && !level) ||
             !storageArea ||
-            (disableRoutingMeans ? false : routingMeans.length === 0)
+            routingMeans.length == 0
+            // (disableRoutingMeans ? false : routingMeans.length === 0)
           }
         />
       </Form.ButtonContainer>

@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useCallback } from "react";
-import moment from "moment";
+import React, { useState, useEffect, useCallback } from 'react';
+import moment from 'moment';
 
-import GLOBALS from "../../../../../globals";
-import { useSelector, useDispatch } from "react-redux";
-import { TEXTS } from "../../../../../assets/languages/french";
+import GLOBALS from '../../../../../globals';
+import { useSelector, useDispatch } from 'react-redux';
+import { TEXTS } from '../../../../../assets/languages/french';
 
-import Form from "../../../../../components/Form";
-import Button from "../../../../../components/Button";
-import FormInput from "../../../../../components/FormInput";
-import FormLabel from "../../../../../components/FormLabel";
-import TimeInput from "../../../../../components/TimeInput";
-import FormSelect from "../../../../../components/FormSelect";
-import FormMultiSelect from "../../../../../components/FormMultiSelect";
-import MultiAdderInput from "../../../../../components/MultiAdderInput";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormCheckbox from "../../../../../components/FormCheckbox";
-import { getTime } from "date-fns";
-import unavailabilityCheck from "../../../../../utils/unavailabilityCheck";
-import { Toast } from "react-bootstrap";
+import Form from '../../../../../components/Form';
+import Button from '../../../../../components/Button';
+import FormInput from '../../../../../components/FormInput';
+import FormLabel from '../../../../../components/FormLabel';
+import TimeInput from '../../../../../components/TimeInput';
+import FormSelect from '../../../../../components/FormSelect';
+import FormMultiSelect from '../../../../../components/FormMultiSelect';
+import MultiAdderInput from '../../../../../components/MultiAdderInput';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormCheckbox from '../../../../../components/FormCheckbox';
+import { getTime } from 'date-fns';
+import unavailabilityCheck from '../../../../../utils/unavailabilityCheck';
+import { Toast } from 'react-bootstrap';
 
 export default function AddSiteStep1(props) {
   const {
@@ -36,17 +36,17 @@ export default function AddSiteStep1(props) {
     MEANS,
     MATERIALS_DELIVERED,
     ENTER_MATERIALS,
-    NONE,
+    NONE
   } = TEXTS;
 
-  const adminStore = useSelector((state) => state.admin);
-  const store = useSelector((state) => state.auth);
-  const [company, setCompany] = useState("");
+  const adminStore = useSelector(state => state.admin);
+  const store = useSelector(state => state.auth);
+  const [company, setCompany] = useState('');
   let { deliveryArea, setDeliveryArea } = props;
   const [filterdeliveryArea, setFilterdeliveryArea] = useState([]);
-  const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [trades, setTrades] = useState([]);
   const [means, setMeans] = useState([]);
   const [liftingMeans, setLiftingMeans] = useState([]);
@@ -54,7 +54,7 @@ export default function AddSiteStep1(props) {
   const [siteMaterials, setSiteMaterials] = useState([]);
 
   const [update, setUpdate] = useState(false);
-  const [disableMean, setDisableMean] = useState("");
+  const [disableMean, setDisableMean] = useState('');
 
   const [siteAvailabilityStart] = useState(adminStore.site.siteId.start);
   const [siteAvailabilityEnd] = useState(adminStore.site.siteId.end);
@@ -82,18 +82,18 @@ export default function AddSiteStep1(props) {
     return startTimeDisabledHours;
   };
 
-  const checkavailability = (value) => {
-    let customDate = "2021-06-06";
+  const checkavailability = value => {
+    let customDate = '2021-06-06';
     return true;
   };
   // filter delivery area Which are not availbile
   const filterUnavailableDeliveryArea = () => {
     let result = [];
-    let currentDate = moment(props.date).format("L");
+    let currentDate = moment(props.date).format('L');
     setFilterdeliveryArea(
       props.deliveryAreas.reduce((accumulator, currentValue) => {
-        let start = moment(startTime).format("HH:mm").substring(0, 2);
-        let end = moment(endTime).format("HH:mm").substring(0, 2);
+        let start = moment(startTime).format('HH:mm').substring(0, 2);
+        let end = moment(endTime).format('HH:mm').substring(0, 2);
         //////// Checking unavailabilities
         result = unavailabilityCheck(
           currentValue,
@@ -101,69 +101,63 @@ export default function AddSiteStep1(props) {
           start,
           end,
           liftingMeans,
-          "deliveryArea",
+          'deliveryArea'
         );
-        if (result.msg === "found") {
+        if (result.msg === 'found') {
           if (!unavailableMsg.includes(currentValue.name)) {
             unavailableMsg.push(currentValue.name);
           }
-        } else if (result.msg === "notFound") {
+        } else if (result.msg === 'notFound') {
           if (unavailableMsg.includes(currentValue.name)) {
             let i = unavailableMsg.indexOf(currentValue.name);
             unavailableMsg.splice(i, 1);
           }
         }
         if (result.data.length > 0) {
-          if (
-            !accumulator.some((acc) => acc["value"] === result.data[0].value)
-          ) {
+          if (!accumulator.some(acc => acc['value'] === result.data[0].value)) {
             accumulator.push(result.data[0]);
           }
         }
         return accumulator;
-      }, []),
+      }, [])
     );
   };
 
   const getMeans = async () => {
     try {
       let result = [];
-      let currentDate = moment(props.date).format("L");
+      let currentDate = moment(props.date).format('L');
       const bookings = await GLOBALS.API({
         uri: `${GLOBALS.Constants.BOOKINGS_BY_SITE}/${adminStore.site.siteId._id}`,
-        token: store.token,
+        token: store.token
       });
 
       setMeans(
         props.means.reduce((accumulator, currentValue) => {
           if (
-            currentValue.meanType === "LIFTING" &&
+            currentValue.meanType === 'LIFTING' &&
             currentValue.location.find(
-              (loc) => loc.deliveryArea && loc.deliveryArea === deliveryArea,
+              loc => loc.deliveryArea && loc.deliveryArea === deliveryArea
             ) &&
             moment(props.date).isBetween(
               currentValue.availability.start,
               currentValue.availability.end,
-              "day",
-              "[]",
+              'day',
+              '[]'
             )
           ) {
             //////// Setting times to 00 format
 
-            let start = startTime
-              ? moment(startTime).format("HH:mm").substring(0, 2)
-              : "";
-            let end = endTime
-              ? moment(endTime).format("HH:mm").substring(0, 2)
-              : "";
+            let start = startTime ? moment(startTime).format('HH:mm').substring(0, 2) : '';
+            let end = endTime ? moment(endTime).format('HH:mm').substring(0, 2) : '';
 
             ///////// filter out booked means
             let isMeanBooked = false;
-            let bookedMeans = bookings.data.bookings.filter((booking) => {
+            let bookedMeans = bookings.data.bookings.filter(booking => {
               ///////// checking if mean is in meansBooking table
               if (booking.meanId === currentValue._id) {
-                let bookingDate = moment(booking.startDate).format("L");
-                let formattedDate = moment(currentDate).format("L");
+                let bookingDate = moment(booking.startDate).format('L');
+                let formattedDate = moment(currentDate).format('L');
                 let bookingStartTime = booking.startTime.substring(0, 2);
                 let bookingEndTime = booking.endTime.substring(0, 2);
 
@@ -176,8 +170,7 @@ export default function AddSiteStep1(props) {
                     end <= bookingEndTime &&
                     end >= bookingStartTime
                   ) {
-                    if (props.step1Data.id != booking.deliveryId)
-                      return booking;
+                    if (props.step1Data.id != booking.deliveryId) return booking;
                   }
                   ///////// if the booking date is in range of the selected date, we show the values and show unavailable message
                   else if (
@@ -198,7 +191,7 @@ export default function AddSiteStep1(props) {
                 start,
                 end,
                 liftingMeans,
-                "mean",
+                'mean'
               );
 
               //////// If mean already booked
@@ -208,13 +201,13 @@ export default function AddSiteStep1(props) {
                 }
               }
               //////// if mean is unavailable
-              else if (result.msg === "found") {
+              else if (result.msg === 'found') {
                 if (!unavailableMsg.includes(currentValue.name)) {
                   unavailableMsg.push(currentValue.name);
                 }
               }
               //////// if mean is available
-              else if (result.msg === "notFound") {
+              else if (result.msg === 'notFound') {
                 if (unavailableMsg.includes(currentValue.name)) {
                   let i = unavailableMsg.indexOf(currentValue.name);
                   unavailableMsg.splice(i, 1);
@@ -222,11 +215,7 @@ export default function AddSiteStep1(props) {
               }
 
               if (result.data[0]) {
-                if (
-                  !accumulator.some(
-                    (acc) => acc["value"] === result.data[0].value,
-                  )
-                ) {
+                if (!accumulator.some(acc => acc['value'] === result.data[0].value)) {
                   accumulator.push(result.data[0]);
                 }
               }
@@ -237,7 +226,7 @@ export default function AddSiteStep1(props) {
             }
           }
           return accumulator;
-        }, []),
+        }, [])
       );
       if (props.step1Data) {
         if (props.step1Data.liftingMeans.length === 0) {
@@ -255,21 +244,19 @@ export default function AddSiteStep1(props) {
       props.step1Data.startTime &&
         setStartTime(
           moment(props.step1Data.date)
-            .set("hours", props.step1Data.startTime.split(":")[0])
-            .set("minutes", props.step1Data.startTime.split(":")[1]),
+            .set('hours', props.step1Data.startTime.split(':')[0])
+            .set('minutes', props.step1Data.startTime.split(':')[1])
         );
       props.step1Data.endTime &&
         setEndTime(
           moment(props.step1Data.date)
-            .set("hours", props.step1Data.endTime.split(":")[0])
-            .set("minutes", props.step1Data.endTime.split(":")[1]),
+            .set('hours', props.step1Data.endTime.split(':')[0])
+            .set('minutes', props.step1Data.endTime.split(':')[1])
         );
       setTrades(props.step1Data.trades);
 
       if (props.step1Data?.materials?.length > 0) {
-        setSiteMaterials(
-          props.step1Data.materials.map((item, i) => ({ key: i, label: item })),
-        );
+        setSiteMaterials(props.step1Data.materials.map((item, i) => ({ key: i, label: item })));
       }
 
       if (props.step1Data.liftingMeans.length === 0) {
@@ -278,20 +265,20 @@ export default function AddSiteStep1(props) {
         setLiftingMeans(props.step1Data.liftingMeans);
       }
 
-      setUpdate((st) => !st);
+      setUpdate(st => !st);
     } else {
       setDate(props.date);
-      setStartTime(moment(props.date).set("hour", props.start));
-      setEndTime(moment(props.date).set("hour", props.end));
+      setStartTime(moment(props.date).set('hour', props.start));
+      setEndTime(moment(props.date).set('hour', props.end));
     }
     // eslint-disable-next-line
   }, [props.step1Data]);
 
   useEffect(() => {
     if (!update && props.adminStore?.site?.siteId?.materials) {
-      let materials = props.adminStore?.site?.siteId?.materials?.map((a) => ({
+      let materials = props.adminStore?.site?.siteId?.materials?.map(a => ({
         label: a,
-        value: a,
+        value: a
       }));
       setSiteMaterials(materials);
     }
@@ -306,38 +293,47 @@ export default function AddSiteStep1(props) {
   async function onSubmit(e) {
     e.preventDefault();
 
-    let selectedMeans = means.filter((o1) =>
-      liftingMeans?.some((o2) => o1.value === o2),
-    );
+    let selectedMeans = means.filter(o1 => liftingMeans?.some(o2 => o1.value === o2));
     const values = {
       company,
       deliveryArea,
       date,
       selectedMeans,
-      startTime: moment(startTime).format("HH:mm"),
-      endTime: moment(endTime).format("HH:mm"),
+      startTime: moment(startTime).format('HH:mm'),
+      endTime: moment(endTime).format('HH:mm'),
       trades,
       liftingMeans,
       // materials: materials.map((item) => item.label),
-      materials:
-        materials.length > 0 ? materials : props.step1Data?.materials || [],
-      id: props.step1Data.id,
+      materials: materials.length > 0 ? materials : props.step1Data?.materials || [],
+      id: props.step1Data.id
     };
 
     props.setStep1Data(values);
     props.setStep(2);
   }
   function disabledDate2(current) {
-    let customDate = "2021-6-6";
+    let customDate = '2021-6-6';
     return (
-      (current && current < moment(customDate, "YYYY-MM-DD")) ||
-      current > moment(customDate, "YYYY-MM-DD")
+      (current && current < moment(customDate, 'YYYY-MM-DD')) ||
+      current > moment(customDate, 'YYYY-MM-DD')
     );
   }
 
+  useEffect(() => {
+    setTrades([props?.trades[0]?.value]);
+    // eslint-disable-next-line
+  }, []);
+  useEffect(() => {
+    // console.log('liftingMeans', liftingMeans);
+    // console.log('means with condition', means?.length != 0 ? means[0].value : 'no');
+    // console.log('means', means);
+    means?.length != 0 ? setLiftingMeans([means[0].value]) : setLiftingMeans([]);
+    // eslint-disable-next-line
+  }, [means]);
+
   return (
     <Form.Form onSubmit={onSubmit}>
-      {update && ""}
+      {update && ''}
       <Form.Row>
         <FormLabel bold primary={`${COMPANY}* :`} />
         <FormSelect
@@ -374,31 +370,25 @@ export default function AddSiteStep1(props) {
             value={date}
             disabled={true}
             placeholder="Date"
-            style={{ width: "31%" }}
-            min={moment().format("YYYY-MM-DD")}
+            style={{ width: '31%' }}
+            min={moment().format('YYYY-MM-DD')}
             // disabledDate={disabledDate}
             onChange={({ target: { value } }) => {
               checkavailability(value) && setDate(value);
 
               // Setting current time on current date and previous time
-              if (
-                moment(d).format("yyyy-DD-MM") ==
-                moment(value).format("yyyy-DD-MM")
-              ) {
-                if (
-                  moment(startTime).format("HH") <
-                  parseInt(moment(d).format("HH")) + 1
-                ) {
+              if (moment(d).format('yyyy-DD-MM') == moment(value).format('yyyy-DD-MM')) {
+                if (moment(startTime).format('HH') < parseInt(moment(d).format('HH')) + 1) {
                   const hour = new Date().getHours();
                   setStartTime(
                     moment(d)
-                      .set("hours", hour + 1)
-                      .set("minutes", 0),
+                      .set('hours', hour + 1)
+                      .set('minutes', 0)
                   );
                   setEndTime(
                     moment(d)
-                      .set("hours", hour + 2)
-                      .set("minutes", 0),
+                      .set('hours', hour + 2)
+                      .set('minutes', 0)
                   );
                 }
               }
@@ -411,13 +401,13 @@ export default function AddSiteStep1(props) {
             value={startTime}
             // disabling previous time on current date
             disabledHours={
-              moment(d).format("yyyy-DD-MM") ==
-                moment(date).format("yyyy-DD-MM") && getDisabledHoursStartTime()
+              moment(d).format('yyyy-DD-MM') == moment(date).format('yyyy-DD-MM') &&
+              getDisabledHoursStartTime()
             }
             // disabledMinutes={(a) => getDisabledMinutes(a)}
             placeholder={Start_time}
-            style={{ width: "31%" }}
-            onChange={(value) => setStartTime(value)}
+            style={{ width: '31%' }}
+            onChange={value => setStartTime(value)}
           />
           <TimeInput
             name="endTime"
@@ -427,19 +417,18 @@ export default function AddSiteStep1(props) {
             disabledHours={getDisabledHoursEndTime()}
             // disabledMinutes={(a) => getDisabledEndMinutes(a)}
             placeholder={End_time}
-            style={{ width: "31%" }}
-            onChange={(value) => setEndTime(value)}
+            style={{ width: '31%' }}
+            onChange={value => setEndTime(value)}
           />
         </Form.Row>
       </Form.Row>
 
       {unavailableMsg.length > 0 ? (
         <Form.Row>
-          <FormLabel bold primary={""} />
+          <FormLabel bold primary={''} />
           <Form.Row width="48%" noMargin label=" " zIndex={5}>
-            <div style={{ color: "red" }}>
-              {unavailableMsg.join(", ")} is/are unavailable in the selected
-              timeslot.
+            <div style={{ color: 'red' }}>
+              {unavailableMsg.join(', ')} is/are unavailable in the selected timeslot.
             </div>
           </Form.Row>
         </Form.Row>
@@ -472,23 +461,23 @@ export default function AddSiteStep1(props) {
           onChange={({ target: { value } }) => setLiftingMeans(value)}
         />
       </Form.Row>
-      <Form.Row>
-        <div class="col-sm-6" style={{ paddingLeft: "0px" }}>
+      {/* <Form.Row>
+        <div class="col-sm-6" style={{ paddingLeft: '0px' }}>
           <FormLabel bold primary="" />
         </div>
-        <div class="col-sm-6" style={{ paddingLeft: "30px" }}>
+        <div class="col-sm-6" style={{ paddingLeft: '30px' }}>
           <FormCheckbox
             name={disableLiftingMeans}
             checked={disableLiftingMeans}
-            onChange={(event) => {
+            onChange={event => {
               setDisableLiftingMeans(event.target.checked);
               setLiftingMeans([]);
             }}
-            style={{ color: "#DBB20A" }}
+            style={{ color: '#DBB20A' }}
             label={NONE}
           />
         </div>
-      </Form.Row>
+      </Form.Row> */}
 
       <Form.Row>
         <FormLabel bold primary={`${MATERIALS_DELIVERED}* :`} />
@@ -497,9 +486,7 @@ export default function AddSiteStep1(props) {
         siteMaterials.length > 0 ? (
           <FormMultiSelect
             name="materials"
-            value={
-              materials.length > 0 ? materials : props.step1Data.materials || []
-            }
+            value={materials.length > 0 ? materials : props.step1Data.materials || []}
             placeholder={ENTER_MATERIALS}
             values={siteMaterials}
             disabled=""
@@ -513,9 +500,9 @@ export default function AddSiteStep1(props) {
             disabled={props.eventId}
             placeholder={ENTER_MATERIALS}
             style={GLOBALS.Styles.inputWidth}
-            onChange={(values) => {
+            onChange={values => {
               setSiteMaterials(values);
-              setMaterials(values.map((_) => _.label));
+              setMaterials(values.map(_ => _.label));
             }}
           />
         )}
