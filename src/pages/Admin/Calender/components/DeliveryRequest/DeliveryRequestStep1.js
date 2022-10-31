@@ -507,6 +507,8 @@ export default function AddSiteStep1(props) {
           />
         )}
       </Form.Row>
+      {console.log('materials', materials.length)}
+      {console.log('siteMaterials', siteMaterials)}
       <Form.ButtonContainer>
         <Button
           type="submit"
@@ -520,7 +522,7 @@ export default function AddSiteStep1(props) {
             !startTime ||
             !endTime ||
             trades.length === 0 ||
-            // materials.length === 0 ||
+            materials.length === 0 ||
             // (!update && materials.length === 0) ||
             // (update && props.step1Data.materials.length === 0) ||
             (disableLiftingMeans ? false : liftingMeans.length === 0)
